@@ -10,8 +10,56 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
-    'modules' => [],
+    'bootstrap' => ['log','heart'],
+    'modules' => [
+		'heart' => [
+            'class' => 'hscstudio\heart\Module',
+            'features'=>[
+                // fontawesome, datecontrol (kartik), gridview (kartik), gii, privilege (yii2-admin), user (yii2-user)
+				'fontawesome'=>true, // use false for not use it
+				'datecontrol'=>true,// use false for not use it
+				'gridview'=>true,// use false for not use it
+				'gii'=>true, // use false for not use it
+				'privilege'=>[
+					'allowActions' => [
+						'debug/*',
+						'site/*',
+						'gii/*',
+						'user/*',
+						'privilege/*', // add or remove allowed actions to this list
+					],
+					'authManager' => [
+					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
+					]
+				],
+				'user'=>[
+					'components' => [
+						'manager' => [
+							// Active record classes
+							//'userClass'    => 'dektrium\user\models\User',
+							//'profileClass' => 'dektrium\user\models\Profile',
+							//'accountClass' => 'dektrium\user\models\Account',
+							// Model that is used on resending confirmation messages
+							//'resendFormClass' => 'dektrium\user\models\ResendForm',
+							// Model that is used on logging in
+							//'loginFormClass' => 'dektrium\user\models\LoginForm',
+							// Model that is used on password recovery
+							//'passwordRecoveryFormClass' => 'dektrium\user\models\RecoveryForm',
+							// Model that is used on requesting password recovery
+							//'passwordRecoveryRequestFormClass' => 'dektrium\user\models\RecoveryRequestForm',
+						],
+					],                  
+					'confirmable' => false,
+					'confirmWithin' =>  86400, 
+					'allowUnconfirmedLogin' => true,
+					'rememberFor' => 1209600,
+					'recoverWithin' => 21600,
+					'admins' => ['admin'],
+					'cost' => 13,
+				],  
+            ]
+        ],
+	],
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',
@@ -29,6 +77,10 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+		'urlManager' => [
+			'enablePrettyUrl' => true,
+			'showScriptName' => false,
+		],
     ],
     'params' => $params,
 ];
