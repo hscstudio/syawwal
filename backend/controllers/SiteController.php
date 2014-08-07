@@ -12,7 +12,9 @@ use yii\filters\VerbFilter;
  */
 class SiteController extends Controller
 {
-    /**
+    //public $layout='column1';
+	
+	/**
      * @inheritdoc
      */
     public function behaviors()

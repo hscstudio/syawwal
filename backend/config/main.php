@@ -12,6 +12,9 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log','heart'],
     'modules' => [
+		'sekretariat-hrd' => [
+            'class' => 'backend\modules\sekretariat\hrd\Module',
+        ],
 		'heart' => [
             'class' => 'hscstudio\heart\Module',
             'features'=>[
@@ -27,6 +30,8 @@ return [
 						'gii/*',
 						'user/*',
 						'privilege/*', // add or remove allowed actions to this list
+						'employee/*',
+						'sekretariat-hrd/*'
 					],
 					'authManager' => [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'

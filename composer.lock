@@ -170,12 +170,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hscstudio/yii2-heart.git",
-                "reference": "d90b05198c8f4e13f68852eed923a05391ba1df3"
+                "reference": "9b2ed4acd00292ebd1bd8612d3f8a4c7c372244f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hscstudio/yii2-heart/zipball/d90b05198c8f4e13f68852eed923a05391ba1df3",
-                "reference": "d90b05198c8f4e13f68852eed923a05391ba1df3",
+                "url": "https://api.github.com/repos/hscstudio/yii2-heart/zipball/9b2ed4acd00292ebd1bd8612d3f8a4c7c372244f",
+                "reference": "9b2ed4acd00292ebd1bd8612d3f8a4c7c372244f",
                 "shasum": ""
             },
             "require": {
@@ -210,7 +210,7 @@
                 "heart",
                 "yii2"
             ],
-            "time": "2014-08-05 10:49:40"
+            "time": "2014-08-05 12:19:05"
         },
         {
             "name": "kartik-v/bootstrap-checkbox-x",
@@ -1205,12 +1205,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "77b0dc69ebefb8c3ddb1b25a0bd51ef53c0d0e9b"
+                "reference": "b4895a0d6dc493f17fe9092db4debe44182d42ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/77b0dc69ebefb8c3ddb1b25a0bd51ef53c0d0e9b",
-                "reference": "77b0dc69ebefb8c3ddb1b25a0bd51ef53c0d0e9b",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/b4895a0d6dc493f17fe9092db4debe44182d42ac",
+                "reference": "b4895a0d6dc493f17fe9092db4debe44182d42ac",
                 "shasum": ""
             },
             "replace": {
@@ -1248,7 +1248,7 @@
                 "responsive",
                 "web"
             ],
-            "time": "2014-08-04 05:12:52"
+            "time": "2014-08-06 02:28:22"
         },
         {
             "name": "yiisoft/jquery",
@@ -1305,12 +1305,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "5628d6c3454c94e353900dd19b01b4e219da43f3"
+                "reference": "e4f86cac73289d98821c1047b67af28cfd1916c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/5628d6c3454c94e353900dd19b01b4e219da43f3",
-                "reference": "5628d6c3454c94e353900dd19b01b4e219da43f3",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/e4f86cac73289d98821c1047b67af28cfd1916c3",
+                "reference": "e4f86cac73289d98821c1047b67af28cfd1916c3",
                 "shasum": ""
             },
             "require": {
@@ -1378,7 +1378,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2014-08-05 02:06:55"
+            "time": "2014-08-06 20:30:35"
         },
         {
             "name": "yiisoft/yii2-authclient",
