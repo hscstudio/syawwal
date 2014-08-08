@@ -165,24 +165,74 @@
             "time": "2013-11-30 08:25:19"
         },
         {
+            "name": "fortawesome/font-awesome",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FortAwesome/Font-Awesome.git",
+                "reference": "2649d91d18629bab071449b3bc4cb02761037a57"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/2649d91d18629bab071449b3bc4cb02761037a57",
+                "reference": "2649d91d18629bab071449b3bc4cb02761037a57",
+                "shasum": ""
+            },
+            "require-dev": {
+                "jekyll": "1.0.2",
+                "lessc": "1.4.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OFL-1.1",
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Gandy",
+                    "email": "dave@fontawesome.io",
+                    "homepage": "http://twitter.com/davegandy",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The iconic font and CSS framework",
+            "homepage": "http://fontawesome.io/",
+            "keywords": [
+                "FontAwesome",
+                "awesome",
+                "bootstrap",
+                "font",
+                "icon"
+            ],
+            "time": "2014-05-14 20:37:30"
+        },
+        {
             "name": "hscstudio/yii2-heart",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hscstudio/yii2-heart.git",
-                "reference": "9b2ed4acd00292ebd1bd8612d3f8a4c7c372244f"
+                "reference": "4fc03ad2fe49e3e846a8adad002fdc524c5edf93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hscstudio/yii2-heart/zipball/9b2ed4acd00292ebd1bd8612d3f8a4c7c372244f",
-                "reference": "9b2ed4acd00292ebd1bd8612d3f8a4c7c372244f",
+                "url": "https://api.github.com/repos/hscstudio/yii2-heart/zipball/4fc03ad2fe49e3e846a8adad002fdc524c5edf93",
+                "reference": "4fc03ad2fe49e3e846a8adad002fdc524c5edf93",
                 "shasum": ""
             },
             "require": {
                 "dektrium/yii2-user": "*",
+                "kartik-v/yii2-builder": "dev-master",
                 "kartik-v/yii2-datecontrol": "dev-master",
+                "kartik-v/yii2-detail-view": "dev-master",
                 "kartik-v/yii2-grid": "dev-master",
-                "kartik-v/yii2-helpers": "dev-master",
+                "kartik-v/yii2-icons": "dev-master",
                 "mdmsoft/yii2-admin": "*",
                 "phpoffice/phpexcel": "dev-master",
                 "phpoffice/phpword": "dev-master",
@@ -210,7 +260,7 @@
                 "heart",
                 "yii2"
             ],
-            "time": "2014-08-05 12:19:05"
+            "time": "2014-08-07 10:11:55"
         },
         {
             "name": "kartik-v/bootstrap-checkbox-x",
@@ -473,6 +523,52 @@
             "time": "2014-07-24 20:02:05"
         },
         {
+            "name": "kartik-v/yii2-builder",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-builder.git",
+                "reference": "14e6b80b5b4831d8e77a0028fb77e499b0e6446a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-builder/zipball/14e6b80b5b4831d8e77a0028fb77e499b0e6446a",
+                "reference": "14e6b80b5b4831d8e77a0028fb77e499b0e6446a",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-grid": "*",
+                "kartik-v/yii2-widgets": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "Build forms (single-row or multi-row/tabular) easily for Yii Framework 2.0",
+            "homepage": "https://github.com/kartik-v/yii2-builder",
+            "keywords": [
+                "builder",
+                "extension",
+                "form",
+                "widget",
+                "yii2"
+            ],
+            "time": "2014-07-22 16:25:13"
+        },
+        {
             "name": "kartik-v/yii2-checkbox-x",
             "version": "dev-master",
             "source": {
@@ -566,6 +662,57 @@
                 "yii2"
             ],
             "time": "2014-07-31 19:26:56"
+        },
+        {
+            "name": "kartik-v/yii2-detail-view",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-detail-view.git",
+                "reference": "e33054f483c2b594932a3d548eb6a6e50de4391e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-detail-view/zipball/e33054f483c2b594932a3d548eb6a6e50de4391e",
+                "reference": "e33054f483c2b594932a3d548eb6a6e50de4391e",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-checkbox-x": "*",
+                "kartik-v/yii2-helpers": "*",
+                "kartik-v/yii2-money": "*",
+                "kartik-v/yii2-slider": "*",
+                "kartik-v/yii2-widgets": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "Various enhancements to the Yii 2 Detail View with ability to edit data and manage Bootstrap 3 styles.",
+            "homepage": "https://github.com/kartik-v/yii2-detail-view",
+            "keywords": [
+                "detail",
+                "detail view",
+                "extension",
+                "form",
+                "grid",
+                "widget",
+                "yii2"
+            ],
+            "time": "2014-07-19 15:15:26"
         },
         {
             "name": "kartik-v/yii2-editable",
@@ -759,6 +906,53 @@
                 "yii2"
             ],
             "time": "2014-07-17 18:09:42"
+        },
+        {
+            "name": "kartik-v/yii2-icons",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-icons.git",
+                "reference": "6e0b5551283565a03488911f456470ba76ef97fe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-icons/zipball/6e0b5551283565a03488911f456470ba76ef97fe",
+                "reference": "6e0b5551283565a03488911f456470ba76ef97fe",
+                "shasum": ""
+            },
+            "require": {
+                "fortawesome/font-awesome": "*",
+                "kartik-v/yii2-widgets": "*",
+                "yiisoft/yii2-jui": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "Set of icon frameworks for use in Yii Framework 2.0",
+            "homepage": "https://github.com/kartik-v/yii2-icons",
+            "keywords": [
+                "extension",
+                "font",
+                "icon",
+                "yii",
+                "yii2"
+            ],
+            "time": "2014-07-14 08:59:50"
         },
         {
             "name": "kartik-v/yii2-money",

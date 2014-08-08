@@ -154,52 +154,52 @@ class Employee extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
-    /**
+	    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAdmins()
     {
         return $this->hasMany(Admin::className(), ['tb_employee_id' => 'id']);
     }
-    /**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRefGraduate()
+    public function getGraduate()
     {
         return $this->hasOne(Graduate::className(), ['id' => 'ref_graduate_id']);
     }
-    /**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRefRankClass()
+    public function getRankClass()
     {
         return $this->hasOne(RankClass::className(), ['id' => 'ref_rank_class_id']);
     }
-    /**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRefReligion()
+    public function getReligion()
     {
         return $this->hasOne(Religion::className(), ['id' => 'ref_religion_id']);
     }
-    /**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRefSatker()
+    public function getSatker()
     {
         return $this->hasOne(Satker::className(), ['id' => 'ref_satker_id']);
     }
-    /**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRefStaUnit()
+    public function getStaUnit()
     {
         return $this->hasOne(StaUnit::className(), ['id' => 'ref_sta_unit_id']);
     }
-    /**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRefUnit()
+    public function getUnit()
     {
         return $this->hasOne(Unit::className(), ['id' => 'ref_unit_id']);
     }

@@ -29,7 +29,8 @@ return [
 						'site/*',
 						'gii/*',
 						'user/*',
-						'privilege/*', // add or remove allowed actions to this list
+						'privilege/*',
+						'gridview/*',	// add or remove allowed actions to this list
 						'employee/*',
 						'sekretariat-hrd/*'
 					],
