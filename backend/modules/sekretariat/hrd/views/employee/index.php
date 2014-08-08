@@ -142,12 +142,13 @@ $this->params['sideMenu']=$menus;
 			//'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i> Employee</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Employee', ['create'], ['class' => 'btn btn-success']),
+			'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Employee', ['create'], ['class' => 'btn btn-success ']),
 			'after'=>Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
-			'showFooter'=>false
+			//'showFooter'=>true
 		],
 		'responsive'=>true,
 		'hover'=>true,
+		//'showPageSummary' => true
     ]); ?>
 
 </div>
