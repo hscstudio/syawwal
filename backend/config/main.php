@@ -15,6 +15,9 @@ return [
 		'sekretariat-hrd' => [
             'class' => 'backend\modules\sekretariat\hrd\Module',
         ],
+		'sekretariat-organisation' => [
+            'class' => 'backend\modules\sekretariat\organisation\Module',
+        ],
 		'heart' => [
             'class' => 'hscstudio\heart\Module',
             'features'=>[
@@ -32,7 +35,8 @@ return [
 						'privilege/*',
 						'gridview/*',	// add or remove allowed actions to this list
 						'employee/*',
-						'sekretariat-hrd/*'
+						'sekretariat-hrd/*',
+						'sekretariat-organisation/*'
 					],
 					'authManager' => [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
