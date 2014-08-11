@@ -28,7 +28,7 @@ AppAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => '<i class="fa fa-th-large"></i> SIM BPPK',
+                'brandLabel' => '<i class="fa fa-th-large"></i> Yii2 Heart',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
@@ -59,11 +59,11 @@ AppAsset::register($this);
 
                 $menuItemsLeft[] =
                     ['icon'=>'fa fa-book fa-fw','label' => 'PUSDIKLAT', 'url' => ['#'], 'items' => [
-                        ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/pusdiklat']],
-                        ['icon'=>'fa fa-th-list fa-fw','label'=>'Planning', 'url'=> ['/pusdiklat-planning'], 'path'=>'pusdiklat-planning'],
-                        ['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/pusdiklat']],
-                        ['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/pusdiklat']],
-                        '<li class="divider"></li>',
+                        ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/pusdiklat-general/default/index'],'path'=>'pusdiklat-general'],
+						['icon'=>'fa fa-th-list fa-fw','label'=>'Planning', 'url'=> ['/pusdiklat-planning/default/index'],'path'=>'pusdiklat-planning'],
+						['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/pusdiklat-execution/default/index'],'path'=>'pusdiklat-execution'],
+						['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/pusdiklat-evaluation/default/index'],'path'=>'pusdiklat-evaluation'],
+						'<li class="divider"></li>',
                         ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/pusdiklat']],
                         ['icon'=>'fa fa-book fa-fw','label'=>'Training', 'url'=> ['/pusdiklat']],
                         ['icon'=>'fa fa-sort-numeric-asc fa-fw','label'=>'Test', 'url'=> ['/pusdiklat']],

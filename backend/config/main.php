@@ -12,12 +12,21 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log','heart'],
     'modules' => [
-		'sekretariat-hrd' => [
-            'class' => 'backend\modules\sekretariat\hrd\Module',
+		/* START PUSDIKLAT */
+		'pusdiklat-general' => [
+            'class' => 'backend\modules\pusdiklat\general\Module',
         ],
-		'sekretariat-organisation' => [
-            'class' => 'backend\modules\sekretariat\organisation\Module',
+		'pusdiklat-planning' => [
+            'class' => 'backend\modules\pusdiklat\planning\Module',
         ],
+		'pusdiklat-execution' => [
+            'class' => 'backend\modules\pusdiklat\execution\Module',
+        ],
+		'pusdiklat-evaluation' => [
+            'class' => 'backend\modules\pusdiklat\evaluation\Module',
+        ],
+		/* FINISH PUSDIKLAT */
+		
 		'heart' => [
             'class' => 'hscstudio\heart\Module',
             'features'=>[
@@ -35,8 +44,13 @@ return [
 						'privilege/*',
 						'gridview/*',	// add or remove allowed actions to this list
 						'employee/*',
-						'sekretariat-hrd/*',
-						'sekretariat-organisation/*'
+						/* START PUSDIKLAT */
+						'pusdiklat-general/*',
+						'pusdiklat-planning/*',
+						'pusdiklat-execution/*',
+						'pusdiklat-evaluation/*',
+						/* FINISH PUSDIKLAT */
+						
 					],
 					'authManager' => [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
