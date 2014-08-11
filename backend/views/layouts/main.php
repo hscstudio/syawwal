@@ -50,7 +50,7 @@ AppAsset::register($this);
                     ]];
 				$menuItemsLeft[] =
                     ['icon'=>'fa fa-sitemap fa-fw','label' => 'SEKRETARIAT', 'url' => '#', 'items' => [
-                        ['icon'=>'fa fa-sitemap fa-fw','label'=>'OrganisationOTL', 'url'=> ['/sekretariat-organisation'],'path'=>'sekretariat-organisation' ],
+                        ['icon'=>'fa fa-sitemap fa-fw','label'=>'Organisation', 'url'=> ['/sekretariat-organisation'],'path'=>'sekretariat-organisation' ],
                         ['icon'=>'fa fa-users fa-fw','label'=>'Employee', 'url'=> ['/sekretariat-hrd/default/index'] ],
                         ['icon'=>'fa fa-money fa-fw','label'=>'Finance', 'url'=> ['/finance/default/index'] ],
                         ['icon'=>'fa fa-desktop fa-fw','label'=>'Information Technology', 'url'=> ['/it/default/index'] ],
