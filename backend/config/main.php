@@ -119,7 +119,9 @@ return [
 						'manager' => [
 							// Active record classes
 							//'userClass'    => 'dektrium\user\models\User',
+							'userClass'    => 'dektrium\user\models\User',
 							//'profileClass' => 'dektrium\user\models\Profile',
+							//'profileClass' => 'backend\models\Employee',
 							//'accountClass' => 'dektrium\user\models\Account',
 							// Model that is used on resending confirmation messages
 							//'resendFormClass' => 'dektrium\user\models\ResendForm',
@@ -143,10 +145,10 @@ return [
         ],
 	],
     'components' => [
-        'user' => [
+        /*'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-        ],
+        ],*/
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
