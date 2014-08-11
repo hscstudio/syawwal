@@ -114,8 +114,7 @@ return [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
 					]
 				],
-				'user'=>[
-				],
+				'user'=>true,
             ]
         ],
 		'user'=>[
