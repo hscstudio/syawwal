@@ -143,17 +143,21 @@ return [
         ],
         'user' => [
             'class' => 'dektrium\user\Module',
+            'controllerMap' => [
+                'admin' => 'backend\controllers\AdminController'
+            ],
             'components' => [
                 'manager' => [
                     'userClass' => 'backend\models\User',
                     'profileClass' => 'backend\models\Employee',
                 ],
             ],
+            'admins' => ['admin'],
         ],
 	],
     'components' => [
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'common\models\Userasdasd',
             'enableAutoLogin' => true,
         ],
         'log' => [
@@ -172,6 +176,13 @@ return [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 		],
+		'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@dektrium/user/views' => '@backend/views/user'
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
