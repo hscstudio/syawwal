@@ -59,7 +59,13 @@ class Employee extends BaseEmployee
             [['nip'], 'string', 'max' => 18],
             [['email', 'officeEmail'], 'string', 'max' => 100],
             [['address', 'photo', 'position', 'education', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
-            [['blood'], 'string', 'max' => 10]
+            [['blood'], 'string', 'max' => 10],
+
+            /* fajar - rules dari model dektrium.models */
+            [['bio'], 'string'],
+            [['public_email', 'gravatar_email'], 'email'],
+            ['website', 'url'],
+            [['name', 'public_email', 'gravatar_email', 'location', 'website'], 'string', 'max' => 255]
         ];
     }
 
@@ -105,6 +111,13 @@ class Employee extends BaseEmployee
             'modifiedBy' => 'Modified By',
             'deleted' => 'Deleted',
             'deletedBy' => 'Deleted By',
+
+            /* fajar - artibute name dari model dektrium.profile */
+            'public_email' => \Yii::t('user', 'Email (public)'),
+            'gravatar_email' => \Yii::t('user', 'Gravatar email'),
+            'location' => \Yii::t('user', 'Location'),
+            'website' => \Yii::t('user', 'Website'),
+            'bio' => \Yii::t('user', 'Bio'),
         ];
     }
 	    /**

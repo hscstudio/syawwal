@@ -146,7 +146,7 @@ return [
             'components' => [
                 'manager' => [
                     'userClass' => 'backend\models\User',
-                    'profileClass' => 'backend\models\Profile',
+                    'profileClass' => 'backend\models\Employee',
                 ],
             ],
         ],
