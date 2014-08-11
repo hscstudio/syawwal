@@ -143,9 +143,11 @@ return [
 					'admins' => ['admin'],
 					'cost' => 13,
 				],  */
+				'user'=>true,
             ]
         ],
 		'user'=>[
+			'class' => '\dektrium\user\Module',
 			'components' => [
 				'manager' => [
 					// Active record classes
@@ -177,18 +179,10 @@ return [
 		],		
 	],
     'components' => [
-        /*'user' => [
-            'identityClass' => 'common\models\User',
-=======
         'user' => [
-<<<<<<< HEAD
             'identityClass' => 'common\models\User',
-=======
-            'identityClass' => 'common\models\Userasdasd',
->>>>>>> origin/master
->>>>>>> origin/master
             'enableAutoLogin' => true,
-        ],*/
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
