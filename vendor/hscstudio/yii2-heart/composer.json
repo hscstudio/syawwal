@@ -1,0 +1,30 @@
+{
+	"name": "hscstudio/yii2-heart",
+	"description": "Set of Yii2 extension",
+	"type": "yii2-extension",
+	"keywords": ["yii2","extension","heart"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Hafid Mukhlasin",
+			"email": "hafidmukhlasin@gmail.com"
+		}
+	],
+	"require": {
+		"yiisoft/yii2-jui": "*",
+		"dektrium/yii2-user": "*",
+		"mdmsoft/yii2-admin": "*",
+		"kartik-v/yii2-datecontrol": "dev-master",
+		"kartik-v/yii2-grid": "dev-master",
+		"kartik-v/yii2-detail-view": "dev-master",
+		"kartik-v/yii2-builder": "dev-master",
+		"kartik-v/yii2-icons": "dev-master",
+		"phpoffice/phpexcel": "dev-master",
+		"phpoffice/phpword": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"hscstudio\\heart\\": ""
+		}
+	}
+}
