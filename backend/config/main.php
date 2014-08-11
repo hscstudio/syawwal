@@ -170,16 +170,6 @@ return [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 		],
-<<<<<<< HEAD
-=======
-		'view' => [
-            'theme' => [
-                'pathMap' => [
-                    '@dektrium/user/views' => '@hscstudio/heart/modules/views/user'
-                ],
-            ],
-        ],
->>>>>>> origin/master
     ],
     'params' => $params,
 ];
