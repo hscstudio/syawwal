@@ -114,8 +114,38 @@ return [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
 					]
 				],
+<<<<<<< HEAD
 				'user'=>[
 				],
+=======
+				/*'user'=>[
+					'components' => [
+						'manager' => [
+							// Active record classes
+							//'userClass'    => 'dektrium\user\models\User',
+							'userClass'    => 'dektrium\user\models\User',
+							//'profileClass' => 'dektrium\user\models\Profile',
+							//'profileClass' => 'backend\models\Employee',
+							//'accountClass' => 'dektrium\user\models\Account',
+							// Model that is used on resending confirmation messages
+							//'resendFormClass' => 'dektrium\user\models\ResendForm',
+							// Model that is used on logging in
+							//'loginFormClass' => 'dektrium\user\models\LoginForm',
+							// Model that is used on password recovery
+							//'passwordRecoveryFormClass' => 'dektrium\user\models\RecoveryForm',
+							// Model that is used on requesting password recovery
+							//'passwordRecoveryRequestFormClass' => 'dektrium\user\models\RecoveryRequestForm',
+						],
+					],                  
+					'confirmable' => false,
+					'confirmWithin' =>  86400, 
+					'allowUnconfirmedLogin' => true,
+					'rememberFor' => 1209600,
+					'recoverWithin' => 21600,
+					'admins' => ['admin'],
+					'cost' => 13,
+				],  */
+>>>>>>> origin/master
             ]
         ],
 		'user'=>[
@@ -150,10 +180,18 @@ return [
 		],		
 	],
     'components' => [
-        'user' => [
+        /*'user' => [
             'identityClass' => 'common\models\User',
+=======
+        'user' => [
+<<<<<<< HEAD
+            'identityClass' => 'common\models\User',
+=======
+            'identityClass' => 'common\models\Userasdasd',
+>>>>>>> origin/master
+>>>>>>> origin/master
             'enableAutoLogin' => true,
-        ],
+        ],*/
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -170,6 +208,16 @@ return [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 		],
+<<<<<<< HEAD
+=======
+		'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@dektrium/user/views' => '@hscstudio/heart/modules/views/user'
+                ],
+            ],
+        ],
+>>>>>>> origin/master
     ],
     'params' => $params,
 ];
