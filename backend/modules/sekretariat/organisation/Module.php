@@ -17,7 +17,12 @@ class Module extends \yii\base\Module
 		return [
 			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			// Add here your items module
-			//['label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index']],
+			['label' => 'Graduate', 'url' => ['/'.$this->uniqueId.'/graduate/index']],
+			['label' => 'Religion', 'url' => ['/'.$this->uniqueId.'/religion/index']],
+			['label' => 'RankClass', 'url' => ['/'.$this->uniqueId.'/rank-class/index']],
+			['label' => 'Satker', 'url' => ['/'.$this->uniqueId.'/satker/index']],
+			['label' => 'StaUnit', 'url' => ['/'.$this->uniqueId.'/sta-unit/index']],
+			['label' => 'Unit', 'url' => ['/'.$this->uniqueId.'/unit/index']],			
 		];
 	}
 }
