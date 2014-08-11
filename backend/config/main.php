@@ -114,50 +114,44 @@ return [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
 					]
 				],
-				/*'user'=>[
-					'components' => [
-						'manager' => [
-							// Active record classes
-							//'userClass'    => 'dektrium\user\models\User',
-							//'profileClass' => 'dektrium\user\models\Profile',
-							//'accountClass' => 'dektrium\user\models\Account',
-							// Model that is used on resending confirmation messages
-							//'resendFormClass' => 'dektrium\user\models\ResendForm',
-							// Model that is used on logging in
-							//'loginFormClass' => 'dektrium\user\models\LoginForm',
-							// Model that is used on password recovery
-							//'passwordRecoveryFormClass' => 'dektrium\user\models\RecoveryForm',
-							// Model that is used on requesting password recovery
-							//'passwordRecoveryRequestFormClass' => 'dektrium\user\models\RecoveryRequestForm',
-						],
-					],                  
-					'confirmable' => false,
-					'confirmWithin' =>  86400, 
-					'allowUnconfirmedLogin' => true,
-					'rememberFor' => 1209600,
-					'recoverWithin' => 21600,
-					'admins' => ['admin'],
-					'cost' => 13,
-				],  */
+				'user'=>[
+				],
             ]
         ],
-        'user' => [
-            'class' => 'dektrium\user\Module',
-            'controllerMap' => [
-                'admin' => 'backend\controllers\AdminController'
-            ],
-            'components' => [
-                'manager' => [
-                    'userClass' => 'backend\models\User',
-                    'profileClass' => 'backend\models\Employee',
-                ],
-            ],
-            'admins' => ['admin'],
-        ],
+		'user'=>[
+			'components' => [
+				'manager' => [
+					// Active record classes
+					'userClass' => 'backend\models\User',
+					'profileClass' => 'backend\models\Employee',
+					//'userClass'    => 'dektrium\user\models\User',
+					//'profileClass' => 'dektrium\user\models\Profile',
+					//'accountClass' => 'dektrium\user\models\Account',
+					// Model that is used on resending confirmation messages
+					//'resendFormClass' => 'dektrium\user\models\ResendForm',
+					// Model that is used on logging in
+					//'loginFormClass' => 'dektrium\user\models\LoginForm',
+					// Model that is used on password recovery
+					//'passwordRecoveryFormClass' => 'dektrium\user\models\RecoveryForm',
+					// Model that is used on requesting password recovery
+					//'passwordRecoveryRequestFormClass' => 'dektrium\user\models\RecoveryRequestForm',
+				],
+			], 
+			'controllerMap' => [
+				'admin' => 'backend\controllers\AdminController'
+			],					
+			'confirmable' => false,
+			'confirmWithin' =>  86400, 
+			'allowUnconfirmedLogin' => true,
+			'rememberFor' => 1209600,
+			'recoverWithin' => 21600,
+			'admins' => ['admin'],
+			'cost' => 13,
+		],		
 	],
     'components' => [
         'user' => [
-            'identityClass' => 'common\models\Userasdasd',
+            'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
         ],
         'log' => [
@@ -176,13 +170,6 @@ return [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 		],
-		'view' => [
-            'theme' => [
-                'pathMap' => [
-                    '@dektrium/user/views' => '@backend/views/user'
-                ],
-            ],
-        ],
     ],
     'params' => $params,
 ];
