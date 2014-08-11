@@ -104,9 +104,9 @@ return [
 						'pusdiklat-evaluation/*',
 						/* FINISH PUSDIKLAT */
 						/* START BDK */
-						'bdk-general',
-						'bdk-execution' ,
-						'bdk-evaluation' ,
+						'bdk-general/*',
+						'bdk-execution/*' ,
+						'bdk-evaluation/*' ,
 						/* FINISH BDK */
 						
 					],
