@@ -88,7 +88,7 @@ AppAsset::register($this);
                         [
                             'icon'=>'fa fa-power-off',
                             'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-                            'url' => ['/site/logout'],
+                            'url' => ['/user/security/logout'],
                             'linkOptions' => ['data-method' => 'post']
                         ]
                     ]                        
