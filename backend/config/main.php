@@ -158,7 +158,6 @@ return [
         ],
 	],
     'components' => [
-<<<<<<< HEAD
         /*'user' => [
             'identityClass' => 'common\models\User',
 =======
