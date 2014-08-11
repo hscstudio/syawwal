@@ -146,7 +146,11 @@ return [
 					'cost' => 13,
 				],  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'user'=>true,
+=======
+>>>>>>> origin/master
+>>>>>>> parent of 1fb0196... abaikan
 =======
 >>>>>>> origin/master
 >>>>>>> parent of 1fb0196... abaikan
