@@ -114,8 +114,10 @@ return [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
 					]
 				],
+<<<<<<< HEAD
 				'user'=>[
 				],
+=======
 				/*'user'=>[
 					'components' => [
 						'manager' => [
@@ -143,7 +145,11 @@ return [
 					'admins' => ['admin'],
 					'cost' => 13,
 				],  */
+<<<<<<< HEAD
 				'user'=>true,
+=======
+>>>>>>> origin/master
+>>>>>>> parent of 1fb0196... abaikan
             ]
         ],
 		'user'=>[
@@ -198,6 +204,8 @@ return [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 		],
+<<<<<<< HEAD
+=======
 		'view' => [
             'theme' => [
                 'pathMap' => [
@@ -205,6 +213,7 @@ return [
                 ],
             ],
         ],
+>>>>>>> origin/master
     ],
     'params' => $params,
 ];
