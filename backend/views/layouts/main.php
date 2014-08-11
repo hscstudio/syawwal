@@ -51,7 +51,7 @@ AppAsset::register($this);
 				$menuItemsLeft[] =
                     ['icon'=>'fa fa-sitemap fa-fw','label' => 'SEKRETARIAT', 'url' => '#', 'items' => [
                         ['icon'=>'fa fa-sitemap fa-fw','label'=>'Organisation', 'url'=> ['/sekretariat-organisation/default/index'],'path'=>'sekretariat-organisation' ],
-                        ['icon'=>'fa fa-users fa-fw','label'=>'Employee', 'url'=> ['/sekretariat-hrd/default/index'],'path'=>'sekretariat-hrd' ],
+                        ['icon'=>'fa fa-users fa-fw','label'=>'HRD', 'url'=> ['/sekretariat-hrd/default/index'],'path'=>'sekretariat-hrd' ],
                         ['icon'=>'fa fa-money fa-fw','label'=>'Finance', 'url'=> ['/sekretariat-finance/default/index'],'path'=>'sekretariat-finance' ],
                         ['icon'=>'fa fa-desktop fa-fw','label'=>'Information Technology', 'url'=> ['/sekretariat-it/default/index'],'path'=>'sekretariat-it' ],
                         ['icon'=>'fa fa-support fa-fw','label'=>'General', 'url'=> ['/sekretariat-general/default/index'],'path'=>'sekretariat-general' ],
@@ -70,9 +70,9 @@ AppAsset::register($this);
                     ]];
                 $menuItemsLeft[] =
                     ['icon'=>'fa fa-book fa-fw','label' => 'BDK', 'url' => ['#'], 'items' => [
-                        ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/pusdiklat']],
-                        ['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/pusdiklat']],
-                        ['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/pusdiklat']],
+                        ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/bdk-general/default/index'],'path'=>'bdk-general'],
+                        ['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/bdk-execution/default/index'],'path'=>'bdk-execution'],
+                        ['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/bdk-evaluation/default/index'],'path'=>'bdk-evaluation'],
                     ]];
 
                 echo Nav::widget([

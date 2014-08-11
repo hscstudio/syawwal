@@ -57,7 +57,17 @@ return [
             'class' => 'backend\modules\pusdiklat\evaluation\Module',
         ],
 		/* FINISH PUSDIKLAT */
-		
+		/* START BDK */
+		'bdk-general' => [
+            'class' => 'backend\modules\bdk\general\Module',
+        ],
+		'bdk-execution' => [
+            'class' => 'backend\modules\bdk\execution\Module',
+        ],
+		'bdk-evaluation' => [
+            'class' => 'backend\modules\bdk\evaluation\Module',
+        ],
+		/* FINSIH BDK */
 		'heart' => [
             'class' => 'hscstudio\heart\Module',
             'features'=>[
@@ -93,6 +103,11 @@ return [
 						'pusdiklat-execution/*',
 						'pusdiklat-evaluation/*',
 						/* FINISH PUSDIKLAT */
+						/* START BDK */
+						'bdk-general',
+						'bdk-execution' ,
+						'bdk-evaluation' ,
+						/* FINISH BDK */
 						
 					],
 					'authManager' => [
