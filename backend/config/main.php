@@ -119,6 +119,7 @@ return [
             ]
         ],
 		'user'=>[
+			'class' => '\dektrium\user\Module',
 			'components' => [
 				'manager' => [
 					// Active record classes
