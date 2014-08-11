@@ -8,56 +8,9 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
-/**
- * This is the model class for table "tb_employee".
- *
+use dektrium\user\models\Profile as BaseEmployee;
 
- * @property integer $id
- * @property integer $ref_satker_id
- * @property integer $ref_unit_id
- * @property integer $ref_religion_id
- * @property integer $ref_rank_class_id
- * @property integer $ref_graduate_id
- * @property integer $ref_sta_unit_id
- * @property string $name
- * @property string $nickName
- * @property string $frontTitle
- * @property string $backTitle
- * @property string $nip
- * @property string $born
- * @property string $birthDay
- * @property integer $gender
- * @property string $phone
- * @property string $email
- * @property string $address
- * @property integer $married
- * @property string $photo
- * @property string $blood
- * @property string $position
- * @property string $education
- * @property string $officePhone
- * @property string $officeFax
- * @property string $officeEmail
- * @property string $officeAddress
- * @property string $document1
- * @property string $document2
- * @property integer $status
- * @property string $created
- * @property integer $createdBy
- * @property string $modified
- * @property integer $modifiedBy
- * @property string $deleted
- * @property integer $deletedBy
- *
- * @property Admin[] $admins
- * @property Graduate $refGraduate
- * @property RankClass $refRankClass
- * @property Religion $refReligion
- * @property Satker $refSatker
- * @property StaUnit $refStaUnit
- * @property Unit $refUnit
- */
-class Employee extends \yii\db\ActiveRecord
+class Employee extends BaseEmployee
 {
     /**
      * @inheritdoc
