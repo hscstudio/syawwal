@@ -114,7 +114,7 @@ return [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
 					]
 				],
-				'user'=>[
+				/*'user'=>[
 					'components' => [
 						'manager' => [
 							// Active record classes
@@ -140,13 +140,31 @@ return [
 					'recoverWithin' => 21600,
 					'admins' => ['admin'],
 					'cost' => 13,
-				],  
+				],  */
             ]
+        ],
+        'user' => [
+            'class' => 'dektrium\user\Module',
+            'controllerMap' => [
+                'admin' => 'backend\controllers\AdminController'
+            ],
+            'components' => [
+                'manager' => [
+                    'userClass' => 'backend\models\User',
+                    'profileClass' => 'backend\models\Employee',
+                ],
+            ],
+            'admins' => ['admin'],
         ],
 	],
     'components' => [
+<<<<<<< HEAD
         /*'user' => [
             'identityClass' => 'common\models\User',
+=======
+        'user' => [
+            'identityClass' => 'common\models\Userasdasd',
+>>>>>>> origin/master
             'enableAutoLogin' => true,
         ],*/
         'log' => [
@@ -165,6 +183,13 @@ return [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 		],
+		'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@dektrium/user/views' => '@backend/views/user'
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
