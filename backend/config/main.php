@@ -158,7 +158,6 @@ return [
         ],
 	],
     'components' => [
-<<<<<<< HEAD
         /*'user' => [
             'identityClass' => 'common\models\User',
 =======
@@ -186,7 +185,7 @@ return [
 		'view' => [
             'theme' => [
                 'pathMap' => [
-                    '@dektrium/user/views' => '@backend/views/user'
+                    '@dektrium/user/views' => '@hscstudio/heart/modules/views/user'
                 ],
             ],
         ],
