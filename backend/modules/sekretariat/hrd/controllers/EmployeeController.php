@@ -176,13 +176,17 @@ class EmployeeController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        // fajar - hapus juga yang di tabel user. Pake cara manual dulu. Mustinya harus bisa REST
-        // sampe ke relationnya
-        $user = User::findOne($id);
+        // Get Model Employee
+		$model = $this->findModel($id);
+		
+        // Delete tabel User Base On field user_id in table Employee
+        $user = User::findOne($model->user_id);
         $user->delete();
-
+		
+		// Delete employee
+		$model->user
+		
+		$this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
 
