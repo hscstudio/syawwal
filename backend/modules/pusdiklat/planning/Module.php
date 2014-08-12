@@ -18,6 +18,7 @@ class Module extends \yii\base\Module
 			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			// Add here your items module
 			['label' => 'Program', 'url' => ['#'], 'items'=>[
+				['icon'=>'','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program/index']],
 				['icon'=>'','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index']],
 			]],
 			['label' => 'Kurikulum', 'url' => ['#'], 'items'=>[

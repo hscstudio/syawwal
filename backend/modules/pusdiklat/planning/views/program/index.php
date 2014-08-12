@@ -9,7 +9,11 @@ use yii\bootstrap\Dropdown;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Programs';
+$this->params['breadcrumbs'][] = 'Pusdiklat';
+$this->params['breadcrumbs'][] = 'Planning';
+$this->params['breadcrumbs'][] = 'Program';
 $this->params['breadcrumbs'][] = $this->title;
+
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
