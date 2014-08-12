@@ -5,6 +5,8 @@ namespace backend\models;
 use Yii;
 									
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeBehavior;
+use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
@@ -59,6 +61,16 @@ class RankClass extends \yii\db\ActiveRecord
                         \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => 'modifiedBy',
                 ],
             ],
+			'autoAttributeStamp' => [
+                'class' => \yii\behaviors\AttributeBehavior::className(),
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'id',
+                ],
+                'value' => function ($event) {
+                    /* Enhance oleh om Misbah master */
+					return self::find()->max('id')+1;
+                },
+            ],	
         ];
     }
 	

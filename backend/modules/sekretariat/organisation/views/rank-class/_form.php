@@ -14,9 +14,6 @@ use kartik\widgets\Select2;
 
     <?php $form = ActiveForm::begin(['options'=>['enctype'=>'multipart/form-data']]); ?>
 	<?= $form->errorSummary($model) ?> <!-- ADDED HERE -->
-	
-    <?= $form->field($model, 'id')->dropDownList([ 'Option1', 'Option2', 'Option3', ], ['prompt' => 'Choose id']) ?>
-
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [

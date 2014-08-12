@@ -5,6 +5,8 @@ namespace backend\models;
 use Yii;
 									
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeBehavior;
+use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
@@ -59,6 +61,16 @@ class Graduate extends \yii\db\ActiveRecord
                         \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => 'modifiedBy',
                 ],
             ],
+			'autoAttributeStamp' => [
+                'class' => \yii\behaviors\AttributeBehavior::className(),
+                'attributes' => [
+                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'id',
+                ],
+                'value' => function ($event) {
+                    /* Enhance oleh om Misbah master */
+					return self::find()->max('id')+1;
+                },
+            ],	
         ];
     }
 	
@@ -69,7 +81,7 @@ class Graduate extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'name'], 'required'],
+            [['name'], 'required'],
             [['id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['name'], 'string', 'max' => 50],
