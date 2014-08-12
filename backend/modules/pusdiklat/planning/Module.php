@@ -17,6 +17,15 @@ class Module extends \yii\base\Module
 		return [
 			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			// Add here your items module
+			['label' => 'Program', 'url' => ['#'], 'items'=>[
+				['icon'=>'','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index']],
+			]],
+			['label' => 'Kurikulum', 'url' => ['#'], 'items'=>[
+				['label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training2/index']],
+			]],
+			['label' => 'Tenaga Pengajar', 'url' => ['#'], 'items'=>[
+				['label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training3/index']],
+			]],
 			//['label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index']],
 		];
 	}
