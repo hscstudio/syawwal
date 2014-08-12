@@ -1,4 +1,4 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
+    'adminEmail' => 'sisfotik@gmail.com', // fajar - ganti email pake punya sisfotik
 ];
