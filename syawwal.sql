@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 11, 2014 at 04:45 PM
+-- Generation Time: Aug 12, 2014 at 10:50 AM
 -- Server version: 5.5.38-MariaDB
 -- PHP Version: 5.5.15
 
@@ -123,30 +123,6 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m140403_174025_create_account_table', 1405724904),
 ('m140506_102106_rbac_init', 1405724743),
 ('m140602_111327_create_menu_table', 1405725164);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `profile`
---
-
-CREATE TABLE IF NOT EXISTS `profile` (
-  `user_id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `public_email` varchar(255) DEFAULT NULL,
-  `gravatar_email` varchar(255) DEFAULT NULL,
-  `gravatar_id` varchar(32) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `website` varchar(255) DEFAULT NULL,
-  `bio` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `profile`
---
-
-INSERT INTO `profile` (`user_id`, `name`, `public_email`, `gravatar_email`, `gravatar_id`, `location`, `website`, `bio`) VALUES
-(1, NULL, NULL, 'admin@gmail.com', '75d23af433e0cea4c0e45a56dba18b30', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -870,17 +846,14 @@ CREATE TABLE IF NOT EXISTS `tb_employee` (
   `location` varchar(255) DEFAULT NULL,
   `bio` text,
   `website` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `tb_employee`
 --
 
 INSERT INTO `tb_employee` (`id`, `ref_satker_id`, `ref_unit_id`, `ref_religion_id`, `ref_rank_class_id`, `ref_graduate_id`, `ref_sta_unit_id`, `name`, `nickName`, `frontTitle`, `backTitle`, `nip`, `born`, `birthDay`, `gender`, `phone`, `email`, `address`, `married`, `photo`, `blood`, `position`, `education`, `officePhone`, `officeFax`, `officeEmail`, `officeAddress`, `document1`, `document2`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `user_id`, `public_email`, `gravatar_email`, `gravatar_id`, `location`, `bio`, `website`) VALUES
-(1, 3, 0, 0, 0, 0, 10000, 'Hafid Mukhlasin', 'Hafid', 'Dr', 'MIT', '198604302009011002', 'Jember', '2014-04-11', 1, '081559915720', 'milisstudio@gmail.com', '', 1, '', '-', '-', '', '', '', '', '', '', '', 1, NULL, NULL, '2014-08-11 16:16:00', 1, NULL, NULL, 1, 'haasfasfasfis@gmail.com', '', 'd41d8cd98f00b204e9800998ecf8427e', 'asdasdasd', '', 'http://hasdasdasdafis.com'),
-(4, 0, 12, 0, 0, 0, 1, 'Namefd', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, NULL, '-', '-', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2014-04-18 08:34:13', 1, '2014-08-07 13:25:12', 1, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 0, 12, 0, 0, 0, 1, 'Hafid Mukhlasin', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 0, NULL, '-', '-', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2014-04-18 08:34:13', 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 0, 0, 0, 0, 0, 1, 'Halo', '', '', '', '', '', '0000-00-00', 1, '', '', '', 0, '', '-', '-', '', '', '', '', '', '', '', 1, '2014-04-18 11:48:11', 1, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL);
+(1, 3, 0, 0, 0, 0, 10000, 'Hafid Mukhlasin', 'Hafid', 'Dr', 'MIT', '198604302009011002', 'Jember', '2014-04-11', 1, '081559915720', 'milisstudio@gmail.com', '', 1, '', '-', '-', '', '', '', '', '', '', '', 1, NULL, NULL, '2014-08-11 16:16:00', 1, NULL, NULL, 1, 'haasfasfasfis@gmail.com', '', 'd41d8cd98f00b204e9800998ecf8427e', 'asdasdasd', '', 'http://hasdasdasdafis.com');
 
 -- --------------------------------------------------------
 
@@ -1601,14 +1574,14 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
   `logged_in_at` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `tb_user`
 --
 
 INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmation_token`, `confirmation_sent_at`, `confirmed_at`, `unconfirmed_email`, `recovery_token`, `recovery_sent_at`, `blocked_at`, `role`, `registered_from`, `logged_in_from`, `logged_in_at`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1407750320, 1405728264, 1407750320);
+(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1407815341, 1405728264, 1407815341);
 
 --
 -- Indexes for dumped tables
@@ -1655,12 +1628,6 @@ ALTER TABLE `menu`
 --
 ALTER TABLE `migration`
  ADD PRIMARY KEY (`version`);
-
---
--- Indexes for table `profile`
---
-ALTER TABLE `profile`
- ADD PRIMARY KEY (`user_id`);
 
 --
 -- Indexes for table `ref_graduate`
@@ -1951,7 +1918,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 -- AUTO_INCREMENT for table `tb_employee`
 --
 ALTER TABLE `tb_employee`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `tb_notification`
 --
@@ -2081,7 +2048,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `tb_user`
 --
 ALTER TABLE `tb_user`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- Constraints for dumped tables
 --
@@ -2116,12 +2083,6 @@ ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_i
 --
 ALTER TABLE `menu`
 ADD CONSTRAINT `menu_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `menu` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Constraints for table `profile`
---
-ALTER TABLE `profile`
-ADD CONSTRAINT `fk_user_profile` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tb_admin`
