@@ -169,4 +169,13 @@ class Employee extends BaseEmployee
     {
         return $this->hasOne(Unit::className(), ['id' => 'ref_unit_id']);
     }
+
+
+    /*
+    fajar - Menambah relasi, 1-1 ke Employee
+    */
+    public function getEmployee()
+    {
+        return $this->hasOne(Employee::classname(), ['id' => 'user_id'])->inverseOf('user');
+    }
 }

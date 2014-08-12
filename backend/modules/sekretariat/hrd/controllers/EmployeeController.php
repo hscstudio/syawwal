@@ -8,6 +8,7 @@ use backend\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\models\User; // fajar - buat fungsi hapus user. Sementara
 
 /**
  * EmployeeController implements the CRUD actions for Employee model.
@@ -176,6 +177,11 @@ class EmployeeController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+
+        // fajar - hapus juga yang di tabel user. Pake cara manual dulu. Mustinya harus bisa REST
+        // sampe ke relationnya
+        $user = User::findOne($id);
+        $user->delete();
 
         return $this->redirect(['index']);
     }
