@@ -28,7 +28,7 @@ AppAsset::register($this);
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => '<i class="fa fa-th-large"></i> Yii2 Heart',
+                'brandLabel' => '<i class="fa fa-th-large"></i> '.Yii::$app->params['namaAplikasi'],
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
