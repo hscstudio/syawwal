@@ -172,7 +172,7 @@ class Employee extends BaseEmployee
 
 
     /*
-    fajar - Menambah relasi, 1-1 ke Employee
+    fajar - Menambah relasi, 1-1 ke User
     */
     public function getEmployee()
     {

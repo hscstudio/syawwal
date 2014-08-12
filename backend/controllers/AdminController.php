@@ -25,6 +25,40 @@ class AdminController extends BaseAsdAdminController
     }
 
     /*
+    fajar - Mengoverride cara kerja fungsi create user
+    */
+    public function actionCreate()
+    {
+        $model = $this->module->manager->createUser(['scenario' => 'create']);
+
+        if ($model->load(\Yii::$app->request->post()) && $model->create()) {
+            
+            // fajar - ambil data di employee yang baru disimpen
+            $employee = Employee::findOne(['user_id' => $model->id]);
+            // fajar - cek pola username, apakah nip atau tidak
+            if (preg_match('/[0-9]{18}/', $model->username) or preg_match('/[0-9]{9}/', $model->username)) {
+                // fajar - pola nya nip, simpan ke field nip sama name
+                $employee->name = $model->username;
+                $employee->nip = $model->username;
+                $employee->save();
+            }
+            else
+            {
+                // fajar - otherwise, simpen ke nama
+                $employee->name = $model->username;
+                $employee->save();
+            }
+
+            \Yii::$app->getSession()->setFlash('admin_user', \Yii::t('user', 'User has been created'));
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('create', [
+            'model' => $model
+        ]);
+    }
+
+    /*
     fajar - Mengoverride cara kerja fungsi delete user
     Jadi, ketika menghapus di salah satu tabel, relasinya juga kehapus
     */
