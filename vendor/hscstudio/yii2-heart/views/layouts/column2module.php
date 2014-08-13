@@ -21,6 +21,7 @@ Icon::map($this, Icon::FA);
 			$items = [];
 			foreach ($menus as $menu) {
 				$active = strpos($route, trim($menu['url'][0], '/')) === 0 ? ' active' : '';
+				if (strpos($route,@$menu['path'])!== false) $active = ' active';
 				if (strpos($route, trim($menu['url'][0], '/')) === 0) $this->title=$menu['label'];
 				$icon = isset($menu['icon']) ? $menu['icon'] : 'glyphicon glyphicon-link';
 				$menus2 = isset($menu['items']) ? $menu['items'] : [];
