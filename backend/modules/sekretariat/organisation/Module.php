@@ -9,20 +9,17 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-
-        // custom initialization code goes here
     }
 	
 	public function getMenuItems(){
 		return [
-			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			// Add here your items module
-			['label' => 'Graduate', 'url' => ['/'.$this->uniqueId.'/graduate/index']],
-			['label' => 'Religion', 'url' => ['/'.$this->uniqueId.'/religion/index']],
-			['label' => 'RankClass', 'url' => ['/'.$this->uniqueId.'/rank-class/index']],
-			['label' => 'Satker', 'url' => ['/'.$this->uniqueId.'/satker/index']],
-			['label' => 'StaUnit', 'url' => ['/'.$this->uniqueId.'/sta-unit/index']],
-			['label' => 'Unit', 'url' => ['/'.$this->uniqueId.'/unit/index']],			
+			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			['icon'=>'fa fa-fw fa-graduation-cap','label' => 'Graduate', 'url' => ['/'.$this->uniqueId.'/graduate/index']],
+			['icon'=>'fa fa-fw fa-empire', 'label' => 'Religion', 'url' => ['/'.$this->uniqueId.'/religion/index']],
+			['icon'=>'fa fa-fw fa-trophy', 'label' => 'RankClass', 'url' => ['/'.$this->uniqueId.'/rank-class/index']],
+			['icon'=>'fa fa-fw fa-institution', 'label' => 'Satker', 'url' => ['/'.$this->uniqueId.'/satker/index']],
+			['icon'=>'fa fa-fw fa-database', 'label' => 'StaUnit', 'url' => ['/'.$this->uniqueId.'/sta-unit/index']],
+			['icon'=>'fa fa-fw fa-user', 'label' => 'Unit', 'url' => ['/'.$this->uniqueId.'/unit/index']],			
 		];
 	}
 }
