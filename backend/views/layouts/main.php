@@ -43,8 +43,8 @@ AppAsset::register($this);
 				$menuItems[] = ['label' => 'Login', 'url' => ['/user/security/login']];
             } else {
                 $menuItemsLeft[] =
-                    ['icon'=>'fa fa-cogs fa-fw','label' => 'ADMIN', 'url' => ['/administrator/default/index'], 'items' => [
-                        ['icon'=>'fa fa-cogs fa-fw','label'=>'Generator', 'url'=> ['/gii']],
+                    ['icon'=>'fa fa-qq fa-fw','label' => 'ADMIN', 'url' => ['/administrator/default/index'], 'items' => [
+                        ['icon'=>'fa fa-cog fa-fw','label'=>'Generator', 'url'=> ['/gii']],
                         ['icon'=>'fa fa-warning fa-fw','label'=>'Privileges', 'url'=> ['/privilege/assigment'],'path'=>'privilege'],
                         ['icon'=>'fa fa-key fa-fw','label'=>'Users', 'url'=> ['/user/admin'],'path'=>'user'],
                     ]];
