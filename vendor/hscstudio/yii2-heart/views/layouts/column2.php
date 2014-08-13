@@ -3,6 +3,10 @@ use yii\helpers\Html;
 use kartik\widgets\SideNav;
 use hscstudio\heart\widgets\Breadcrumbs;
 use kartik\widgets\AlertBlock;
+use kartik\icons\Icon;
+ 
+// pake icon seting dari kartik
+Icon::map($this, Icon::FA);
 /**
  * @var \yii\web\View $this
  * @var string $content
@@ -53,7 +57,8 @@ use kartik\widgets\AlertBlock;
 						'icon' => 'home',
 						'active' => true,						
 					],
-				]
+				],
+				'iconPrefix' => '' // matiin glypicon defaultnya krajee, jadi kita bebas nentuin ikon
 			]);
 			?>
         </section>
