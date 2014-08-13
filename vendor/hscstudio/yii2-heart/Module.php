@@ -194,12 +194,6 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		$view->registerCssFile($assets[1].'/css/heart.css', ['yii\bootstrap\BootstrapAsset']);
 		$view->registerJsFile($assets[1].'/js/heart.js', ['yii\web\JqueryAsset']);
 		
-		
-		if(@$this->features['fontawesome']!=false){
-			$assets = $view->assetManager->publish('@hscstudio/heart/assets/fontawesome');
-			$view->registerCssFile($assets[1].'/css/font-awesome.min.css');
-		}
-		
 		\yii\base\Event::on('yii\web\Controller','beforeAction',function($event){
 			if($event->sender->uniqueId=='site'){
 				$event->sender->layout = 'column1';
