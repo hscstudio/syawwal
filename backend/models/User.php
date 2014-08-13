@@ -57,7 +57,7 @@ class User extends BaseUser
     */
     public function getEmployee()
     {
-    	return $this->hasOne(Employee::classname(), ['user_id' => 'id'])->inverseOf('employee');
+    	return $this->hasOne(Employee::classname(), ['user_id' => 'id']);
     }
 
 }
