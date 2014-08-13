@@ -19,7 +19,7 @@ class Module extends \yii\base\Module
 			['icon'=>'fa fa-fw fa-trophy', 'label' => 'RankClass', 'url' => ['/'.$this->uniqueId.'/rank-class/index']],
 			['icon'=>'fa fa-fw fa-institution', 'label' => 'Satker', 'url' => ['/'.$this->uniqueId.'/satker/index']],
 			['icon'=>'fa fa-fw fa-database', 'label' => 'StaUnit', 'url' => ['/'.$this->uniqueId.'/sta-unit/index']],
-			['icon'=>'fa fa-fw fa-user', 'label' => 'Unit', 'url' => ['/'.$this->uniqueId.'/unit/index']],			
+			['icon'=>'fa fa-fw fa-building', 'label' => 'Unit', 'url' => ['/'.$this->uniqueId.'/unit/index']],			
 		];
 	}
 }
