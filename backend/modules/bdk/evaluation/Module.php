@@ -9,15 +9,14 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-
-        // custom initialization code goes here
     }
 	
 	public function getMenuItems(){
 		return [
-			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			// Add here your items module
-			//['label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index']],
+			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			['icon'=>'fa fa-fw fa-check-square-o','label' => 'Evaluasi Diklat', 'url' => ['/'.$this->uniqueId.'/ed/index'], 'path' => 'evaluation'],
+			['icon'=>'fa fa-fw fa-suitcase','label' => 'Pengelola Hasil Diklat', 'url' => ['/'.$this->uniqueId.'/phd/index'], 'path' => 'evaluation'],
+			['icon'=>'fa fa-fw fa-legal','label' => 'IPK', 'url' => ['/'.$this->uniqueId.'/ipk/index'], 'path' => 'evaluation'],
 		];
 	}
 }

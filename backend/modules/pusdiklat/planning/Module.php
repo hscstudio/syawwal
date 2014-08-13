@@ -9,25 +9,21 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-
-        // custom initialization code goes here
     }
 	
 	public function getMenuItems(){
 		return [
-			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			// Add here your items module
-			['label' => 'Program', 'url' => ['#'], 'items'=>[
-				['icon'=>'','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program/index'],'path'=>'program'],
-				['icon'=>'','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index']],
+			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			['icon'=>'fa fa-fw fa-code-fork', 'label' => 'Program', 'url' => ['#'], 'items'=>[
+				['icon'=>'fa fa-fw fa-list','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program/index'],'path'=>'program'],
+				['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index']],
 			]],
-			['label' => 'Kurikulum', 'url' => ['#'], 'items'=>[
-				['label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training2/index']],
+			['icon'=>'fa fa-fw fa-university', 'label' => 'Kurikulum', 'url' => ['#'], 'items'=>[
+				['icon'=>'fa fa-fw fa-book', 'label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training2/index']],
 			]],
-			['label' => 'Tenaga Pengajar', 'url' => ['#'], 'items'=>[
-				['label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training3/index']],
+			['icon'=>'fa fa-fw fa-users', 'label' => 'Tenaga Pengajar', 'url' => ['#'], 'items'=>[
+				['icon'=>'fa fa-fw fa-stack-exchange', 'label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training3/index']],
 			]],
-			//['label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index']],
 		];
 	}
 }

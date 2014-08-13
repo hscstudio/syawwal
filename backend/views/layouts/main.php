@@ -43,8 +43,8 @@ AppAsset::register($this);
 				$menuItems[] = ['label' => 'Login', 'url' => ['/user/security/login']];
             } else {
                 $menuItemsLeft[] =
-                    ['icon'=>'fa fa-cogs fa-fw','label' => 'ADMIN', 'url' => ['/administrator/default/index'], 'items' => [
-                        ['icon'=>'fa fa-cogs fa-fw','label'=>'Generator', 'url'=> ['/gii']],
+                    ['icon'=>'fa fa-android fa-fw','label' => 'ADMIN', 'url' => ['/administrator/default/index'], 'items' => [
+                        ['icon'=>'fa fa-cog fa-fw fa-spin','label'=>'Generator', 'url'=> ['/gii']],
                         ['icon'=>'fa fa-warning fa-fw','label'=>'Privileges', 'url'=> ['/privilege/assigment'],'path'=>'privilege'],
                         ['icon'=>'fa fa-key fa-fw','label'=>'Users', 'url'=> ['/user/admin'],'path'=>'user'],
                     ]];
@@ -57,7 +57,7 @@ AppAsset::register($this);
                         ['icon'=>'fa fa-support fa-fw','label'=>'General', 'url'=> ['/sekretariat-general/default/index'],'path'=>'sekretariat-general' ],
                     ]];
                 $menuItemsLeft[] =
-                    ['icon'=>'fa fa-book fa-fw','label' => 'PUSDIKLAT', 'url' => ['#'], 'items' => [
+                    ['icon'=>'fa fa-building fa-fw','label' => 'PUSDIKLAT', 'url' => ['#'], 'items' => [
                         ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/pusdiklat-general/default/index'],'path'=>'pusdiklat-general'],
 						['icon'=>'fa fa-th-list fa-fw','label'=>'Planning', 'url'=> ['/pusdiklat-planning/default/index'],'path'=>'pusdiklat-planning'],
 						['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/pusdiklat-execution/default/index'],'path'=>'pusdiklat-execution'],
@@ -69,7 +69,7 @@ AppAsset::register($this);
 						['icon'=>'fa fa-graduation-cap fa-fw','label'=>'Scholarship', 'url'=> ['/pusdiklat2-scholarship/default/index'],'path'=>'pusdiklat2-scholarship' ],
                     ]];
                 $menuItemsLeft[] =
-                    ['icon'=>'fa fa-book fa-fw','label' => 'BDK', 'url' => ['#'], 'items' => [
+                    ['icon'=>'fa fa-university fa-fw','label' => 'BDK', 'url' => ['#'], 'items' => [
                         ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/bdk-general/default/index'],'path'=>'bdk-general'],
                         ['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/bdk-execution/default/index'],'path'=>'bdk-execution'],
                         ['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/bdk-evaluation/default/index'],'path'=>'bdk-evaluation'],

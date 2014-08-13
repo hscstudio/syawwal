@@ -9,14 +9,12 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-
-        // custom initialization code goes here
     }
 	
 	public function getMenuItems(){
 		return [
-			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			['label' => 'Room', 'url' => ['/'.$this->uniqueId.'/room/index']],
+			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			['icon'=>'fa fa-fw fa-inbox', 'label' => 'Room', 'url' => ['/'.$this->uniqueId.'/room/index']],
 		];
 	}
 }
