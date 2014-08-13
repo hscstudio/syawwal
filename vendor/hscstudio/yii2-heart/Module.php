@@ -16,7 +16,6 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
      */
 	
 	public $features=[
-		'fontawesome'=>true, // use false for not use it
 		'datecontrol'=>true,// use false for not use it
 		'gridview'=>true,// use false for not use it
 		'gii'=>true, // use false for not use it
