@@ -13,7 +13,12 @@ class Module extends \yii\base\Module
 	
 	public function getMenuItems(){
 		return [
-			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			// Add here your items module
+			['label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'],'path'=>'training'],
+			['label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index'],'path'=>'employee'],
+			['label' => 'PIC Satker', 'url' => ['/'.$this->uniqueId.'/satker-pic/index'],'path'=>'satker-pic'],
+			//['label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index']],
 		];
 	}
 }

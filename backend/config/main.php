@@ -71,8 +71,6 @@ return [
 		'heart' => [
             'class' => 'hscstudio\heart\Module',
             'features'=>[
-                // fontawesome, datecontrol (kartik), gridview (kartik), gii, privilege (yii2-admin), user (yii2-user)
-				'fontawesome'=>false, // use false for not use it. Dimatiin. kita pake punyanya kartik
 				'datecontrol'=>true,// use false for not use it
 				'gridview'=>true,// use false for not use it
 				'gii'=>true, // use false for not use it

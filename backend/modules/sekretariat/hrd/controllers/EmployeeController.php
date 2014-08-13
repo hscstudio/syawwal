@@ -184,9 +184,7 @@ class EmployeeController extends Controller
         $user->delete();
 		
 		// Delete employee
-		$model->user
-		
-		$this->findModel($id)->delete();
+		$model->delete();
         return $this->redirect(['index']);
     }
 

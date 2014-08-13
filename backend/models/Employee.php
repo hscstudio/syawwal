@@ -174,8 +174,8 @@ class Employee extends BaseEmployee
     /*
     Menambah relasi, 1-1 ke User
     */
-    public function getEmployee()
+    public function getUser()
     {
-        return $this->hasOne(Employee::classname(), ['id' => 'user_id'])->inverseOf('user');
+        return $this->hasOne(User::classname(), ['id' => 'user_id']);
     }
 }

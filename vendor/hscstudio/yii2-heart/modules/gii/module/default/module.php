@@ -29,7 +29,7 @@ class <?= $className ?> extends \yii\base\Module
 	
 	public function getMenuItems(){
 		return [
-			['icon'=>'dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			['icon'=>'glyphicon glyphicon-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			// Add here your items module
 			//['label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index']],
 		];
