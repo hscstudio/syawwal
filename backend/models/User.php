@@ -14,15 +14,14 @@ class User extends BaseUser
     }
 
     /*
-    fajar - mengoverride rules
+    mengoverride rules
     */
     public function rules()
     {
         return [
             // username rules
             ['username', 'required', 'on' => ['register', 'connect', 'create', 'update']],
-            // fajar - sebenarnya cuma mau bikin supaya username bisa pake angka
-            ['username', 'match', 'pattern' => '/^[a-zA-Z0-9]\w+$/'],
+            ['username', 'match', 'pattern' => '/^[a-zA-Z0-9]\w+$/'], // sebenarnya cuma mau bikin supaya username bisa pake angka
             ['username', 'string', 'min' => 3, 'max' => 25],
             ['username', 'unique'],
             ['username', 'trim'],
@@ -54,7 +53,7 @@ class User extends BaseUser
     }
 
     /*
-    fajar - Menambah relasi, 1-1 ke Employee
+    Menambah relasi, 1-1 ke Employee
     */
     public function getEmployee()
     {

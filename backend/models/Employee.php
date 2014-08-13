@@ -61,7 +61,7 @@ class Employee extends BaseEmployee
             [['address', 'photo', 'position', 'education', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
             [['blood'], 'string', 'max' => 10],
 
-            /* fajar - rules dari model dektrium.models */
+            /* rules dari model dektrium.models */
             [['bio'], 'string'],
             [['public_email', 'gravatar_email'], 'email'],
             ['website', 'url'],
@@ -112,7 +112,7 @@ class Employee extends BaseEmployee
             'deleted' => 'Deleted',
             'deletedBy' => 'Deleted By',
 
-            /* fajar - artibute name dari model dektrium.profile */
+            /* artibute name dari model dektrium.profile */
             'public_email' => \Yii::t('user', 'Email (public)'),
             'gravatar_email' => \Yii::t('user', 'Gravatar email'),
             'location' => \Yii::t('user', 'Location'),
@@ -172,7 +172,7 @@ class Employee extends BaseEmployee
 
 
     /*
-    fajar - Menambah relasi, 1-1 ke User
+    Menambah relasi, 1-1 ke User
     */
     public function getEmployee()
     {

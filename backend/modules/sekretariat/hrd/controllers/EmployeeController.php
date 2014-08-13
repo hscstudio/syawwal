@@ -8,7 +8,7 @@ use backend\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\models\User; // fajar - buat fungsi hapus user. Sementara
+use backend\models\User; // buat fungsi hapus user. Sementara
 
 /**
  * EmployeeController implements the CRUD actions for Employee model.
