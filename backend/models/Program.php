@@ -107,7 +107,8 @@ class Program extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
-	    /**
+	
+	/**
      * @return \yii\db\ActiveQuery
      */
     public function getSatker()
@@ -134,5 +135,21 @@ class Program extends \yii\db\ActiveRecord
     public function getTrainings()
     {
         return $this->hasMany(Training::className(), ['tb_program_id' => 'id']);
+    }
+	
+	/**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProgramCode()
+    {
+        return $this->hasOne(ProgramCode::className(), ['code' => 'number']);
+    }
+	
+	/**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser($id)
+    {
+        return User::findOne($id);
     }
 }

@@ -68,7 +68,8 @@ class ProgramController extends Controller
 
         if ($model->load(Yii::$app->request->post())){
 			//print(Yii::$app->user->username);
-			die(Yii::$app->user->identity->username);
+			$user = \backend\models\User::findOne(Yii::$app->user->identity->id);
+			$model->ref_satker_id = $user->employee->ref_satker_id;
 			$model->save();
 			
             return $this->redirect(['view', 'id' => $model->id]);

@@ -36,16 +36,17 @@ $this->params['sideMenu']=$menus;
 			'heading'=>'Programs # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
+		'buttons1'=> '{delete}',
         'attributes' => [
             'id',
             [
 				'attribute' => 'ref_satker_id',
-				'value' => function ($model) {
-					return $model->satker->name;
-				}
+				'value' => $model->satker->name
 			],
-            'ref_satker_id',
-            'number',
+			[
+				'attribute' => 'number',
+				'value' => $model->number . ' => '.$model->programCode->name,
+			],            
             'name',
             'hours',
             'days',
@@ -54,7 +55,10 @@ $this->params['sideMenu']=$menus;
             'validationNote',
             'status',
             'created',
-            'createdBy',
+            [
+				'attribute' => 'createdBy',
+				'value' => @$model->getUser($model->deletedBy)->username,
+			],
             'modified',
             'modifiedBy',
             'deleted',

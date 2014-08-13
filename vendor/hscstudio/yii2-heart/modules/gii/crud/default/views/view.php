@@ -47,6 +47,7 @@ $this->params['sideMenu']=$menus;
 			'heading'=>'<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?> # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
+		'buttons1'=> '{delete}',
         'attributes' => [
 <?php
 if (($tableSchema = $generator->getTableSchema()) === false) {
@@ -64,9 +65,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 			$new_name=lcfirst($new_name);
 			echo "            [
 				'attribute' => '".$column->name."',
-				'value' => function (\$model) {
-					return \$model->".$new_name."->name;
-				}
+				'value' => \$model->".$new_name."->name,
 			],\n";
 		}
         echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";

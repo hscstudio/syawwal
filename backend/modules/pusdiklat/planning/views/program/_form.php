@@ -2,8 +2,10 @@
 
 use yii\helpers\Html;
 //use yii\widgets\ActiveForm;
-use yii\bootstrap\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\widgets\Select2;
+use kartik\widgets\DepDrop;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Program */
@@ -12,21 +14,35 @@ use kartik\widgets\Select2;
 
 <div class="program-form">
 
-    <?php $form = ActiveForm::begin(['options'=>['enctype'=>'multipart/form-data']]); ?>
+<div class="panel panel-default">
+	<div class="panel-heading">Employee</div>
+	<div style="margin:10px">
+    <?php $form = ActiveForm::begin([
+		'type' => ActiveForm::TYPE_HORIZONTAL,
+		'options'=>['enctype'=>'multipart/form-data']
+	]); ?>
 	<?= $form->errorSummary($model) ?> <!-- ADDED HERE -->
+
+    <?php
+	$data = ArrayHelper::map(
+		\backend\models\ProgramCode::find()
+			->select(['id','code', 'CONCAT(name," => ",code) as name_code'])
+			->orderBy(['[[id]]'=> SORT_ASC])			
+			->asArray()
+			->all(), 
+			'code', 'name_code'
+	);
+	echo $form->field($model, 'number')->widget(Select2::classname(), [
+		'data' => $data,
+		'options' => ['placeholder' => 'Choose code ...'],
+		'pluginOptions' => [
+			'allowClear' => true
+		],
+	]);
+	?>
 	
-    <?= '' ?>
-
-			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\Satker::find()->select('id,name')->all(), 'name');
-			echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Satker ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
-			]); ?>
-
+	<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+		
     <?= $form->field($model, 'hours')->textInput() ?>
 
     <?= $form->field($model, 'days')->dropDownList([ 'Option1', 'Option2', 'Option3', ], ['prompt' => 'Choose days']) ?>
@@ -58,22 +74,20 @@ use kartik\widgets\Select2;
 
     <?= ""//deletedBy ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-
     <?= ""//created ?>
 
     <?= ""//modified ?>
 
     <?= ""//deleted ?>
 
-    <?= $form->field($model, 'number')->textInput(['maxlength' => 15]) ?>
+    <?php //$form->field($model, 'number')->textInput(['maxlength' => 15]) ?>
 
     <?= $form->field($model, 'validationNote')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
-
+	</div>
     <?php ActiveForm::end(); ?>
-
+</div>	
 </div>
