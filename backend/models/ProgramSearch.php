@@ -18,8 +18,8 @@ class ProgramSearch extends Program
     public function rules()
     {
         return [
-            [['id', 'ref_satker_id', 'hours', 'days', 'test', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['number', 'name', 'validationNote', 'created', 'modified', 'deleted'], 'safe'],
+            [['id', 'ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['number', 'name', 'note', 'validationNote', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }
 
@@ -57,6 +57,7 @@ class ProgramSearch extends Program
             'hours' => $this->hours,
             'days' => $this->days,
             'test' => $this->test,
+            'type' => $this->type,
             'validationStatus' => $this->validationStatus,
             'status' => $this->status,
             'created' => $this->created,
@@ -69,6 +70,7 @@ class ProgramSearch extends Program
 
         $query->andFilterWhere(['like', 'number', $this->number])
             ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'note', $this->note])
             ->andFilterWhere(['like', 'validationNote', $this->validationNote]);
 
         return $dataProvider;

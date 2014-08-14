@@ -34,7 +34,7 @@ $this->params['sideMenu']=$menus;
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]).' '.
-					 Html::a('<i class="fa fa-fw fa-trash"></i>',['#'],
+					 Html::a('<i class="fa fa-fw fa-trash-o"></i>',['#'],
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
