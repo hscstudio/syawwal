@@ -4,14 +4,9 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $this yii\web\View */
 /* @var $searchModel backend\models\TrainingSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Trainings';
-$this->params['breadcrumbs'][] = 'Pusdiklat';
-$this->params['breadcrumbs'][] = 'Evaluation';
-$this->params['breadcrumbs'][] = 'Evaluasi Diklat';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -20,13 +15,8 @@ $this->params['sideMenu']=$menus;
 ?>
 <div class="training-index">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-	<!--
-    <p>
-        <?= Html::a('Create Training', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-	-->
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -42,6 +32,16 @@ $this->params['sideMenu']=$menus;
 					}
 				],
 				*/
+            
+				[
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'revision',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'Revision', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
             /*
 				[
 					'attribute' => 'ref_satker_id',
@@ -59,26 +59,6 @@ $this->params['sideMenu']=$menus;
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'hours',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Hours', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'days',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Days', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
@@ -110,15 +90,25 @@ $this->params['sideMenu']=$menus;
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'editableOptions'=>['header'=>'Note', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
+            
+				[
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'studentCount',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'StudentCount', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
 
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i> Training</h3>',
-			'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i></h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training</h3>',
+			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,

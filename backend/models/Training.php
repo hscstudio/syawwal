@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-																													
+																														
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
@@ -14,14 +14,12 @@ use yii\behaviors\BlameableBehavior;
 
  * @property integer $id
  * @property integer $tb_program_id
+ * @property integer $revision
  * @property integer $ref_satker_id
  * @property string $name
- * @property integer $hours
- * @property integer $days
  * @property string $start
  * @property string $finish
  * @property string $note
- * @property integer $type
  * @property integer $studentCount
  * @property integer $classCount
  * @property string $executionSK
@@ -33,7 +31,6 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $reguler
  * @property string $stakeholder
  * @property string $location
- * @property integer $test
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
@@ -41,13 +38,16 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $modifiedBy
  * @property string $deleted
  * @property integer $deletedBy
+ * @property integer $approvedStatus
+ * @property string $approvedStatusNote
+ * @property string $approvedStatusDate
+ * @property integer $approvedStatusBy
  *
  * @property Satker $refSatker
  * @property Program $tbProgram
  * @property TrainingCertificate[] $trainingCertificates
  * @property TrainingDocument[] $trainingDocuments
  * @property TrainingPic[] $trainingPics
- * @property TrainingSubject[] $trainingSubjects
  * @property TrainingUnitPlan[] $trainingUnitPlans
  */
 class Training extends \yii\db\ActiveRecord
@@ -91,10 +91,10 @@ class Training extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'ref_satker_id', 'name'], 'required'],
-            [['tb_program_id', 'ref_satker_id', 'hours', 'days', 'type', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['start', 'finish', 'created', 'modified', 'deleted'], 'safe'],
-            [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location'], 'string', 'max' => 255]
+            [['tb_program_id', 'revision', 'ref_satker_id', 'name', 'approvedStatus', 'approvedStatusNote', 'approvedStatusDate', 'approvedStatusBy'], 'required'],
+            [['tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
+            [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
+            [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255]
         ];
     }
 
@@ -106,14 +106,12 @@ class Training extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'tb_program_id' => 'Tb Program ID',
+            'revision' => 'Revision',
             'ref_satker_id' => 'Ref Satker ID',
             'name' => 'Name',
-            'hours' => 'Hours',
-            'days' => 'Days',
             'start' => 'Start',
             'finish' => 'Finish',
             'note' => 'Note',
-            'type' => 'Type',
             'studentCount' => 'Student Count',
             'classCount' => 'Class Count',
             'executionSK' => 'Execution Sk',
@@ -125,7 +123,6 @@ class Training extends \yii\db\ActiveRecord
             'reguler' => 'Reguler',
             'stakeholder' => 'Stakeholder',
             'location' => 'Location',
-            'test' => 'Test',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
@@ -133,6 +130,10 @@ class Training extends \yii\db\ActiveRecord
             'modifiedBy' => 'Modified By',
             'deleted' => 'Deleted',
             'deletedBy' => 'Deleted By',
+            'approvedStatus' => 'Approved Status',
+            'approvedStatusNote' => 'Approved Status Note',
+            'approvedStatusDate' => 'Approved Status Date',
+            'approvedStatusBy' => 'Approved Status By',
         ];
     }
 	    /**
@@ -169,13 +170,6 @@ class Training extends \yii\db\ActiveRecord
     public function getTrainingPics()
     {
         return $this->hasMany(TrainingPic::className(), ['tb_training_id' => 'id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainingSubjects()
-    {
-        return $this->hasMany(TrainingSubject::className(), ['tb_training_id' => 'id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery

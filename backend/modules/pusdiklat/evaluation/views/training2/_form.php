@@ -1,24 +1,36 @@
 <?php
 
 use yii\helpers\Html;
-//use yii\widgets\ActiveForm;
-use yii\bootstrap\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\widgets\Select2;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Training */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
 <div class="training-form">
-
-    <?php $form = ActiveForm::begin(['options'=>['enctype'=>'multipart/form-data']]); ?>
-	<?= $form->errorSummary($model) ?> <!-- ADDED HERE -->
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="pull-right">
+		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+						['class'=>'btn btn-xs btn-primary',
+						 'title'=>'Back to Index',
+						]) ?>
+		</div>
+		<i class="fa fa-fw fa-globe"></i> 
+		Training	</div>
+	<div style="margin:10px">
+    <?php $form = ActiveForm::begin([
+		'type' => ActiveForm::TYPE_HORIZONTAL,
+		'options'=>['enctype'=>'multipart/form-data']
+	]); ?>
+	<?= $form->errorSummary($model) ?>
 	
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\Program::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\Program::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'tb_program_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose Program ...'],
@@ -27,10 +39,12 @@ use kartik\widgets\Select2;
 				],
 			]); ?>
 
+    <?= $form->field($model, 'revision')->textInput() ?>
+
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\Satker::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose Satker ...'],
@@ -41,20 +55,24 @@ use kartik\widgets\Select2;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'hours')->dropDownList([ 'Option1', 'Option2', 'Option3', ], ['prompt' => 'Choose hours']) ?>
-
-    <?= $form->field($model, 'days')->dropDownList([ 'Option1', 'Option2', 'Option3', ], ['prompt' => 'Choose days']) ?>
-
-    <?= $form->field($model, 'type')->widget(\kartik\widgets\SwitchInput::classname(), [
+    <?= $form->field($model, 'approvedStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
 					]
 				]) ?>
 
+    <?= $form->field($model, 'approvedStatusNote')->textInput(['maxlength' => 255]) ?>
+
+    <?= $form->field($model, 'approvedStatusDate')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+				]); ?>
+
+    <?= $form->field($model, 'approvedStatusBy')->textInput() ?>
+
     <?= $form->field($model, 'studentCount')->textInput() ?>
 
-    <?= $form->field($model, 'classCount')->dropDownList([ 'Option1', 'Option2', 'Option3', ], ['prompt' => 'Choose classCount']) ?>
+    <?= $form->field($model, 'classCount')->textInput(['maxlength' => 3]) ?>
 
     <?= $form->field($model, 'costPlan')->textInput() ?>
 
@@ -68,13 +86,6 @@ use kartik\widgets\Select2;
 				]) ?>
 
     <?= $form->field($model, 'reguler')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
-    <?= $form->field($model, 'test')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
@@ -121,9 +132,15 @@ use kartik\widgets\Select2;
     <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
-
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-10">
+        <?= Html::submitButton(
+			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
+			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		</div>
+	</div>
+	
     <?php ActiveForm::end(); ?>
-
+	</div>
+</div>
 </div>

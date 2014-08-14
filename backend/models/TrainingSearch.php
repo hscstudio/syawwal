@@ -18,8 +18,8 @@ class TrainingSearch extends Training
     public function rules()
     {
         return [
-            [['id', 'tb_program_id', 'ref_satker_id', 'hours', 'days', 'type', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted'], 'safe'],
+            [['id', 'tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
+            [['name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted', 'approvedStatusNote', 'approvedStatusDate'], 'safe'],
         ];
     }
 
@@ -54,19 +54,16 @@ class TrainingSearch extends Training
         $query->andFilterWhere([
             'id' => $this->id,
             'tb_program_id' => $this->tb_program_id,
+            'revision' => $this->revision,
             'ref_satker_id' => $this->ref_satker_id,
-            'hours' => $this->hours,
-            'days' => $this->days,
             'start' => $this->start,
             'finish' => $this->finish,
-            'type' => $this->type,
             'studentCount' => $this->studentCount,
             'classCount' => $this->classCount,
             'costPlan' => $this->costPlan,
             'costRealisation' => $this->costRealisation,
             'hostel' => $this->hostel,
             'reguler' => $this->reguler,
-            'test' => $this->test,
             'status' => $this->status,
             'created' => $this->created,
             'createdBy' => $this->createdBy,
@@ -74,6 +71,9 @@ class TrainingSearch extends Training
             'modifiedBy' => $this->modifiedBy,
             'deleted' => $this->deleted,
             'deletedBy' => $this->deletedBy,
+            'approvedStatus' => $this->approvedStatus,
+            'approvedStatusDate' => $this->approvedStatusDate,
+            'approvedStatusBy' => $this->approvedStatusBy,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
@@ -82,7 +82,8 @@ class TrainingSearch extends Training
             ->andFilterWhere(['like', 'resultSK', $this->resultSK])
             ->andFilterWhere(['like', 'sourceCost', $this->sourceCost])
             ->andFilterWhere(['like', 'stakeholder', $this->stakeholder])
-            ->andFilterWhere(['like', 'location', $this->location]);
+            ->andFilterWhere(['like', 'location', $this->location])
+            ->andFilterWhere(['like', 'approvedStatusNote', $this->approvedStatusNote]);
 
         return $dataProvider;
     }
