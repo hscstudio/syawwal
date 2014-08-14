@@ -44,10 +44,16 @@ $this->params['sideMenu']=$menus;
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?> # ' . $model->id,
+			'heading'=>'<i class="glyphicon glyphicon-globe"></i> '.'<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?> # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> '{delete}',
+		'buttons1'=> Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+						['class'=>'btn btn-xs btn-primary',
+						 'title'=>'Back to Index',
+						]).' '.
+					 Html::a('<i class="glyphicon glyphicon-trash"></i>',['#'],
+						['class'=>'btn btn-xs btn-danger kv-btn-delete',
+						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
 <?php
 if (($tableSchema = $generator->getTableSchema()) === false) {

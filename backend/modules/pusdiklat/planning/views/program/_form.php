@@ -15,7 +15,17 @@ use yii\helpers\ArrayHelper;
 <div class="program-form">
 
 <div class="panel panel-default">
-	<div class="panel-heading">Employee</div>
+	<div class="panel-heading">
+	<div class="pull-right">
+		<span class="kv-buttons-1">
+		<a class="btn btn-xs btn-primary" href="/github/syawwal/backend/web/pusdiklat-planning/program/index" title="Back to Index">
+			<i class="fa fa-arrow-left"></i>
+		</a> 
+		<a class="btn btn-xs btn-danger kv-btn-delete" href="/github/syawwal/backend/web/pusdiklat-planning/program/#" title="Delete" data-method="post" data-confirm="Are you sure you want to delete this item?"><i class="glyphicon glyphicon-trash"></i></a></span> <span class="kv-buttons-2 kv-hide"><button type="button" class="btn btn-xs btn-default kv-btn-view" title="View"><span class="glyphicon glyphicon-eye-open"></span></button> <button type="submit" class="btn btn-xs btn-default kv-btn-save" title="Save"><span class="glyphicon glyphicon-floppy-disk"></span></button></span>
+	</div>
+	<i class="glyphicon glyphicon-globe"></i> 
+	Employee
+	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
@@ -85,8 +95,12 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'validationNote')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-10">
+        <?= Html::submitButton($model->isNewRecord ? '<span class="glyphicon glyphicon-floppy-disk"></span> '.'Create' : '<span class="glyphicon glyphicon-floppy-disk"></span> '.'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		</div>
     </div>
+	
 	</div>
     <?php ActiveForm::end(); ?>
 </div>	

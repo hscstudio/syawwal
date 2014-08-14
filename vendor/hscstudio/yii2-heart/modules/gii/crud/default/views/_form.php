@@ -28,7 +28,16 @@ use kartik\widgets\Select2;
 ?>
 <div class="<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-form">
 <div class="panel panel-default">
-	<div class="panel-heading"><?= StringHelper::basename($generator->modelClass) ?></div>
+	<div class="panel-heading">
+		<div class="pull-right">
+		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+						['class'=>'btn btn-xs btn-primary',
+						 'title'=>'Back to Index',
+						]) ?>
+		</div>
+		<i class="glyphicon glyphicon-globe"></i> 
+		<?= StringHelper::basename($generator->modelClass) ?>
+	</div>
 	<div style="margin:10px">
     <?= "<?php " ?>$form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
@@ -40,9 +49,14 @@ use kartik\widgets\Select2;
     echo "    <?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
 } ?>
     <div class="form-group">
-        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Update') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
-
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-10">
+        <?= "<?= " ?>Html::submitButton(
+			$model->isNewRecord ? '<span class="glyphicon glyphicon-floppy-disk"></span> '.<?= $generator->generateString('Create') ?> : '<span class="glyphicon glyphicon-floppy-disk"></span> '.<?= $generator->generateString('Update') ?>, 
+			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		</div>
+	</div>
+	
     <?= "<?php " ?>ActiveForm::end(); ?>
 	</div>
 </div>
