@@ -7,6 +7,9 @@ use yii\helpers\Html;
 /* @var $model backend\models\Training */
 
 $this->title = 'Create Training';
+$this->params['breadcrumbs'][] = 'Pusdiklat';
+$this->params['breadcrumbs'][] = 'Evaluation';
+$this->params['breadcrumbs'][] = 'Evaluasi Diklat';
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;

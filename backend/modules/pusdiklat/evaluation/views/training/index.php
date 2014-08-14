@@ -9,6 +9,9 @@ use yii\bootstrap\Dropdown;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Trainings';
+$this->params['breadcrumbs'][] = 'Pusdiklat';
+$this->params['breadcrumbs'][] = 'Evaluation';
+$this->params['breadcrumbs'][] = 'Evaluasi Diklat';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
