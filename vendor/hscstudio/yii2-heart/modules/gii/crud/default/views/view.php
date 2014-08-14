@@ -30,7 +30,7 @@ $this->params['sideMenu']=$menus;
 			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'<?= Inflector::pluralize(Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?> # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]).' '.
