@@ -21,6 +21,7 @@ use yii\helpers\Html;
 //use yii\bootstrap\ActiveForm;
 use kartik\widgets\ActiveForm;
 use kartik\widgets\Select2;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
