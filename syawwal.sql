@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 14, 2014 at 07:06 AM
+-- Generation Time: Aug 14, 2014 at 07:38 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.9
 
@@ -934,6 +934,7 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `days` int(3) DEFAULT NULL,
   `test` tinyint(1) NOT NULL DEFAULT '0',
   `type` tinyint(1) NOT NULL COMMENT 'tipe kelulusan (lulus/mengikuti)',
+  `note` varchar(255) NOT NULL,
   `validationStatus` tinyint(1) DEFAULT '0',
   `validationNote` varchar(255) DEFAULT NULL,
   `status` int(1) NOT NULL DEFAULT '1',
@@ -951,8 +952,8 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
 -- Dumping data for table `tb_program`
 --
 
-INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 5, '2.3.1.2', 'Diklat Intelejen Tingkat Dasar', 50, NULL, 0, 0, 1, 'OK', 1, '2014-04-17 19:47:22', 1, '2014-08-13 16:19:12', 1, NULL, NULL);
+INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 5, '2.3.1.2', 'Diklat Intelejen Tingkat Dasar', 50, NULL, 0, 0, '', 1, 'OK', 1, '2014-04-17 19:47:22', 1, '2014-08-13 16:19:12', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1018,6 +1019,8 @@ CREATE TABLE IF NOT EXISTS `tb_program_history` (
   `hours` int(5) DEFAULT NULL,
   `days` int(3) DEFAULT NULL,
   `test` tinyint(1) NOT NULL DEFAULT '0',
+  `type` tinyint(1) NOT NULL,
+  `note` varchar(255) NOT NULL,
   `validationStatus` tinyint(1) DEFAULT '0',
   `validationNote` varchar(255) DEFAULT NULL,
   `status` int(1) NOT NULL DEFAULT '1',
@@ -1513,6 +1516,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_room` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_training` int(11) NOT NULL,
   `id_room` int(11) NOT NULL,
+  `note` varchar(255) NOT NULL,
   `status` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
   `createdBy` int(11) NOT NULL,
