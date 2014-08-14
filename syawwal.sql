@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.6
+-- version 4.1.6
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Aug 12, 2014 at 10:50 AM
--- Server version: 5.5.38-MariaDB
--- PHP Version: 5.5.15
+-- Host: 127.0.0.1
+-- Generation Time: Aug 14, 2014 at 07:06 AM
+-- Server version: 5.6.16
+-- PHP Version: 5.5.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -27,11 +27,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `account` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `provider` varchar(255) NOT NULL,
   `client_id` varchar(255) NOT NULL,
-  `properties` text
+  `properties` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_unique` (`provider`,`client_id`),
+  KEY `fk_user_account` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -43,7 +46,8 @@ CREATE TABLE IF NOT EXISTS `account` (
 CREATE TABLE IF NOT EXISTS `auth_assignment` (
   `item_name` varchar(64) NOT NULL,
   `user_id` varchar(64) NOT NULL,
-  `created_at` int(11) DEFAULT NULL
+  `created_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`item_name`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -59,7 +63,10 @@ CREATE TABLE IF NOT EXISTS `auth_item` (
   `rule_name` varchar(64) DEFAULT NULL,
   `data` text,
   `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL
+  `updated_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`name`),
+  KEY `rule_name` (`rule_name`),
+  KEY `idx-auth_item-type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -70,7 +77,9 @@ CREATE TABLE IF NOT EXISTS `auth_item` (
 
 CREATE TABLE IF NOT EXISTS `auth_item_child` (
   `parent` varchar(64) NOT NULL,
-  `child` varchar(64) NOT NULL
+  `child` varchar(64) NOT NULL,
+  PRIMARY KEY (`parent`,`child`),
+  KEY `child` (`child`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -83,7 +92,8 @@ CREATE TABLE IF NOT EXISTS `auth_rule` (
   `name` varchar(64) NOT NULL,
   `data` text,
   `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL
+  `updated_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -93,12 +103,14 @@ CREATE TABLE IF NOT EXISTS `auth_rule` (
 --
 
 CREATE TABLE IF NOT EXISTS `menu` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   `parent` int(11) DEFAULT NULL,
   `route` varchar(256) DEFAULT NULL,
   `order` int(11) DEFAULT NULL,
-  `data` text
+  `data` text,
+  PRIMARY KEY (`id`),
+  KEY `parent` (`parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -109,7 +121,8 @@ CREATE TABLE IF NOT EXISTS `menu` (
 
 CREATE TABLE IF NOT EXISTS `migration` (
   `version` varchar(180) NOT NULL,
-  `apply_time` int(11) DEFAULT NULL
+  `apply_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -139,7 +152,9 @@ CREATE TABLE IF NOT EXISTS `ref_graduate` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -166,7 +181,7 @@ INSERT INTO `ref_graduate` (`id`, `name`, `status`, `created`, `createdBy`, `mod
 --
 
 CREATE TABLE IF NOT EXISTS `ref_level` (
-`id` int(3) NOT NULL,
+  `id` int(3) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `role` varchar(50) NOT NULL,
   `groups` int(1) NOT NULL DEFAULT '1' COMMENT '0:ADMIN;1:GENERAL;2:PLANNING;3:EXECUTION;4:EVALUATION;',
@@ -176,7 +191,9 @@ CREATE TABLE IF NOT EXISTS `ref_level` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
@@ -193,7 +210,7 @@ INSERT INTO `ref_level` (`id`, `name`, `role`, `groups`, `status`, `created`, `c
 --
 
 CREATE TABLE IF NOT EXISTS `ref_program_code` (
-`id` int(3) NOT NULL,
+  `id` int(3) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `code` varchar(25) NOT NULL,
   `parent_id` int(3) DEFAULT '0',
@@ -203,7 +220,9 @@ CREATE TABLE IF NOT EXISTS `ref_program_code` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code_UNIQUE` (`code`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
 
 --
@@ -243,7 +262,9 @@ CREATE TABLE IF NOT EXISTS `ref_rank_class` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -285,7 +306,9 @@ CREATE TABLE IF NOT EXISTS `ref_religion` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -324,7 +347,8 @@ CREATE TABLE IF NOT EXISTS `ref_satker` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -361,7 +385,7 @@ INSERT INTO `ref_satker` (`id`, `name`, `shortname`, `letterNumber`, `address`, 
 --
 
 CREATE TABLE IF NOT EXISTS `ref_sbu` (
-`id` int(3) NOT NULL COMMENT 'standard biaya umum',
+  `id` int(3) NOT NULL AUTO_INCREMENT COMMENT 'standard biaya umum',
   `name` varchar(255) NOT NULL,
   `value` int(11) DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
@@ -370,7 +394,8 @@ CREATE TABLE IF NOT EXISTS `ref_sbu` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 --
@@ -398,10 +423,11 @@ INSERT INTO `ref_sbu` (`id`, `name`, `value`, `status`, `created`, `createdBy`, 
 --
 
 CREATE TABLE IF NOT EXISTS `ref_sta_unit` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `induk` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `eselon` tinyint(1) NOT NULL
+  `eselon` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=100000 ;
 
 --
@@ -690,7 +716,8 @@ CREATE TABLE IF NOT EXISTS `ref_unit` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -720,7 +747,7 @@ INSERT INTO `ref_unit` (`id`, `name`, `shortname`, `status`, `created`, `created
 --
 
 CREATE TABLE IF NOT EXISTS `tb_admin` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_level_id` int(3) NOT NULL DEFAULT '0',
   `ref_satker_id` int(3) NOT NULL,
   `tb_employee_id` int(11) NOT NULL DEFAULT '1',
@@ -732,7 +759,11 @@ CREATE TABLE IF NOT EXISTS `tb_admin` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_admin_tb_employee1` (`tb_employee_id`),
+  KEY `fk_tb_admin_ref_level1` (`ref_level_id`),
+  KEY `fk_tb_admin_ref_satker1` (`ref_satker_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
@@ -752,7 +783,8 @@ CREATE TABLE IF NOT EXISTS `tb_authassignment` (
   `itemname` varchar(64) NOT NULL,
   `userid` varchar(64) NOT NULL,
   `bizrule` text,
-  `data` text
+  `data` text,
+  PRIMARY KEY (`itemname`,`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -773,7 +805,8 @@ CREATE TABLE IF NOT EXISTS `tb_authitem` (
   `type` int(11) NOT NULL,
   `description` text,
   `bizrule` text,
-  `data` text
+  `data` text,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -793,7 +826,9 @@ INSERT INTO `tb_authitem` (`name`, `type`, `description`, `bizrule`, `data`) VAL
 
 CREATE TABLE IF NOT EXISTS `tb_authitemchild` (
   `parent` varchar(64) NOT NULL,
-  `child` varchar(64) NOT NULL
+  `child` varchar(64) NOT NULL,
+  PRIMARY KEY (`parent`,`child`),
+  KEY `child` (`child`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -803,7 +838,7 @@ CREATE TABLE IF NOT EXISTS `tb_authitemchild` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_employee` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_satker_id` int(3) NOT NULL DEFAULT '0',
   `ref_unit_id` int(3) NOT NULL DEFAULT '0',
   `ref_religion_id` int(3) NOT NULL DEFAULT '0',
@@ -845,8 +880,15 @@ CREATE TABLE IF NOT EXISTS `tb_employee` (
   `gravatar_id` varchar(32) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `bio` text,
-  `website` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+  `website` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_employee_ref_satker1` (`ref_satker_id`),
+  KEY `fk_tb_employee_ref_unit1` (`ref_unit_id`),
+  KEY `fk_tb_employee_ref_religion1` (`ref_religion_id`),
+  KEY `fk_tb_employee_ref_rank_class1` (`ref_rank_class_id`),
+  KEY `fk_tb_employee_ref_graduate1` (`ref_graduate_id`),
+  KEY `fk_tb_employee_ref_sta_unit1` (`ref_sta_unit_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `tb_employee`
@@ -862,7 +904,7 @@ INSERT INTO `tb_employee` (`id`, `ref_satker_id`, `ref_unit_id`, `ref_religion_i
 --
 
 CREATE TABLE IF NOT EXISTS `tb_notification` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `from` int(11) NOT NULL,
   `to` int(11) NOT NULL,
   `subject` varchar(100) DEFAULT NULL,
@@ -873,7 +915,8 @@ CREATE TABLE IF NOT EXISTS `tb_notification` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -883,7 +926,92 @@ CREATE TABLE IF NOT EXISTS `tb_notification` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_program` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ref_satker_id` int(3) NOT NULL DEFAULT '0',
+  `number` varchar(15) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `hours` int(5) DEFAULT NULL,
+  `days` int(3) DEFAULT NULL,
+  `test` tinyint(1) NOT NULL DEFAULT '0',
+  `type` tinyint(1) NOT NULL COMMENT 'tipe kelulusan (lulus/mengikuti)',
+  `validationStatus` tinyint(1) DEFAULT '0',
+  `validationNote` varchar(255) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created` datetime DEFAULT NULL,
+  `createdBy` int(11) DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `modifiedBy` int(11) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_program_ref_satker1` (`ref_satker_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+
+--
+-- Dumping data for table `tb_program`
+--
+
+INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 5, '2.3.1.2', 'Diklat Intelejen Tingkat Dasar', 50, NULL, 0, 0, 1, 'OK', 1, '2014-04-17 19:47:22', 1, '2014-08-13 16:19:12', 1, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_program_document`
+--
+
+CREATE TABLE IF NOT EXISTS `tb_program_document` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tb_program_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `type` varchar(100) NOT NULL COMMENT 'KAP, GBPP, SILABI',
+  `filename` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '0',
+  `created` datetime DEFAULT NULL,
+  `createdBy` int(11) DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `modifiedBy` int(11) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_program_document_tb_program1` (`tb_program_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_program_document_history`
+--
+
+CREATE TABLE IF NOT EXISTS `tb_program_document_history` (
+  `tb_program_document_id` int(11) NOT NULL,
+  `tb_program_id` int(11) NOT NULL,
+  `revision` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `type` varchar(100) NOT NULL COMMENT 'KAP, GBPP, SILABI',
+  `filename` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '0',
+  `created` datetime DEFAULT NULL,
+  `createdBy` int(11) DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `modifiedBy` int(11) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tb_program_document_id`,`tb_program_id`,`revision`),
+  KEY `fk_tb_program_document_tb_program1` (`tb_program_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_program_history`
+--
+
+CREATE TABLE IF NOT EXISTS `tb_program_history` (
+  `tb_program_id` int(11) NOT NULL,
+  `revision` int(11) NOT NULL,
   `ref_satker_id` int(3) NOT NULL DEFAULT '0',
   `number` varchar(15) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
@@ -898,42 +1026,10 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `tb_program`
---
-
-INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 5, '2.3.1.1.1', 'Diklat Intelejen Tingkat Dasar', 50, 5, 0, 1, 'OK', 1, '2014-04-17 19:47:22', 1, '2014-04-17 22:06:40', 1, NULL, NULL),
-(2, 0, '2.3.1.2.1', 'Diklat Intelejen Tingkat Lanjutan', 50, 5, 0, 1, 'OK', 1, '2014-04-17 19:47:22', 1, NULL, NULL, NULL, NULL),
-(3, 3, '2.3.1.1.1', 'Diklat Intelejen Tingkat Dasar', 50, 5, 0, 1, 'OK', 1, '2014-04-17 19:54:25', 1, NULL, NULL, NULL, NULL),
-(4, 3, '2.3.1.2.1', 'Diklat Intelejen Tingkat Lanjutan', 50, 5, 0, 1, 'OK', 1, '2014-04-17 19:54:25', 1, NULL, NULL, NULL, NULL),
-(5, 3, '2.3.1.1.1', 'Diklat Intelejen Tingkat Dasar', 50, 5, 0, 1, 'OK', 1, '2014-04-17 21:16:35', 1, NULL, NULL, NULL, NULL),
-(6, 3, '2.3.1.2.1', 'Diklat Intelejen Tingkat Lanjutan', 50, 5, 0, 1, 'OK', 1, '2014-04-17 21:16:35', 1, NULL, NULL, NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_program_document`
---
-
-CREATE TABLE IF NOT EXISTS `tb_program_document` (
-`id` int(11) NOT NULL,
-  `tb_program_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `type` varchar(100) NOT NULL COMMENT 'KAP, GBPP, SILABI',
-  `filename` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `status` int(1) NOT NULL DEFAULT '0',
-  `created` datetime DEFAULT NULL,
-  `createdBy` int(11) DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` int(11) DEFAULT NULL,
-  `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tb_program_id`,`revision`),
+  KEY `fk_tb_program_ref_satker1` (`ref_satker_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -942,7 +1038,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_document` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_program_subject` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_program_id` int(11) NOT NULL,
   `type` int(1) NOT NULL DEFAULT '1' COMMENT '1: MP;2: CERAMAH;3:PKL',
   `name` varchar(255) NOT NULL,
@@ -955,8 +1051,36 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_program_subject_tb_program1` (`tb_program_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_program_subject_history`
+--
+
+CREATE TABLE IF NOT EXISTS `tb_program_subject_history` (
+  `tb_program_subject_id` int(11) NOT NULL,
+  `tb_program_id` int(11) NOT NULL,
+  `revision` int(11) NOT NULL,
+  `type` int(1) NOT NULL DEFAULT '1' COMMENT '1: MP;2: CERAMAH;3:PKL',
+  `name` varchar(255) NOT NULL,
+  `hours` int(3) NOT NULL COMMENT 'KAP, GBPP, SILABI',
+  `sort` int(3) NOT NULL,
+  `test` tinyint(1) NOT NULL DEFAULT '0',
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created` datetime DEFAULT NULL,
+  `createdBy` int(11) DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `modifiedBy` int(11) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`tb_program_subject_id`,`tb_program_id`,`revision`),
+  KEY `fk_tb_program_subject_tb_program1` (`tb_program_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -967,7 +1091,8 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
 CREATE TABLE IF NOT EXISTS `tb_rights` (
   `itemname` varchar(64) NOT NULL,
   `type` int(11) NOT NULL,
-  `weight` int(11) NOT NULL
+  `weight` int(11) NOT NULL,
+  PRIMARY KEY (`itemname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -977,7 +1102,7 @@ CREATE TABLE IF NOT EXISTS `tb_rights` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_room` (
-`id` int(3) NOT NULL,
+  `id` int(3) NOT NULL AUTO_INCREMENT,
   `ref_satker_id` int(3) NOT NULL DEFAULT '0',
   `code` varchar(25) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -992,7 +1117,10 @@ CREATE TABLE IF NOT EXISTS `tb_room` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code_UNIQUE` (`code`),
+  KEY `fk_tb_room_ref_satker1` (`ref_satker_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1002,7 +1130,7 @@ CREATE TABLE IF NOT EXISTS `tb_room` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_satker_pic` (
-`id` int(3) NOT NULL COMMENT 'tb_pic = untuk menyimpan data pejabat misal PPK, KAPUS, dsb',
+  `id` int(3) NOT NULL AUTO_INCREMENT COMMENT 'tb_pic = untuk menyimpan data pejabat misal PPK, KAPUS, dsb',
   `ref_satker_id` int(3) NOT NULL,
   `code` varchar(25) NOT NULL COMMENT 'PUSDIKLAT: KAPUS,KPA,PPK,BENDAHARA##BDK:KABDK,KPA,PPK,BENDAHARA##PSDM:KAPUS,KPA,PPK,BENDAHARA',
   `name` varchar(255) DEFAULT NULL,
@@ -1013,7 +1141,10 @@ CREATE TABLE IF NOT EXISTS `tb_satker_pic` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code_UNIQUE` (`code`),
+  KEY `fk_tb_satker_pic_ref_satker1` (`ref_satker_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1023,7 +1154,7 @@ CREATE TABLE IF NOT EXISTS `tb_satker_pic` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_student` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_religion_id` int(3) NOT NULL DEFAULT '0',
   `ref_graduate_id` int(3) NOT NULL DEFAULT '0',
   `ref_rank_class_id` int(3) NOT NULL DEFAULT '0',
@@ -1060,7 +1191,12 @@ CREATE TABLE IF NOT EXISTS `tb_student` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_student_ref_religion1` (`ref_religion_id`),
+  KEY `fk_tb_student_ref_graduate1` (`ref_graduate_id`),
+  KEY `fk_tb_student_ref_rank_class1` (`ref_rank_class_id`),
+  KEY `fk_tb_student_ref_unit1` (`ref_unit_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1070,7 +1206,7 @@ CREATE TABLE IF NOT EXISTS `tb_student` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_trainer` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `ref_graduate_id` int(3) NOT NULL DEFAULT '0',
   `ref_rank_class_id` int(3) NOT NULL DEFAULT '0',
   `ref_religion_id` int(3) NOT NULL DEFAULT '0',
@@ -1110,7 +1246,11 @@ CREATE TABLE IF NOT EXISTS `tb_trainer` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_trainer_ref_graduate1` (`ref_graduate_id`),
+  KEY `fk_tb_trainer_ref_rank_class1` (`ref_rank_class_id`),
+  KEY `fk_tb_trainer_ref_religion1` (`ref_religion_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1120,16 +1260,14 @@ CREATE TABLE IF NOT EXISTS `tb_trainer` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_program_id` int(11) NOT NULL,
+  `revision` int(11) NOT NULL,
   `ref_satker_id` int(3) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `hours` int(3) DEFAULT NULL,
-  `days` int(3) DEFAULT NULL,
   `start` date DEFAULT NULL,
   `finish` date DEFAULT NULL,
   `note` varchar(255) DEFAULT NULL,
-  `type` tinyint(1) DEFAULT '0' COMMENT 'type = tipe kelulusan peserta',
   `studentCount` int(5) DEFAULT NULL,
   `classCount` int(3) DEFAULT NULL,
   `executionSK` varchar(255) DEFAULT NULL,
@@ -1141,22 +1279,28 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   `reguler` tinyint(1) DEFAULT '1' COMMENT '1=REGULER;0:PARALEL',
   `stakeholder` varchar(255) DEFAULT 'BPPK' COMMENT 'INSTANSI KERJASAMA DIKLAT',
   `location` varchar(255) DEFAULT '-',
-  `test` int(1) DEFAULT '0' COMMENT '0:TIDAK UJIAN;1:UJIAN KOMPREHENSIF;2:UJIAN PER MATA PELAJARAN;3: GABUNGAN',
   `status` int(1) NOT NULL DEFAULT '1',
   `created` datetime DEFAULT NULL,
   `createdBy` int(11) DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  `approvedStatus` tinyint(1) NOT NULL,
+  `approvedStatusNote` varchar(255) NOT NULL,
+  `approvedStatusDate` datetime NOT NULL,
+  `approvedStatusBy` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_tb_program1` (`tb_program_id`),
+  KEY `fk_tb_training_ref_satker1` (`ref_satker_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `tb_training`
 --
 
-INSERT INTO `tb_training` (`id`, `tb_program_id`, `ref_satker_id`, `name`, `hours`, `days`, `start`, `finish`, `note`, `type`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 1, 5, 'Diklat Intelejen Tingkat Dasar Angkatan I', 50, 5, '2014-04-21', '2014-04-25', '', 1, NULL, NULL, '', '', NULL, NULL, '', 1, 1, 'BPPK', '-', 0, 1, '2014-04-18 14:33:44', 1, NULL, NULL, NULL, NULL);
+INSERT INTO `tb_training` (`id`, `tb_program_id`, `revision`, `ref_satker_id`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
+(1, 1, 0, 5, 'Diklat Intelejen Tingkat Dasar Angkatan I', '2014-04-21', '2014-04-25', '', NULL, NULL, '', '', NULL, NULL, '', 1, 1, 'BPPK', '-', 1, '2014-04-18 14:33:44', 1, NULL, NULL, NULL, NULL, 0, '', '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -1165,7 +1309,7 @@ INSERT INTO `tb_training` (`id`, `tb_program_id`, `ref_satker_id`, `name`, `hour
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_assignment` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_subject_id` int(11) NOT NULL,
   `tb_trainer_id` int(11) NOT NULL,
   `class` int(3) NOT NULL DEFAULT '0' COMMENT '0-25',
@@ -1176,7 +1320,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_assignment` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_subject_id`),
+  KEY `fk_tb_training_assignment_tb_trainer1` (`tb_trainer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1186,7 +1333,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_assignment` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_assignment_student` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_assignment_id` int(11) NOT NULL,
   `tb_student_id` int(11) NOT NULL,
   `activity` decimal(5,2) DEFAULT '1.00' COMMENT 'NILAI AKTIFITAS',
@@ -1197,7 +1344,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_assignment_student` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_subject_student_tb_training_assignment1` (`tb_training_assignment_id`),
+  KEY `fk_tb_training_subject_student_tb_student1` (`tb_student_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1207,7 +1357,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_assignment_student` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_certificate` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_id` int(11) NOT NULL,
   `tb_student_id` int(11) NOT NULL,
   `ref_unit_id` int(3) NOT NULL DEFAULT '0',
@@ -1222,7 +1372,13 @@ CREATE TABLE IF NOT EXISTS `tb_training_certificate` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_certificate_tb_training1` (`tb_training_id`),
+  KEY `fk_tb_training_certificate_tb_student1` (`tb_student_id`),
+  KEY `fk_tb_training_certificate_ref_unit1` (`ref_unit_id`),
+  KEY `fk_tb_training_certificate_ref_graduate1` (`ref_graduate_id`),
+  KEY `fk_tb_training_certificate_ref_rank_class1` (`ref_rank_class_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1232,7 +1388,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_certificate` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_document` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `type` varchar(100) DEFAULT NULL COMMENT 'KAP, GBPP, SILABI',
@@ -1244,7 +1400,9 @@ CREATE TABLE IF NOT EXISTS `tb_training_document` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_document_tb_training1` (`tb_training_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
@@ -1261,7 +1419,7 @@ INSERT INTO `tb_training_document` (`id`, `tb_training_id`, `name`, `type`, `fil
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_execution_evaluation` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_student_id` int(11) NOT NULL,
   `value` varchar(255) DEFAULT NULL,
   `text1` varchar(500) DEFAULT NULL,
@@ -1277,7 +1435,9 @@ CREATE TABLE IF NOT EXISTS `tb_training_execution_evaluation` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_execution_evaluation_tb_training_student1` (`tb_training_student_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1287,7 +1447,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_execution_evaluation` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_history` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_program_id` int(11) NOT NULL,
   `tb_training_id` int(11) NOT NULL,
   `ref_satker_id` int(3) NOT NULL,
@@ -1316,7 +1476,8 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1326,7 +1487,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_pic` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_id` int(11) NOT NULL,
   `tb_admin_id` int(11) NOT NULL,
   `type` int(3) DEFAULT '0' COMMENT '1-3:GENERAL;4-6:PLANNING;7-8:EXECUTION;9-11:EVALUATION;12:WIDYAISWARA',
@@ -1336,7 +1497,28 @@ CREATE TABLE IF NOT EXISTS `tb_training_pic` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_pic_tb_training1` (`tb_training_id`),
+  KEY `fk_tb_training_pic_tb_admin1` (`tb_admin_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_training_room`
+--
+
+CREATE TABLE IF NOT EXISTS `tb_training_room` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_training` int(11) NOT NULL,
+  `id_room` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `created` datetime NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `modified` datetime NOT NULL,
+  `modifiedBy` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1346,7 +1528,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_pic` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_assignment_id` int(11) NOT NULL,
   `tb_room_id` int(3) NOT NULL,
   `activity` varchar(255) DEFAULT NULL COMMENT 'Honor untuk PIC/JP',
@@ -1361,7 +1543,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_schedule_tb_training_assignment1` (`tb_training_assignment_id`),
+  KEY `fk_tb_training_schedule_tb_room1` (`tb_room_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1371,7 +1556,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_student` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_assignment_id` int(11) NOT NULL,
   `tb_student_id` int(11) NOT NULL,
   `ref_unit_id` int(3) NOT NULL,
@@ -1396,7 +1581,13 @@ CREATE TABLE IF NOT EXISTS `tb_training_student` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_student_tb_training_assignment1` (`tb_training_assignment_id`),
+  KEY `fk_tb_training_student_tb_student1` (`tb_student_id`),
+  KEY `fk_tb_training_student_ref_unit1` (`ref_unit_id`),
+  KEY `fk_tb_training_student_ref_rank_class1` (`ref_rank_class_id`),
+  KEY `fk_tb_training_student_ref_graduate1` (`ref_graduate_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1406,7 +1597,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_student` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_student_attendance` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_schedule_id` int(11) NOT NULL,
   `tb_student_id` int(11) NOT NULL,
   `hours` int(3) DEFAULT NULL,
@@ -1417,7 +1608,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_student_attendance` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_student_attendance_tb_training_schedule1` (`tb_training_schedule_id`),
+  KEY `fk_tb_training_student_attendance_tb_student1` (`tb_student_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1427,7 +1621,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_student_attendance` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_subject` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_id` int(11) NOT NULL,
   `type` int(1) NOT NULL DEFAULT '1' COMMENT '1: MP;2: CERAMAH;3:OJT;4:MFD;',
   `name` varchar(255) NOT NULL,
@@ -1440,7 +1634,9 @@ CREATE TABLE IF NOT EXISTS `tb_training_subject` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_subject_tb_training1` (`tb_training_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1450,7 +1646,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_subject` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_subject_document` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_subject_id` int(11) NOT NULL,
   `type` int(1) NOT NULL DEFAULT '1' COMMENT '1:GBPP, 2:MODUL; 3: NON MODUL',
   `filename` varchar(255) NOT NULL,
@@ -1461,7 +1657,9 @@ CREATE TABLE IF NOT EXISTS `tb_training_subject_document` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_subject_document_tb_training_subject1` (`tb_training_subject_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1471,7 +1669,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_subject_document` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_subject_trainer_recommendation` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_subject_id` int(11) NOT NULL,
   `tb_trainer_id` int(11) NOT NULL,
   `type` int(1) NOT NULL DEFAULT '1' COMMENT '1:PENGAJAR;2:PENCERAMAH;3:ASISTEN',
@@ -1483,7 +1681,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_subject_trainer_recommendation` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_subject_trainer_recommendation_tb_training_sub1` (`tb_training_subject_id`),
+  KEY `fk_tb_training_subject_trainer_recommendation_tb_trainer1` (`tb_trainer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1493,7 +1694,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_subject_trainer_recommendation` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_trainer_attendance` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_schedule_id` int(11) NOT NULL,
   `tb_trainer_id` int(11) NOT NULL,
   `hours` int(3) DEFAULT NULL,
@@ -1504,7 +1705,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_trainer_attendance` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_trainer_attendance_tb_training_schedule1` (`tb_training_schedule_id`),
+  KEY `fk_tb_training_trainer_attendance_tb_trainer1` (`tb_trainer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1514,7 +1718,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_trainer_attendance` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_trainer_evaluation` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_student_id` int(11) NOT NULL,
   `tb_training_assignment_id` int(11) NOT NULL,
   `value` varchar(255) DEFAULT NULL,
@@ -1525,7 +1729,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_trainer_evaluation` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_trainer_evaluation_tb_student1` (`tb_student_id`),
+  KEY `fk_tb_training_trainer_evaluation_tb_training_assignment1` (`tb_training_assignment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1535,7 +1742,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_trainer_evaluation` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_id` int(11) NOT NULL,
   `ref_unit_id` int(3) NOT NULL,
   `spread` varchar(500) NOT NULL COMMENT 'KAP, GBPP, SILABI',
@@ -1546,7 +1753,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_student_spread_plan_tb_training1` (`tb_training_id`),
+  KEY `fk_tb_training_student_spread_plan_ref_unit1` (`ref_unit_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1556,7 +1766,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_user` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(25) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password_hash` varchar(60) NOT NULL,
@@ -1573,8 +1783,13 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
   `logged_in_from` int(11) DEFAULT NULL,
   `logged_in_at` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+  `updated_at` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_unique_username` (`username`),
+  UNIQUE KEY `user_unique_email` (`email`),
+  UNIQUE KEY `user_confirmation` (`id`,`confirmation_token`),
+  UNIQUE KEY `user_recovery` (`id`,`recovery_token`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `tb_user`
@@ -1584,472 +1799,6 @@ INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `
 (1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1407815341, 1405728264, 1407815341);
 
 --
--- Indexes for dumped tables
---
-
---
--- Indexes for table `account`
---
-ALTER TABLE `account`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `account_unique` (`provider`,`client_id`), ADD KEY `fk_user_account` (`user_id`);
-
---
--- Indexes for table `auth_assignment`
---
-ALTER TABLE `auth_assignment`
- ADD PRIMARY KEY (`item_name`,`user_id`);
-
---
--- Indexes for table `auth_item`
---
-ALTER TABLE `auth_item`
- ADD PRIMARY KEY (`name`), ADD KEY `rule_name` (`rule_name`), ADD KEY `idx-auth_item-type` (`type`);
-
---
--- Indexes for table `auth_item_child`
---
-ALTER TABLE `auth_item_child`
- ADD PRIMARY KEY (`parent`,`child`), ADD KEY `child` (`child`);
-
---
--- Indexes for table `auth_rule`
---
-ALTER TABLE `auth_rule`
- ADD PRIMARY KEY (`name`);
-
---
--- Indexes for table `menu`
---
-ALTER TABLE `menu`
- ADD PRIMARY KEY (`id`), ADD KEY `parent` (`parent`);
-
---
--- Indexes for table `migration`
---
-ALTER TABLE `migration`
- ADD PRIMARY KEY (`version`);
-
---
--- Indexes for table `ref_graduate`
---
-ALTER TABLE `ref_graduate`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name_UNIQUE` (`name`);
-
---
--- Indexes for table `ref_level`
---
-ALTER TABLE `ref_level`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name_UNIQUE` (`name`);
-
---
--- Indexes for table `ref_program_code`
---
-ALTER TABLE `ref_program_code`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `code_UNIQUE` (`code`);
-
---
--- Indexes for table `ref_rank_class`
---
-ALTER TABLE `ref_rank_class`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name_UNIQUE` (`name`);
-
---
--- Indexes for table `ref_religion`
---
-ALTER TABLE `ref_religion`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `name_UNIQUE` (`name`);
-
---
--- Indexes for table `ref_satker`
---
-ALTER TABLE `ref_satker`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `ref_sbu`
---
-ALTER TABLE `ref_sbu`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `ref_sta_unit`
---
-ALTER TABLE `ref_sta_unit`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `ref_unit`
---
-ALTER TABLE `ref_unit`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tb_admin`
---
-ALTER TABLE `tb_admin`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_admin_tb_employee1` (`tb_employee_id`), ADD KEY `fk_tb_admin_ref_level1` (`ref_level_id`), ADD KEY `fk_tb_admin_ref_satker1` (`ref_satker_id`);
-
---
--- Indexes for table `tb_authassignment`
---
-ALTER TABLE `tb_authassignment`
- ADD PRIMARY KEY (`itemname`,`userid`);
-
---
--- Indexes for table `tb_authitem`
---
-ALTER TABLE `tb_authitem`
- ADD PRIMARY KEY (`name`);
-
---
--- Indexes for table `tb_authitemchild`
---
-ALTER TABLE `tb_authitemchild`
- ADD PRIMARY KEY (`parent`,`child`), ADD KEY `child` (`child`);
-
---
--- Indexes for table `tb_employee`
---
-ALTER TABLE `tb_employee`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_employee_ref_satker1` (`ref_satker_id`), ADD KEY `fk_tb_employee_ref_unit1` (`ref_unit_id`), ADD KEY `fk_tb_employee_ref_religion1` (`ref_religion_id`), ADD KEY `fk_tb_employee_ref_rank_class1` (`ref_rank_class_id`), ADD KEY `fk_tb_employee_ref_graduate1` (`ref_graduate_id`), ADD KEY `fk_tb_employee_ref_sta_unit1` (`ref_sta_unit_id`);
-
---
--- Indexes for table `tb_notification`
---
-ALTER TABLE `tb_notification`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tb_program`
---
-ALTER TABLE `tb_program`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_program_ref_satker1` (`ref_satker_id`);
-
---
--- Indexes for table `tb_program_document`
---
-ALTER TABLE `tb_program_document`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_program_document_tb_program1` (`tb_program_id`);
-
---
--- Indexes for table `tb_program_subject`
---
-ALTER TABLE `tb_program_subject`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_program_subject_tb_program1` (`tb_program_id`);
-
---
--- Indexes for table `tb_rights`
---
-ALTER TABLE `tb_rights`
- ADD PRIMARY KEY (`itemname`);
-
---
--- Indexes for table `tb_room`
---
-ALTER TABLE `tb_room`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `code_UNIQUE` (`code`), ADD KEY `fk_tb_room_ref_satker1` (`ref_satker_id`);
-
---
--- Indexes for table `tb_satker_pic`
---
-ALTER TABLE `tb_satker_pic`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `code_UNIQUE` (`code`), ADD KEY `fk_tb_satker_pic_ref_satker1` (`ref_satker_id`);
-
---
--- Indexes for table `tb_student`
---
-ALTER TABLE `tb_student`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_student_ref_religion1` (`ref_religion_id`), ADD KEY `fk_tb_student_ref_graduate1` (`ref_graduate_id`), ADD KEY `fk_tb_student_ref_rank_class1` (`ref_rank_class_id`), ADD KEY `fk_tb_student_ref_unit1` (`ref_unit_id`);
-
---
--- Indexes for table `tb_trainer`
---
-ALTER TABLE `tb_trainer`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_trainer_ref_graduate1` (`ref_graduate_id`), ADD KEY `fk_tb_trainer_ref_rank_class1` (`ref_rank_class_id`), ADD KEY `fk_tb_trainer_ref_religion1` (`ref_religion_id`);
-
---
--- Indexes for table `tb_training`
---
-ALTER TABLE `tb_training`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_tb_program1` (`tb_program_id`), ADD KEY `fk_tb_training_ref_satker1` (`ref_satker_id`);
-
---
--- Indexes for table `tb_training_assignment`
---
-ALTER TABLE `tb_training_assignment`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_subject_id`), ADD KEY `fk_tb_training_assignment_tb_trainer1` (`tb_trainer_id`);
-
---
--- Indexes for table `tb_training_assignment_student`
---
-ALTER TABLE `tb_training_assignment_student`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_subject_student_tb_training_assignment1` (`tb_training_assignment_id`), ADD KEY `fk_tb_training_subject_student_tb_student1` (`tb_student_id`);
-
---
--- Indexes for table `tb_training_certificate`
---
-ALTER TABLE `tb_training_certificate`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_certificate_tb_training1` (`tb_training_id`), ADD KEY `fk_tb_training_certificate_tb_student1` (`tb_student_id`), ADD KEY `fk_tb_training_certificate_ref_unit1` (`ref_unit_id`), ADD KEY `fk_tb_training_certificate_ref_graduate1` (`ref_graduate_id`), ADD KEY `fk_tb_training_certificate_ref_rank_class1` (`ref_rank_class_id`);
-
---
--- Indexes for table `tb_training_document`
---
-ALTER TABLE `tb_training_document`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_document_tb_training1` (`tb_training_id`);
-
---
--- Indexes for table `tb_training_execution_evaluation`
---
-ALTER TABLE `tb_training_execution_evaluation`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_execution_evaluation_tb_training_student1` (`tb_training_student_id`);
-
---
--- Indexes for table `tb_training_history`
---
-ALTER TABLE `tb_training_history`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tb_training_pic`
---
-ALTER TABLE `tb_training_pic`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_pic_tb_training1` (`tb_training_id`), ADD KEY `fk_tb_training_pic_tb_admin1` (`tb_admin_id`);
-
---
--- Indexes for table `tb_training_schedule`
---
-ALTER TABLE `tb_training_schedule`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_schedule_tb_training_assignment1` (`tb_training_assignment_id`), ADD KEY `fk_tb_training_schedule_tb_room1` (`tb_room_id`);
-
---
--- Indexes for table `tb_training_student`
---
-ALTER TABLE `tb_training_student`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_student_tb_training_assignment1` (`tb_training_assignment_id`), ADD KEY `fk_tb_training_student_tb_student1` (`tb_student_id`), ADD KEY `fk_tb_training_student_ref_unit1` (`ref_unit_id`), ADD KEY `fk_tb_training_student_ref_rank_class1` (`ref_rank_class_id`), ADD KEY `fk_tb_training_student_ref_graduate1` (`ref_graduate_id`);
-
---
--- Indexes for table `tb_training_student_attendance`
---
-ALTER TABLE `tb_training_student_attendance`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_student_attendance_tb_training_schedule1` (`tb_training_schedule_id`), ADD KEY `fk_tb_training_student_attendance_tb_student1` (`tb_student_id`);
-
---
--- Indexes for table `tb_training_subject`
---
-ALTER TABLE `tb_training_subject`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_subject_tb_training1` (`tb_training_id`);
-
---
--- Indexes for table `tb_training_subject_document`
---
-ALTER TABLE `tb_training_subject_document`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_subject_document_tb_training_subject1` (`tb_training_subject_id`);
-
---
--- Indexes for table `tb_training_subject_trainer_recommendation`
---
-ALTER TABLE `tb_training_subject_trainer_recommendation`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_subject_trainer_recommendation_tb_training_sub1` (`tb_training_subject_id`), ADD KEY `fk_tb_training_subject_trainer_recommendation_tb_trainer1` (`tb_trainer_id`);
-
---
--- Indexes for table `tb_training_trainer_attendance`
---
-ALTER TABLE `tb_training_trainer_attendance`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_trainer_attendance_tb_training_schedule1` (`tb_training_schedule_id`), ADD KEY `fk_tb_training_trainer_attendance_tb_trainer1` (`tb_trainer_id`);
-
---
--- Indexes for table `tb_training_trainer_evaluation`
---
-ALTER TABLE `tb_training_trainer_evaluation`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_trainer_evaluation_tb_student1` (`tb_student_id`), ADD KEY `fk_tb_training_trainer_evaluation_tb_training_assignment1` (`tb_training_assignment_id`);
-
---
--- Indexes for table `tb_training_unit_plan`
---
-ALTER TABLE `tb_training_unit_plan`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_student_spread_plan_tb_training1` (`tb_training_id`), ADD KEY `fk_tb_training_student_spread_plan_ref_unit1` (`ref_unit_id`);
-
---
--- Indexes for table `tb_user`
---
-ALTER TABLE `tb_user`
- ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `user_unique_username` (`username`), ADD UNIQUE KEY `user_unique_email` (`email`), ADD UNIQUE KEY `user_confirmation` (`id`,`confirmation_token`), ADD UNIQUE KEY `user_recovery` (`id`,`recovery_token`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `account`
---
-ALTER TABLE `account`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `menu`
---
-ALTER TABLE `menu`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ref_level`
---
-ALTER TABLE `ref_level`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `ref_program_code`
---
-ALTER TABLE `ref_program_code`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
---
--- AUTO_INCREMENT for table `ref_sbu`
---
-ALTER TABLE `ref_sbu`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT COMMENT 'standard biaya umum',AUTO_INCREMENT=13;
---
--- AUTO_INCREMENT for table `ref_sta_unit`
---
-ALTER TABLE `ref_sta_unit`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=100000;
---
--- AUTO_INCREMENT for table `tb_admin`
---
-ALTER TABLE `tb_admin`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_employee`
---
-ALTER TABLE `tb_employee`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
---
--- AUTO_INCREMENT for table `tb_notification`
---
-ALTER TABLE `tb_notification`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_program`
---
-ALTER TABLE `tb_program`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
---
--- AUTO_INCREMENT for table `tb_program_document`
---
-ALTER TABLE `tb_program_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_program_subject`
---
-ALTER TABLE `tb_program_subject`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_room`
---
-ALTER TABLE `tb_room`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_satker_pic`
---
-ALTER TABLE `tb_satker_pic`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT COMMENT 'tb_pic = untuk menyimpan data pejabat misal PPK, KAPUS, dsb';
---
--- AUTO_INCREMENT for table `tb_student`
---
-ALTER TABLE `tb_student`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_trainer`
---
-ALTER TABLE `tb_trainer`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training`
---
-ALTER TABLE `tb_training`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_training_assignment`
---
-ALTER TABLE `tb_training_assignment`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_assignment_student`
---
-ALTER TABLE `tb_training_assignment_student`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_certificate`
---
-ALTER TABLE `tb_training_certificate`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_document`
---
-ALTER TABLE `tb_training_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_training_execution_evaluation`
---
-ALTER TABLE `tb_training_execution_evaluation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_history`
---
-ALTER TABLE `tb_training_history`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_pic`
---
-ALTER TABLE `tb_training_pic`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_schedule`
---
-ALTER TABLE `tb_training_schedule`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_student`
---
-ALTER TABLE `tb_training_student`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_student_attendance`
---
-ALTER TABLE `tb_training_student_attendance`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_subject`
---
-ALTER TABLE `tb_training_subject`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_subject_document`
---
-ALTER TABLE `tb_training_subject_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_subject_trainer_recommendation`
---
-ALTER TABLE `tb_training_subject_trainer_recommendation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_trainer_attendance`
---
-ALTER TABLE `tb_training_trainer_attendance`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_trainer_evaluation`
---
-ALTER TABLE `tb_training_trainer_evaluation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_unit_plan`
---
-ALTER TABLE `tb_training_unit_plan`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_user`
---
-ALTER TABLE `tb_user`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
 -- Constraints for dumped tables
 --
 
@@ -2057,231 +1806,231 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- Constraints for table `account`
 --
 ALTER TABLE `account`
-ADD CONSTRAINT `fk_user_account` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `fk_user_account` FOREIGN KEY (`user_id`) REFERENCES `tb_user` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `auth_assignment`
 --
 ALTER TABLE `auth_assignment`
-ADD CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `auth_item`
 --
 ALTER TABLE `auth_item`
-ADD CONSTRAINT `auth_item_ibfk_1` FOREIGN KEY (`rule_name`) REFERENCES `auth_rule` (`name`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `auth_item_ibfk_1` FOREIGN KEY (`rule_name`) REFERENCES `auth_rule` (`name`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `auth_item_child`
 --
 ALTER TABLE `auth_item_child`
-ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `menu`
 --
 ALTER TABLE `menu`
-ADD CONSTRAINT `menu_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `menu` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `menu_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `menu` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_admin`
 --
 ALTER TABLE `tb_admin`
-ADD CONSTRAINT `fk_tb_admin_ref_level1` FOREIGN KEY (`ref_level_id`) REFERENCES `ref_level` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `fk_tb_admin_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `fk_tb_admin_tb_employee1` FOREIGN KEY (`tb_employee_id`) REFERENCES `tb_employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_tb_admin_ref_level1` FOREIGN KEY (`ref_level_id`) REFERENCES `ref_level` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_tb_admin_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_tb_admin_tb_employee1` FOREIGN KEY (`tb_employee_id`) REFERENCES `tb_employee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_authassignment`
 --
 ALTER TABLE `tb_authassignment`
-ADD CONSTRAINT `tb_authassignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tb_authassignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_authitemchild`
 --
 ALTER TABLE `tb_authitemchild`
-ADD CONSTRAINT `tb_authitemchild_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `tb_authitemchild_ibfk_2` FOREIGN KEY (`child`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tb_authitemchild_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_authitemchild_ibfk_2` FOREIGN KEY (`child`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_employee`
 --
 ALTER TABLE `tb_employee`
-ADD CONSTRAINT `fk_tb_employee_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_employee_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_employee_ref_religion1` FOREIGN KEY (`ref_religion_id`) REFERENCES `ref_religion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_employee_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_employee_ref_sta_unit1` FOREIGN KEY (`ref_sta_unit_id`) REFERENCES `ref_sta_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_employee_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_employee_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_employee_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_employee_ref_religion1` FOREIGN KEY (`ref_religion_id`) REFERENCES `ref_religion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_employee_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_employee_ref_sta_unit1` FOREIGN KEY (`ref_sta_unit_id`) REFERENCES `ref_sta_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_employee_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_program`
 --
 ALTER TABLE `tb_program`
-ADD CONSTRAINT `fk_tb_program_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_tb_program_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_program_document`
 --
 ALTER TABLE `tb_program_document`
-ADD CONSTRAINT `fk_tb_program_document_tb_program1` FOREIGN KEY (`tb_program_id`) REFERENCES `tb_program` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_program_document_tb_program1` FOREIGN KEY (`tb_program_id`) REFERENCES `tb_program` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_program_subject`
 --
 ALTER TABLE `tb_program_subject`
-ADD CONSTRAINT `fk_tb_program_subject_tb_program1` FOREIGN KEY (`tb_program_id`) REFERENCES `tb_program` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_program_subject_tb_program1` FOREIGN KEY (`tb_program_id`) REFERENCES `tb_program` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_rights`
 --
 ALTER TABLE `tb_rights`
-ADD CONSTRAINT `tb_rights_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tb_rights_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `tb_authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_room`
 --
 ALTER TABLE `tb_room`
-ADD CONSTRAINT `fk_tb_room_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_room_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_satker_pic`
 --
 ALTER TABLE `tb_satker_pic`
-ADD CONSTRAINT `fk_tb_satker_pic_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_satker_pic_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_student`
 --
 ALTER TABLE `tb_student`
-ADD CONSTRAINT `fk_tb_student_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_student_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_student_ref_religion1` FOREIGN KEY (`ref_religion_id`) REFERENCES `ref_religion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_student_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_student_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_student_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_student_ref_religion1` FOREIGN KEY (`ref_religion_id`) REFERENCES `ref_religion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_student_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_trainer`
 --
 ALTER TABLE `tb_trainer`
-ADD CONSTRAINT `fk_tb_trainer_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_trainer_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_trainer_ref_religion1` FOREIGN KEY (`ref_religion_id`) REFERENCES `ref_religion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_trainer_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_trainer_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_trainer_ref_religion1` FOREIGN KEY (`ref_religion_id`) REFERENCES `ref_religion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training`
 --
 ALTER TABLE `tb_training`
-ADD CONSTRAINT `fk_tb_training_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_tb_program1` FOREIGN KEY (`tb_program_id`) REFERENCES `tb_program` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_ref_satker1` FOREIGN KEY (`ref_satker_id`) REFERENCES `ref_satker` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_tb_program1` FOREIGN KEY (`tb_program_id`) REFERENCES `tb_program` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_assignment`
 --
 ALTER TABLE `tb_training_assignment`
-ADD CONSTRAINT `fk_tb_training_assignment_tb_trainer1` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_assignment_tb_training_subject1` FOREIGN KEY (`tb_training_subject_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_assignment_tb_trainer1` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_assignment_tb_training_subject1` FOREIGN KEY (`tb_training_subject_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_assignment_student`
 --
 ALTER TABLE `tb_training_assignment_student`
-ADD CONSTRAINT `fk_tb_training_subject_student_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_subject_student_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_subject_student_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_subject_student_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_certificate`
 --
 ALTER TABLE `tb_training_certificate`
-ADD CONSTRAINT `fk_tb_training_certificate_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_certificate_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_certificate_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_certificate_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_certificate_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_certificate_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_certificate_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_certificate_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_certificate_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_certificate_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_document`
 --
 ALTER TABLE `tb_training_document`
-ADD CONSTRAINT `fk_tb_training_document_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_document_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_execution_evaluation`
 --
 ALTER TABLE `tb_training_execution_evaluation`
-ADD CONSTRAINT `fk_tb_training_execution_evaluation_tb_training_student1` FOREIGN KEY (`tb_training_student_id`) REFERENCES `tb_training_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_execution_evaluation_tb_training_student1` FOREIGN KEY (`tb_training_student_id`) REFERENCES `tb_training_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_pic`
 --
 ALTER TABLE `tb_training_pic`
-ADD CONSTRAINT `fk_tb_training_pic_tb_admin1` FOREIGN KEY (`tb_admin_id`) REFERENCES `tb_admin` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_pic_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_pic_tb_admin1` FOREIGN KEY (`tb_admin_id`) REFERENCES `tb_admin` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_pic_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_schedule`
 --
 ALTER TABLE `tb_training_schedule`
-ADD CONSTRAINT `fk_tb_training_schedule_tb_room1` FOREIGN KEY (`tb_room_id`) REFERENCES `tb_room` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_schedule_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_schedule_tb_room1` FOREIGN KEY (`tb_room_id`) REFERENCES `tb_room` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_schedule_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_student`
 --
 ALTER TABLE `tb_training_student`
-ADD CONSTRAINT `fk_tb_training_student_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_student_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_student_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_student_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_student_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_student_ref_graduate1` FOREIGN KEY (`ref_graduate_id`) REFERENCES `ref_graduate` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_student_ref_rank_class1` FOREIGN KEY (`ref_rank_class_id`) REFERENCES `ref_rank_class` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_student_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_student_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_student_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_student_attendance`
 --
 ALTER TABLE `tb_training_student_attendance`
-ADD CONSTRAINT `fk_tb_training_student_attendance_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_student_attendance_tb_training_schedule1` FOREIGN KEY (`tb_training_schedule_id`) REFERENCES `tb_training_schedule` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_student_attendance_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_student_attendance_tb_training_schedule1` FOREIGN KEY (`tb_training_schedule_id`) REFERENCES `tb_training_schedule` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_subject`
 --
 ALTER TABLE `tb_training_subject`
-ADD CONSTRAINT `fk_tb_training_subject_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_subject_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_subject_document`
 --
 ALTER TABLE `tb_training_subject_document`
-ADD CONSTRAINT `fk_tb_training_subject_document_tb_training_subject1` FOREIGN KEY (`tb_training_subject_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_subject_document_tb_training_subject1` FOREIGN KEY (`tb_training_subject_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_subject_trainer_recommendation`
 --
 ALTER TABLE `tb_training_subject_trainer_recommendation`
-ADD CONSTRAINT `fk_tb_training_subject_trainer_recommendation_tb_trainer1` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_subject_trainer_recommendation_tb_training_sub1` FOREIGN KEY (`tb_training_subject_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_subject_trainer_recommendation_tb_trainer1` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_subject_trainer_recommendation_tb_training_sub1` FOREIGN KEY (`tb_training_subject_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_trainer_attendance`
 --
 ALTER TABLE `tb_training_trainer_attendance`
-ADD CONSTRAINT `fk_tb_training_trainer_attendance_tb_trainer1` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_trainer_attendance_tb_training_schedule1` FOREIGN KEY (`tb_training_schedule_id`) REFERENCES `tb_training_schedule` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_trainer_attendance_tb_trainer1` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_trainer_attendance_tb_training_schedule1` FOREIGN KEY (`tb_training_schedule_id`) REFERENCES `tb_training_schedule` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_trainer_evaluation`
 --
 ALTER TABLE `tb_training_trainer_evaluation`
-ADD CONSTRAINT `fk_tb_training_trainer_evaluation_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_trainer_evaluation_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_trainer_evaluation_tb_student1` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_trainer_evaluation_tb_training_assignment1` FOREIGN KEY (`tb_training_assignment_id`) REFERENCES `tb_training_assignment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_unit_plan`
 --
 ALTER TABLE `tb_training_unit_plan`
-ADD CONSTRAINT `fk_tb_training_student_spread_plan_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `fk_tb_training_student_spread_plan_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_student_spread_plan_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_student_spread_plan_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
