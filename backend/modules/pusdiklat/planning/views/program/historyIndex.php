@@ -47,7 +47,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             [ 
 				'attribute' => 'test', 
 			],    
-            ['class' => 'kartik\grid\ActionColumn'], 
+            [
+				'class' => 'kartik\grid\ActionColumn',
+				'template' => '{delete}',
+			], 
         ], 
         'panel' => [  
             'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>', 

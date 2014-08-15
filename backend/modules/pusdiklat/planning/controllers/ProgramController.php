@@ -51,8 +51,9 @@ class ProgramController extends Controller
     public function actionHistoryIndex($id)
     {		
 		$searchModel = new \backend\models\ProgramHistorySearch();
-        $queryParams = array_merge([],Yii::$app->request->getQueryParams());
-        $queryParams['ProgramHistory']=['tb_program_id'=>$id];
+		
+        $queryParams = Yii::$app->request->getQueryParams();
+        $queryParams['ProgramHistorySearch']=['tb_program_id'=>$id];
         $dataProvider = $searchModel->search($queryParams);
 		$dataProvider->getSort()->defaultOrder = ['revision'=>SORT_DESC];
 		
