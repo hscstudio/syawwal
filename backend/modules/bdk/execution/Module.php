@@ -1,10 +1,10 @@
 <?php
 
-namespace backend\modules\sekretariat\it;
+namespace backend\modules\bdk\execution;
 
 class Module extends \yii\base\Module
 {
-    public $controllerNamespace = 'backend\modules\sekretariat\it\controllers';
+    public $controllerNamespace = 'backend\modules\bdk\execution\controllers';
 
     public function init()
     {

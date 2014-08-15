@@ -1,6 +1,7 @@
+
 <?php $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="sekretariat-organisation-default-index">
     <h1><?= $this->context->action->uniqueId ?></h1>

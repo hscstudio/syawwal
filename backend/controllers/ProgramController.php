@@ -1,63 +1,21 @@
 <?php
-/**
- * This is the template for generating a CRUD controller class file.
- */
 
-use yii\db\ActiveRecordInterface;
-use yii\helpers\StringHelper;
-
-
-/* @var $this yii\web\View */
-/* @var $generator yii\gii\generators\crud\Generator */
-
-$controllerClass = StringHelper::basename($generator->controllerClass);
-$modelClass = StringHelper::basename($generator->modelClass);
-$searchModelClass = StringHelper::basename($generator->searchModelClass);
-if ($modelClass === $searchModelClass) {
-    $searchModelAlias = $searchModelClass . 'Search';
-}
-
-/* @var $class ActiveRecordInterface */
-$class = $generator->modelClass;
-$pks = $class::primaryKey();
-$urlParams = $generator->generateUrlParams();
-$actionParams = $generator->generateActionParams();
-$actionParamComments = $generator->generateActionParamComments();
-
-echo "<?php\n";
-?>
-
-namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
+namespace backend\controllers;
 
 use Yii;
-use <?= ltrim($generator->modelClass, '\\') ?>;
-<?php if (!empty($generator->searchModelClass)): ?>
-use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? " as $searchModelAlias" : "") ?>;
-<?php else: ?>
-use yii\data\ActiveDataProvider;
-<?php endif; ?>
-use <?= ltrim($generator->baseControllerClass, '\\') ?>;
+use backend\models\Program;
+use backend\models\ProgramSearch;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
+ * ProgramController implements the CRUD actions for Program model.
  */
-class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
+class ProgramController extends Controller
 {
-<?php if(!empty($_POST['Generator']['moduleID'])){ ?>
-	<?php if($_POST['Generator']['layout']=='column2'){ ?>
-	public $layout = '@hscstudio/heart/views/layouts/column2';
-	<?php } else { ?>
-	public $layout = '@hscstudio/heart/views/layouts/column1';
-	<?php } ?> 
-<?php } else{ ?>
-	<?php if($_POST['Generator']['layout']=='column2'){ ?>
-	public $layout = 'column2';
-	<?php } else { ?>
-	public $layout = 'column1';
-	<?php } ?>
-<?php } ?> 	
+		public $layout = 'column2';
+	 	
 	public function behaviors()
     {
         return [
@@ -71,50 +29,40 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     }
 
     /**
-     * Lists all <?= $modelClass ?> models.
+     * Lists all Program models.
      * @return mixed
      */
     public function actionIndex()
     {
-<?php if (!empty($generator->searchModelClass)): ?>
-        $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
+        $searchModel = new ProgramSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-<?php else: ?>
-        $dataProvider = new ActiveDataProvider([
-            'query' => <?= $modelClass ?>::find(),
-        ]);
-
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
-<?php endif; ?>
     }
 
     /**
-     * Displays a single <?= $modelClass ?> model.
-     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
+     * Displays a single Program model.
+     * @param integer $id
      * @return mixed
      */
-    public function actionView(<?= $actionParams ?>)
+    public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel(<?= $actionParams ?>),
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new <?= $modelClass ?> model.
+     * Creates a new Program model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new <?= $modelClass ?>();
+        $model = new Program();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -123,7 +71,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 			else{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
 			}
-            return $this->redirect(['view', <?= $urlParams ?>]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -132,63 +80,19 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     }
 
     /**
-     * Updates an existing <?= $modelClass ?> model.
+     * Updates an existing Program model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
+     * @param integer $id
      * @return mixed
      */
-    public function actionUpdate(<?= $actionParams ?>)
+    public function actionUpdate($id)
     {
-        $model = $this->findModel(<?= $actionParams ?>);
+        $model = $this->findModel($id);
         $currentFiles=[];
-        <?php
-        $idx2=0;
-        if (($tableSchema = $generator->getTableSchema()) !== false) {
-            foreach ($tableSchema->columns as $column) {
-                if ($column->phpType == 'string' && $column->size === 255 && 
-                    preg_match('/^(document|document1|document2|photo|image|picture|file)$/i', $column->name)) {
-                    ?>
-        $currentFiles[<?= $idx2; ?>]=$model-><?= $column->name ?>;
-                    <?php
-                    $idx2++;
-                }
-            }
-        }
-        ?>
-
+        
         if ($model->load(Yii::$app->request->post())) {
             $files=[];
-			<?php
-			$idx=0;
-			if (($tableSchema = $generator->getTableSchema()) !== false) {
-				foreach ($tableSchema->columns as $column) {
-					if ($column->phpType == 'string' && $column->size === 255 && 
-						preg_match('/^(document|document1|document2|photo|image|picture|file)$/i', $column->name)) {
-						?>					
-				$files[<?= $idx; ?>] = \yii\web\UploadedFile::getInstance($model, '<?= $column->name ?>');
-				$model-><?= $column->name ?>=isset($currentFiles[<?= $idx; ?>])?$currentFiles[<?= $idx; ?>]:'';
-				if(!empty($files[<?= $idx; ?>])){
-					$ext = end((explode(".", $files[<?= $idx; ?>]->name)));
-					$model-><?= $column->name ?> = uniqid() . '.' . $ext;
-					$path = '';
-					if(isset(Yii::$app->params['uploadPath'])){
-						$path = Yii::$app->params['uploadPath'].'/<?= strtolower($modelClass); ?>/'.$model->id.'/';
-					}
-					else{
-						$path = Yii::getAlias('@common').'/../files/<?= strtolower($modelClass); ?>/'.$model->id.'/';
-					}
-					@mkdir($path, 0755, true);
-					@chmod($path, 0755);
-					$paths[<?= $idx; ?>] = $path . $model-><?= $column->name ?>;
-					if(isset($currentFiles[<?= $idx; ?>])) @unlink($path . $currentFiles[<?= $idx; ?>]);
-				}
-						<?php
-						$idx++;
-					}
-				}
-			}
-            ?>
-
+			
             if($model->save()){
 				$idx=0;
                 foreach($files as $file){
@@ -198,14 +102,14 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 					$idx++;
 				}
 				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', <?= $urlParams ?>]);
+                return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
 				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{
-			//return $this->render(['update', <?= $urlParams ?>]);
+			//return $this->render(['update', 'id' => $model->id]);
 			return $this->render('update', [
                 'model' => $model,
             ]);
@@ -213,39 +117,28 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     }
 
     /**
-     * Deletes an existing <?= $modelClass ?> model.
+     * Deletes an existing Program model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
+     * @param integer $id
      * @return mixed
      */
-    public function actionDelete(<?= $actionParams ?>)
+    public function actionDelete($id)
     {
-        $this->findModel(<?= $actionParams ?>)->delete();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the <?= $modelClass ?> model based on its primary key value.
+     * Finds the Program model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
-     * @return <?=                   $modelClass ?> the loaded model
+     * @param integer $id
+     * @return Program the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel(<?= $actionParams ?>)
+    protected function findModel($id)
     {
-<?php
-if (count($pks) === 1) {
-    $condition = '$id';
-} else {
-    $condition = [];
-    foreach ($pks as $pk) {
-        $condition[] = "'$pk' => \$$pk";
-    }
-    $condition = '[' . implode(', ', $condition) . ']';
-}
-?>
-        if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
+        if (($model = Program::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -253,15 +146,15 @@ if (count($pks) === 1) {
     }
 	
 	public function actionEditable() {
-		$model = new <?= $modelClass ?>; // your model can be loaded here
+		$model = new Program; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['<?= $modelClass ?>'][$_POST['editableIndex']]);
-				$value=$_POST['<?= $modelClass ?>'][$_POST['editableIndex']][$name];
+				$name=key($_POST['Program'][$_POST['editableIndex']]);
+				$value=$_POST['Program'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -281,7 +174,7 @@ if (count($pks) === 1) {
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => <?= $modelClass ?>::find(),
+            'query' => Program::find(),
         ]);
 		
 		try {
@@ -295,23 +188,20 @@ if (count($pks) === 1) {
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "<?= $modelClass ?>";
-<?php		
-$idx=0;
-foreach ($generator->getColumnNames() as $name) {?>
-			$data1[]['col<?= $idx; ?>'] = '<?= $name; ?>';			
-<?php
-if(++$idx>3) break;
-}
-?>	
+			$OpenTBS->VarRef['modelName']= "Program";
+			$data1[]['col0'] = 'id';			
+			$data1[]['col1'] = 'ref_satker_id';			
+			$data1[]['col2'] = 'number';			
+			$data1[]['col3'] = 'name';			
+	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $<?= strtolower($modelClass); ?>){
+			foreach($dataProvider->getModels() as $program){
 				$data2[] = [
-					'col0'=>$<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[0] ?>,
-					'col1'=>$<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[1] ?>,
-					'col2'=>$<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[2] ?>,
-					'col3'=>$<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[3] ?>,
+					'col0'=>$program->id,
+					'col1'=>$program->ref_satker_id,
+					'col2'=>$program->number,
+					'col3'=>$program->name,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -330,7 +220,7 @@ if(++$idx>3) break;
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => <?= $modelClass ?>::find(),
+            'query' => Program::find(),
         ]);
 		
 		try {
@@ -345,13 +235,13 @@ if(++$idx>3) break;
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel <?= $modelClass; ?>');
+								->setCellValue('A1', 'Tabel Program');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $<?= strtolower($modelClass); ?>){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[0] ?>)
-													  ->setCellValue('B'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[1] ?>)
-													  ->setCellValue('C'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[2] ?>)
-													  ->setCellValue('D'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[3] ?>);
+					foreach($dataProvider->getModels() as $program){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $program->id)
+													  ->setCellValue('B'.$idx, $program->ref_satker_id)
+													  ->setCellValue('C'.$idx, $program->number)
+													  ->setCellValue('D'.$idx, $program->name);
 						$idx++;
 					}		
 					
@@ -376,13 +266,13 @@ if(++$idx>3) break;
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel <?= $modelClass; ?>');
+								->setCellValue('A1', 'Tabel Program');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $<?= strtolower($modelClass); ?>){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[0] ?>)
-													  ->setCellValue('B'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[1] ?>)
-													  ->setCellValue('C'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[2] ?>)
-													  ->setCellValue('D'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[3] ?>);
+					foreach($dataProvider->getModels() as $program){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $program->id)
+													  ->setCellValue('B'.$idx, $program->ref_satker_id)
+													  ->setCellValue('C'.$idx, $program->number)
+													  ->setCellValue('D'.$idx, $program->name);
 						$idx++;
 					}		
 									
@@ -424,13 +314,13 @@ if(++$idx>3) break;
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel <?= $modelClass; ?>');
+									->setCellValue('A1', 'Tabel Program');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $<?= strtolower($modelClass); ?>){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[0] ?>)
-														  ->setCellValue('B'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[1] ?>)
-														  ->setCellValue('C'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[2] ?>)
-														  ->setCellValue('D'.$idx, $<?= strtolower($modelClass); ?>-><?= $generator->getColumnNames()[3] ?>);
+						foreach($dataProvider->getModels() as $program){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $program->id)
+														  ->setCellValue('B'.$idx, $program->ref_satker_id)
+														  ->setCellValue('C'.$idx, $program->number)
+														  ->setCellValue('D'.$idx, $program->name);
 							$idx++;
 						}		
 						
@@ -474,7 +364,7 @@ if(++$idx>3) break;
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => <?= $modelClass; ?>::find(),
+            'query' => Program::find(),
         ]);
 		
 		/* 
@@ -499,41 +389,45 @@ if(++$idx>3) break;
 					while(!empty($sheetData[$baseRow]['A'])){
 						$read_status = true;
 						$abjadX=array();
-						<?php
-						for($i=65;$i<=90;$i++){
-							$abjadX[]=chr($i);
-							if($i==90){
-								for($j=65;$j<=90;$j++){
-									for($k=65;$k<=90;$k++){
-										$abjadX[]=chr($j).chr($k);
-									}
-								}
-							}
-						}
-						$count=0;
-						foreach ($generator->getTableSchema()->columns as $column) {
-							if($count!=0) echo "\t\t\t\t\t\t";
-							if ($column->autoIncrement or in_array($column->name, ['created','createdBy','modified','modifiedBy','deleted','deletedBy'])) 
-								echo "//\$" . $column->name . "=  \$sheetData[\$baseRow]['".$abjadX[$count]."'];\n";	
-							else 
-								echo "\$" . $column->name . "=  \$sheetData[\$baseRow]['".$abjadX[$count]."'];\n";
-							$count++;
-						}
-						echo "\n";
-						?>
-						$model2=new <?= $modelClass; ?>;
-						<?php
-						$count=0;
-						foreach ($generator->getTableSchema()->columns as $column) {
-							if($count!=0) echo "\t\t\t\t\t\t";
-							if ($column->autoIncrement or in_array($column->name, ['created','createdBy','modified','modifiedBy','deleted','deletedBy'])) 
-								echo "//\$model2->" . $column->name . "=  \$".$column->name.";\n";
-							else 
-								echo "\$model2->" . $column->name . "=  \$".$column->name.";\n";
-							$count++;	
-						}
-						echo "\n";
-						?>
+						//$id=  $sheetData[$baseRow]['A'];
+						$ref_satker_id=  $sheetData[$baseRow]['B'];
+						$number=  $sheetData[$baseRow]['C'];
+						$name=  $sheetData[$baseRow]['D'];
+						$hours=  $sheetData[$baseRow]['E'];
+						$days=  $sheetData[$baseRow]['F'];
+						$test=  $sheetData[$baseRow]['G'];
+						$type=  $sheetData[$baseRow]['H'];
+						$note=  $sheetData[$baseRow]['I'];
+						$validationStatus=  $sheetData[$baseRow]['J'];
+						$validationNote=  $sheetData[$baseRow]['K'];
+						$status=  $sheetData[$baseRow]['L'];
+						//$created=  $sheetData[$baseRow]['M'];
+						//$createdBy=  $sheetData[$baseRow]['N'];
+						//$modified=  $sheetData[$baseRow]['O'];
+						//$modifiedBy=  $sheetData[$baseRow]['P'];
+						//$deleted=  $sheetData[$baseRow]['Q'];
+						//$deletedBy=  $sheetData[$baseRow]['R'];
+
+						$model2=new Program;
+						//$model2->id=  $id;
+						$model2->ref_satker_id=  $ref_satker_id;
+						$model2->number=  $number;
+						$model2->name=  $name;
+						$model2->hours=  $hours;
+						$model2->days=  $days;
+						$model2->test=  $test;
+						$model2->type=  $type;
+						$model2->note=  $note;
+						$model2->validationStatus=  $validationStatus;
+						$model2->validationNote=  $validationNote;
+						$model2->status=  $status;
+						//$model2->created=  $created;
+						//$model2->createdBy=  $createdBy;
+						//$model2->modified=  $modified;
+						//$model2->modifiedBy=  $modifiedBy;
+						//$model2->deleted=  $deleted;
+						//$model2->deletedBy=  $deletedBy;
+
 						try{
 							if($model2->save()){
 								$inserted++;

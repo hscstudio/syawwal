@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 14, 2014 at 11:37 AM
+-- Generation Time: Aug 15, 2014 at 02:27 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.9
 
@@ -946,14 +946,15 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `deletedBy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tb_program_ref_satker1` (`ref_satker_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `tb_program`
 --
 
 INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 5, '2.3.1.2', 'Diklat Intelejen Tingkat Dasar', 50, NULL, 0, 0, '', 1, 'OK', 1, '2014-04-17 19:47:22', 1, '2014-08-13 16:19:12', 1, NULL, NULL);
+(1, 5, '2.3.1.2', 'Diklat Intelejen Tingkat Dasar', 50, NULL, 0, 0, '', 1, 'OK', 1, '2014-04-17 19:47:22', 1, '2014-08-13 16:19:12', 1, NULL, NULL),
+(8, 0, '2.3.1.2', 'Intelejen Tingkat Dasar', 30, 3, 1, 0, '', 0, NULL, 1, '2014-08-14 17:13:06', 1, '2014-08-14 17:13:06', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1019,7 +1020,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_history` (
   `hours` int(5) DEFAULT NULL,
   `days` int(3) DEFAULT NULL,
   `test` tinyint(1) NOT NULL DEFAULT '0',
-  `type` tinyint(1) NOT NULL,
+  `type` int(1) NOT NULL,
   `note` varchar(255) NOT NULL,
   `validationStatus` tinyint(1) DEFAULT '0',
   `validationNote` varchar(255) DEFAULT NULL,

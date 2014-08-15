@@ -27,19 +27,41 @@ use yii\helpers\ArrayHelper;
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 	
-    <?= '' ?>
+	<?php
+	/*
+	* Satker by default sesuai dengan satker_id dari User yang login
+	$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+	echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
+		'data' => $data,
+		'options' => ['placeholder' => 'Choose Satker ...'],
+		'pluginOptions' => [
+		'allowClear' => true
+		],
+	]);
+	*/
+	?>
 
-			<?php
-			$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Satker ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
-			]); ?>
-
-    <?= $form->field($model, 'hours')->textInput() ?>
+	<?php
+	$data = ArrayHelper::map(
+		\backend\models\ProgramCode::find()
+			->select(['id','code', 'CONCAT(name," => ",code) as name_code'])
+			->orderBy(['[[id]]'=> SORT_ASC])			
+			->asArray()
+			->all(), 
+			'code', 'name_code'
+	);
+	echo $form->field($model, 'number')->widget(Select2::classname(), [
+		'data' => $data,
+		'options' => ['placeholder' => 'Choose code ...'],
+		'pluginOptions' => [
+			'allowClear' => true
+		],
+	]);
+	?>
+	
+	<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+	
+    <?= $form->field($model, 'hours')->textInput(['maxlength' => 3]) ?>
 
     <?= $form->field($model, 'days')->textInput(['maxlength' => 3]) ?>
 
@@ -49,28 +71,45 @@ use yii\helpers\ArrayHelper;
 						'offText' => 'Off',
 					]
 				]) ?>
-
-    <?= $form->field($model, 'validationStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
+	
+	<?php
+	$data = [1=>'LULUS',0=>'TELAH MENGIKUTI'];
+	echo $form->field($model, 'type')->widget(Select2::classname(), [
+		'data' => $data,
+		'options' => ['placeholder' => 'Choose type ...'],
+		'pluginOptions' => [
+			'allowClear' => true
+		],
+	]);
+	?>
+					
+	<?php
+	// Hanya ditampilkan ketika edit aje
+	if(!$model->isNewRecord){ ?>	
+		<?= $form->field($model, 'validationStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
+						'pluginOptions' => [
+							'onText' => 'On',
+							'offText' => 'Off',
+						]
+					]) ?>
+		
+		<?= $form->field($model, 'validationNote')->textInput(['maxlength' => 255]) ?>	
+	<?php
+	}
+	?>
+	
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
 					]
 				]) ?>
-
+	
     <?= ""//createdBy ?>
 
     <?= ""//modifiedBy ?>
 
     <?= ""//deletedBy ?>
-
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
     <?= ""//created ?>
 
@@ -78,9 +117,9 @@ use yii\helpers\ArrayHelper;
 
     <?= ""//deleted ?>
 
-    <?= $form->field($model, 'number')->textInput(['maxlength' => 15]) ?>
+    <?php //$form->field($model, 'number')->textInput(['maxlength' => 15]) ?>
 
-    <?= $form->field($model, 'validationNote')->textInput(['maxlength' => 255]) ?>
+    
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

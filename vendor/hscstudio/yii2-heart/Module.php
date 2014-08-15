@@ -19,8 +19,9 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		'datecontrol'=>true,// use false for not use it
 		'gridview'=>true,// use false for not use it
 		'gii'=>true, // use false for not use it
-		'privilege'=>[],// use false for not use it
-		'user'=>[]	// use false for not use it
+		'user'=>true,	// use false for not use it
+		'privilege'=>true,// use false for not use it
+		
 	];
 	
     public function init()
@@ -46,8 +47,9 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		
 		$view = $app->getView();
 		$pathMap=[];
-			
-		if(@$this->features['datecontrol']!=false){		
+		
+		if(!isset($this->features['datecontrol'])) $this->features['datecontrol']=true;		
+		if($this->features['datecontrol']!=false){		
 			$app->setModules([
 				'datecontrol' => [
 					'class' => '\kartik\datecontrol\Module',			 
@@ -77,7 +79,8 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 			]);
 		}
 		
-		if(@$this->features['gridview']!=false){		
+		if(!isset($this->features['gridview'])) $this->features['gridview']=true;
+		if($this->features['gridview']!=false){		
 			$app->setModules([
 				'gridview' => [
 					'class' => '\kartik\grid\Module',
@@ -85,7 +88,8 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 			]);
 		}
 		
-		if(@$this->features['gii']!=false){		
+		if(!isset($this->features['gii'])) $this->features['gii']=true;
+		if($this->features['gii']!=false){		
 			$app->setModules([
 				'gii' => [
 					'class' => 'yii\gii\Module',
@@ -114,46 +118,19 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 			]);
 		}
 		
-		if(@$this->features['user']!=false){			
-			/*$app->setModule('user', 
-				yii\helpers\ArrayHelper::merge([ // bisa juga pake yii\helpers\ArrayHelper::merge
-					'class' => '\dektrium\user\Module',
-					'confirmable' => false,
-					'confirmWithin' => 86400,
-					'allowUnconfirmedLogin' => true,
-					'rememberFor' => 1209600,
-					'recoverWithin' => 21600,
-					'admins' => ['admin'],
-					'cost' => 13,
-					'components' => [
-						'manager' => [
-							// Active record classes
-							'userClass' => 'backend\models\User',
-							'profileClass' => 'backend\models\Employee',
-							//'userClass'    => 'dektrium\user\models\User',
-							//'profileClass' => 'dektrium\user\models\Profile',
-							//'accountClass' => 'dektrium\user\models\Account',
-							// Model that is used on resending confirmation messages
-							//'resendFormClass' => 'dektrium\user\models\ResendForm',
-							// Model that is used on logging in
-							//'loginFormClass' => 'dektrium\user\models\LoginForm',
-							// Model that is used on password recovery
-							//'passwordRecoveryFormClass' => 'dektrium\user\models\RecoveryForm',
-							// Model that is used on requesting password recovery
-							//'passwordRecoveryRequestFormClass' => 'dektrium\user\models\RecoveryRequestForm',
-						],
-					], 
-					'controllerMap' => [
-						'admin' => 'backend\controllers\AdminController'
-					],	
-				], $this->features['user'])
-			);
-			*/
-			
-			$pathMap['@dektrium/user/views'] = '@hscstudio/heart/modules/user/views';
+		if(!isset($this->features['user'])) $this->features['user']=true;
+		if($this->features['user']!=false){			
+			if(isset($this->features['user']['pathMap'])){
+				foreach($this->features['user']['pathMap'] as $path1 => $path2){
+					$pathMap[$path1] = $path2;
+				}
+			}
+			else
+				$pathMap['@dektrium/user/views'] = '@hscstudio/heart/modules/user/views';
 		}
 		
-		if(@$this->features['privilege']!=false){		
+		if(!isset($this->features['privilege'])) $this->features['privilege']=true;
+		if($this->features['privilege']!=false){		
 			$authManager = yii\helpers\ArrayHelper::remove($this->features['privilege'], 'authManager', [
 					'class' => 'yii\rbac\DbManager',
 			]);
