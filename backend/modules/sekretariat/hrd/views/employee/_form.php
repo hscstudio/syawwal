@@ -159,7 +159,7 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'nip')->textInput(['maxlength' => 18]) ?>
 
     <?= $form->field($model, 'email', [
-					 'inputTemplate' => '<div class="input-group"><span class="input-group-addon">@</span>{input}</div>',
+					 'addon' => ['prepend' => ['content'=>'@']]
 				 ]); ?>
 
     <?= $form->field($model, 'officeEmail')->textInput(['maxlength' => 100]) ?>

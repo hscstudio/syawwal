@@ -5,8 +5,6 @@ namespace backend\models;
 use Yii;
 																
 use yii\behaviors\TimestampBehavior;
-use yii\behaviors\AttributeBehavior;
-use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
@@ -32,7 +30,6 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $deletedBy
  *
  * @property Satker $refSatker
- * @property TrainingSchedule[] $trainingSchedules
  */
 class Room extends \yii\db\ActiveRecord
 {
@@ -65,16 +62,6 @@ class Room extends \yii\db\ActiveRecord
                         \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => 'modifiedBy',
                 ],
             ],
-			'autoAttributeStamp' => [
-                'class' => \yii\behaviors\AttributeBehavior::className(),
-                'attributes' => [
-                    \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'id',
-                ],
-                'value' => function ($event) {
-                    /* Enhance oleh om Misbah master */
-					return self::find()->max('id')+1;
-                },
-            ],	
         ];
     }
 	
@@ -124,12 +111,5 @@ class Room extends \yii\db\ActiveRecord
     public function getSatker()
     {
         return $this->hasOne(Satker::className(), ['id' => 'ref_satker_id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainingSchedules()
-    {
-        return $this->hasMany(TrainingSchedule::className(), ['tb_room_id' => 'id']);
     }
 }

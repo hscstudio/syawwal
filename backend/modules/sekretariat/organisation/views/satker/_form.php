@@ -27,8 +27,6 @@ use yii\helpers\ArrayHelper;
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 	
-    <?= $form->field($model, 'id')->textInput(['maxlength' => 3]) ?>
-
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
     <?= $form->field($model, 'letterNumber')->textInput(['maxlength' => 25]) ?>
@@ -65,7 +63,7 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'address')->textInput(['maxlength' => 500]) ?>
 
     <?= $form->field($model, 'email', [
-					 'inputTemplate' => '<div class="input-group"><span class="input-group-addon">@</span>{input}</div>',
+					 'addon' => ['prepend' => ['content'=>'@']]
 				 ]); ?>
 
     <div class="form-group">
