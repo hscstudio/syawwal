@@ -20,8 +20,17 @@ AppAsset::register($this);
     <meta charset="<?= Yii::$app->charset ?>"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title>
+        <?php
+            if (isset($this->title) and ($this->title != null or $this->title != ''))
+            {
+                echo Html::encode($this->title).' - ';
+            }
+            echo Html::encode(Yii::$app->params['namaAplikasi']); 
+        ?>
+    </title>
     <?php $this->head() ?>
+    <link rel="shortcut icon" href="<?php echo Yii::getAlias('@web');?>/favicon.ico"/>
 </head>
 <body>
     <?php $this->beginBody() ?>
@@ -49,29 +58,29 @@ AppAsset::register($this);
                         ['icon'=>'fa fa-key fa-fw','label'=>'Users', 'url'=> ['/user/admin'],'path'=>'user'],
                     ]];
 				$menuItemsLeft[] =
-                    ['icon'=>'fa fa-sitemap fa-fw','label' => 'SEKRETARIAT', 'url' => '#', 'items' => [
+                    ['icon'=>'fa fa-home fa-fw','label' => 'SEKRETARIAT', 'url' => '#', 'items' => [
                         ['icon'=>'fa fa-sitemap fa-fw','label'=>'Organisation', 'url'=> ['/sekretariat-organisation/default/index'],'path'=>'sekretariat-organisation' ],
                         ['icon'=>'fa fa-users fa-fw','label'=>'HRD', 'url'=> ['/sekretariat-hrd/default/index'],'path'=>'sekretariat-hrd' ],
                         ['icon'=>'fa fa-money fa-fw','label'=>'Finance', 'url'=> ['/sekretariat-finance/default/index'],'path'=>'sekretariat-finance' ],
                         ['icon'=>'fa fa-desktop fa-fw','label'=>'Information Technology', 'url'=> ['/sekretariat-it/default/index'],'path'=>'sekretariat-it' ],
-                        ['icon'=>'fa fa-support fa-fw','label'=>'General', 'url'=> ['/sekretariat-general/default/index'],'path'=>'sekretariat-general' ],
+                        ['icon'=>'fa fa-joomla fa-fw','label'=>'General', 'url'=> ['/sekretariat-general/default/index'],'path'=>'sekretariat-general' ],
                     ]];
                 $menuItemsLeft[] =
                     ['icon'=>'fa fa-building fa-fw','label' => 'PUSDIKLAT', 'url' => ['#'], 'items' => [
-                        ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/pusdiklat-general/default/index'],'path'=>'pusdiklat-general'],
-						['icon'=>'fa fa-th-list fa-fw','label'=>'Planning', 'url'=> ['/pusdiklat-planning/default/index'],'path'=>'pusdiklat-planning'],
-						['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/pusdiklat-execution/default/index'],'path'=>'pusdiklat-execution'],
+                        ['icon'=>'fa fa-joomla fa-fw','label'=>'General', 'url'=> ['/pusdiklat-general/default/index'],'path'=>'pusdiklat-general'],
+						['icon'=>'fa fa-calendar fa-fw','label'=>'Planning', 'url'=> ['/pusdiklat-planning/default/index'],'path'=>'pusdiklat-planning'],
+						['icon'=>'fa fa-paper-plane fa-fw','label'=>'Execution', 'url'=> ['/pusdiklat-execution/default/index'],'path'=>'pusdiklat-execution'],
 						['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/pusdiklat-evaluation/default/index'],'path'=>'pusdiklat-evaluation'],
 						'<li class="divider"></li>',
-                       ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/pusdiklat2-general/default/index'],'path'=>'pusdiklat2-general' ],
-                        ['icon'=>'fa fa-book fa-fw','label'=>'Training', 'url'=> ['/pusdiklat2-training/default/index'],'path'=>'pusdiklat2-training' ],
+                       ['icon'=>'fa fa-joomla fa-fw','label'=>'General', 'url'=> ['/pusdiklat2-general/default/index'],'path'=>'pusdiklat2-general' ],
+                        ['icon'=>'fa fa-stack-overflow fa-fw','label'=>'Training', 'url'=> ['/pusdiklat2-training/default/index'],'path'=>'pusdiklat2-training' ],
                         ['icon'=>'fa fa-sort-numeric-asc fa-fw','label'=>'Test', 'url'=> ['/pusdiklat2-test/default/index'],'path'=>'pusdiklat2-test' ],
 						['icon'=>'fa fa-graduation-cap fa-fw','label'=>'Scholarship', 'url'=> ['/pusdiklat2-scholarship/default/index'],'path'=>'pusdiklat2-scholarship' ],
                     ]];
                 $menuItemsLeft[] =
                     ['icon'=>'fa fa-university fa-fw','label' => 'BDK', 'url' => ['#'], 'items' => [
-                        ['icon'=>'fa fa-cogs fa-fw','label'=>'General', 'url'=> ['/bdk-general/default/index'],'path'=>'bdk-general'],
-                        ['icon'=>'fa fa-refresh fa-fw','label'=>'Execution', 'url'=> ['/bdk-execution/default/index'],'path'=>'bdk-execution'],
+                        ['icon'=>'fa fa-joomla fa-fw','label'=>'General', 'url'=> ['/bdk-general/default/index'],'path'=>'bdk-general'],
+                        ['icon'=>'fa fa-paper-plane fa-fw','label'=>'Execution', 'url'=> ['/bdk-execution/default/index'],'path'=>'bdk-execution'],
                         ['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/bdk-evaluation/default/index'],'path'=>'bdk-evaluation'],
                     ]];
 
