@@ -12,7 +12,7 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log','heart'],
     'modules' => [
-		/*Sekretariat*/
+		/* START SEKRETARIAT */
 		'sekretariat-organisation' => [
             'class' => 'backend\modules\sekretariat\organisation\Module',
         ],
@@ -28,21 +28,7 @@ return [
 		'sekretariat-general' => [
             'class' => 'backend\modules\sekretariat\general\Module',
         ],
-		///////////////////////////////////////////
-		/*Pusdiklat2*/
-		'pusdiklat2-general' => [
-            'class' => 'backend\modules\pusdiklat2\general\Module',
-        ],
-		'pusdiklat2-training' => [
-            'class' => 'backend\modules\pusdiklat2\training\Module',
-        ],
-		'pusdiklat2-test' => [
-            'class' => 'backend\modules\pusdiklat2\test\Module',
-        ],
-		'pusdiklat2-scholarship' => [
-            'class' => 'backend\modules\pusdiklat2\scholarship\Module',
-        ],
-		/////////////////
+		/* FINISH SEKRETARIAT */
 		/* START PUSDIKLAT */
 		'pusdiklat-general' => [
             'class' => 'backend\modules\pusdiklat\general\Module',
@@ -56,7 +42,21 @@ return [
 		'pusdiklat-evaluation' => [
             'class' => 'backend\modules\pusdiklat\evaluation\Module',
         ],
-		/* FINISH PUSDIKLAT */
+		/* FINISH PUSDIKLAT */				
+		/* START PUSDIKLAT2 */
+		'pusdiklat2-general' => [
+            'class' => 'backend\modules\pusdiklat2\general\Module',
+        ],
+		'pusdiklat2-training' => [
+            'class' => 'backend\modules\pusdiklat2\training\Module',
+        ],
+		'pusdiklat2-test' => [
+            'class' => 'backend\modules\pusdiklat2\test\Module',
+        ],
+		'pusdiklat2-scholarship' => [
+            'class' => 'backend\modules\pusdiklat2\scholarship\Module',
+        ],
+		/* FINISH PUSDIKLAT2 */
 		/* START BDK */
 		'bdk-general' => [
             'class' => 'backend\modules\bdk\general\Module',
