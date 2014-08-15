@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-																
+																		
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
@@ -19,6 +19,8 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $hours
  * @property integer $days
  * @property integer $test
+ * @property integer $type
+ * @property string $note
  * @property integer $validationStatus
  * @property string $validationNote
  * @property integer $status
@@ -75,11 +77,11 @@ class Program extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ref_satker_id', 'hours', 'days', 'test', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['name'], 'required'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['number'], 'string', 'max' => 15],
-            [['name', 'validationNote'], 'string', 'max' => 255]
+            [['name', 'note', 'validationNote'], 'string', 'max' => 255]
         ];
     }
 
@@ -96,6 +98,8 @@ class Program extends \yii\db\ActiveRecord
             'hours' => 'Hours',
             'days' => 'Days',
             'test' => 'Test',
+            'type' => 'Type',
+            'note' => 'Note',
             'validationStatus' => 'Validation Status',
             'validationNote' => 'Validation Note',
             'status' => 'Status',
@@ -107,8 +111,7 @@ class Program extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
-	
-	/**
+	    /**
      * @return \yii\db\ActiveQuery
      */
     public function getSatker()
@@ -137,19 +140,19 @@ class Program extends \yii\db\ActiveRecord
         return $this->hasMany(Training::className(), ['tb_program_id' => 'id']);
     }
 	
-	/**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProgramCode()
-    {
-        return $this->hasOne(ProgramCode::className(), ['code' => 'number']);
-    }
-	
-	/**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser($id)
-    {
-        return User::findOne($id);
-    }
+	/**  
+	* @return \yii\db\ActiveQuery  
+	*/  
+	public function getProgramCode()  
+	{  
+	  return $this->hasOne(ProgramCode::className(), ['code' => 'number']);  
+	}  
+    
+	/**  
+	* @return \yii\db\ActiveQuery  
+	*/  
+	public function getUser($id)  
+	{  
+	  return User::findOne($id);  
+	}  
 }

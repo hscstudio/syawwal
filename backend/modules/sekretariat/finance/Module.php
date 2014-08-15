@@ -14,7 +14,7 @@ class Module extends \yii\base\Module
 	public function getMenuItems(){
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			['icon' => 'fa fa-fw fa-money','label' => 'Sbu', 'url' => ['/'.$this->uniqueId.'/sbu/index']],
+			['icon' => 'fa fa-fw fa-money','label' => 'Sbu', 'url' => ['/'.$this->uniqueId.'/sbu/index'],'path'=>'sbu'],
 		];
 	}
 }

@@ -3,14 +3,68 @@
 namespace backend\models;
 
 use Yii;
-																																				
+																																											
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
-use dektrium\user\models\Profile as BaseEmployee;
+/**
+ * This is the model class for table "tb_employee".
+ *
 
-class Employee extends BaseEmployee
+ * @property integer $id
+ * @property integer $ref_satker_id
+ * @property integer $ref_unit_id
+ * @property integer $ref_religion_id
+ * @property integer $ref_rank_class_id
+ * @property integer $ref_graduate_id
+ * @property integer $ref_sta_unit_id
+ * @property string $name
+ * @property string $nickName
+ * @property string $frontTitle
+ * @property string $backTitle
+ * @property string $nip
+ * @property string $born
+ * @property string $birthDay
+ * @property integer $gender
+ * @property string $phone
+ * @property string $email
+ * @property string $address
+ * @property integer $married
+ * @property string $photo
+ * @property string $blood
+ * @property string $position
+ * @property string $education
+ * @property string $officePhone
+ * @property string $officeFax
+ * @property string $officeEmail
+ * @property string $officeAddress
+ * @property string $document1
+ * @property string $document2
+ * @property integer $status
+ * @property string $created
+ * @property integer $createdBy
+ * @property string $modified
+ * @property integer $modifiedBy
+ * @property string $deleted
+ * @property integer $deletedBy
+ * @property integer $user_id
+ * @property string $public_email
+ * @property string $gravatar_email
+ * @property string $gravatar_id
+ * @property string $location
+ * @property string $bio
+ * @property string $website
+ *
+ * @property Admin[] $admins
+ * @property Graduate $refGraduate
+ * @property RankClass $refRankClass
+ * @property Religion $refReligion
+ * @property Satker $refSatker
+ * @property StaUnit $refStaUnit
+ * @property Unit $refUnit
+ */
+class Employee extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -51,21 +105,17 @@ class Employee extends BaseEmployee
     public function rules()
     {
         return [
-            [['ref_satker_id', 'ref_unit_id', 'ref_religion_id', 'ref_rank_class_id', 'ref_graduate_id', 'ref_sta_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name'], 'required'],
+            [['ref_satker_id', 'ref_unit_id', 'ref_religion_id', 'ref_rank_class_id', 'ref_graduate_id', 'ref_sta_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'user_id'], 'integer'],
+            [['name', 'user_id'], 'required'],
             [['birthDay', 'created', 'modified', 'deleted'], 'safe'],
+            [['bio'], 'string'],
             [['name', 'nickName', 'born', 'phone', 'officePhone', 'officeFax'], 'string', 'max' => 50],
             [['frontTitle', 'backTitle'], 'string', 'max' => 20],
             [['nip'], 'string', 'max' => 18],
             [['email', 'officeEmail'], 'string', 'max' => 100],
-            [['address', 'photo', 'position', 'education', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
+            [['address', 'photo', 'position', 'education', 'officeAddress', 'document1', 'document2', 'public_email', 'gravatar_email', 'location', 'website'], 'string', 'max' => 255],
             [['blood'], 'string', 'max' => 10],
-
-            /* rules dari model dektrium.models */
-            [['bio'], 'string'],
-            [['public_email', 'gravatar_email'], 'email'],
-            ['website', 'url'],
-            [['name', 'public_email', 'gravatar_email', 'location', 'website'], 'string', 'max' => 255]
+            [['gravatar_id'], 'string', 'max' => 32]
         ];
     }
 
@@ -111,13 +161,13 @@ class Employee extends BaseEmployee
             'modifiedBy' => 'Modified By',
             'deleted' => 'Deleted',
             'deletedBy' => 'Deleted By',
-
-            /* artibute name dari model dektrium.profile */
-            'public_email' => \Yii::t('user', 'Email (public)'),
-            'gravatar_email' => \Yii::t('user', 'Gravatar email'),
-            'location' => \Yii::t('user', 'Location'),
-            'website' => \Yii::t('user', 'Website'),
-            'bio' => \Yii::t('user', 'Bio'),
+            'user_id' => 'User ID',
+            'public_email' => 'Public Email',
+            'gravatar_email' => 'Gravatar Email',
+            'gravatar_id' => 'Gravatar ID',
+            'location' => 'Location',
+            'bio' => 'Bio',
+            'website' => 'Website',
         ];
     }
 	    /**
@@ -168,14 +218,5 @@ class Employee extends BaseEmployee
     public function getUnit()
     {
         return $this->hasOne(Unit::className(), ['id' => 'ref_unit_id']);
-    }
-
-
-    /*
-    Menambah relasi, 1-1 ke User
-    */
-    public function getUser()
-    {
-        return $this->hasOne(User::classname(), ['id' => 'user_id']);
     }
 }

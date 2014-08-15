@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-//use yii\widgets\DetailView;
 use kartik\detail\DetailView;
 
 /* @var $this yii\web\View */
@@ -12,72 +11,54 @@ $this->params['breadcrumbs'][] = ['label' => 'Employees', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="employee-view">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
-	<!--
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-	-->
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'Employees # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Employees # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
+						['class'=>'btn btn-xs btn-primary',
+						 'title'=>'Back to Index',
+						]).' '.
+					 Html::a('<i class="fa fa-fw fa-trash-o"></i>',['#'],
+						['class'=>'btn btn-xs btn-danger kv-btn-delete',
+						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
             'id',
             [
 				'attribute' => 'ref_satker_id',
-				'value' => function ($model) {
-					return $model->satker->name;
-				}
+				'value' => $model->satker->name,
 			],
             'ref_satker_id',
             [
 				'attribute' => 'ref_unit_id',
-				'value' => function ($model) {
-					return $model->unit->name;
-				}
+				'value' => $model->unit->name,
 			],
             'ref_unit_id',
             [
 				'attribute' => 'ref_religion_id',
-				'value' => function ($model) {
-					return $model->religion->name;
-				}
+				'value' => $model->religion->name,
 			],
             'ref_religion_id',
             [
 				'attribute' => 'ref_rank_class_id',
-				'value' => function ($model) {
-					return $model->rankClass->name;
-				}
+				'value' => $model->rankClass->name,
 			],
             'ref_rank_class_id',
             [
 				'attribute' => 'ref_graduate_id',
-				'value' => function ($model) {
-					return $model->graduate->name;
-				}
+				'value' => $model->graduate->name,
 			],
             'ref_graduate_id',
             [
 				'attribute' => 'ref_sta_unit_id',
-				'value' => function ($model) {
-					return $model->staUnit->name;
-				}
+				'value' => $model->staUnit->name,
 			],
             'ref_sta_unit_id',
             'name',
@@ -109,6 +90,13 @@ $this->params['sideMenu']=$menus;
             'modifiedBy',
             'deleted',
             'deletedBy',
+            'user_id',
+            'public_email:email',
+            'gravatar_email:email',
+            'gravatar_id',
+            'location',
+            'bio:ntext',
+            'website',
         ],
     ]) ?>
 

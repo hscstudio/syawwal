@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="program-index">
 
@@ -91,6 +91,23 @@ $this->params['sideMenu']=$menus;
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
+				[
+					'format' => 'html',
+					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'label' => 'Revision',
+					'value' => function ($data) {
+						$countRevision = \backend\models\ProgramHistory::find()
+									->where(['tb_program_id' => $data->id,])
+									->count()-1;
+						if($countRevision>0){
+							return Html::a($countRevision.'x', ['history-index','id'=>$data->id], ['class' => 'badge']);
+						}
+						else{
+							return '-';
+						}
+					}
 				],
 
             ['class' => 'kartik\grid\ActionColumn'],

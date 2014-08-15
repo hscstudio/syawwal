@@ -14,10 +14,9 @@ use yii\filters\VerbFilter;
  */
 class StudentController extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -66,7 +65,13 @@ class StudentController extends Controller
     {
         $model = new Student();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())){
+			if($model->save()) {
+				 Yii::$app->session->setFlash('success', 'Data saved');
+			}
+			else{
+				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -102,8 +107,8 @@ class StudentController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/student/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[0] = $path . $model->photo;
 					if(isset($currentFiles[0])) @unlink($path . $currentFiles[0]);
 				}
@@ -116,9 +121,11 @@ class StudentController extends Controller
 					}
 					$idx++;
 				}
+				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{

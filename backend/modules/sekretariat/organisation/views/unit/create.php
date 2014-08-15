@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Units', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 echo \kartik\widgets\AlertBlock::widget([
     'useSessionFlash' => true,
@@ -19,8 +19,6 @@ echo \kartik\widgets\AlertBlock::widget([
 ]);
 ?>
 <div class="unit-create">
-
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
 
     <?= $this->render('_form', [
         'model' => $model,

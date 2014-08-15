@@ -4,26 +4,19 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $this yii\web\View */
 /* @var $searchModel backend\models\TrainerSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Trainers';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="trainer-index">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-	<!--
-    <p>
-        <?= Html::a('Create Trainer', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-	-->
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -119,11 +112,11 @@ $this->params['sideMenu']=$menus;
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i> Trainer</h3>',
-			'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i></h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Trainer</h3>',
+			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Trainer', ['create'], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Trainer', ['create'], ['class' => 'btn btn-success']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,

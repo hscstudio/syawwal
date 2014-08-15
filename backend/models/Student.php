@@ -55,8 +55,8 @@ use yii\behaviors\BlameableBehavior;
  * @property RankClass $refRankClass
  * @property Religion $refReligion
  * @property Unit $refUnit
- * @property TrainingAssignmentStudent[] $trainingAssignmentStudents
  * @property TrainingCertificate[] $trainingCertificates
+ * @property TrainingClassStudent[] $trainingClassStudents
  * @property TrainingStudent[] $trainingStudents
  * @property TrainingStudentAttendance[] $trainingStudentAttendances
  * @property TrainingTrainerEvaluation[] $trainingTrainerEvaluations
@@ -191,16 +191,16 @@ class Student extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingAssignmentStudents()
+    public function getTrainingCertificates()
     {
-        return $this->hasMany(TrainingAssignmentStudent::className(), ['tb_student_id' => 'id']);
+        return $this->hasMany(TrainingCertificate::className(), ['tb_student_id' => 'id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingCertificates()
+    public function getTrainingClassStudents()
     {
-        return $this->hasMany(TrainingCertificate::className(), ['tb_student_id' => 'id']);
+        return $this->hasMany(TrainingClassStudent::className(), ['tb_student_id' => 'id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery

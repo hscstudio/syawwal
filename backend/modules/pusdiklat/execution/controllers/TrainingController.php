@@ -14,10 +14,9 @@ use yii\filters\VerbFilter;
  */
 class TrainingController extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [

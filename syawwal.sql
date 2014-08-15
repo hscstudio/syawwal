@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 15, 2014 at 02:27 AM
+-- Generation Time: Aug 15, 2014 at 11:08 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.9
 
@@ -888,7 +888,7 @@ CREATE TABLE IF NOT EXISTS `tb_employee` (
   KEY `fk_tb_employee_ref_rank_class1` (`ref_rank_class_id`),
   KEY `fk_tb_employee_ref_graduate1` (`ref_graduate_id`),
   KEY `fk_tb_employee_ref_sta_unit1` (`ref_sta_unit_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `tb_employee`
@@ -932,9 +932,9 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `name` varchar(255) NOT NULL,
   `hours` int(5) DEFAULT NULL,
   `days` int(3) DEFAULT NULL,
-  `test` tinyint(1) NOT NULL DEFAULT '0',
-  `type` tinyint(1) NOT NULL COMMENT 'tipe kelulusan (lulus/mengikuti)',
-  `note` varchar(255) NOT NULL,
+  `test` tinyint(1) DEFAULT '0',
+  `type` tinyint(1) DEFAULT NULL COMMENT 'tipe kelulusan (lulus/mengikuti)',
+  `note` varchar(255) DEFAULT NULL,
   `validationStatus` tinyint(1) DEFAULT '0',
   `validationNote` varchar(255) DEFAULT NULL,
   `status` int(1) NOT NULL DEFAULT '1',
@@ -946,15 +946,14 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `deletedBy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tb_program_ref_satker1` (`ref_satker_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `tb_program`
 --
 
 INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 5, '2.3.1.2', 'Diklat Intelejen Tingkat Dasar', 50, NULL, 0, 0, '', 1, 'OK', 1, '2014-04-17 19:47:22', 1, '2014-08-13 16:19:12', 1, NULL, NULL),
-(8, 0, '2.3.1.2', 'Intelejen Tingkat Dasar', 30, 3, 1, 0, '', 0, NULL, 1, '2014-08-14 17:13:06', 1, '2014-08-14 17:13:06', 1, NULL, NULL);
+(3, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:08:27', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1019,9 +1018,9 @@ CREATE TABLE IF NOT EXISTS `tb_program_history` (
   `name` varchar(255) NOT NULL,
   `hours` int(5) DEFAULT NULL,
   `days` int(3) DEFAULT NULL,
-  `test` tinyint(1) NOT NULL DEFAULT '0',
-  `type` int(1) NOT NULL,
-  `note` varchar(255) NOT NULL,
+  `test` tinyint(1) DEFAULT '0',
+  `type` int(1) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
   `validationStatus` tinyint(1) DEFAULT '0',
   `validationNote` varchar(255) DEFAULT NULL,
   `status` int(1) NOT NULL DEFAULT '1',
@@ -1034,6 +1033,14 @@ CREATE TABLE IF NOT EXISTS `tb_program_history` (
   PRIMARY KEY (`tb_program_id`,`revision`),
   KEY `fk_tb_program_ref_satker1` (`ref_satker_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tb_program_history`
+--
+
+INSERT INTO `tb_program_history` (`tb_program_id`, `revision`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(3, 0, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:07:56', 1, NULL, NULL),
+(3, 1, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:08:27', 1, '2014-08-15 14:08:27', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1337,13 +1344,6 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   KEY `fk_tb_training_ref_satker1` (`ref_satker_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
---
--- Dumping data for table `tb_training`
---
-
-INSERT INTO `tb_training` (`id`, `tb_program_id`, `revision`, `ref_satker_id`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
-(1, 1, 0, 5, 'Diklat Intelejen Tingkat Dasar Angkatan I', '2014-04-21', '2014-04-25', '', NULL, NULL, '', '', NULL, NULL, '', 1, 1, 'BPPK', '-', 1, '2014-04-18 14:33:44', 1, NULL, NULL, NULL, NULL, 0, '', '0000-00-00 00:00:00', 0);
-
 -- --------------------------------------------------------
 
 --
@@ -1563,13 +1563,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_document` (
   PRIMARY KEY (`id`),
   KEY `fk_tb_training_document_tb_training1` (`tb_training_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `tb_training_document`
---
-
-INSERT INTO `tb_training_document` (`id`, `tb_training_id`, `name`, `filename`, `description`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 1, 'Test', 'filename', '', 1, '2014-04-18 16:32:35', 1, '2014-04-18 16:48:16', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1941,14 +1934,14 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
   UNIQUE KEY `user_unique_email` (`email`),
   UNIQUE KEY `user_confirmation` (`id`,`confirmation_token`),
   UNIQUE KEY `user_recovery` (`id`,`recovery_token`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `tb_user`
 --
 
 INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmation_token`, `confirmation_sent_at`, `confirmed_at`, `unconfirmed_email`, `recovery_token`, `recovery_sent_at`, `blocked_at`, `role`, `registered_from`, `logged_in_from`, `logged_in_at`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1407815341, 1405728264, 1407815341);
+(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1408073996, 1405728264, 1408073996);
 
 --
 -- Constraints for dumped tables
@@ -2085,8 +2078,8 @@ ALTER TABLE `tb_training_certificate`
 -- Constraints for table `tb_training_class_student`
 --
 ALTER TABLE `tb_training_class_student`
-  ADD CONSTRAINT `tb_training_class_student_ibfk_2` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `tb_training_class_student_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `tb_training_class_student_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `tb_training_class_student_ibfk_2` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_class_subject`

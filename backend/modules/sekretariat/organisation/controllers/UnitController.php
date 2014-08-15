@@ -14,10 +14,9 @@ use yii\filters\VerbFilter;
  */
 class UnitController extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -66,7 +65,13 @@ class UnitController extends Controller
     {
         $model = new Unit();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())){
+			if($model->save()) {
+				 Yii::$app->session->setFlash('success', 'Data saved');
+			}
+			else{
+				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -97,9 +102,11 @@ class UnitController extends Controller
 					}
 					$idx++;
 				}
+				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{

@@ -8,17 +8,15 @@ use backend\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use backend\models\User; // buat fungsi hapus user. Sementara
 
 /**
  * EmployeeController implements the CRUD actions for Employee model.
  */
 class EmployeeController extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -67,7 +65,13 @@ class EmployeeController extends Controller
     {
         $model = new Employee();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())){
+			if($model->save()) {
+				 Yii::$app->session->setFlash('success', 'Data saved');
+			}
+			else{
+				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -105,8 +109,8 @@ class EmployeeController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/employee/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[0] = $path . $model->photo;
 					if(isset($currentFiles[0])) @unlink($path . $currentFiles[0]);
 				}
@@ -123,8 +127,8 @@ class EmployeeController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/employee/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[1] = $path . $model->document1;
 					if(isset($currentFiles[1])) @unlink($path . $currentFiles[1]);
 				}
@@ -141,8 +145,8 @@ class EmployeeController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/employee/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[2] = $path . $model->document2;
 					if(isset($currentFiles[2])) @unlink($path . $currentFiles[2]);
 				}
@@ -155,9 +159,11 @@ class EmployeeController extends Controller
 					}
 					$idx++;
 				}
+				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{
@@ -176,15 +182,8 @@ class EmployeeController extends Controller
      */
     public function actionDelete($id)
     {
-        // Get Model Employee
-		$model = $this->findModel($id);
-		
-        // Delete tabel User Base On field user_id in table Employee
-        $user = User::findOne($model->user_id);
-        $user->delete();
-		
-		// Delete employee
-		$model->delete();
+        $this->findModel($id)->delete();
+
         return $this->redirect(['index']);
     }
 
@@ -484,6 +483,13 @@ class EmployeeController extends Controller
 						//$modifiedBy=  $sheetData[$baseRow]['AH'];
 						//$deleted=  $sheetData[$baseRow]['AI'];
 						//$deletedBy=  $sheetData[$baseRow]['AJ'];
+						$user_id=  $sheetData[$baseRow]['AK'];
+						$public_email=  $sheetData[$baseRow]['AL'];
+						$gravatar_email=  $sheetData[$baseRow]['AM'];
+						$gravatar_id=  $sheetData[$baseRow]['AN'];
+						$location=  $sheetData[$baseRow]['AO'];
+						$bio=  $sheetData[$baseRow]['AP'];
+						$website=  $sheetData[$baseRow]['AQ'];
 
 						$model2=new Employee;
 						//$model2->id=  $id;
@@ -522,6 +528,13 @@ class EmployeeController extends Controller
 						//$model2->modifiedBy=  $modifiedBy;
 						//$model2->deleted=  $deleted;
 						//$model2->deletedBy=  $deletedBy;
+						$model2->user_id=  $user_id;
+						$model2->public_email=  $public_email;
+						$model2->gravatar_email=  $gravatar_email;
+						$model2->gravatar_id=  $gravatar_id;
+						$model2->location=  $location;
+						$model2->bio=  $bio;
+						$model2->website=  $website;
 
 						try{
 							if($model2->save()){

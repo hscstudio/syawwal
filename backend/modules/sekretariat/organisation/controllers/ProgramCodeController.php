@@ -1,21 +1,22 @@
 <?php
 
-namespace backend\controllers;
+namespace backend\modules\sekretariat\organisation\controllers;
 
 use Yii;
-use backend\models\Program;
-use backend\models\ProgramSearch;
+use backend\models\ProgramCode;
+use backend\models\ProgramCodeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ProgramController implements the CRUD actions for Program model.
+ * ProgramCodeController implements the CRUD actions for ProgramCode model.
  */
-class ProgramController extends Controller
+class ProgramCodeController extends Controller
 {
-		public $layout = 'column2';
-	 	
+		public $layout = '@hscstudio/heart/views/layouts/column2';
+	 
+ 	
 	public function behaviors()
     {
         return [
@@ -29,12 +30,12 @@ class ProgramController extends Controller
     }
 
     /**
-     * Lists all Program models.
+     * Lists all ProgramCode models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ProgramSearch();
+        $searchModel = new ProgramCodeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -44,7 +45,7 @@ class ProgramController extends Controller
     }
 
     /**
-     * Displays a single Program model.
+     * Displays a single ProgramCode model.
      * @param integer $id
      * @return mixed
      */
@@ -56,13 +57,13 @@ class ProgramController extends Controller
     }
 
     /**
-     * Creates a new Program model.
+     * Creates a new ProgramCode model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Program();
+        $model = new ProgramCode();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -80,7 +81,7 @@ class ProgramController extends Controller
     }
 
     /**
-     * Updates an existing Program model.
+     * Updates an existing ProgramCode model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -117,7 +118,7 @@ class ProgramController extends Controller
     }
 
     /**
-     * Deletes an existing Program model.
+     * Deletes an existing ProgramCode model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -130,15 +131,15 @@ class ProgramController extends Controller
     }
 
     /**
-     * Finds the Program model based on its primary key value.
+     * Finds the ProgramCode model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Program the loaded model
+     * @return ProgramCode the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Program::findOne($id)) !== null) {
+        if (($model = ProgramCode::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -146,15 +147,15 @@ class ProgramController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new Program; // your model can be loaded here
+		$model = new ProgramCode; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['Program'][$_POST['editableIndex']]);
-				$value=$_POST['Program'][$_POST['editableIndex']][$name];
+				$name=key($_POST['ProgramCode'][$_POST['editableIndex']]);
+				$value=$_POST['ProgramCode'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -174,7 +175,7 @@ class ProgramController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Program::find(),
+            'query' => ProgramCode::find(),
         ]);
 		
 		try {
@@ -188,20 +189,20 @@ class ProgramController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "Program";
+			$OpenTBS->VarRef['modelName']= "ProgramCode";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'ref_satker_id';			
-			$data1[]['col2'] = 'number';			
-			$data1[]['col3'] = 'name';			
+			$data1[]['col1'] = 'name';			
+			$data1[]['col2'] = 'code';			
+			$data1[]['col3'] = 'parent_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $program){
+			foreach($dataProvider->getModels() as $programcode){
 				$data2[] = [
-					'col0'=>$program->id,
-					'col1'=>$program->ref_satker_id,
-					'col2'=>$program->number,
-					'col3'=>$program->name,
+					'col0'=>$programcode->id,
+					'col1'=>$programcode->name,
+					'col2'=>$programcode->code,
+					'col3'=>$programcode->parent_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -220,7 +221,7 @@ class ProgramController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => Program::find(),
+            'query' => ProgramCode::find(),
         ]);
 		
 		try {
@@ -235,13 +236,13 @@ class ProgramController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Program');
+								->setCellValue('A1', 'Tabel ProgramCode');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $program){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $program->id)
-													  ->setCellValue('B'.$idx, $program->ref_satker_id)
-													  ->setCellValue('C'.$idx, $program->number)
-													  ->setCellValue('D'.$idx, $program->name);
+					foreach($dataProvider->getModels() as $programcode){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programcode->id)
+													  ->setCellValue('B'.$idx, $programcode->name)
+													  ->setCellValue('C'.$idx, $programcode->code)
+													  ->setCellValue('D'.$idx, $programcode->parent_id);
 						$idx++;
 					}		
 					
@@ -266,13 +267,13 @@ class ProgramController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Program');
+								->setCellValue('A1', 'Tabel ProgramCode');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $program){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $program->id)
-													  ->setCellValue('B'.$idx, $program->ref_satker_id)
-													  ->setCellValue('C'.$idx, $program->number)
-													  ->setCellValue('D'.$idx, $program->name);
+					foreach($dataProvider->getModels() as $programcode){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programcode->id)
+													  ->setCellValue('B'.$idx, $programcode->name)
+													  ->setCellValue('C'.$idx, $programcode->code)
+													  ->setCellValue('D'.$idx, $programcode->parent_id);
 						$idx++;
 					}		
 									
@@ -314,13 +315,13 @@ class ProgramController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel Program');
+									->setCellValue('A1', 'Tabel ProgramCode');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $program){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $program->id)
-														  ->setCellValue('B'.$idx, $program->ref_satker_id)
-														  ->setCellValue('C'.$idx, $program->number)
-														  ->setCellValue('D'.$idx, $program->name);
+						foreach($dataProvider->getModels() as $programcode){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programcode->id)
+														  ->setCellValue('B'.$idx, $programcode->name)
+														  ->setCellValue('C'.$idx, $programcode->code)
+														  ->setCellValue('D'.$idx, $programcode->parent_id);
 							$idx++;
 						}		
 						
@@ -364,7 +365,7 @@ class ProgramController extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Program::find(),
+            'query' => ProgramCode::find(),
         ]);
 		
 		/* 
@@ -390,36 +391,22 @@ class ProgramController extends Controller
 						$read_status = true;
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
-						$ref_satker_id=  $sheetData[$baseRow]['B'];
-						$number=  $sheetData[$baseRow]['C'];
-						$name=  $sheetData[$baseRow]['D'];
-						$hours=  $sheetData[$baseRow]['E'];
-						$days=  $sheetData[$baseRow]['F'];
-						$test=  $sheetData[$baseRow]['G'];
-						$type=  $sheetData[$baseRow]['H'];
-						$note=  $sheetData[$baseRow]['I'];
-						$validationStatus=  $sheetData[$baseRow]['J'];
-						$validationNote=  $sheetData[$baseRow]['K'];
-						$status=  $sheetData[$baseRow]['L'];
-						//$created=  $sheetData[$baseRow]['M'];
-						//$createdBy=  $sheetData[$baseRow]['N'];
-						//$modified=  $sheetData[$baseRow]['O'];
-						//$modifiedBy=  $sheetData[$baseRow]['P'];
-						//$deleted=  $sheetData[$baseRow]['Q'];
-						//$deletedBy=  $sheetData[$baseRow]['R'];
+						$name=  $sheetData[$baseRow]['B'];
+						$code=  $sheetData[$baseRow]['C'];
+						$parent_id=  $sheetData[$baseRow]['D'];
+						$status=  $sheetData[$baseRow]['E'];
+						//$created=  $sheetData[$baseRow]['F'];
+						//$createdBy=  $sheetData[$baseRow]['G'];
+						//$modified=  $sheetData[$baseRow]['H'];
+						//$modifiedBy=  $sheetData[$baseRow]['I'];
+						//$deleted=  $sheetData[$baseRow]['J'];
+						//$deletedBy=  $sheetData[$baseRow]['K'];
 
-						$model2=new Program;
+						$model2=new ProgramCode;
 						//$model2->id=  $id;
-						$model2->ref_satker_id=  $ref_satker_id;
-						$model2->number=  $number;
 						$model2->name=  $name;
-						$model2->hours=  $hours;
-						$model2->days=  $days;
-						$model2->test=  $test;
-						$model2->type=  $type;
-						$model2->note=  $note;
-						$model2->validationStatus=  $validationStatus;
-						$model2->validationNote=  $validationNote;
+						$model2->code=  $code;
+						$model2->parent_id=  $parent_id;
 						$model2->status=  $status;
 						//$model2->created=  $created;
 						//$model2->createdBy=  $createdBy;

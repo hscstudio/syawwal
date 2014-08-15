@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProgramSearch */
+/* @var $model backend\models\ProgramCodeSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="program-search">
+<div class="program-code-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,23 +17,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'ref_satker_id') ?>
-
-    <?= $form->field($model, 'number') ?>
-
     <?= $form->field($model, 'name') ?>
 
-    <?= $form->field($model, 'hours') ?>
+    <?= $form->field($model, 'code') ?>
 
-    <?php // echo $form->field($model, 'days') ?>
+    <?= $form->field($model, 'parent_id') ?>
 
-    <?php // echo $form->field($model, 'test') ?>
-
-    <?php // echo $form->field($model, 'validationStatus') ?>
-
-    <?php // echo $form->field($model, 'validationNote') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
+    <?= $form->field($model, 'status') ?>
 
     <?php // echo $form->field($model, 'created') ?>
 

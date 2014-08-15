@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id
 $this->params['breadcrumbs'][] = 'Update';
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 echo \kartik\widgets\AlertBlock::widget([
     'useSessionFlash' => true,
