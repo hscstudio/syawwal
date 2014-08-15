@@ -43,6 +43,24 @@ class ProgramController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+	
+	/**
+     * Lists all Program models.
+     * @return mixed
+     */
+    public function actionHistoryIndex($id)
+    {		
+		$searchModel = new \backend\models\ProgramHistorySearch();
+        $queryParams = array_merge([],Yii::$app->request->getQueryParams());
+        $queryParams['ProgramHistory']=['tb_program_id'=>$id];
+        $dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['revision'=>SORT_DESC];
+		
+        return $this->render('historyIndex', [ 
+            'searchModel' => $searchModel, 
+            'dataProvider' => $dataProvider, 
+        ]); 
+    }
 
     /**
      * Displays a single Program model.
@@ -68,7 +86,16 @@ class ProgramController extends Controller
         if ($model->load(Yii::$app->request->post())){
 			$model->ref_satker_id = (int)Yii::$app->user->identity->id;
 			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
+				Yii::$app->session->setFlash('success', 'Data saved');
+				// SAVE HISTORY OF PROGRAM
+				$model2 = new \backend\models\ProgramHistory();
+				$model2->attributes = array_merge(
+				  $model->attributes,[
+					'tb_program_id'=>$model->id,
+					'revision'=>'0',					
+				  ]
+				);				
+				$model2->save();
 			}
 			else{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
@@ -92,18 +119,31 @@ class ProgramController extends Controller
         $model = $this->findModel($id);
         $currentFiles=[];
         
-        if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-			
+        if ($model->load(Yii::$app->request->post())) {			
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
 				Yii::$app->session->setFlash('success', 'Data saved');
+				// SAVE HISTORY OF PROGRAM
+				if(Yii::$app->request->post('create_revision')!==null){
+					// CREATE NEW HISTORY
+					$model2 = new \backend\models\ProgramHistory();
+					$model2->attributes = array_merge(
+					  $model->attributes,[
+						'tb_program_id'=>$model->id,
+						'revision'=>$model2->revision+1,				
+					  ]
+					);				
+					$model2->save();
+					Yii::$app->session->setFlash('success', 'Save as revision');	
+				}
+				else{
+					$model2 = \backend\models\ProgramHistory::find()
+									->where(['tb_program_id' => $model->id,])
+									->orderBy(['revision'=>'DESC'])
+									->one();
+					$model2->attributes = array_merge($model->attributes);				
+					$model2->save();
+				}
+				
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
@@ -126,8 +166,19 @@ class ProgramController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model=$this->findModel($id);
+		try {
+			if($model->delete()){
+				\backend\models\ProgramHistory::deleteAll(['tb_program_id' => $model->id,]);
+				Yii::$app->session->setFlash('success', 'Data has deleted');
+			}
+			else{
+				Yii::$app->session->setFlash('warning', 'There are few errors');
+			}
+		} catch (\yii\base\ErrorException $e) {
+			 Yii::$app->session->setFlash('error', 'There are some errors');
+		}
+		
         return $this->redirect(['index']);
     }
 

@@ -78,7 +78,7 @@ class Program extends \yii\db\ActiveRecord
     {
         return [
             [['ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name', 'type', 'note'], 'required'],
+            [['name'], 'required'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['number'], 'string', 'max' => 15],
             [['name', 'note', 'validationNote'], 'string', 'max' => 255]
@@ -140,19 +140,19 @@ class Program extends \yii\db\ActiveRecord
         return $this->hasMany(Training::className(), ['tb_program_id' => 'id']);
     }
 	
-	/** 
-    * @return \yii\db\ActiveQuery 
-    */ 
-   public function getProgramCode() 
-   { 
-       return $this->hasOne(ProgramCode::className(), ['code' => 'number']); 
-   } 
+	/**  
+	* @return \yii\db\ActiveQuery  
+	*/  
+	public function getProgramCode()  
+	{  
+	  return $this->hasOne(ProgramCode::className(), ['code' => 'number']);  
+	}  
     
-   /** 
-    * @return \yii\db\ActiveQuery 
-    */ 
-   public function getUser($id) 
-   { 
-       return User::findOne($id); 
-   } 
+	/**  
+	* @return \yii\db\ActiveQuery  
+	*/  
+	public function getUser($id)  
+	{  
+	  return User::findOne($id);  
+	}  
 }

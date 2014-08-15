@@ -73,7 +73,7 @@ class ProgramHistory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'revision', 'name', 'type', 'note'], 'required'],
+            [['tb_program_id', 'revision', 'name'], 'required'],
             [['tb_program_id', 'revision', 'ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['number'], 'string', 'max' => 15],
