@@ -14,8 +14,9 @@ class Module extends \yii\base\Module
 	public function getMenuItems(){
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			// Add here your items module
-			//['icon'=>'fa fa-fw fa-dashboard', 'label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index']],
+			['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'], 'path' => 'training'],
+			['icon'=>'fa fa-fw fa-users', 'label' => 'Employee', 'url' => ['/'.$this->uniqueId.'/employee/index'], 'path' => 'employee'],
+			['icon'=>'fa fa-fw fa-gavel', 'label' => 'Satker PIC', 'url' => ['/'.$this->uniqueId.'/satker-pic/index'], 'path' => 'satker-pic'],
 		];
 	}
 }
