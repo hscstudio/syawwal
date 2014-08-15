@@ -125,11 +125,12 @@ class ProgramController extends Controller
 				// SAVE HISTORY OF PROGRAM
 				if(Yii::$app->request->post('create_revision')!==null){
 					// CREATE NEW HISTORY
+					$revision = \backend\models\ProgramHistory::getRevision($model->id);				
 					$model2 = new \backend\models\ProgramHistory();
 					$model2->attributes = array_merge(
 					  $model->attributes,[
 						'tb_program_id'=>$model->id,
-						'revision'=>$model2->revision+1,				
+						'revision'=>$revision+1,				
 					  ]
 					);				
 					$model2->save();

@@ -108,4 +108,8 @@ class ProgramHistory extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
+	
+	public static function getRevision($id){
+		return self::find()->where(['tb_program_id' => $id,])->max('revision');
+	}
 }
