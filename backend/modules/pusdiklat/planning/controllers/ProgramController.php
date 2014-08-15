@@ -14,10 +14,9 @@ use yii\filters\VerbFilter;
  */
 class ProgramController extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -67,6 +66,7 @@ class ProgramController extends Controller
         $model = new Program();
 
         if ($model->load(Yii::$app->request->post())){
+			$model->ref_satker_id = (int)Yii::$app->user->identity->id;
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
 			}

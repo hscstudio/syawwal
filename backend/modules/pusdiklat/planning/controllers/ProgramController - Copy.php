@@ -67,11 +67,12 @@ class ProgramController extends Controller
         $model = new Program();
 
         if ($model->load(Yii::$app->request->post())){
-			//print(Yii::$app->user->username);
-			$user = \backend\models\User::findOne(Yii::$app->user->identity->id);
-			$model->ref_satker_id = $user->employee->ref_satker_id;
-			$model->save();
-			
+			if($model->save()) {
+				 Yii::$app->session->setFlash('success', 'Data saved');
+			}
+			else{
+				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -102,9 +103,11 @@ class ProgramController extends Controller
 					}
 					$idx++;
 				}
+				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{
@@ -395,15 +398,17 @@ class ProgramController extends Controller
 						$hours=  $sheetData[$baseRow]['E'];
 						$days=  $sheetData[$baseRow]['F'];
 						$test=  $sheetData[$baseRow]['G'];
-						$validationStatus=  $sheetData[$baseRow]['H'];
-						$validationNote=  $sheetData[$baseRow]['I'];
-						$status=  $sheetData[$baseRow]['J'];
-						//$created=  $sheetData[$baseRow]['K'];
-						//$createdBy=  $sheetData[$baseRow]['L'];
-						//$modified=  $sheetData[$baseRow]['M'];
-						//$modifiedBy=  $sheetData[$baseRow]['N'];
-						//$deleted=  $sheetData[$baseRow]['O'];
-						//$deletedBy=  $sheetData[$baseRow]['P'];
+						$type=  $sheetData[$baseRow]['H'];
+						$note=  $sheetData[$baseRow]['I'];
+						$validationStatus=  $sheetData[$baseRow]['J'];
+						$validationNote=  $sheetData[$baseRow]['K'];
+						$status=  $sheetData[$baseRow]['L'];
+						//$created=  $sheetData[$baseRow]['M'];
+						//$createdBy=  $sheetData[$baseRow]['N'];
+						//$modified=  $sheetData[$baseRow]['O'];
+						//$modifiedBy=  $sheetData[$baseRow]['P'];
+						//$deleted=  $sheetData[$baseRow]['Q'];
+						//$deletedBy=  $sheetData[$baseRow]['R'];
 
 						$model2=new Program;
 						//$model2->id=  $id;
@@ -413,6 +418,8 @@ class ProgramController extends Controller
 						$model2->hours=  $hours;
 						$model2->days=  $days;
 						$model2->test=  $test;
+						$model2->type=  $type;
+						$model2->note=  $note;
 						$model2->validationStatus=  $validationStatus;
 						$model2->validationNote=  $validationNote;
 						$model2->status=  $status;

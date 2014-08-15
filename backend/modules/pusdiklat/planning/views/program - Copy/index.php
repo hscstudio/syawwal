@@ -4,16 +4,10 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $this yii\web\View */
 /* @var $searchModel backend\models\ProgramSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Programs';
-$this->params['breadcrumbs'][] = 'Pusdiklat';
-$this->params['breadcrumbs'][] = 'Planning';
-$this->params['breadcrumbs'][] = 'Program';
 $this->params['breadcrumbs'][] = $this->title;
-
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -21,13 +15,8 @@ $this->params['sideMenu']=$menus;
 ?>
 <div class="program-index">
 
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-	<!--
-    <p>
-        <?= Html::a('Create Program', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-	-->
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -96,22 +85,22 @@ $this->params['sideMenu']=$menus;
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'validationStatus',
+					'attribute' => 'type',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'ValidationStatus', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
 
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i> Program</h3>',
-			'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i></h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program</h3>',
+			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Program', ['create'], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="glyphicon glyphicon-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Program', ['create'], ['class' => 'btn btn-success']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,

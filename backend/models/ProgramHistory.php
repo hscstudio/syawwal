@@ -3,16 +3,17 @@
 namespace backend\models;
 
 use Yii;
-																		
+																			
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
 /**
- * This is the model class for table "tb_program".
+ * This is the model class for table "tb_program_history".
  *
 
- * @property integer $id
+ * @property integer $tb_program_id
+ * @property integer $revision
  * @property integer $ref_satker_id
  * @property string $number
  * @property string $name
@@ -30,20 +31,15 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $modifiedBy
  * @property string $deleted
  * @property integer $deletedBy
- *
- * @property Satker $refSatker
- * @property ProgramDocument[] $programDocuments
- * @property ProgramSubject[] $programSubjects
- * @property Training[] $trainings
  */
-class Program extends \yii\db\ActiveRecord
+class ProgramHistory extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'tb_program';
+        return 'tb_program_history';
     }
 	
     /**
@@ -77,8 +73,8 @@ class Program extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name', 'type', 'note'], 'required'],
+            [['tb_program_id', 'revision', 'name', 'type', 'note'], 'required'],
+            [['tb_program_id', 'revision', 'ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['number'], 'string', 'max' => 15],
             [['name', 'note', 'validationNote'], 'string', 'max' => 255]
@@ -91,7 +87,8 @@ class Program extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'tb_program_id' => 'Tb Program ID',
+            'revision' => 'Revision',
             'ref_satker_id' => 'Ref Satker ID',
             'number' => 'Number',
             'name' => 'Name',
@@ -111,48 +108,4 @@ class Program extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSatker()
-    {
-        return $this->hasOne(Satker::className(), ['id' => 'ref_satker_id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProgramDocuments()
-    {
-        return $this->hasMany(ProgramDocument::className(), ['tb_program_id' => 'id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProgramSubjects()
-    {
-        return $this->hasMany(ProgramSubject::className(), ['tb_program_id' => 'id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainings()
-    {
-        return $this->hasMany(Training::className(), ['tb_program_id' => 'id']);
-    }
-	
-	/** 
-    * @return \yii\db\ActiveQuery 
-    */ 
-   public function getProgramCode() 
-   { 
-       return $this->hasOne(ProgramCode::className(), ['code' => 'number']); 
-   } 
-    
-   /** 
-    * @return \yii\db\ActiveQuery 
-    */ 
-   public function getUser($id) 
-   { 
-       return User::findOne($id); 
-   } 
 }

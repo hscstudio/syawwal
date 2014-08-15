@@ -3,26 +3,22 @@
 namespace backend\models;
 
 use Yii;
-																		
+														
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
 /**
- * This is the model class for table "tb_program".
+ * This is the model class for table "tb_program_subject".
  *
 
  * @property integer $id
- * @property integer $ref_satker_id
- * @property string $number
+ * @property integer $tb_program_id
+ * @property integer $type
  * @property string $name
  * @property integer $hours
- * @property integer $days
+ * @property integer $sort
  * @property integer $test
- * @property integer $type
- * @property string $note
- * @property integer $validationStatus
- * @property string $validationNote
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
@@ -31,19 +27,17 @@ use yii\behaviors\BlameableBehavior;
  * @property string $deleted
  * @property integer $deletedBy
  *
- * @property Satker $refSatker
- * @property ProgramDocument[] $programDocuments
- * @property ProgramSubject[] $programSubjects
- * @property Training[] $trainings
+ * @property Program $tbProgram
+ * @property TrainingSubjectTrainerRecommendation[] $trainingSubjectTrainerRecommendations
  */
-class Program extends \yii\db\ActiveRecord
+class ProgramSubject extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'tb_program';
+        return 'tb_program_subject';
     }
 	
     /**
@@ -77,11 +71,10 @@ class Program extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name', 'type', 'note'], 'required'],
+            [['tb_program_id', 'name', 'hours', 'sort'], 'required'],
+            [['tb_program_id', 'type', 'hours', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
-            [['number'], 'string', 'max' => 15],
-            [['name', 'note', 'validationNote'], 'string', 'max' => 255]
+            [['name'], 'string', 'max' => 255]
         ];
     }
 
@@ -92,16 +85,12 @@ class Program extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'ref_satker_id' => 'Ref Satker ID',
-            'number' => 'Number',
+            'tb_program_id' => 'Tb Program ID',
+            'type' => 'Type',
             'name' => 'Name',
             'hours' => 'Hours',
-            'days' => 'Days',
+            'sort' => 'Sort',
             'test' => 'Test',
-            'type' => 'Type',
-            'note' => 'Note',
-            'validationStatus' => 'Validation Status',
-            'validationNote' => 'Validation Note',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
@@ -114,45 +103,15 @@ class Program extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSatker()
+    public function getProgram()
     {
-        return $this->hasOne(Satker::className(), ['id' => 'ref_satker_id']);
+        return $this->hasOne(Program::className(), ['id' => 'tb_program_id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProgramDocuments()
+    public function getTrainingSubjectTrainerRecommendations()
     {
-        return $this->hasMany(ProgramDocument::className(), ['tb_program_id' => 'id']);
+        return $this->hasMany(TrainingSubjectTrainerRecommendation::className(), ['tb_program_subject_id' => 'id']);
     }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProgramSubjects()
-    {
-        return $this->hasMany(ProgramSubject::className(), ['tb_program_id' => 'id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainings()
-    {
-        return $this->hasMany(Training::className(), ['tb_program_id' => 'id']);
-    }
-	
-	/** 
-    * @return \yii\db\ActiveQuery 
-    */ 
-   public function getProgramCode() 
-   { 
-       return $this->hasOne(ProgramCode::className(), ['code' => 'number']); 
-   } 
-    
-   /** 
-    * @return \yii\db\ActiveQuery 
-    */ 
-   public function getUser($id) 
-   { 
-       return User::findOne($id); 
-   } 
 }

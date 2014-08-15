@@ -29,6 +29,10 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'test') ?>
 
+    <?php // echo $form->field($model, 'type') ?>
+
+    <?php // echo $form->field($model, 'note') ?>
+
     <?php // echo $form->field($model, 'validationStatus') ?>
 
     <?php // echo $form->field($model, 'validationNote') ?>
