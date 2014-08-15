@@ -15,6 +15,7 @@ class Module extends \yii\base\Module
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			['icon'=>'fa fa-fw fa-graduation-cap','label' => 'Graduate', 'url' => ['/'.$this->uniqueId.'/graduate/index']],
+			['icon'=>'fa fa-fw fa-graduation-cap','label' => 'Program Code', 'url' => ['/'.$this->uniqueId.'/program-code/index']],
 			['icon'=>'fa fa-fw fa-empire', 'label' => 'Religion', 'url' => ['/'.$this->uniqueId.'/religion/index']],
 			['icon'=>'fa fa-fw fa-trophy', 'label' => 'RankClass', 'url' => ['/'.$this->uniqueId.'/rank-class/index']],
 			['icon'=>'fa fa-fw fa-institution', 'label' => 'Satker', 'url' => ['/'.$this->uniqueId.'/satker/index']],

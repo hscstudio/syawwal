@@ -1,24 +1,36 @@
 <?php
 
 use yii\helpers\Html;
-//use yii\widgets\ActiveForm;
-use yii\bootstrap\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\widgets\Select2;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Employee */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
 <div class="employee-form">
-
-    <?php $form = ActiveForm::begin(['options'=>['enctype'=>'multipart/form-data']]); ?>
-	<?= $form->errorSummary($model) ?> <!-- ADDED HERE -->
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="pull-right">
+		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+						['class'=>'btn btn-xs btn-primary',
+						 'title'=>'Back to Index',
+						]) ?>
+		</div>
+		<i class="fa fa-fw fa-globe"></i> 
+		Employee	</div>
+	<div style="margin:10px">
+    <?php $form = ActiveForm::begin([
+		'type' => ActiveForm::TYPE_HORIZONTAL,
+		'options'=>['enctype'=>'multipart/form-data']
+	]); ?>
+	<?= $form->errorSummary($model) ?>
 	
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\Satker::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose Satker ...'],
@@ -30,7 +42,7 @@ use kartik\widgets\Select2;
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\Unit::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\Unit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_unit_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose Unit ...'],
@@ -42,7 +54,7 @@ use kartik\widgets\Select2;
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\Religion::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\Religion::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_religion_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose Religion ...'],
@@ -54,7 +66,7 @@ use kartik\widgets\Select2;
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\RankClass::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\RankClass::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_rank_class_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose RankClass ...'],
@@ -66,7 +78,7 @@ use kartik\widgets\Select2;
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\Graduate::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\Graduate::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_graduate_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose Graduate ...'],
@@ -78,7 +90,7 @@ use kartik\widgets\Select2;
     <?= '' ?>
 
 			<?php
-			$data = \yii\helpers\ArrayHelper::getColumn(\backend\models\StaUnit::find()->select('id,name')->all(), 'name');
+			$data = ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_sta_unit_id')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose StaUnit ...'],
@@ -114,6 +126,8 @@ use kartik\widgets\Select2;
 
     <?= ""//deletedBy ?>
 
+    <?= $form->field($model, 'user_id')->textInput() ?>
+
     <?= $form->field($model, 'name')->textInput(['maxlength' => 50]) ?>
 
     <?= $form->field($model, 'birthDay')->widget(\kartik\datecontrol\DateControl::classname(), [
@@ -125,6 +139,8 @@ use kartik\widgets\Select2;
     <?= ""//modified ?>
 
     <?= ""//deleted ?>
+
+    <?= $form->field($model, 'bio')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'nickName')->textInput(['maxlength' => 50]) ?>
 
@@ -177,12 +193,28 @@ use kartik\widgets\Select2;
 						]
 					]); ?>
 
+    <?= $form->field($model, 'public_email')->textInput(['maxlength' => 255]) ?>
+
+    <?= $form->field($model, 'gravatar_email')->textInput(['maxlength' => 255]) ?>
+
+    <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
+
+    <?= $form->field($model, 'website')->textInput(['maxlength' => 255]) ?>
+
     <?= $form->field($model, 'blood')->textInput(['maxlength' => 10]) ?>
 
+    <?= $form->field($model, 'gravatar_id')->textInput(['maxlength' => 32]) ?>
+
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
-
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-10">
+        <?= Html::submitButton(
+			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
+			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		</div>
+	</div>
+	
     <?php ActiveForm::end(); ?>
-
+	</div>
+</div>
 </div>

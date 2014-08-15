@@ -6,10 +6,10 @@ use kartik\widgets\Select2;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Religion */
+/* @var $model backend\models\ProgramCode */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="religion-form">
+<div class="program-code-form">
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
@@ -19,15 +19,19 @@ use yii\helpers\ArrayHelper;
 						]) ?>
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
-		Religion	</div>
+		ProgramCode	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
-
+	
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+
+    <?= $form->field($model, 'code')->textInput(['maxlength' => 25]) ?>
+
+    <?= $form->field($model, 'parent_id')->textInput(['maxlength' => 3]) ?>
 
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [

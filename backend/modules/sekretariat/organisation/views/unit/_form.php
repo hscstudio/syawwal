@@ -1,19 +1,31 @@
 <?php
 
 use yii\helpers\Html;
-//use yii\widgets\ActiveForm;
-use yii\bootstrap\ActiveForm;
+use kartik\widgets\ActiveForm;
 use kartik\widgets\Select2;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Unit */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
 <div class="unit-form">
-
-    <?php $form = ActiveForm::begin(['options'=>['enctype'=>'multipart/form-data']]); ?>
-	<?= $form->errorSummary($model) ?> <!-- ADDED HERE -->
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<div class="pull-right">
+		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+						['class'=>'btn btn-xs btn-primary',
+						 'title'=>'Back to Index',
+						]) ?>
+		</div>
+		<i class="fa fa-fw fa-globe"></i> 
+		Unit	</div>
+	<div style="margin:10px">
+    <?php $form = ActiveForm::begin([
+		'type' => ActiveForm::TYPE_HORIZONTAL,
+		'options'=>['enctype'=>'multipart/form-data']
+	]); ?>
+	<?= $form->errorSummary($model) ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
@@ -39,9 +51,15 @@ use kartik\widgets\Select2;
     <?= $form->field($model, 'shortname')->textInput(['maxlength' => 50]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
-
+		<label class="col-md-2 control-label"></label>
+		<div class="col-md-10">
+        <?= Html::submitButton(
+			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
+			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		</div>
+	</div>
+	
     <?php ActiveForm::end(); ?>
-
+	</div>
+</div>
 </div>

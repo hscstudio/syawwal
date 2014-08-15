@@ -3,10 +3,9 @@
 namespace backend\models;
 
 use Yii;
-									
-use yii\behaviors\TimestampBehavior;
-use yii\behaviors\AttributeBehavior;
 use yii\db\ActiveRecord;
+use yii\behaviors\AttributeBehavior;								
+use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
@@ -65,6 +64,13 @@ class Religion extends \yii\db\ActiveRecord
                     \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => 'id',
                 ],
                 'value' => function ($event) {
+                    /* Cara saya newbie
+                    $model = $this->db->createCommand('SELECT MAX(id) FROM '.self::tableName());
+                    $max_id = $model->queryScalar();
+                    $next_id = $max_id+1;
+                    return $next_id;
+                    */
+                    
                     /* Enhance oleh om Misbah master */
 					return self::find()->max('id')+1;
                 },
@@ -79,7 +85,7 @@ class Religion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'name'], 'required'],
+            [['name'], 'required'],
             [['id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['name'], 'string', 'max' => 255],

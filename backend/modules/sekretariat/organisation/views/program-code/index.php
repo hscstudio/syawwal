@@ -4,16 +4,16 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $searchModel backend\models\RankClassSearch */
+/* @var $searchModel backend\models\ProgramCodeSearch */
 
-$this->title = 'Rank Classes';
+$this->title = 'Program Codes';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="rank-class-index">
+<div class="program-code-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -37,6 +37,26 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'code',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'Code', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
+            
+				[
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'parent_id',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'Parent_id', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
+            
+				[
+					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'status',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
@@ -54,10 +74,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Rank Class</h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program Code</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Rank Class', ['create'], ['class' => 'btn btn-success']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Code', ['create'], ['class' => 'btn btn-success']),
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],

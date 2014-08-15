@@ -3,16 +3,16 @@
 namespace backend\modules\sekretariat\organisation\controllers;
 
 use Yii;
-use backend\models\Graduate;
-use backend\models\GraduateSearch;
+use backend\models\ProgramCode;
+use backend\models\ProgramCodeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * GraduateController implements the CRUD actions for Graduate model.
+ * ProgramCodeController implements the CRUD actions for ProgramCode model.
  */
-class GraduateController extends Controller
+class ProgramCodeController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,12 +30,12 @@ class GraduateController extends Controller
     }
 
     /**
-     * Lists all Graduate models.
+     * Lists all ProgramCode models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new GraduateSearch();
+        $searchModel = new ProgramCodeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +45,7 @@ class GraduateController extends Controller
     }
 
     /**
-     * Displays a single Graduate model.
+     * Displays a single ProgramCode model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +57,13 @@ class GraduateController extends Controller
     }
 
     /**
-     * Creates a new Graduate model.
+     * Creates a new ProgramCode model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Graduate();
+        $model = new ProgramCode();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -81,7 +81,7 @@ class GraduateController extends Controller
     }
 
     /**
-     * Updates an existing Graduate model.
+     * Updates an existing ProgramCode model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -118,7 +118,7 @@ class GraduateController extends Controller
     }
 
     /**
-     * Deletes an existing Graduate model.
+     * Deletes an existing ProgramCode model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -131,15 +131,15 @@ class GraduateController extends Controller
     }
 
     /**
-     * Finds the Graduate model based on its primary key value.
+     * Finds the ProgramCode model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Graduate the loaded model
+     * @return ProgramCode the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Graduate::findOne($id)) !== null) {
+        if (($model = ProgramCode::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -147,15 +147,15 @@ class GraduateController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new Graduate; // your model can be loaded here
+		$model = new ProgramCode; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['Graduate'][$_POST['editableIndex']]);
-				$value=$_POST['Graduate'][$_POST['editableIndex']][$name];
+				$name=key($_POST['ProgramCode'][$_POST['editableIndex']]);
+				$value=$_POST['ProgramCode'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -175,7 +175,7 @@ class GraduateController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Graduate::find(),
+            'query' => ProgramCode::find(),
         ]);
 		
 		try {
@@ -189,20 +189,20 @@ class GraduateController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "Graduate";
+			$OpenTBS->VarRef['modelName']= "ProgramCode";
 			$data1[]['col0'] = 'id';			
 			$data1[]['col1'] = 'name';			
-			$data1[]['col2'] = 'status';			
-			$data1[]['col3'] = 'created';			
+			$data1[]['col2'] = 'code';			
+			$data1[]['col3'] = 'parent_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $graduate){
+			foreach($dataProvider->getModels() as $programcode){
 				$data2[] = [
-					'col0'=>$graduate->id,
-					'col1'=>$graduate->name,
-					'col2'=>$graduate->status,
-					'col3'=>$graduate->created,
+					'col0'=>$programcode->id,
+					'col1'=>$programcode->name,
+					'col2'=>$programcode->code,
+					'col3'=>$programcode->parent_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -221,7 +221,7 @@ class GraduateController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => Graduate::find(),
+            'query' => ProgramCode::find(),
         ]);
 		
 		try {
@@ -236,13 +236,13 @@ class GraduateController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Graduate');
+								->setCellValue('A1', 'Tabel ProgramCode');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $graduate){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $graduate->id)
-													  ->setCellValue('B'.$idx, $graduate->name)
-													  ->setCellValue('C'.$idx, $graduate->status)
-													  ->setCellValue('D'.$idx, $graduate->created);
+					foreach($dataProvider->getModels() as $programcode){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programcode->id)
+													  ->setCellValue('B'.$idx, $programcode->name)
+													  ->setCellValue('C'.$idx, $programcode->code)
+													  ->setCellValue('D'.$idx, $programcode->parent_id);
 						$idx++;
 					}		
 					
@@ -267,13 +267,13 @@ class GraduateController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Graduate');
+								->setCellValue('A1', 'Tabel ProgramCode');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $graduate){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $graduate->id)
-													  ->setCellValue('B'.$idx, $graduate->name)
-													  ->setCellValue('C'.$idx, $graduate->status)
-													  ->setCellValue('D'.$idx, $graduate->created);
+					foreach($dataProvider->getModels() as $programcode){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programcode->id)
+													  ->setCellValue('B'.$idx, $programcode->name)
+													  ->setCellValue('C'.$idx, $programcode->code)
+													  ->setCellValue('D'.$idx, $programcode->parent_id);
 						$idx++;
 					}		
 									
@@ -315,13 +315,13 @@ class GraduateController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel Graduate');
+									->setCellValue('A1', 'Tabel ProgramCode');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $graduate){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $graduate->id)
-														  ->setCellValue('B'.$idx, $graduate->name)
-														  ->setCellValue('C'.$idx, $graduate->status)
-														  ->setCellValue('D'.$idx, $graduate->created);
+						foreach($dataProvider->getModels() as $programcode){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programcode->id)
+														  ->setCellValue('B'.$idx, $programcode->name)
+														  ->setCellValue('C'.$idx, $programcode->code)
+														  ->setCellValue('D'.$idx, $programcode->parent_id);
 							$idx++;
 						}		
 						
@@ -365,7 +365,7 @@ class GraduateController extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Graduate::find(),
+            'query' => ProgramCode::find(),
         ]);
 		
 		/* 
@@ -390,19 +390,23 @@ class GraduateController extends Controller
 					while(!empty($sheetData[$baseRow]['A'])){
 						$read_status = true;
 						$abjadX=array();
-						$id=  $sheetData[$baseRow]['A'];
+						//$id=  $sheetData[$baseRow]['A'];
 						$name=  $sheetData[$baseRow]['B'];
-						$status=  $sheetData[$baseRow]['C'];
-						//$created=  $sheetData[$baseRow]['D'];
-						//$createdBy=  $sheetData[$baseRow]['E'];
-						//$modified=  $sheetData[$baseRow]['F'];
-						//$modifiedBy=  $sheetData[$baseRow]['G'];
-						//$deleted=  $sheetData[$baseRow]['H'];
-						//$deletedBy=  $sheetData[$baseRow]['I'];
+						$code=  $sheetData[$baseRow]['C'];
+						$parent_id=  $sheetData[$baseRow]['D'];
+						$status=  $sheetData[$baseRow]['E'];
+						//$created=  $sheetData[$baseRow]['F'];
+						//$createdBy=  $sheetData[$baseRow]['G'];
+						//$modified=  $sheetData[$baseRow]['H'];
+						//$modifiedBy=  $sheetData[$baseRow]['I'];
+						//$deleted=  $sheetData[$baseRow]['J'];
+						//$deletedBy=  $sheetData[$baseRow]['K'];
 
-						$model2=new Graduate;
-						$model2->id=  $id;
+						$model2=new ProgramCode;
+						//$model2->id=  $id;
 						$model2->name=  $name;
+						$model2->code=  $code;
+						$model2->parent_id=  $parent_id;
 						$model2->status=  $status;
 						//$model2->created=  $created;
 						//$model2->createdBy=  $createdBy;

@@ -4,22 +4,22 @@ use yii\helpers\Html;
 use kartik\detail\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\StaUnit */
+/* @var $model backend\models\ProgramCode */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Sta Units', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Program Codes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="sta-unit-view">
+<div class="program-code-view">
 
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Sta Units # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Program Codes # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
@@ -31,9 +31,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
             'id',
-            'induk',
             'name',
-            'eselon',
+            'code',
+            'parent_id',
+            'status',
+            'created',
+            'createdBy',
+            'modified',
+            'modifiedBy',
+            'deleted',
+            'deletedBy',
         ],
     ]) ?>
 

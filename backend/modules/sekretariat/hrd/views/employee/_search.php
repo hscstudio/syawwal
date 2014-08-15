@@ -87,6 +87,20 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'deletedBy') ?>
 
+    <?php // echo $form->field($model, 'user_id') ?>
+
+    <?php // echo $form->field($model, 'public_email') ?>
+
+    <?php // echo $form->field($model, 'gravatar_email') ?>
+
+    <?php // echo $form->field($model, 'gravatar_id') ?>
+
+    <?php // echo $form->field($model, 'location') ?>
+
+    <?php // echo $form->field($model, 'bio') ?>
+
+    <?php // echo $form->field($model, 'website') ?>
+
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
