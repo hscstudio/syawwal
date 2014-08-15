@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="training-view">
 
@@ -22,11 +22,11 @@ $this->params['sideMenu']=$menus;
 			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Trainings # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]).' '.
-					 Html::a('<i class="fa fa-fw fa-trash"></i>',['#'],
+					 Html::a('<i class="fa fa-fw fa-trash-o"></i>',['#'],
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [

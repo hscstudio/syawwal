@@ -14,10 +14,9 @@ use yii\filters\VerbFilter;
  */
 class TrainerController extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -66,7 +65,13 @@ class TrainerController extends Controller
     {
         $model = new Trainer();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())){
+			if($model->save()) {
+				 Yii::$app->session->setFlash('success', 'Data saved');
+			}
+			else{
+				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -104,8 +109,8 @@ class TrainerController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/trainer/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[0] = $path . $model->photo;
 					if(isset($currentFiles[0])) @unlink($path . $currentFiles[0]);
 				}
@@ -122,8 +127,8 @@ class TrainerController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/trainer/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[1] = $path . $model->document1;
 					if(isset($currentFiles[1])) @unlink($path . $currentFiles[1]);
 				}
@@ -140,8 +145,8 @@ class TrainerController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/trainer/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[2] = $path . $model->document2;
 					if(isset($currentFiles[2])) @unlink($path . $currentFiles[2]);
 				}
@@ -154,9 +159,11 @@ class TrainerController extends Controller
 					}
 					$idx++;
 				}
+				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{
