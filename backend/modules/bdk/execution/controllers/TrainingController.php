@@ -8,6 +8,9 @@ use backend\models\TrainingSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use backend\models\Satker;
+use yii\helpers\ArrayHelper;
+use backend\models\Program;
 
 /**
  * TrainingController implements the CRUD actions for Training model.
@@ -65,6 +68,15 @@ class TrainingController extends Controller
     {
         $model = new Training();
 
+        // Bikin data map dari model satker
+        $dataEs2 = ArrayHelper::map(Satker::find()
+        	->select(['id','name'])
+        	->where(['eselon' => 0])
+        	->orWhere(['eselon' => 2])
+        	->asArray()
+        	->all(),
+        'id', 'name');
+
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
@@ -76,7 +88,31 @@ class TrainingController extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'dataEs2' => $dataEs2
             ]);
+        }
+    }
+
+    /*
+    Ngasih data program berdasarkan eselon yang masuk
+    */
+    public function actionProgram()
+    {
+		if ( Yii::$app->request->post('eselon') == 0)
+		{
+	    	$programEs = Program::find()->all();
+		}
+		else
+		{
+	    	$programEs = Program::find()
+	        	->select(['id','name'])
+	        	->where(['ref_satker_id' => Yii::$app->request->post('eselon') ])
+	        	->all();
+		}
+
+        foreach($programEs as $p) 
+        {
+            echo "<option value='".$p->id."'>".$p->name."</option>";
         }
     }
 

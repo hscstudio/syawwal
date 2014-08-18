@@ -22,12 +22,37 @@ use yii\helpers\ArrayHelper;
 		Training	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
-		'type' => ActiveForm::TYPE_HORIZONTAL,
+		'type' => ActiveForm::TYPE_VERTICAL,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 	
     <?= '' ?>
+
+    		<?php
+    			// Nambah dropdown eselon 2
+    			echo '
+    				<div class="form-group field-training-eselon">
+						<label class="control-label" for="eselon">Eselon 2</label>';
+    			echo Select2::widget([
+				    'name' => 'eselon',
+				    'data' => $dataEs2,
+				    'options' => [
+				    	'placeholder' => 'Choose eselon 2 ...',
+				    	'class' => 'col-md-10 form-control',
+				    	'id' => 'eselon',
+				    	'onchange' => '	$.post("'.Yii::$app->urlManager->createUrl(['bdk-execution/training/program']).'", 
+				    					{ eselon: $(this).val() })
+				    					.done(function( data ) {
+				       						$( "select#training-tb_program_id" ).html( data );
+				        				})'
+    				],
+				    'pluginOptions' => [
+				        'allowClear' => true
+				    ],
+				]);
+				echo '</div>';
+    		?>
 
 			<?php
 			$data = ArrayHelper::map(\backend\models\Program::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
@@ -35,7 +60,7 @@ use yii\helpers\ArrayHelper;
 				'data' => $data,
 				'options' => ['placeholder' => 'Choose Program ...'],
 				'pluginOptions' => [
-				'allowClear' => true
+					'allowClear' => true
 				],
 			]); ?>
 
