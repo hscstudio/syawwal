@@ -100,18 +100,21 @@ class ProgramSubject extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
-	    /**
+	
+	/**
      * @return \yii\db\ActiveQuery
      */
     public function getProgram()
     {
         return $this->hasOne(Program::className(), ['id' => 'tb_program_id']);
     }
-	    /**
+	
+	/**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingSubjectTrainerRecommendations()
     {
         return $this->hasMany(TrainingSubjectTrainerRecommendation::className(), ['tb_program_subject_id' => 'id']);
     }
+	
 }

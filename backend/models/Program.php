@@ -154,5 +154,23 @@ class Program extends \yii\db\ActiveRecord
 	public function getUser($id)  
 	{  
 	  return User::findOne($id);  
-	}  
+	} 
+	
+	/**
+     * @inheritdoc
+     * @return ProgramQuery
+     */
+    public static function find()
+    {
+        return new ProgramQuery(get_called_class());
+    }
+}
+
+class ProgramQuery extends \yii\db\ActiveQuery
+{
+    public function currentSatker()
+    {
+        $this->andWhere(['ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id]);
+        return $this;
+    }
 }
