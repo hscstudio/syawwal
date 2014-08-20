@@ -56,7 +56,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             //'status',
 			[
 				'attribute' => 'status',
-				'value' => $model->test == '0'?'Off':'On',
+				'value' => $model->status == '0'?'Off':'On',
 			],
             'created',
             'createdBy',

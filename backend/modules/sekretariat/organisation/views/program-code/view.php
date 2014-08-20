@@ -30,17 +30,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
-            'id',
+            //'id',
+			[
+				'attribute' => 'parent_id',
+				'value' =>  $model->parent_id==0?'----' : \backend\models\ProgramCode::findOne($model->parent_id)->name,
+			],
             'name',
             'code',
-            'parent_id',
-            'status',
-            'created',
+           // 'parent_id',
+            [
+				'attribute' => 'status',
+				'value' => $model->status == '0'?'Off':'On',
+			],
+            /*'created',
             'createdBy',
             'modified',
             'modifiedBy',
             'deleted',
-            'deletedBy',
+            'deletedBy',*/
         ],
     ]) ?>
 

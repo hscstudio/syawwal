@@ -126,7 +126,7 @@ class GraduateController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+		Yii::$app->session->setFlash('success', 'Data Deleted');
         return $this->redirect(['index']);
     }
 
@@ -160,6 +160,7 @@ class GraduateController extends Controller
 				$model2->save();
 				// return JSON encoded output in the below format
 				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
+				Yii::$app->session->setFlash('success', 'Data saved');
 				// alternatively you can return a validation error
 				// echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'Validation error']);
 			}

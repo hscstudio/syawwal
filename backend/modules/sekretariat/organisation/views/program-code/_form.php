@@ -26,12 +26,29 @@ use yii\helpers\ArrayHelper;
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
+    
+    <?php
+	$data = ArrayHelper::map(
+		\backend\models\ProgramCode::find()
+			->select(['id','name'])
+			->orderBy(['[[id]]'=> SORT_ASC])			
+			->asArray()
+			->all(), 
+			'id', 'name'
+	);
+	
+	echo $form->field($model, 'parent_id')->widget(Select2::classname(), [
+		'data' => array_merge([0=>'---'],$data),
+		'options' => ['placeholder' => 'Choose Parent ...'],
+		'pluginOptions' => [
+			'allowClear' => true
+		],
+	]);
+	?>
 	
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
     <?= $form->field($model, 'code')->textInput(['maxlength' => 25]) ?>
-
-    <?= $form->field($model, 'parent_id')->textInput(['maxlength' => 3]) ?>
 
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [

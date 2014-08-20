@@ -48,11 +48,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'status',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Status', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data) {if($data->status == '0'){
+						return 'Off';}
+						else
+						{ return 'On';}},
+					'editableOptions'=>['header'=>'Status',
+										'inputType' => '\kartik\widgets\SwitchInput',
+										'data'=>array(0=>'Off',1=>'ON'),
+										'editableValueOptions'=>['class'=>'text-danger'],
+										'formOptions'=>['action'=>\yii\helpers\Url::to('editable')]
+										]
 				],
             // 'created',
             // 'createdBy',
