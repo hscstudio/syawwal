@@ -7,7 +7,7 @@ use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\ProgramSubjectSearch */
 
-$this->title = 'Program Subjects';
+$this->title = $program_name;
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -91,7 +91,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
            
 			
 			[
-				'format' => 'html',
+				'format' => 'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'label' => 'Document',
@@ -101,10 +101,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->active()
 								->count();
 					if($countSubjectDoc>0){
-						return Html::a($countSubjectDoc, ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'badge']);
+						return Html::a($countSubjectDoc, 
+							['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], 
+							['class' => 'badge','data-pjax' => '0']);
 					}
 					else{
-						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'badge']);
+						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'badge','data-pjax' => '0']);
 					}
 				}
 			],

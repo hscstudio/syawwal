@@ -6,9 +6,9 @@ use yii\bootstrap\Dropdown;
 
 /* @var $searchModel backend\models\ProgramSubjectDocumentSearch */
 
-$this->title = 'Program Subject Documents';
+$this->title = $program_subject_name; //'Program Subject Documents ';
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label'=>'Program Subject','url'=>['program-subject/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label'=>$program_name,'url'=>['program-subject/index','tb_program_id'=>(int)$tb_program_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -78,7 +78,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'editableOptions'=>['header'=>'Description', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
-		
+			
+			[
+				'attribute' => 'revision',
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'label' => 'Rev',
+				'width'=>'50px',
+				'value' => function ($data) {
+					if($data->revision>0){
+						return Html::a($data->revision.'x', '#', ['class' => 'badge']);
+					}
+					else{
+						return '-';
+					}
+				}
+			],
+			
 			[
 				'format' => 'raw',
 				'attribute' => 'status',
@@ -105,7 +122,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program Subject Document</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Subject Document', ['create','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-success']),
+			'before'=>
+			Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program Subject', ['program-subject/index','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-warning','data-pjax'=>'0']).' '.
+			Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Subject Document', ['create','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-success']),
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],

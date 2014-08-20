@@ -7,7 +7,7 @@ use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\ProgramDocumentSearch */
 
-$this->title = 'Program Documents';
+$this->title = $program_name;
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -70,6 +70,22 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'editableOptions'=>['header'=>'Description', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
 			[
+				'attribute' => 'revision',
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'label' => 'Rev',
+				'width'=>'50px',
+				'value' => function ($data) {
+					if($data->revision>0){
+						return Html::a($data->revision.'x', '#', ['class' => 'badge']);
+					}
+					else{
+						return '-';
+					}
+				}
+			],
+			[
 				'format' => 'raw',
 				'attribute' => 'status',
 				'vAlign'=>'middle',
@@ -102,6 +118,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
 			'before'=>
+				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program', ['program/index'], ['class' => 'btn btn-warning']).' '.
 				Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Document', ['create','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-success']).
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([

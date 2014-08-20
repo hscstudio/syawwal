@@ -6,7 +6,7 @@ use yii\bootstrap\Dropdown;
 
 /* @var $searchModel backend\models\ProgramHistorySearch */
 
-$this->title = 'Program Histories';
+$this->title = 'History of '.$program_name;
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -25,10 +25,20 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],           
 			[
 				'attribute' => 'revision',
+				'format' => 'html',
 				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
+				'hAlign'=>'center',
+				'label' => 'Rev',
+				'width'=>'50px',
+				'value' => function ($data) {
+					if($data->revision>0){
+						return Html::a($data->revision.'x', '#', ['class' => 'badge']);
+					}
+					else{
+						return '-';
+					}
+				}
+			],			
 			[
 				'attribute' => 'number',
 				'vAlign'=>'middle',
@@ -52,6 +62,26 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
+			],
+			[
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'label' => 'Document',
+				'value' => function ($data) {
+					$countDoc = \backend\models\ProgramDocument::find()
+								->where(
+									['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,]
+									)
+								->active()
+								->count();
+					if($countDoc>0){
+						return Html::a($countDoc, ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'badge']);
+					}
+					else{
+						return Html::a('+', ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'badge']);
+					}
+				}
 			],
 			[
 				'format' => 'html',

@@ -52,11 +52,13 @@ class ProgramSubjectController extends Controller
 			$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 			$dataProvider = $searchModel->search($queryParams);
 			
+			$model1 = \backend\models\Program::findOne($tb_program_id);
 			return $this->render('index', [
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider,
 				'tb_program_id' => $tb_program_id,
 				'status' => $status,
+				'program_name'=>$model1->name,
 			]);
 		}
 		else{

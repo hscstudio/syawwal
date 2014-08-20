@@ -8,7 +8,7 @@ use kartik\detail\DetailView;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label'=>'Program History','url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label'=> $program_name,'url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
 $this->params['breadcrumbs'][] = ['label' => 'Program Subject Histories', 'url' => ['index','tb_program_id'=>(int)$tb_program_id,'revision'=>(int)$revision]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;

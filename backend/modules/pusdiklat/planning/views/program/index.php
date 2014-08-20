@@ -85,6 +85,23 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'format' => 'html',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
+				'label' => 'Revision',
+				'value' => function ($data) {
+					$countRevision = \backend\models\ProgramHistory::find()
+								->where(['tb_program_id' => $data->id,])
+								->count()-1;
+					if($countRevision>0){
+						return Html::a($countRevision.'x', ['program-history/index','tb_program_id'=>$data->id], ['class' => 'badge']);
+					}
+					else{
+						return '-';
+					}
+				}
+			],
+			[
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
 				'label' => 'Subject',
 				'value' => function ($data) {
 					$countSubject = \backend\models\ProgramSubject::find()
@@ -99,23 +116,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					}
 				}
 			],
-			[
-				'format' => 'html',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'label' => 'Revision',
-				'value' => function ($data) {
-					$countRevision = \backend\models\ProgramHistory::find()
-								->where(['tb_program_id' => $data->id,])
-								->count()-1;
-					if($countRevision>0){
-						return Html::a($countRevision.'x', ['program-history/index','tb_program_id'=>$data->id], ['class' => 'badge']);
-					}
-					else{
-						return '-';
-					}
-				}
-			],
+			
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [

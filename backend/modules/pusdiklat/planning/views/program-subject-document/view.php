@@ -8,8 +8,8 @@ use kartik\detail\DetailView;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label'=>'Program Subject','url'=>['program-subject/index','tb_program_id'=>(int)$tb_program_id]];
-$this->params['breadcrumbs'][] = ['label' => 'Program Subject Documents', 'url' => ['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id]];
+$this->params['breadcrumbs'][] = ['label'=> $program_name,'url'=>['program-subject/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label' => $program_subject_name, 'url' => ['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
