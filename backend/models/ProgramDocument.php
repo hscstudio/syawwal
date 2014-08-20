@@ -14,6 +14,7 @@ use yii\behaviors\BlameableBehavior;
 
  * @property integer $id
  * @property integer $tb_program_id
+ * @property integer $revision
  * @property string $name
  * @property string $type
  * @property string $filename
@@ -69,8 +70,8 @@ class ProgramDocument extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'name', 'type', 'filename'], 'required'],
-            [['tb_program_id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_id', 'revision', 'name', 'type', 'filename'], 'required'],
+            [['tb_program_id', 'revision', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['name', 'filename', 'description'], 'string', 'max' => 255],
             [['type'], 'string', 'max' => 100]
@@ -85,6 +86,7 @@ class ProgramDocument extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'tb_program_id' => 'Tb Program ID',
+			'revision' => 'Revision',
             'name' => 'Name',
             'type' => 'Type',
             'filename' => 'Filename',

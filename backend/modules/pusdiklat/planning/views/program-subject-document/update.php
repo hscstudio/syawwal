@@ -2,14 +2,13 @@
 
 use yii\helpers\Html;
 
-
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProgramDocument */
+/* @var $model backend\models\ProgramSubjectDocument */
 
-$this->title = 'Create Program Document';
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label' => 'Program Documents', 'url' => ['index','tb_program_id'=>$tb_program_id]];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Update Program Subject Document: ' . ' ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Program Subject Documents', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Update';
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
@@ -19,11 +18,10 @@ echo \kartik\widgets\AlertBlock::widget([
     'type' => \kartik\widgets\AlertBlock::TYPE_ALERT
 ]);
 ?>
-<div class="program-document-create">
+<div class="program-subject-document-update">
 
     <?= $this->render('_form', [
         'model' => $model,
-		'tb_program_id' => $tb_program_id,
     ]) ?>
 
 </div>

@@ -14,6 +14,7 @@ use yii\behaviors\BlameableBehavior;
 
  * @property integer $id
  * @property integer $tb_program_subject_id
+ * @property string $revision
  * @property string $name
  * @property string $type
  * @property string $filename
@@ -67,8 +68,8 @@ class ProgramSubjectDocument extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_subject_id', 'name', 'type', 'filename'], 'required'],
-            [['tb_program_subject_id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_subject_id', 'revision', 'name', 'type', 'filename'], 'required'],
+            [['tb_program_subject_id', 'revision', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['name', 'filename', 'description'], 'string', 'max' => 255],
             [['type'], 'string', 'max' => 100]
@@ -83,6 +84,7 @@ class ProgramSubjectDocument extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'tb_program_subject_id' => 'Tb Program Subject ID',
+			'revision' => 'Revision',
             'name' => 'Name',
             'type' => 'Type',
             'filename' => 'Filename',
@@ -96,6 +98,14 @@ class ProgramSubjectDocument extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
+	
+	/**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProgramSubject()
+    {
+        return $this->hasOne(ProgramSubject::className(), ['id' => 'tb_program_subject_id']);
+    }	
 	
 	/**
      * @inheritdoc
