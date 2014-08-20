@@ -448,4 +448,38 @@ class ReligionController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	public function actionStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+        $ref_religion_id = $model->id;
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+		
+		$searchModel = new ReligionSearch();
+		$queryParams = Yii::$app->request->getQueryParams();			
+		if($status!='all'){
+			$queryParams['ReligionSearch']=[
+				'id'=>$ref_religion_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['ReligionSearch']=[
+				'id'=>$ref_religion_id,					
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
+		return $this->render('index', [
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+			'id' => $ref_religion_id,
+			'status' => $status,
+		]);
+		
+    }
 }

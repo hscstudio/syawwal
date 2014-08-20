@@ -450,4 +450,38 @@ class UnitController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	public function actionStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+        $ref_unit_id = $model->id;
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+		
+		$searchModel = new UnitSearch();
+		$queryParams = Yii::$app->request->getQueryParams();			
+		if($status!='all'){
+			$queryParams['UnitSearch']=[
+				'id'=>$ref_unit_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['UnitSearch']=[
+				'id'=>$ref_unit_id,					
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
+		return $this->render('index', [
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+			'id' => $ref_unit_id,
+			'status' => $status,
+		]);
+		
+    }
 }

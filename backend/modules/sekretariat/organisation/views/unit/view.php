@@ -30,16 +30,19 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
-            'id',
+            //'id',
             'name',
             'shortname',
-            'status',
-            'created',
+            [
+				'attribute' => 'status',
+				'value' => $model->status == '0'?'Off':'On',
+			],
+            /*'created',
             'createdBy',
             'modified',
             'modifiedBy',
             'deleted',
-            'deletedBy',
+            'deletedBy',*/
         ],
     ]) ?>
 
