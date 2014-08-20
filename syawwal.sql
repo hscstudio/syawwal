@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.7
+-- version 4.1.6
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Aug 15, 2014 at 06:25 PM
--- Server version: 5.5.38-MariaDB
--- PHP Version: 5.5.15
+-- Host: 127.0.0.1
+-- Generation Time: Aug 20, 2014 at 10:33 AM
+-- Server version: 5.6.16
+-- PHP Version: 5.5.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -947,14 +947,15 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `deletedBy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tb_program_ref_satker1` (`ref_satker_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `tb_program`
 --
 
 INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(3, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:08:27', 1, NULL, NULL);
+(3, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:08:27', 1, NULL, NULL),
+(4, 3, '2.2.1.0', 'PRANATA KOMPUTER AHLI', NULL, NULL, 0, 0, '', 0, NULL, 1, '2014-08-20 09:42:32', 1, '2014-08-20 11:43:33', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -964,30 +965,6 @@ INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `day
 
 CREATE TABLE IF NOT EXISTS `tb_program_document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tb_program_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `type` varchar(100) NOT NULL COMMENT 'KAP, GBPP, SILABI',
-  `filename` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `status` int(1) NOT NULL DEFAULT '0',
-  `created` datetime DEFAULT NULL,
-  `createdBy` int(11) DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` int(11) DEFAULT NULL,
-  `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_tb_program_document_tb_program1` (`tb_program_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_program_document_history`
---
-
-CREATE TABLE IF NOT EXISTS `tb_program_document_history` (
-  `tb_program_document_id` int(11) NOT NULL,
   `tb_program_id` int(11) NOT NULL,
   `revision` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -1001,9 +978,16 @@ CREATE TABLE IF NOT EXISTS `tb_program_document_history` (
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL,
-  PRIMARY KEY (`tb_program_document_id`,`tb_program_id`,`revision`),
+  PRIMARY KEY (`id`),
   KEY `fk_tb_program_document_tb_program1` (`tb_program_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `tb_program_document`
+--
+
+INSERT INTO `tb_program_document` (`id`, `tb_program_id`, `revision`, `name`, `type`, `filename`, `description`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(3, 4, 0, 'HALO', 'GBPP', '53f415ef836fb.pdf', '', 0, '2014-08-20 10:28:47', 1, '2014-08-20 12:13:44', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1041,7 +1025,8 @@ CREATE TABLE IF NOT EXISTS `tb_program_history` (
 
 INSERT INTO `tb_program_history` (`tb_program_id`, `revision`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
 (3, 0, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:07:56', 1, NULL, NULL),
-(3, 1, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:08:27', 1, '2014-08-15 14:08:27', 1, NULL, NULL);
+(3, 1, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:08:27', 1, '2014-08-15 14:08:27', 1, NULL, NULL),
+(4, 0, 3, '2.2.1.0', 'PRANATA KOMPUTER AHLI', NULL, NULL, 0, 0, '', NULL, NULL, 1, '2014-08-20 09:42:32', 1, '2014-08-20 09:42:32', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1066,7 +1051,14 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
   `deletedBy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tb_program_subject_tb_program1` (`tb_program_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `tb_program_subject`
+--
+
+INSERT INTO `tb_program_subject` (`id`, `tb_program_id`, `type`, `name`, `hours`, `sort`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 4, 0, 'PHP', 10, 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-20 13:44:52', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1077,32 +1069,6 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
 CREATE TABLE IF NOT EXISTS `tb_program_subject_document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_program_subject_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `type` varchar(100) NOT NULL COMMENT 'KAP, GBPP, SILABI',
-  `filename` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `status` int(1) NOT NULL DEFAULT '0',
-  `created` datetime DEFAULT NULL,
-  `createdBy` int(11) DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` int(11) DEFAULT NULL,
-  `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_tb_program_document_tb_program1` (`tb_program_subject_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_program_subject_document_history`
---
-
-CREATE TABLE IF NOT EXISTS `tb_program_subject_document_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tb_program_subject_document_id` int(11) NOT NULL,
-  `tb_program_subject_id` int(11) NOT NULL,
-  `tb_program_id` int(11) NOT NULL,
   `revision` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `type` varchar(100) NOT NULL COMMENT 'KAP, GBPP, SILABI',
@@ -1117,7 +1083,15 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject_document_history` (
   `deletedBy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tb_program_document_tb_program1` (`tb_program_subject_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `tb_program_subject_document`
+--
+
+INSERT INTO `tb_program_subject_document` (`id`, `tb_program_subject_id`, `revision`, `name`, `type`, `filename`, `description`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 1, 0, 'Bahan Ajar', 'Oke', '53f44c7b05874.pdf', '', 1, '2014-08-20 14:21:31', 1, '2014-08-20 15:14:39', 1, NULL, NULL),
+(2, 1, 0, 'CMS', 'Oke', '53f45af108653.pdf', '', 1, '2014-08-20 15:23:13', 1, '2014-08-20 15:23:13', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1144,6 +1118,13 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject_history` (
   PRIMARY KEY (`tb_program_subject_id`,`tb_program_id`,`revision`),
   KEY `fk_tb_program_subject_tb_program1` (`tb_program_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tb_program_subject_history`
+--
+
+INSERT INTO `tb_program_subject_history` (`tb_program_subject_id`, `tb_program_id`, `revision`, `type`, `name`, `hours`, `sort`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 4, 0, 0, 'PHP', 10, 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-20 13:20:57', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1336,10 +1317,10 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL,
-  `approvedStatus` tinyint(1) NOT NULL,
-  `approvedStatusNote` varchar(255) NOT NULL,
-  `approvedStatusDate` datetime NOT NULL,
-  `approvedStatusBy` int(11) NOT NULL,
+  `approvedStatus` tinyint(1) DEFAULT NULL,
+  `approvedStatusNote` varchar(255) DEFAULT NULL,
+  `approvedStatusDate` datetime DEFAULT NULL,
+  `approvedStatusBy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tb_training_tb_program1` (`tb_program_id`),
   KEY `fk_tb_training_ref_satker1` (`ref_satker_id`)
@@ -1945,220 +1926,6 @@ INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `
 (1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1408073996, 1405728264, 1408073996);
 
 --
--- Indexes for dumped tables
---
-
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `account`
---
-ALTER TABLE `account`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `menu`
---
-ALTER TABLE `menu`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ref_level`
---
-ALTER TABLE `ref_level`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `ref_program_code`
---
-ALTER TABLE `ref_program_code`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
---
--- AUTO_INCREMENT for table `ref_sbu`
---
-ALTER TABLE `ref_sbu`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT COMMENT 'standard biaya umum',AUTO_INCREMENT=13;
---
--- AUTO_INCREMENT for table `ref_sta_unit`
---
-ALTER TABLE `ref_sta_unit`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=100000;
---
--- AUTO_INCREMENT for table `tb_admin`
---
-ALTER TABLE `tb_admin`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_employee`
---
-ALTER TABLE `tb_employee`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_notification`
---
-ALTER TABLE `tb_notification`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_program`
---
-ALTER TABLE `tb_program`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `tb_program_document`
---
-ALTER TABLE `tb_program_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_program_subject`
---
-ALTER TABLE `tb_program_subject`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_program_subject_document`
---
-ALTER TABLE `tb_program_subject_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_program_subject_document_history`
---
-ALTER TABLE `tb_program_subject_document_history`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_room`
---
-ALTER TABLE `tb_room`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_satker_pic`
---
-ALTER TABLE `tb_satker_pic`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT COMMENT 'tb_pic = untuk menyimpan data pejabat misal PPK, KAPUS, dsb';
---
--- AUTO_INCREMENT for table `tb_student`
---
-ALTER TABLE `tb_student`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_trainer`
---
-ALTER TABLE `tb_trainer`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training`
---
-ALTER TABLE `tb_training`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_training_certificate`
---
-ALTER TABLE `tb_training_certificate`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_class`
---
-ALTER TABLE `tb_training_class`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_class_room`
---
-ALTER TABLE `tb_training_class_room`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_class_student`
---
-ALTER TABLE `tb_training_class_student`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_class_subject`
---
-ALTER TABLE `tb_training_class_subject`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_class_subject_assignment`
---
-ALTER TABLE `tb_training_class_subject_assignment`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_class_subject_document`
---
-ALTER TABLE `tb_training_class_subject_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_training_class_subject_trainer`
---
-ALTER TABLE `tb_training_class_subject_trainer`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_document`
---
-ALTER TABLE `tb_training_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_training_execution_evaluation`
---
-ALTER TABLE `tb_training_execution_evaluation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_history`
---
-ALTER TABLE `tb_training_history`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tb_training_pic`
---
-ALTER TABLE `tb_training_pic`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_schedule`
---
-ALTER TABLE `tb_training_schedule`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_student`
---
-ALTER TABLE `tb_training_student`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_student_attendance`
---
-ALTER TABLE `tb_training_student_attendance`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_subject`
---
-ALTER TABLE `tb_training_subject`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_subject_document`
---
-ALTER TABLE `tb_training_subject_document`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_subject_trainer_recommendation`
---
-ALTER TABLE `tb_training_subject_trainer_recommendation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_trainer_attendance`
---
-ALTER TABLE `tb_training_trainer_attendance`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_trainer_evaluation`
---
-ALTER TABLE `tb_training_trainer_evaluation`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_training_unit_plan`
---
-ALTER TABLE `tb_training_unit_plan`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `tb_user`
---
-ALTER TABLE `tb_user`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
 -- Constraints for dumped tables
 --
 
@@ -2242,6 +2009,12 @@ ALTER TABLE `tb_program_document`
 --
 ALTER TABLE `tb_program_subject`
   ADD CONSTRAINT `fk_tb_program_subject_tb_program1` FOREIGN KEY (`tb_program_id`) REFERENCES `tb_program` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `tb_program_subject_document`
+--
+ALTER TABLE `tb_program_subject_document`
+  ADD CONSTRAINT `tb_program_subject_document_ibfk_1` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_program_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_room`
