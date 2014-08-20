@@ -173,4 +173,10 @@ class ProgramQuery extends \yii\db\ActiveQuery
         $this->andWhere(['ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id]);
         return $this;
     }
+	
+	public function active($status=1)
+    {
+        $this->andWhere(['status'=>$status]);
+        return $this;
+    }
 }

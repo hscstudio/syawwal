@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
+use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\ProgramSubjectSearch */
 
@@ -19,6 +20,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-gridview',
+	]); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -113,13 +117,30 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			//'type'=>'primary',
 			'before'=>
 			Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program', ['program/index'], ['class' => 'btn btn-warning']).' '.
-			Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Subject', ['create','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-info']),
+			Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Subject', ['create','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-success']).' '.
+			'<div class="pull-right" style="margin-right:5px;">'.
+			Select2::widget([
+				'name' => 'status', 
+				'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'All'],
+				'value' => $status,
+				'options' => [
+					'placeholder' => 'Status ...', 
+					'class'=>'form-control', 
+					'onchange'=>'
+						$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/program-subject/index']).'?tb_program_id='.(int)$tb_program_id.'&status="+$(this).val(), container: "#pjax-gridview", timeout: 1});
+					',	
+					'data-pjax' => '1',
+				],
+			]).
+			'</div>',
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id,'status'=>$status], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	<?php \yii\widgets\Pjax::end(); ?>
+	
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

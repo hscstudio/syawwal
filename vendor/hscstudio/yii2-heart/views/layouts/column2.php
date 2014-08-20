@@ -80,7 +80,7 @@ Icon::map($this, Icon::FA);
         </section>
     </aside>
 
-    <aside class="right-side">   
+    <aside class="right-side">  
         <section class="content-header">
             <h1><?= Html::encode($this->title) ?></h1>
         </section>
@@ -95,7 +95,7 @@ Icon::map($this, Icon::FA);
 			]); 
 			?>
             <?= $content ?>
-        </section>
+        </section>		
     </aside>
 </div>
 <?php $this->endContent();

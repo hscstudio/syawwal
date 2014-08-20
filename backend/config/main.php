@@ -83,6 +83,7 @@ return [
 						'user/*',
 						'privilege/*',
 						'gridview/*',	// add or remove allowed actions to this list
+						'file/*',
 						/* DEFAULT */						
 						/* START SEKRETARIAT */
 						'sekretariat-organisation/*',

@@ -96,4 +96,23 @@ class ProgramSubjectDocument extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
+	
+	/**
+     * @inheritdoc
+     * @return ProgramQuery
+     */
+    public static function find()
+    {
+        return new ProgramSubjectDocumentQuery(get_called_class());
+    }
 }
+
+class ProgramSubjectDocumentQuery extends \yii\db\ActiveQuery
+{
+	public function active($status=1)
+    {
+        $this->andWhere(['status'=>$status]);
+        return $this;
+    }
+}
+

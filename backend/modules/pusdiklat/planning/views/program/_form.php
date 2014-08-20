@@ -49,6 +49,7 @@ use yii\helpers\ArrayHelper;
 			->all(), 
 			'code', 'name_code'
 	);
+	
 	echo $form->field($model, 'number')->widget(Select2::classname(), [
 		'data' => $data,
 		'options' => ['placeholder' => 'Choose code ...'],

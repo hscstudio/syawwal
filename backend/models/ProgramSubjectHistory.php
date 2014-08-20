@@ -107,4 +107,5 @@ class ProgramSubjectHistory extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Program::className(), ['id' => 'tb_program_id']);
     }
+	
 }

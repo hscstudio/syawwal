@@ -117,4 +117,23 @@ class ProgramSubject extends \yii\db\ActiveRecord
         return $this->hasMany(TrainingSubjectTrainerRecommendation::className(), ['tb_program_subject_id' => 'id']);
     }
 	
+	/**
+     * @inheritdoc
+     * @return ProgramQuery
+     */
+    public static function find()
+    {
+        return new ProgramSubjectQuery(get_called_class());
+    }
 }
+
+class ProgramSubjectQuery extends \yii\db\ActiveQuery
+{
+	
+	public function active($status=1)
+    {
+        $this->andWhere(['status'=>$status]);
+        return $this;
+    }
+}
+

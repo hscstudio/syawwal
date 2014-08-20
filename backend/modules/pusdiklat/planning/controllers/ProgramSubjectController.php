@@ -33,19 +33,29 @@ class ProgramSubjectController extends Controller
      * Lists all ProgramSubject models.
      * @return mixed
      */
-    public function actionIndex($tb_program_id)
+    public function actionIndex($tb_program_id,$status=1)
     {
-        if($tb_program_id>0){
+         if(isset($tb_program_id)){
 			$searchModel = new ProgramSubjectSearch();
-			$queryParams = Yii::$app->request->getQueryParams();
-			$queryParams['ProgramSubjectSearch']=['tb_program_id'=>$tb_program_id];
+			$queryParams = Yii::$app->request->getQueryParams();			
+			if($status!='all'){
+				$queryParams['ProgramSubjectSearch']=[
+					'tb_program_id'=>$tb_program_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['ProgramSubjectSearch']=[
+					'tb_program_id'=>$tb_program_id,					
+				];
+			}
 			$dataProvider = $searchModel->search($queryParams);
-			//$dataProvider->getSort()->defaultOrder = ['revision'=>SORT_DESC];
-
+			
 			return $this->render('index', [
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider,
 				'tb_program_id' => $tb_program_id,
+				'status' => $status,
 			]);
 		}
 		else{

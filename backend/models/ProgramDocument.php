@@ -105,4 +105,24 @@ class ProgramDocument extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Program::className(), ['id' => 'tb_program_id']);
     }
+
+	/**
+     * @inheritdoc
+     * @return ProgramQuery
+     */
+    public static function find()
+    {
+        return new ProgramDocumentQuery(get_called_class());
+    }
 }
+
+class ProgramDocumentQuery extends \yii\db\ActiveQuery
+{
+	
+	public function active($status=1)
+    {
+        $this->andWhere(['status'=>$status]);
+        return $this;
+    }
+}
+
