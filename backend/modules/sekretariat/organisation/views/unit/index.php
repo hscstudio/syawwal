@@ -46,13 +46,23 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'raw',
 					'attribute' => 'status',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'width'=>'50px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Status', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data){
+						$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok text-success"></span>':'<span class="glyphicon glyphicon-remove text-danger"></span>';
+						return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
+							'onclick'=>'
+								$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
+								return false;
+							'
+						]);
+						
+					}
 				],
             // 'created',
             // 'createdBy',

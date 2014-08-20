@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
-
+use yii\helpers\ArrayHelper;
 /* @var $searchModel backend\models\ProgramCodeSearch */
 
 $this->title = 'Program Codes';
@@ -12,6 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
+$datadropdown = ArrayHelper::map(\backend\models\ProgramCode::find()->select(['id','name'])->asArray()->all(),'id','name');
 ?>
 <div class="program-code-index">
 
@@ -28,7 +29,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'name',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -38,7 +38,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'code',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -48,23 +47,37 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'parent_id',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Parent_id', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data) {
+						$parent = \backend\models\ProgramCode::findOne($data->parent_id);
+						return ($data->parent_id==0)?'----' : $parent->name;
+					},
+					'editableOptions'=>['header'=>'parent_id',
+										'inputType' => 'dropDownList',
+										'data'=>array_merge([0=>'----'],$datadropdown),
+										'editableValueOptions'=>['class'=>'text-danger'],
+										'formOptions'=>['action'=>\yii\helpers\Url::to('editable')]
+										]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'raw',
 					'attribute' => 'status',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'width'=>'50px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Status', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data){
+						$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok text-success"></span>':'<span class="glyphicon glyphicon-remove text-danger"></span>';
+						return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
+							'onclick'=>'
+								$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
+								return false;
+							'
+						]);
+						
+					}
 				],
-            // 'created',
             // 'createdBy',
             // 'modified',
             // 'modifiedBy',

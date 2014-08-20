@@ -23,6 +23,7 @@ echo \kartik\widgets\AlertBlock::widget([
 
     <?= $this->render('_form', [
         'model' => $model,
+		'tb_program_id' => $tb_program_id,
     ]) ?>
 
 </div>

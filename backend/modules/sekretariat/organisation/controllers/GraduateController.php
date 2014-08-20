@@ -126,7 +126,7 @@ class GraduateController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+		Yii::$app->session->setFlash('success', 'Data Deleted');
         return $this->redirect(['index']);
     }
 
@@ -160,6 +160,7 @@ class GraduateController extends Controller
 				$model2->save();
 				// return JSON encoded output in the below format
 				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
+				Yii::$app->session->setFlash('success', 'Data saved');
 				// alternatively you can return a validation error
 				// echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'Validation error']);
 			}
@@ -448,4 +449,38 @@ class GraduateController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	public function actionStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+        $ref_graduate_id = $model->id;
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+		
+		$searchModel = new GraduateSearch();
+		$queryParams = Yii::$app->request->getQueryParams();			
+		if($status!='all'){
+			$queryParams['GraduateSearch']=[
+				'id'=>$ref_graduate_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['GraduateSearch']=[
+				'id'=>$ref_graduate_id,					
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
+		return $this->render('index', [
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+			'id' => $ref_graduate_id,
+			'status' => $status,
+		]);
+		
+    }
 }

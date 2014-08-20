@@ -49,6 +49,7 @@ class ProgramSubjectController extends Controller
 					'tb_program_id'=>$tb_program_id,					
 				];
 			}
+			$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 			$dataProvider = $searchModel->search($queryParams);
 			
 			return $this->render('index', [
@@ -517,4 +518,44 @@ class ProgramSubjectController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	/**
+     * Updates an existing ProgramDocument model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+        $tb_program_id = $model->tb_program_id;
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+		
+		$searchModel = new ProgramSubjectSearch();
+		$queryParams = Yii::$app->request->getQueryParams();			
+		if($status!='all'){
+			$queryParams['ProgramSubjectSearch']=[
+				'tb_program_id'=>$tb_program_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['ProgramSubjectSearch']=[
+				'tb_program_id'=>$tb_program_id,					
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
+		return $this->render('index', [
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+			'tb_program_id' => $tb_program_id,
+			'status' => $status,
+		]);
+		
+    }
 }

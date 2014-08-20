@@ -66,31 +66,46 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'owner',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Owner', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data) {if($data->status == '0'){
+						return 'No';}
+						else
+						{ return 'Yes';}},
+					'editableOptions'=>['header'=>'Status',
+										'inputType' => '\kartik\widgets\SwitchInput',
+										'data'=>array(0=>'No',1=>'Yes'),
+										'editableValueOptions'=>['class'=>'text-danger'],
+										'formOptions'=>['action'=>\yii\helpers\Url::to('editable')]
+										]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'computer',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Computer', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data) {if($data->status == '0'){
+						return 'No';}
+						else
+						{ return 'Yes';}},
+					'editableOptions'=>['header'=>'Status',
+										'inputType' => '\kartik\widgets\SwitchInput',
+										'data'=>array(0=>'No',1=>'Yes'),
+										'editableValueOptions'=>['class'=>'text-danger'],
+										'formOptions'=>['action'=>\yii\helpers\Url::to('editable')]
+										]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'hostel',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Hostel', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data) {if($data->status == '0'){
+						return 'No';}
+						else
+						{ return 'Yes';}},
+					'editableOptions'=>['header'=>'Status',
+										'inputType' => '\kartik\widgets\SwitchInput',
+										'data'=>array(0=>'No',1=>'Yes'),
+										'editableValueOptions'=>['class'=>'text-danger'],
+										'formOptions'=>['action'=>\yii\helpers\Url::to('editable')]
+										]
 				],
 
             ['class' => 'kartik\grid\ActionColumn'],

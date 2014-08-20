@@ -88,17 +88,47 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'editableOptions'=>['header'=>'Test', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'status',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Status', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-
+           
+			
+			[
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'label' => 'Document',
+				'value' => function ($data) {
+					$countSubjectDoc = \backend\models\ProgramSubjectDocument::find()
+								->where(['tb_program_subject_id' => $data->id,])
+								->active()
+								->count();
+					if($countSubjectDoc>0){
+						return Html::a($countSubjectDoc, ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'badge']);
+					}
+					else{
+						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'badge']);
+					}
+				}
+			],
+			
+			[
+				'format' => 'raw',
+				'attribute' => 'status',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'50px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){
+					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok text-success"></span>':'<span class="glyphicon glyphicon-remove text-danger"></span>';
+					return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
+						'onclick'=>'
+							$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
+							return false;
+						'
+					]);
+					
+				}
+			],
+			
             [
 				'class' => 'kartik\grid\ActionColumn',
 				'buttons'=>[

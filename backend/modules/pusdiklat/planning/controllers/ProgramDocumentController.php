@@ -49,6 +49,7 @@ class ProgramDocumentController extends Controller
 					'tb_program_id'=>$tb_program_id,					
 				];
 			}
+			$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 			$dataProvider = $searchModel->search($queryParams);
 
 			return $this->render('index', [
@@ -87,6 +88,7 @@ class ProgramDocumentController extends Controller
 			$files=[];
 			if ($model->load(Yii::$app->request->post())){
 				$model->tb_program_id=$tb_program_id;
+				$model->revision=\backend\models\ProgramHistory::getRevision($tb_program_id);
 				// PREPARING UPLOAD DOCUMENT				
 				$files[0] = \yii\web\UploadedFile::getInstance($model, 'filename');
 				if(!empty($files[0])){
@@ -103,7 +105,7 @@ class ProgramDocumentController extends Controller
 					@chmod($path, 0755);
 					$paths[0] = $path . $model->filename;
 				}
-				
+
 				if($model->save()) {
 					Yii::$app->session->setFlash('success', 'Data saved');
 					// SAVEAS / UPLOAD DOCUMENT				
@@ -114,16 +116,6 @@ class ProgramDocumentController extends Controller
 						}
 						$idx++;
 					}
-					 // SAVE HISTORY OF PROGRAM DOCUMENT
-					$model2 = new \backend\models\ProgramDocumentHistory();
-					$model2->attributes = array_merge(
-					  $model->attributes,[
-						'tb_program_document_id'=>$model->id,
-						'tb_program_id'=>$tb_program_id,
-						'revision'=>\backend\models\ProgramHistory::getRevision($tb_program_id),					
-					  ]
-					);				
-					$model2->save();
 				}
 				else{
 					 Yii::$app->session->setFlash('error', 'Unable create there are some error');
@@ -164,6 +156,7 @@ class ProgramDocumentController extends Controller
 			//return $this->render(['update', 'id' => $model->id]);
 			return $this->render('update', [
                 'model' => $model,
+				'tb_program_id' => $model->tb_program_id,
             ]);
 		}
     }
@@ -176,9 +169,28 @@ class ProgramDocumentController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+		$tb_program_id = $model->tb_program_id;
+		
+		if($model->delete()){
+			$path = '';
+			if(isset(Yii::$app->params['uploadPath'])){
+				$path = Yii::$app->params['uploadPath'].'/program/'.$tb_program_id.'/document/';
+			}
+			else{
+				$path = Yii::getAlias('@common').'/../files/program/'.$tb_program_id.'/document/';
+			}
+			@unlink($path . $model->filename);
+			Yii::$app->session->setFlash('success', 'Delete success');
+		}
+		else{
+			Yii::$app->session->setFlash('error', 'Delete failed');
+		}
+		
+        return $this->redirect([
+			'index',
+			'tb_program_id' => $tb_program_id,
+		]);
     }
 
     /**
@@ -507,4 +519,36 @@ class ProgramDocumentController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	/**
+     * Updates an existing ProgramDocument model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+        $tb_program_id = $model->tb_program_id;
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+
+		$searchModel = new ProgramDocumentSearch();
+		$queryParams = Yii::$app->request->getQueryParams();			
+		$queryParams['ProgramDocumentSearch']=[
+				'tb_program_id'=>$tb_program_id,					
+			];
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+
+		return $this->render('index', [
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+			'tb_program_id' => $tb_program_id,
+			'status' => $status,
+		]);
+    }
+
 }

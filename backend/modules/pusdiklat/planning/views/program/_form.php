@@ -72,13 +72,15 @@ use yii\helpers\ArrayHelper;
 					]
 				]) ?>
 
-    <?= $form->field($model, 'type')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
+	<?php /////Merubah Bentuk type dari switch input jadi select2 dikarenakan size switch input terlalu kecil///////
+	echo $form->field($model, 'type')->widget(Select2::classname(), [
+		'data' => array(0=>'Lulus',1=>'Mengikuti'),
+		'options' => ['placeholder' => 'Choose code ...'],
+		'pluginOptions' => [
+			'allowClear' => true
+		],
+	]);
+	?>
     
 
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
