@@ -22,6 +22,7 @@ echo \kartik\widgets\AlertBlock::widget([
 
     <?= $this->render('_form', [
         'model' => $model,
-    ]) ?>
+        'dataEs2' => $dataEs2
+    ]); ?>
 
 </div>

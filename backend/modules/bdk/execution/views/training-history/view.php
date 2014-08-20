@@ -4,22 +4,22 @@ use yii\helpers\Html;
 use kartik\detail\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Training */
+/* @var $model backend\models\TrainingHistory */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Training Histories', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="training-view">
+<div class="training-history-view">
 
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Trainings # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Training Histories # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
@@ -31,6 +31,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
             'id',
+            'tb_training_id',
             'tb_program_id',
             'revision',
             'ref_satker_id',

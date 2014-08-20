@@ -11,13 +11,17 @@ use yii\filters\VerbFilter;
 use backend\models\Satker;
 use yii\helpers\ArrayHelper;
 use backend\models\Program;
+use backend\models\ProgramHistory;
+use backend\models\TrainingHistory;
+use yii\helpers\Json;
 
 /**
  * TrainingController implements the CRUD actions for Training model.
  */
 class TrainingController extends Controller
 {
-		public $layout = '@hscstudio/heart/views/layouts/column2';
+
+	public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
  	
 	public function behaviors()
@@ -59,6 +63,10 @@ class TrainingController extends Controller
         ]);
     }
 
+
+
+
+
     /**
      * Creates a new Training model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -77,11 +85,25 @@ class TrainingController extends Controller
         	->all(),
         'id', 'name');
 
-        if ($model->load(Yii::$app->request->post())){
+        if ($model->load(Yii::$app->request->post())) {
+
+        	// Ambil revision terakhir dari program history
+        	$model->revision = ProgramHistory::getRevision($model->tb_program_id);
+
 			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
+				Yii::$app->session->setFlash('success', 'Data saved');
+				// Nyimpen history training
+				$model2 = new TrainingHistory();
+				$model2->attributes = array_merge(
+				  $model->attributes,[
+					'tb_training_id'=>$model->id,
+					'revision'=>'0',					
+				  ]
+				);				
+				$model2->save();
 			}
-			else{
+			else
+			{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
 			}
             return $this->redirect(['view', 'id' => $model->id]);
@@ -92,6 +114,9 @@ class TrainingController extends Controller
             ]);
         }
     }
+
+
+
 
     /*
     Ngasih data program berdasarkan eselon yang masuk
@@ -110,11 +135,48 @@ class TrainingController extends Controller
 	        	->all();
 		}
 
+		echo '<option selected>-- No program selected --</option>';
         foreach($programEs as $p) 
         {
             echo "<option value='".$p->id."'>".$p->name."</option>";
         }
     }
+
+    
+
+
+
+    /* 
+    Ngasi list revisi program
+	*/
+	public function actionRev() {
+	    $out = [];
+	    if (isset($_POST['depdrop_parents'])) {
+	        $parents = $_POST['depdrop_parents'];
+	        if ($parents != null) {
+	        	// Ngambil id program
+	            $idProg = $parents[0];
+
+	            // nyari semua revisi berdasarkan id program td
+	            $asd = ProgramHistory::find()
+		        	->select(['revision', 'name'])
+		        	->where(['tb_program_id' => $idProg])
+		        	->asArray()
+		        	->orderBy(['revision' => SORT_DESC])
+		        	->all();
+
+		        foreach ($asd as $key) {
+		        	$out[] = ['id' => $key['revision'], 'name' => 'Rev '.$key['revision'].' -> '.$key['name']];
+		        }
+
+	            echo Json::encode(['output'=>$out, 'selected'=>'']);
+	            return;
+	        }
+	    }
+
+	    echo Json::encode(['output'=>'', 'selected'=>'']);
+
+	}
 
     /**
      * Updates an existing Training model.
@@ -126,6 +188,15 @@ class TrainingController extends Controller
     {
         $model = $this->findModel($id);
         $currentFiles=[];
+
+        // Bikin data map dari model satker
+        $dataEs2 = ArrayHelper::map(Satker::find()
+        	->select(['id','name'])
+        	->where(['eselon' => 0])
+        	->orWhere(['eselon' => 2])
+        	->asArray()
+        	->all(),
+        'id', 'name');
         
         if ($model->load(Yii::$app->request->post())) {
             $files=[];
@@ -139,16 +210,36 @@ class TrainingController extends Controller
 					$idx++;
 				}
 				Yii::$app->session->setFlash('success', 'Data saved');
+
+				// Klo neken tombol save as revision
+				if(Yii::$app->request->post('create_revision') !== null )
+				{
+					// Nyimpen revisi
+					$revision = ProgramHistory::getRevision($model->id);				
+					$model2 = new TrainingHistory();
+					$model2->attributes = array_merge(
+					  $model->attributes,[
+						'tb_training_id' => $model->id,
+						'revision' => $revision+1,				
+					  ]
+					);				
+					$model2->save();					
+					
+					Yii::$app->session->setFlash('success', 'Save as revision');	
+				}
+
                 return $this->redirect(['view', 'id' => $model->id]);
+
             } else {
                 // error in saving model
 				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
-		else{
-			//return $this->render(['update', 'id' => $model->id]);
+		else
+		{
 			return $this->render('update', [
                 'model' => $model,
+                'dataEs2' => $dataEs2
             ]);
 		}
     }

@@ -4,98 +4,93 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $searchModel backend\models\TrainingSearch */
+/* @var $searchModel backend\models\TrainingHistorySearch */
 
-$this->title = 'Trainings';
+$this->title = 'Training Histories';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="training-index">
+<div class="training-history-index">
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            	['class' => 'kartik\grid\SerialColumn'],
-                        
+            ['class' => 'kartik\grid\SerialColumn'],
+            
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'html',
+					'attribute' => 'revision',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column']
+				],
+            
+				[
+					'format' => 'html',
 					'attribute' => 'name',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'html',
 					'attribute' => 'start',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Start', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'html',
 					'attribute' => 'finish',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Finish', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'html',
 					'attribute' => 'note',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Note', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'html',
 					'attribute' => 'studentCount',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'StudentCount', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-				[
-					'format' => 'html',
-					'vAlign'=>'middle',
-					'hAlign'=>'center',
-					'label' => 'Revision',
-					'value' => function ($data) {
-						$countRevision = \backend\models\TrainingHistory::find()
-									->where(['tb_training_id' => $data->id,])
-									->count()-1;
-						if($countRevision>0){
-							return Html::a($countRevision.' x', ['training-history/','tb_training_id'=>$data->id], ['class' => 'badge']);
-						}
-						else{
-							return '<span class="badge">0</span>';
-						}
-					}
 				],
 
-            ['class' => 'kartik\grid\ActionColumn'],
+				[
+					'format' => 'html',
+					'attribute' => 'created',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+				],
+
+            [
+            	'class' => 'kartik\grid\ActionColumn',
+            	'template' => '{view}'
+            ],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training</h3>',
-			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+			'heading'=>	Html::a('<i class="fa fa-fw fa-arrow-circle-left"></i> Back to the training list', Yii::$app->urlManager->createUrl(['bdk-execution/training/']), ['class' => 'btn btn-primary']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
@@ -129,22 +124,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					],
 				]); 
 			echo Html::endTag('div');
-		echo Html::endTag('div');
-		
-		echo Html::beginTag('div', ['class'=>'col-md-8']);
-			$form = \yii\bootstrap\ActiveForm::begin([
-				'options'=>['enctype'=>'multipart/form-data'],
-				'action'=>['import'],
-			]);
-			echo \kartik\widgets\FileInput::widget([
-				'name' => 'importFile', 
-				//'options' => ['multiple' => true], 
-				'pluginOptions' => [
-					'previewFileType' => 'any',
-					'uploadLabel'=>"Import Excel",
-				]
-			]);
-			\yii\bootstrap\ActiveForm::end();
 		echo Html::endTag('div');
 		
 	echo Html::endTag('div');
