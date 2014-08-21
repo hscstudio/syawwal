@@ -32,7 +32,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'50px',
 				'value' => function ($data) {
 					if($data->revision>0){
-						return Html::a($data->revision.'x', '#', ['class' => 'badge']);
+						return Html::a($data->revision.'x', '#', ['class' => 'label label-danger']);
 					}
 					else{
 						return '-';
@@ -67,7 +67,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'format' => 'html',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'label' => 'Document',
+				'label' => 'Doc',
+				'width'=>'50px',
 				'value' => function ($data) {
 					$countDoc = \backend\models\ProgramDocument::find()
 								->where(
@@ -76,10 +77,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->active()
 								->count();
 					if($countDoc>0){
-						return Html::a($countDoc, ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'badge']);
+						return Html::a($countDoc, ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
 					}
 					else{
-						return Html::a('+', ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'badge']);
+						return Html::a('+', ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
 					}
 				}
 			],
@@ -93,10 +94,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->where(['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,])
 								->count();
 					if($countSubject>0){
-						return Html::a($countSubject, ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'badge']);
+						return Html::a($countSubject, ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
 					}
 					else{
-						return Html::a('+', ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'badge']);
+						return Html::a('+', ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
 					}
 				}
 			],

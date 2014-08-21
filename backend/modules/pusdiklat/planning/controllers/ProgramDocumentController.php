@@ -557,6 +557,7 @@ class ProgramDocumentController extends Controller
 			'dataProvider' => $dataProvider,
 			'tb_program_id' => $tb_program_id,
 			'status' => $status,
+			'program_name' => $model->program->name,
 		]);
     }
 

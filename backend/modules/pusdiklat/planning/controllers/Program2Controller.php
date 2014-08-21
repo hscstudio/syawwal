@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * ProgramController implements the CRUD actions for Program model.
  */
-class ProgramController extends Controller
+class Program2Controller extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -68,40 +68,6 @@ class ProgramController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
-
-    /**
-     * Creates a new Program model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Program();
-
-        if ($model->load(Yii::$app->request->post())){
-			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', 'Data saved');
-				// SAVE HISTORY OF PROGRAM
-				$model2 = new \backend\models\ProgramHistory();
-				$model2->attributes = array_merge(
-				  $model->attributes,[
-					'tb_program_id'=>$model->id,
-					'revision'=>'0',					
-				  ]
-				);				
-				$model2->save();
-			}
-			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
     }
 
     /**
@@ -435,109 +401,6 @@ class ProgramController extends Controller
         ]);	
     }
 	
-	public function actionImport(){
-		$dataProvider = new ActiveDataProvider([
-            'query' => Program::find(),
-        ]);
-		
-		/* 
-		Please read guide of upload https://github.com/yiisoft/yii2/blob/master/docs/guide/input-file-upload.md
-		maybe I do mistake :)
-		*/		
-		if (!empty($_FILES)) {
-			$importFile = \yii\web\UploadedFile::getInstanceByName('importFile');
-			if(!empty($importFile)){
-				$fileTypes = ['xls','xlsx']; // File extensions allowed
-				//$ext = end((explode(".", $importFile->name)));
-				$ext=$importFile->extension;
-				if(in_array($ext,$fileTypes)){
-					$inputFileType = \PHPExcel_IOFactory::identify($importFile->tempName );
-					$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-					$objPHPExcel = $objReader->load($importFile->tempName );
-					$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
-					$baseRow = 2;
-					$inserted=0;
-					$read_status = false;
-					$err=[];
-					while(!empty($sheetData[$baseRow]['A'])){
-						$read_status = true;
-						$abjadX=array();
-						//$id=  $sheetData[$baseRow]['A'];
-						$ref_satker_id=  $sheetData[$baseRow]['B'];
-						$number=  $sheetData[$baseRow]['C'];
-						$name=  $sheetData[$baseRow]['D'];
-						$hours=  $sheetData[$baseRow]['E'];
-						$days=  $sheetData[$baseRow]['F'];
-						$test=  $sheetData[$baseRow]['G'];
-						$type=  $sheetData[$baseRow]['H'];
-						$note=  $sheetData[$baseRow]['I'];
-						$validationStatus=  $sheetData[$baseRow]['J'];
-						$validationNote=  $sheetData[$baseRow]['K'];
-						$status=  $sheetData[$baseRow]['L'];
-						//$created=  $sheetData[$baseRow]['M'];
-						//$createdBy=  $sheetData[$baseRow]['N'];
-						//$modified=  $sheetData[$baseRow]['O'];
-						//$modifiedBy=  $sheetData[$baseRow]['P'];
-						//$deleted=  $sheetData[$baseRow]['Q'];
-						//$deletedBy=  $sheetData[$baseRow]['R'];
-
-						$model2=new Program;
-						//$model2->id=  $id;
-						$model2->ref_satker_id=  $ref_satker_id;
-						$model2->number=  $number;
-						$model2->name=  $name;
-						$model2->hours=  $hours;
-						$model2->days=  $days;
-						$model2->test=  $test;
-						$model2->type=  $type;
-						$model2->note=  $note;
-						$model2->validationStatus=  $validationStatus;
-						$model2->validationNote=  $validationNote;
-						$model2->status=  $status;
-						//$model2->created=  $created;
-						//$model2->createdBy=  $createdBy;
-						//$model2->modified=  $modified;
-						//$model2->modifiedBy=  $modifiedBy;
-						//$model2->deleted=  $deleted;
-						//$model2->deletedBy=  $deletedBy;
-
-						try{
-							if($model2->save()){
-								$inserted++;
-							}
-							else{
-								foreach ($model2->errors as $error){
-									$err[]=($baseRow-1).'. '.implode('|',$error);
-								}
-							}
-						}
-						catch (\yii\base\ErrorException $e){
-							Yii::$app->session->setFlash('error', "{$e->getMessage()}");
-							//$this->refresh();
-						} 
-						$baseRow++;
-					}	
-					Yii::$app->session->setFlash('success', ($inserted).' row inserted');
-					if(!empty($err)){
-						Yii::$app->session->setFlash('warning', 'There are error: <br>'.implode('<br>',$err));
-					}
-				}
-				else{
-					Yii::$app->session->setFlash('error', 'Filetype allowed only xls and xlsx');
-				}				
-			}
-			else{
-				Yii::$app->session->setFlash('error', 'File import empty!');
-			}
-		}
-		else{
-			Yii::$app->session->setFlash('error', 'File import empty!');
-		}
-		
-		return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);					
-	}
 	
 	/**
      * Updates an existing ProgramDocument model.

@@ -88,7 +88,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'50px',
 				'value' => function ($data) {
 					if($data->revision>0){
-						return Html::a($data->revision.'x', '#', ['class' => 'badge']);
+						return Html::a($data->revision.'x', '#', ['class' => 'label label-danger']);
 					}
 					else{
 						return '-';
@@ -105,12 +105,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data){
-					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok text-success"></span>':'<span class="glyphicon glyphicon-remove text-danger"></span>';
+					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
 					return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
 						'onclick'=>'
 							$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
 							return false;
-						'
+						',
+						'class'=>($data->status==1)?'label label-info':'label label-warning',
 					]);
 					
 				}
