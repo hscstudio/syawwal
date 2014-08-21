@@ -105,7 +105,7 @@ class Training extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tb_program_id' => 'Tb Program ID',
+            'tb_program_id' => 'Program',
             'revision' => 'Revision',
             'ref_satker_id' => 'Ref Satker ID',
             'name' => 'Name',
@@ -119,11 +119,11 @@ class Training extends \yii\db\ActiveRecord
             'costPlan' => 'Cost Plan',
             'costRealisation' => 'Cost Realisation',
             'sourceCost' => 'Source Cost',
-            'hostel' => 'Hostel',
+            'hostel' => 'Stayed in?',
             'reguler' => 'Reguler',
             'stakeholder' => 'Stakeholder',
             'location' => 'Location',
-            'status' => 'Status',
+            'status' => 'Publish Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
             'modified' => 'Modified',

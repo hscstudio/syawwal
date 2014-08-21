@@ -133,7 +133,7 @@ class TrainingController extends Controller
 		{
 	    	$programEs = Program::find()
 	        	->select(['id','name'])
-	        	->where(['ref_satker_id' => Yii::$app->request->post('eselon') ])
+	        	->where(['ref_satker_id' => Yii::$app->request->post('eselon'), 'status' => 1 ])
 	        	->all();
 		}
 
