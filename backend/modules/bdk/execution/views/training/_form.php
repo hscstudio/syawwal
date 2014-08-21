@@ -60,7 +60,12 @@ use kartik\widgets\DepDrop;
 			?>
 
 			<?php
-				$data = ArrayHelper::map(\backend\models\Program::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+				$data = ArrayHelper::map(\backend\models\Program::find()
+					->select(['id','name'])
+					->where(['status' => 1])
+					->asArray()
+					->all(), 
+				'id', 'name');
 				echo $form->field($model, 'tb_program_id')->widget(Select2::classname(), [
 					'data' => $data,
 					'options' => [
@@ -72,50 +77,6 @@ use kartik\widgets\DepDrop;
 					],
 				]); 
 			?>
-
-		    <?php 
-
-		    	if ($model->isNewRecord)
-		    	{
-
-			    	echo $form->field($model, 'revision')->widget(DepDrop::classname(), [
-					    'type' => DepDrop::TYPE_SELECT2,
-					    'select2Options'=>['pluginOptions'=>['allowClear'=>true]],
-					    'options'=>[
-					    	'id' => 'training-revision',
-					    ],
-					    'pluginOptions'=>[
-					        'depends'=>['training-tb_program_id'],
-					        'placeholder'=>'Select a revision of a program...',
-					        'url'=>Yii::$app->urlManager->createUrl(['bdk-execution/training/rev']),
-					        'loadingText' => 'Finding revision ...',
-					    ]
-					]);
-		    	}
-		    	else
-		    	{
-			    	$data = \backend\models\ProgramHistory::find()
-					        ->select(['revision', 'name'])
-					        ->where(['tb_program_id' => $model->tb_program_id, 'revision' => $model->revision])
-					        ->one();
-
-			    	echo $form->field($model, 'revision')->widget(DepDrop::classname(), [
-			    		'data'=> [ $data->revision => $data->name ],
-					    'type' => DepDrop::TYPE_SELECT2,
-					    'select2Options'=>['pluginOptions'=>['allowClear'=>true]],
-					    'options'=>[
-					    	'id' => 'training-revision',
-					    ],
-					    'pluginOptions'=>[
-					        'depends'=>['training-tb_program_id'],
-					        'placeholder'=>'Select a revision of a program...',
-					        'url'=>Yii::$app->urlManager->createUrl(['bdk-execution/training/rev']),
-					        'loadingText' => 'Finding revision ...',
-					        'initialize' => true
-					    ]
-					]);
-		    	}
-		    ?>
 
 		    <?= '' ?>
 
@@ -131,20 +92,13 @@ use kartik\widgets\DepDrop;
 
 		    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
-		    <?= $form->field($model, 'approvedStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
-							'pluginOptions' => [
-								'onText' => 'On',
-								'offText' => 'Off',
-							]
-						]) ?>
+		    <?php //approvedStatus ?>
 
-		    <?= $form->field($model, 'approvedStatusNote')->textInput(['maxlength' => 255]) ?>
+		    <?php //approvedStatusNote ?>
 
-		    <?= $form->field($model, 'approvedStatusDate')->widget(\kartik\datecontrol\DateControl::classname(), [
-							'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-						]); ?>
+		    <?php //approvedStatusDate ?>
 
-		    <?= $form->field($model, 'approvedStatusBy')->textInput() ?>
+		    <?php //approvedStatusBy ?>
 
 		    <?= $form->field($model, 'studentCount')->textInput() ?>
 
@@ -168,12 +122,26 @@ use kartik\widgets\DepDrop;
 							]
 						]) ?>
 
-		    <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-							'pluginOptions' => [
-								'onText' => 'On',
-								'offText' => 'Off',
-							]
-						]) ?>
+		    <?php
+		    	if ($model->isNewRecord)
+		    	{
+			    	echo $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
+								'pluginOptions' => [
+									'onText' => 'On',
+									'offText' => 'Off',
+								]
+							]);
+		    	}
+		    	else
+		    	{
+			    	echo $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
+								'pluginOptions' => [
+									'onText' => 'On',
+									'offText' => 'Off',
+								]
+							]);
+		    	}
+			?>
 
 		    <?= ""//createdBy ?>
 

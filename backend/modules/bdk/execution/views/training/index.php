@@ -24,7 +24,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'name',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -34,7 +33,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'start',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -44,7 +42,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'finish',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -54,7 +51,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'note',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -64,11 +60,30 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'studentCount',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'editableOptions'=>['header'=>'StudentCount', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
+				[
+					'format' => 'html',
+					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'label' => 'Status',
+					'value' => function ($data)
+					{
+						if ($data->approvedStatus === null)
+						{
+							return '<p class="label label-warning"><i class="fa fa-fw fa-square"></i> Waiting for approval</p>';
+						}
+						elseif ($data->approvedStatus === 0) {
+							return '<p class="label label-danger"><i class="fa fa-fw fa-minus-square"></i> Rejected</p>';
+						}
+						else
+						{
+							return '<p class="label label-success"><i class="fa fa-fw fa-check-square"></i> Approved</p>';
+						}
+					}
 				],
 				[
 					'format' => 'html',
@@ -80,10 +95,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 									->where(['tb_training_id' => $data->id,])
 									->count()-1;
 						if($countRevision>0){
-							return Html::a($countRevision.' x', ['training-history/','tb_training_id'=>$data->id], ['class' => 'badge']);
+							return Html::a($countRevision.' x', ['training-history/','tb_training_id'=>$data->id], ['class' => 'label label-danger']);
 						}
 						else{
-							return '<span class="badge">0</span>';
+							return '<span class="label label-danger">0</span>';
 						}
 					}
 				],
@@ -91,9 +106,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
 			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']),
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
@@ -138,7 +151,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			]);
 			echo \kartik\widgets\FileInput::widget([
 				'name' => 'importFile', 
-				//'options' => ['multiple' => true], 
 				'pluginOptions' => [
 					'previewFileType' => 'any',
 					'uploadLabel'=>"Import Excel",

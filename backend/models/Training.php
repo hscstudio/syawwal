@@ -91,7 +91,7 @@ class Training extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'revision', 'ref_satker_id', 'name', 'approvedStatus', 'approvedStatusNote', 'approvedStatusDate', 'approvedStatusBy'], 'required'],
+            [['tb_program_id', 'revision', 'ref_satker_id', 'name'], 'required'],
             [['tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
             [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255]

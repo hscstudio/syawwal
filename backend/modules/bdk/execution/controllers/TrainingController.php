@@ -90,14 +90,16 @@ class TrainingController extends Controller
         	// Ambil revision terakhir dari program history
         	$model->revision = ProgramHistory::getRevision($model->tb_program_id);
 
+        	// Ngeset approved status ke 0
+        	$model->approvedStatus = null;
+
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', 'Data saved');
 				// Nyimpen history training
 				$model2 = new TrainingHistory();
 				$model2->attributes = array_merge(
 				  $model->attributes,[
-					'tb_training_id'=>$model->id,
-					'revision'=>'0',					
+					'tb_training_id'=> $model->id,
 				  ]
 				);				
 				$model2->save();
@@ -209,24 +211,39 @@ class TrainingController extends Controller
 					}
 					$idx++;
 				}
+
 				Yii::$app->session->setFlash('success', 'Data saved');
 
 				// Klo neken tombol save as revision
 				if(Yii::$app->request->post('create_revision') !== null )
 				{
 					// Nyimpen revisi
-					$revision = ProgramHistory::getRevision($model->id);				
 					$model2 = new TrainingHistory();
 					$model2->attributes = array_merge(
 					  $model->attributes,[
 						'tb_training_id' => $model->id,
-						'revision' => $revision+1,				
+						'revision' => $model->revision + 1,
 					  ]
-					);				
-					$model2->save();					
+					);
+					$model2->save();
+
+					// Ngapdate field revision menjadi yang terbaru
+					$model->revision += 1;
+					$model->save();
 					
 					Yii::$app->session->setFlash('success', 'Save as revision');	
 				}
+				else
+				{
+					// Ngupdate history aja
+					$model2 = TrainingHistory::find()
+						->where(['tb_training_id' => $model->id])
+						->orderBy(['revision'=>'DESC'])
+						->one();
+					$model2->attributes = array_merge($model->attributes);
+					$model2->save();
+				}
+				// done
 
                 return $this->redirect(['view', 'id' => $model->id]);
 
@@ -253,6 +270,9 @@ class TrainingController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+
+        // Ngapus historynya juga, all
+        TrainingHistory::deleteAll('tb_training_id = :tb_training_id', [':tb_training_id' => $id]);
 
         return $this->redirect(['index']);
     }
