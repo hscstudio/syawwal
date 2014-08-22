@@ -27,10 +27,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             	['class' => 'kartik\grid\SerialColumn'],
                         
 				[
+					'format' => 'raw',
 					'attribute' => 'name',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data){
+						return '<div title="'.$data->note.'" data-toggle="tooltip" data-placement="top">'.$data->name.'</div>';
+					}
 				],
             
 				[
@@ -42,13 +46,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             
 				[
 					'attribute' => 'finish',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-				],
-            
-				[
-					'attribute' => 'note',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
