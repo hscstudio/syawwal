@@ -20,23 +20,20 @@ use kartik\widgets\DepDrop;
 		
 		<div class="panel-heading">
 			<div class="pull-right">
-				<?= Html::a('<i class="fa fa-arrow-left"></i> Back to Index',['index'],
-								['class'=>'btn btn-xs btn-default',
-								 'title'=>'Back to Index',
-								]) ?>
-			    	<?php
-			    		if ($model->isNewRecord)
-			    		{
-			    			echo Html::submitButton('<span class="fa fa-fw fa-save"></span> '.'Create', ['class' => 'btn btn-xs btn-primary']);
-			    		}
-			    		else
-			    		{
-			    			echo Html::submitButton('<span class="fa fa-fw fa-save"></span> '.'Update', ['class' => 'btn btn-xs btn-primary']);
-			    			echo ' ';
-			    			echo Html::submitButton('<span class="fa fa-fw fa-clipboard"></span> '.'Save as Revision', ['class' => 'btn btn-xs btn-warning',
-			    				'name' => 'create_revision']);
-			    		}
-					?>
+				<?= Html::a('<i class="fa fa-arrow-left"></i> Back to training',['index','status' => $model->status],['class'=>'btn btn-xs btn-default']) ?>
+		    	<?php
+		    		if ($model->isNewRecord)
+		    		{
+		    			echo Html::submitButton('<span class="fa fa-fw fa-save"></span> '.'Create', ['class' => 'btn btn-xs btn-primary']);
+		    		}
+		    		else
+		    		{
+		    			echo Html::submitButton('<span class="fa fa-fw fa-save"></span> '.'Update', ['class' => 'btn btn-xs btn-primary']);
+		    			echo ' ';
+		    			echo Html::submitButton('<span class="fa fa-fw fa-clipboard"></span> '.'Save as Revision', ['class' => 'btn btn-xs btn-warning',
+		    				'name' => 'create_revision']);
+		    		}
+				?>
 			</div>
 			<i class="fa fa-fw fa-globe"></i> 
 			Training	

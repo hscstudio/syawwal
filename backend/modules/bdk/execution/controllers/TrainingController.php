@@ -40,14 +40,28 @@ class TrainingController extends Controller
      * Lists all Training models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($status = 1)
     {
         $searchModel = new TrainingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			$queryParams['TrainingSearch']=[
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['TrainingSearch']=[
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'status' => $status,
         ]);
     }
 
@@ -127,7 +141,7 @@ class TrainingController extends Controller
     {
 		if ( Yii::$app->request->post('eselon') == 0)
 		{
-	    	$programEs = Program::find()->all();
+	    	$programEs = Program::find()->where(['status' => 1])->all();
 		}
 		else
 		{
