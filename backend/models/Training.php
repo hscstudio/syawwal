@@ -14,7 +14,7 @@ use yii\behaviors\BlameableBehavior;
 
  * @property integer $id
  * @property integer $tb_program_id
- * @property integer $revision
+ * @property integer $tb_program_revision
  * @property integer $ref_satker_id
  * @property string $name
  * @property string $start
@@ -91,8 +91,8 @@ class Training extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'revision', 'ref_satker_id', 'name', 'approvedStatus', 'approvedStatusNote', 'approvedStatusDate', 'approvedStatusBy'], 'required'],
-            [['tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
+            [['tb_program_id', 'tb_program_revision', 'ref_satker_id', 'name'], 'required'],
+            [['tb_program_id', 'tb_program_revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
             [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255]
         ];
@@ -106,7 +106,7 @@ class Training extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'tb_program_id' => 'Tb Program ID',
-            'revision' => 'Revision',
+            'tb_program_revision' => 'Tb Program Revision',
             'ref_satker_id' => 'Ref Satker ID',
             'name' => 'Name',
             'start' => 'Start',
@@ -177,5 +177,28 @@ class Training extends \yii\db\ActiveRecord
     public function getTrainingUnitPlans()
     {
         return $this->hasMany(TrainingUnitPlan::className(), ['tb_training_id' => 'id']);
+    }
+	/**
+     * @inheritdoc
+     * @return ProgramQuery
+     */
+    public static function find()
+    {
+        return new TrainingQuery(get_called_class());
+    }
+}
+
+class TrainingQuery extends \yii\db\ActiveQuery
+{
+    public function currentSatker()
+    {
+        $this->andWhere(['ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id]);
+        return $this;
+    }
+	
+	public function active($status=1)
+    {
+        $this->andWhere(['status'=>$status]);
+        return $this;
     }
 }

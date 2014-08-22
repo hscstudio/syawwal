@@ -12,9 +12,9 @@ use yii\behaviors\BlameableBehavior;
  * This is the model class for table "tb_training_history".
  *
 
- * @property integer $id
  * @property integer $tb_training_id
  * @property integer $tb_program_id
+ * @property integer $tb_program_revision
  * @property integer $revision
  * @property integer $ref_satker_id
  * @property string $name
@@ -85,8 +85,8 @@ class TrainingHistory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_id', 'tb_program_id', 'revision', 'ref_satker_id', 'name', 'approvedStatus', 'approvedStatusNote', 'approvedStatusDate', 'approvedStatusBy'], 'required'],
-            [['tb_training_id', 'tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
+            [['tb_training_id', 'tb_program_id', 'tb_program_revision', 'revision', 'ref_satker_id', 'name', 'approvedStatus', 'approvedStatusNote', 'approvedStatusDate', 'approvedStatusBy'], 'required'],
+            [['tb_training_id', 'tb_program_id', 'tb_program_revision', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
             [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255]
         ];
@@ -98,9 +98,9 @@ class TrainingHistory extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
             'tb_training_id' => 'Tb Training ID',
             'tb_program_id' => 'Tb Program ID',
+            'tb_program_revision' => 'Tb Program Revision',
             'revision' => 'Revision',
             'ref_satker_id' => 'Ref Satker ID',
             'name' => 'Name',

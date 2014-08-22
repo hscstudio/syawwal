@@ -19,21 +19,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'tb_program_id') ?>
 
+    <?= $form->field($model, 'tb_program_revision') ?>
+
     <?= $form->field($model, 'ref_satker_id') ?>
 
     <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'hours') ?>
-
-    <?php // echo $form->field($model, 'days') ?>
 
     <?php // echo $form->field($model, 'start') ?>
 
     <?php // echo $form->field($model, 'finish') ?>
 
     <?php // echo $form->field($model, 'note') ?>
-
-    <?php // echo $form->field($model, 'type') ?>
 
     <?php // echo $form->field($model, 'studentCount') ?>
 
@@ -57,8 +53,6 @@ use yii\widgets\ActiveForm;
 
     <?php // echo $form->field($model, 'location') ?>
 
-    <?php // echo $form->field($model, 'test') ?>
-
     <?php // echo $form->field($model, 'status') ?>
 
     <?php // echo $form->field($model, 'created') ?>
@@ -72,6 +66,14 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'deleted') ?>
 
     <?php // echo $form->field($model, 'deletedBy') ?>
+
+    <?php // echo $form->field($model, 'approvedStatus') ?>
+
+    <?php // echo $form->field($model, 'approvedStatusNote') ?>
+
+    <?php // echo $form->field($model, 'approvedStatusDate') ?>
+
+    <?php // echo $form->field($model, 'approvedStatusBy') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

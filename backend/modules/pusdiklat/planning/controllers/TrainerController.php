@@ -34,10 +34,41 @@ class TrainerController extends Controller
      * Lists all Trainer models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($year=date('Y'),$status=1)
     {
         $searchModel = new TrainerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			if($year!='all'){
+				$queryParams['TrainerSearch']=[
+					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'YEAR(start)' => $year,
+					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+					'status'=>$status,
+				];
+			}
+		}
+		else{
+			if($year!='all'){
+				$queryParams['TrainerSearch']=[
+					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'YEAR(start)' => $year,
+					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				];
+			}
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -66,7 +97,23 @@ class TrainerController extends Controller
     {
         $model = new Trainer();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())){
+			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+			if($model->save()) {
+				Yii::$app->session->setFlash('success', 'Data saved');
+				// SAVE HISTORY OF PROGRAM
+				$model2 = new \backend\models\TrainingHistory();
+				$model2->attributes = array_merge(
+				  $model->attributes,[
+					'tb_training_id'=>$model->id,
+					'revision'=>'0',					
+				  ]
+				);				
+				$model2->save();
+			}
+			else{
+				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}		
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
