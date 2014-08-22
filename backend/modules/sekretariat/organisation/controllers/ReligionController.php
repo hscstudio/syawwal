@@ -33,14 +33,28 @@ class ReligionController extends Controller
      * Lists all Religion models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($status=1)
     {
-        $searchModel = new ReligionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$searchModel = new ReligionSearch();
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			$queryParams['ReligionSearch']=[
+				'ref_religion_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['ReligionSearch']=[
+				'ref_religion_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'status' => $status,
         ]);
     }
 
