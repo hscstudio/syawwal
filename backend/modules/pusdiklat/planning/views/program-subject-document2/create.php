@@ -4,11 +4,11 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProgramDocument */
+/* @var $model backend\models\ProgramSubjectDocument */
 
-$this->title = 'Create Program Document';
+$this->title = 'Create Program Subject Document';
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
-$this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words($program_name), 'url' => ['index','tb_program_id'=>$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('Subject : '.$program_name),'url'=>['program-subject2/index','tb_program_id'=>(int)$tb_program_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -19,11 +19,14 @@ echo \kartik\widgets\AlertBlock::widget([
     'type' => \kartik\widgets\AlertBlock::TYPE_ALERT
 ]);
 ?>
-<div class="program-document-create">
+<div class="program-subject-document-create">
 
     <?= $this->render('_form', [
         'model' => $model,
 		'tb_program_id' => $tb_program_id,
+		'tb_program_subject_id' => $tb_program_subject_id,
+		'program_name' => $program_name,
+		'program_subject_name' => $program_subject_name,
     ]) ?>
 
 </div>

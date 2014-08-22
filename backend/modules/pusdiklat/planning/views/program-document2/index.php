@@ -7,8 +7,8 @@ use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\ProgramDocumentSearch */
 
-$this->title = $program_name;
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
+$this->title = \yii\helpers\Inflector::camel2words('Document : '.$program_name);
+$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -31,17 +31,23 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			[
 				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'name',
-				//'pageSummary' => 'Page Total',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
+				'format' => 'raw',
+				'value' => function ($data){
+					return Html::a($data->name,'#',['title'=>$data->description,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+				},
+				
 			],
 		
 			[
 				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'type',
+				'width'=>'75px',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
@@ -50,7 +56,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			[
 				'format' => 'raw',
 				'attribute' => 'filename',
+				'width'=>'150px',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data){
@@ -62,20 +70,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
             
 			[
-				'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'description',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Description', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-			],
-			[
 				'attribute' => 'revision',
 				'format' => 'html',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'label' => 'Rev',
-				'width'=>'50px',
+				'width'=>'75px',
 				'value' => function ($data) {
 					if($data->revision>0){
 						return Html::a($data->revision.'x', '#', ['class' => 'badge']);
@@ -119,7 +119,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
 			'before'=>
-				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program', ['program/index'], ['class' => 'btn btn-warning']).' '.
+				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program', ['program2/index'], ['class' => 'btn btn-warning']).' '.
 				Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Document', ['create','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-success']).
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
@@ -130,7 +130,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'placeholder' => 'Status ...', 
 						'class'=>'form-control', 
 						'onchange'=>'
-							$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/program-document/index']).'?tb_program_id='.(int)$tb_program_id.'&status="+$(this).val(), container: "#pjax-gridview", timeout: 1});
+							$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/program-document2/index']).'?tb_program_id='.(int)$tb_program_id.'&status="+$(this).val(), container: "#pjax-gridview", timeout: 1});
 						',	
 						'data-pjax' => '1',
 					],

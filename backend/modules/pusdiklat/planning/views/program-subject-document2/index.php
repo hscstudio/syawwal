@@ -3,32 +3,78 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
+use kartik\widgets\Select2;
 
-/* @var $searchModel backend\models\ProgramHistorySearch */
+/* @var $searchModel backend\models\ProgramSubjectDocumentSearch */
 
-$this->title = \yii\helpers\Inflector::camel2words('History : '.$program_name);
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
+$this->title = 'Document : '.$program_subject_name; //'Program Subject Documents ';
+$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
+$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('Subject : '.$program_name),'url'=>['program-subject2/index','tb_program_id'=>(int)$tb_program_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="program-history-index">
+<div class="program-subject-document-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-gridview',
+	]); ?>
+	
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],           
+            ['class' => 'kartik\grid\SerialColumn'],
+		
+			[
+				'format' => 'html',
+				'attribute' => 'name',
+				'vAlign'=>'middle',
+				'value' => function ($data){
+					return Html::a($data->name,'#',['title'=>$data->description,'data-toggle'=>"tooltip",'data-placement'=>"left"]);
+				},
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+			],
+		
+			[
+				'class' => 'kartik\grid\EditableColumn',
+				'attribute' => 'type',
+				'width'=>'75px',
+				'hAlign'=>'center',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			],
+            
+			[
+				'format' => 'raw',
+				'attribute' => 'filename',
+				'width'=>'150px',
+				'hAlign'=>'center',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){
+					return Html::a($data->filename, ['/file/download','file'=>'program/'.$data->programSubject->tb_program_id.'/subject/'.$data->tb_program_subject_id.'/document/'.$data->filename], [
+						'class' => 'badge',
+						'data-pjax' => '0',
+					]);
+				}
+			],
+            
+			
 			[
 				'attribute' => 'revision',
 				'format' => 'html',
+				'label' => 'Rev',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'label' => 'Rev',
 				'width'=>'75px',
 				'value' => function ($data) {
 					if($data->revision>0){
@@ -38,74 +84,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						return '-';
 					}
 				}
-			],			
-			[
-				'attribute' => 'number',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
-			[
-				'attribute' => 'name',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
-            [
-				'attribute' => 'hours',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'75px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
-			[
-				'attribute' => 'days',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'75px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
-			[
-				'format' => 'html',
-				'label' => 'Doc',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'75px',
-				'value' => function ($data) {
-					$countDoc = \backend\models\ProgramDocument::find()
-								->where(
-									['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,]
-									)
-								->active()
-								->count();
-					if($countDoc>0){
-						return Html::a($countDoc, ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
-					}
-					else{
-						return Html::a('+', ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
-					}
-				}
-			],
-			[
-				'format' => 'html',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'75px',
-				'label' => 'Subject',
-				'value' => function ($data) {
-					$countSubject = \backend\models\ProgramSubjectHistory::find()
-								->where(['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,])
-								->count();
-					if($countSubject>0){
-						return Html::a($countSubject, ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
-					}
-					else{
-						return Html::a('+', ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
-					}
-				}
-			],
+			
 			[
 				'format' => 'raw',
 				'attribute' => 'status',
@@ -116,28 +96,50 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data){
 					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
-					return Html::a($icon, '#', [
+					return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
+						'onclick'=>'
+							$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
+							return false;
+						',
 						'class'=>($data->status==1)?'label label-info':'label label-warning',
-					]);					
+					]);
+					
 				}
 			],
-            [
-				'class' => 'kartik\grid\ActionColumn',
-				'template' => '{view}',				
-			],
+
+            ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program History</h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program Subject Document</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program', ['program/index'], ['class' => 'btn btn-warning']),
-			//Html::a('<i class="fa fa-fw fa-plus"></i> Create Program History', ['create'], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-info']),
+			'before'=>
+			Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program Subject', ['program-subject2/index','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-warning','data-pjax'=>'0']).' '.
+			Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Subject Document', ['create','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-success']).' '.
+			'<div class="pull-right" style="margin-right:5px;">'.
+			Select2::widget([
+				'name' => 'status', 
+				'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'All'],
+				'value' => $status,
+				'options' => [
+					'placeholder' => 'Status ...', 
+					'class'=>'form-control', 
+					'onchange'=>'
+						$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/program-subject-document2/index']).'?tb_program_id='.(int)$tb_program_id.'&tb_program_subject_id='.(int)$tb_program_subject_id.'&status="+$(this).val(), container: "#pjax-gridview", timeout: 1});
+					',	
+					'data-pjax' => '1',
+				],
+			]).
+			'</div>',
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	
+	<?php \yii\widgets\Pjax::end(); ?>
+		
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);
@@ -169,7 +171,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		echo Html::endTag('div');
 		
 		echo Html::beginTag('div', ['class'=>'col-md-8']);
-			/*
 			$form = \yii\bootstrap\ActiveForm::begin([
 				'options'=>['enctype'=>'multipart/form-data'],
 				'action'=>['import'],
@@ -183,7 +184,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				]
 			]);
 			\yii\bootstrap\ActiveForm::end();
-			*/
 		echo Html::endTag('div');
 		
 	echo Html::endTag('div');

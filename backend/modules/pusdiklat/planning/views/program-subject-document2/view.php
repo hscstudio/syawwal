@@ -4,26 +4,27 @@ use yii\helpers\Html;
 use kartik\detail\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProgramDocument */
+/* @var $model backend\models\ProgramSubjectDocument */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
-$this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words('Document : '.$program_name), 'url' => ['index','tb_program_id'=>$model->tb_program_id]];
+$this->params['breadcrumbs'][] = ['label'=> \yii\helpers\Inflector::camel2words('Subject : '.$program_name),'url'=>['program-subject2/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label' => 'Document : '.$program_subject_name, 'url' => ['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="program-document-view">
+<div class="program-subject-document-view">
 
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Program Documents # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Program Subject Documents # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index','tb_program_id'=>$model->tb_program_id],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]).' '.
@@ -33,29 +34,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'attributes' => [
             'id',
             [
-				'attribute' => 'tb_program_id',
-				'label' => 'Program',
-				'value' => $model->program->name,
+				'attribute' => 'tb_program_subject_id',
+				'label' => 'Program Subject',
+				'value' => $model->programSubject->name,
 			],
+            'revision',
             'name',
             'type',
             [
 				'format' => 'html',
 				'attribute' => 'filename',
 				'label' => 'Filename',
-				'value' => Html::a($model->filename, ['/file/download','file'=>'program/'.$model->tb_program_id.'/document/'.$model->filename], [
+				'value' => Html::a($model->filename, ['/file/download','file'=>'program/'.$tb_program_id.'/subject/'.$tb_program_subject_id.'/document/'.$model->filename], [
 								'class' => 'badge',
 								'data-pjax' => '0',
 							]),
 			],
             'description',
-            [
-				'format' => 'html',
-				'attribute' => 'status',
-				'value' => Html::a(($model->status==1)?'<span class="glyphicon glyphicon-ok"></span> Published':'<span class="glyphicon glyphicon-remove"></span> Unpublished', '#', [
-						'class'=>($model->status==1)?'label label-info':'label label-warning',
-					]),
-			],
+            'status',
             'created',
             'createdBy',
             'modified',

@@ -7,7 +7,7 @@ use kartik\detail\DetailView;
 /* @var $model backend\models\ProgramHistory */
 
 $this->title = \yii\helpers\Inflector::camel2words($model->name);
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
+$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
 $this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words('History : '.$program_name), 'url' => ['index','tb_program_id'=>$model->tb_program_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;

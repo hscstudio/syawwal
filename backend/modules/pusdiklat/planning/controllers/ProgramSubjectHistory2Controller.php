@@ -3,16 +3,16 @@
 namespace backend\modules\pusdiklat\planning\controllers;
 
 use Yii;
-use backend\models\ProgramHistory;
-use backend\models\ProgramHistorySearch;
+use backend\models\ProgramSubjectHistory;
+use backend\models\ProgramSubjectHistorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ProgramHistoryController implements the CRUD actions for ProgramHistory model.
+ * ProgramSubjectHistoryController implements the CRUD actions for ProgramSubjectHistory model.
  */
-class ProgramHistoryController extends Controller
+class ProgramSubjectHistory2Controller extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,58 +30,72 @@ class ProgramHistoryController extends Controller
     }
 
     /**
-     * Lists all ProgramHistory models.
+     * Lists all ProgramSubjectHistory models.
      * @return mixed
      */
-    public function actionIndex($tb_program_id)
+    public function actionIndex($tb_program_id,$revision)
     {
-		if($tb_program_id>0){
-			$searchModel = new ProgramHistorySearch();
-			$queryParams = Yii::$app->request->getQueryParams();
-			$queryParams['ProgramHistorySearch']=['tb_program_id'=>$tb_program_id];
-			$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-			$dataProvider = $searchModel->search($queryParams);
-			$dataProvider->getSort()->defaultOrder = ['revision'=>SORT_DESC];
-
-			$model1=\backend\models\Program::findOne($tb_program_id);
-			return $this->render('index', [
-				'searchModel' => $searchModel,
-				'dataProvider' => $dataProvider,
-				'tb_program_id' => $tb_program_id,
-				'program_name' => $model1->name,
-			]);
-		}
-		else{
-			return $this->redirect(['program/index']);
-		}
-    }
-
-    /**
-     * Displays a single ProgramHistory model.
-     * @param integer $tb_program_id
-     * @param integer $revision
-     * @return mixed
-     */
-    public function actionView($tb_program_id, $revision)
-    {
-        $model1=\backend\models\Program::findOne($tb_program_id);
-		return $this->render('view', [
-            'model' => $this->findModel($tb_program_id, $revision),
-			'program_name' => $model1->name,
+        $searchModel = new ProgramSubjectHistorySearch();
+        $queryParams = Yii::$app->request->getQueryParams();
+		$queryParams['ProgramSubjectHistorySearch']=['tb_program_id'=>$tb_program_id,'revision'=>$revision,];
+		$dataProvider = $searchModel->search($queryParams);
+		
+		
+		$model1=\backend\models\Program::findOne($tb_program_id);
+		$model2=\backend\models\ProgramHistory::find()->where([
+			'tb_program_id'=>$tb_program_id,
+			'revision'=>$revision
+		])->one();
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+			'tb_program_id' => $tb_program_id,
+			'revision' => $revision,
+			'program_name'=> $model1->name,
+			'program_history_name'=> $model2->name,
         ]);
     }
 
     /**
-     * Finds the ProgramHistory model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
+     * Displays a single ProgramSubjectHistory model.
+     * @param integer $tb_program_subject_id
      * @param integer $tb_program_id
      * @param integer $revision
-     * @return ProgramHistory the loaded model
+     * @return mixed
+     */
+    public function actionView($tb_program_subject_id, $tb_program_id, $revision)
+    {
+		$model = $this->findModel($tb_program_subject_id, $tb_program_id, $revision);
+		
+		$model1=\backend\models\Program::findOne($tb_program_id);
+		$model2=\backend\models\ProgramHistory::find()->where([
+			'tb_program_id'=>$tb_program_id,
+			'revision'=>$revision
+		])->one();
+		
+        return $this->render('view', [
+            'model' => $model,
+			'tb_program_id' => $tb_program_id,
+			'revision' => $revision,
+			'program_name'=> $model1->name,
+			'program_history_name'=> $model2->name,
+			'program_subject_name'=> $model->name,
+        ]);
+    }
+
+    
+    /**
+     * Finds the ProgramSubjectHistory model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $tb_program_subject_id
+     * @param integer $tb_program_id
+     * @param integer $revision
+     * @return ProgramSubjectHistory the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($tb_program_id, $revision)
+    protected function findModel($tb_program_subject_id, $tb_program_id, $revision)
     {
-        if (($model = ProgramHistory::findOne(['tb_program_id' => $tb_program_id, 'revision' => $revision])) !== null) {
+        if (($model = ProgramSubjectHistory::findOne(['tb_program_subject_id' => $tb_program_subject_id, 'tb_program_id' => $tb_program_id, 'revision' => $revision])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -90,7 +104,7 @@ class ProgramHistoryController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => ProgramHistory::find(),
+            'query' => ProgramSubjectHistory::find(),
         ]);
 		
 		try {
@@ -104,20 +118,20 @@ class ProgramHistoryController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "ProgramHistory";
-			$data1[]['col0'] = 'tb_program_id';			
-			$data1[]['col1'] = 'revision';			
-			$data1[]['col2'] = 'ref_satker_id';			
-			$data1[]['col3'] = 'number';			
+			$OpenTBS->VarRef['modelName']= "ProgramSubjectHistory";
+			$data1[]['col0'] = 'tb_program_subject_id';			
+			$data1[]['col1'] = 'tb_program_id';			
+			$data1[]['col2'] = 'revision';			
+			$data1[]['col3'] = 'type';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $programhistory){
+			foreach($dataProvider->getModels() as $programsubjecthistory){
 				$data2[] = [
-					'col0'=>$programhistory->tb_program_id,
-					'col1'=>$programhistory->revision,
-					'col2'=>$programhistory->ref_satker_id,
-					'col3'=>$programhistory->number,
+					'col0'=>$programsubjecthistory->tb_program_subject_id,
+					'col1'=>$programsubjecthistory->tb_program_id,
+					'col2'=>$programsubjecthistory->revision,
+					'col3'=>$programsubjecthistory->type,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -136,7 +150,7 @@ class ProgramHistoryController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => ProgramHistory::find(),
+            'query' => ProgramSubjectHistory::find(),
         ]);
 		
 		try {
@@ -151,13 +165,13 @@ class ProgramHistoryController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel ProgramHistory');
+								->setCellValue('A1', 'Tabel ProgramSubjectHistory');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $programhistory){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programhistory->tb_program_id)
-													  ->setCellValue('B'.$idx, $programhistory->revision)
-													  ->setCellValue('C'.$idx, $programhistory->ref_satker_id)
-													  ->setCellValue('D'.$idx, $programhistory->number);
+					foreach($dataProvider->getModels() as $programsubjecthistory){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programsubjecthistory->tb_program_subject_id)
+													  ->setCellValue('B'.$idx, $programsubjecthistory->tb_program_id)
+													  ->setCellValue('C'.$idx, $programsubjecthistory->revision)
+													  ->setCellValue('D'.$idx, $programsubjecthistory->type);
 						$idx++;
 					}		
 					
@@ -182,13 +196,13 @@ class ProgramHistoryController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel ProgramHistory');
+								->setCellValue('A1', 'Tabel ProgramSubjectHistory');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $programhistory){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programhistory->tb_program_id)
-													  ->setCellValue('B'.$idx, $programhistory->revision)
-													  ->setCellValue('C'.$idx, $programhistory->ref_satker_id)
-													  ->setCellValue('D'.$idx, $programhistory->number);
+					foreach($dataProvider->getModels() as $programsubjecthistory){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programsubjecthistory->tb_program_subject_id)
+													  ->setCellValue('B'.$idx, $programsubjecthistory->tb_program_id)
+													  ->setCellValue('C'.$idx, $programsubjecthistory->revision)
+													  ->setCellValue('D'.$idx, $programsubjecthistory->type);
 						$idx++;
 					}		
 									
@@ -230,13 +244,13 @@ class ProgramHistoryController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel ProgramHistory');
+									->setCellValue('A1', 'Tabel ProgramSubjectHistory');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $programhistory){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programhistory->tb_program_id)
-														  ->setCellValue('B'.$idx, $programhistory->revision)
-														  ->setCellValue('C'.$idx, $programhistory->ref_satker_id)
-														  ->setCellValue('D'.$idx, $programhistory->number);
+						foreach($dataProvider->getModels() as $programsubjecthistory){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $programsubjecthistory->tb_program_subject_id)
+														  ->setCellValue('B'.$idx, $programsubjecthistory->tb_program_id)
+														  ->setCellValue('C'.$idx, $programsubjecthistory->revision)
+														  ->setCellValue('D'.$idx, $programsubjecthistory->type);
 							$idx++;
 						}		
 						
@@ -277,4 +291,5 @@ class ProgramHistoryController extends Controller
             'dataProvider' => $dataProvider,
         ]);	
     }
+	
 }

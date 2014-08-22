@@ -8,8 +8,8 @@ use kartik\detail\DetailView;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label'=> $program_name,'url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
-$this->params['breadcrumbs'][] = ['label' => 'Program Subject Histories', 'url' => ['index','tb_program_id'=>(int)$tb_program_id,'revision'=>(int)$revision]];
+$this->params['breadcrumbs'][] = ['label'=> \yii\helpers\Inflector::camel2words('History : '.$program_name),'url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words('History Subject : '.$program_history_name), 'url' => ['index','tb_program_id'=>(int)$tb_program_id,'revision'=>(int)$revision]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -24,27 +24,39 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Program Subject Histories # ' ,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back',['index','tb_program_id'=>(int)$tb_program_id,'revision'=>(int)$revision],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index','tb_program_id'=>(int)$tb_program_id,'revision'=>(int)$revision],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]),
         'attributes' => [
             [
 				'attribute' => 'tb_program_subject_id',
-				'label'=> 'Program Subject ID',
+				'label'=> 'ID',
 			],
             [
 				'attribute' => 'tb_program_id',
 				'label'=> 'Program',
 				'value' => $model->program->name,
 			],
-            'revision',
+            [
+				'format' => 'html',
+				'attribute' => 'revision',
+				'value' => Html::a(($model->revision>0)?$model->revision.'x':'-', '#', [
+						'class'=>'label label-danger',
+					]),
+			],
             'type',
             'name',
             'hours',
             'sort',
             'test',
-            'status',
+            [
+				'format' => 'html',
+				'attribute' => 'status',
+				'value' => Html::a(($model->status==1)?'<span class="glyphicon glyphicon-ok"></span> Published':'<span class="glyphicon glyphicon-remove"></span> Unpublished', '#', [
+						'class'=>($model->status==1)?'label label-info':'label label-warning',
+					]),
+			],
             'created',
             'createdBy',
             'modified',

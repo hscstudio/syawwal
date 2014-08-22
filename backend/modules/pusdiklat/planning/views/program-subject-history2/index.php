@@ -7,8 +7,8 @@ use yii\bootstrap\Dropdown;
 /* @var $searchModel backend\models\ProgramSubjectHistorySearch */
 
 $this->title = \yii\helpers\Inflector::camel2words('History Subject : '.$program_history_name);
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('History : '.$program_name),'url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
+$this->params['breadcrumbs'][] = ['label'=> \yii\helpers\Inflector::camel2words('History : '.$program_name),'url'=>['program-history2/index','tb_program_id'=>(int)$tb_program_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -82,10 +82,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->active()
 								->count();
 					if($countDoc>0){
-						return Html::a($countDoc, ['program-subject-document/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
+						return Html::a($countDoc, ['program-subject-document2/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
 					}
 					else{
-						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
+						return Html::a('+', ['program-subject-document2/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
 					}
 				}
 			],
@@ -116,7 +116,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program Subject History</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program History', ['program-history/index','tb_program_id'=>(int)$tb_program_id,], ['class' => 'btn btn-warning']),
+			'before'=>Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program History', ['program-history2/index','tb_program_id'=>(int)$tb_program_id,], ['class' => 'btn btn-warning']),
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id,'revision'=>(int)$revision], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],

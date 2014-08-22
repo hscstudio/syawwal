@@ -6,20 +6,20 @@ use kartik\widgets\Select2;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProgramDocument */
+/* @var $model backend\models\ProgramSubjectDocument */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="program-document-form">
+<div class="program-subject-document-form">
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index','tb_program_id'=>$tb_program_id],
+		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
-		ProgramDocument	</div>
+		ProgramSubjectDocument	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
@@ -27,23 +27,11 @@ use yii\helpers\ArrayHelper;
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 
-	<?php
-	$data = [
-		'KAP' => 'KAP',
-		'GBPP' => 'GBPP',
-		'SILABI' => 'SILABI',
-	];
-	echo $form->field($model, 'type')->widget(Select2::classname(), [
-		'data' => $data,
-		'options' => ['placeholder' => 'Choose Type ...'],
-		'pluginOptions' => [
-		'allowClear' => true
-		],
-	]); ?>
-
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
-	<?php
+    <?= $form->field($model, 'type')->textInput(['maxlength' => 100]) ?>
+
+    <?php
 	if($model->isNewRecord){ ?>
 		<?= $form->field($model, 'filename')->widget(\kartik\widgets\FileInput::classname(), [
 			'pluginOptions' => [
@@ -52,13 +40,12 @@ use yii\helpers\ArrayHelper;
 				]
 			]); ?>
 	<?php } ?>
-	
+
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
-					],
-					
+					]
 				]) ?>
 
     <?= ""//createdBy ?>

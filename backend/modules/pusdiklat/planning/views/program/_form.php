@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
@@ -87,7 +87,7 @@ use yii\helpers\ArrayHelper;
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
-					]
+					],
 				]) ?>   
 
     <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
@@ -109,12 +109,6 @@ use yii\helpers\ArrayHelper;
         <?= Html::submitButton(
 			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
 			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-			
-		<?php if(!$model->isNewRecord){ ?>
-			<?= Html::submitButton(
-				'<span class="fa fa-fw fa-save"></span> '.'Update & Save as Revision', 
-				['class' => 'btn btn-warning','name'=>'create_revision']) ?>
-		<?php } ?>
 		</div>
 	</div>
 	

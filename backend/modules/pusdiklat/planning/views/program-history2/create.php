@@ -4,11 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProgramDocument */
+/* @var $model backend\models\ProgramHistory */
 
-$this->title = 'Create Program Document';
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
-$this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words($program_name), 'url' => ['index','tb_program_id'=>$tb_program_id]];
+$this->title = 'Create Program History';
+$this->params['breadcrumbs'][] = ['label' => 'Program Histories', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -19,11 +18,10 @@ echo \kartik\widgets\AlertBlock::widget([
     'type' => \kartik\widgets\AlertBlock::TYPE_ALERT
 ]);
 ?>
-<div class="program-document-create">
+<div class="program-history-create">
 
     <?= $this->render('_form', [
         'model' => $model,
-		'tb_program_id' => $tb_program_id,
     ]) ?>
 
 </div>

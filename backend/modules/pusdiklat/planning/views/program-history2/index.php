@@ -4,18 +4,17 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $searchModel backend\models\ProgramSubjectHistorySearch */
+/* @var $searchModel backend\models\ProgramHistorySearch */
 
-$this->title = \yii\helpers\Inflector::camel2words('History Subject : '.$program_history_name);
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('History : '.$program_name),'url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
+$this->title = \yii\helpers\Inflector::camel2words('History : '.$program_name);
+$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="program-subject-history-index">
+<div class="program-history-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -23,24 +22,28 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
+            ['class' => 'kartik\grid\SerialColumn'],           
 			[
-				'format' => 'html',
 				'attribute' => 'revision',
-				'label' => 'Rev',
-				'width'=>'75px',
+				'format' => 'html',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'label' => 'Rev',
+				'width'=>'75px',
 				'value' => function ($data) {
 					if($data->revision>0){
 						return Html::a($data->revision.'x', '#', ['class' => 'label label-danger']);
 					}
 					else{
-						return Html::a('-', '#', ['class' => 'label label-danger']);
+						return '-';
 					}
 				}
+			],			
+			[
+				'attribute' => 'number',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
 			[
 				'attribute' => 'name',
@@ -48,76 +51,73 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
-			[
+            [
 				'attribute' => 'hours',
-				'width'=>'75px',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
+				'width'=>'75px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
-			
 			[
-				'attribute' => 'test',
-				'width'=>'75px',
+				'attribute' => 'days',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
+				'width'=>'75px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
-        
 			[
 				'format' => 'html',
 				'vAlign'=>'middle',
-				'width'=>'75px',
 				'hAlign'=>'center',
+				'width'=>'75px',
 				'label' => 'Doc',
 				'value' => function ($data) {
-					$model1=\backend\models\ProgramSubject::findOne($data->tb_program_subject_id);
-					$countDoc = \backend\models\ProgramSubjectDocument::find()
-								->where([
-									'tb_program_subject_id' => $data->tb_program_subject_id,
-									'revision' => $data->revision,
-									])
+					$countDoc = \backend\models\ProgramDocument::find()
+								->where(
+									['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,]
+									)
 								->active()
 								->count();
 					if($countDoc>0){
-						return Html::a($countDoc, ['program-subject-document/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
+						return Html::a($countDoc, ['program-document2/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
 					}
 					else{
-						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
+						return Html::a('+', ['program-document2/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
 					}
 				}
 			],
-			
 			[
-				'format' => 'raw',
-				'attribute' => 'status',
+				'format' => 'html',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'75px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'value' => function ($data){
-					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
-					return Html::a($icon, '#', [
-						'class'=>($data->status==1)?'label label-info':'label label-warning',
-					]);					
+				'label' => 'Subject',
+				'value' => function ($data) {
+					$countSubject = \backend\models\ProgramSubjectHistory::find()
+								->where(['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,])
+								->count();
+					if($countSubject>0){
+						return Html::a($countSubject, ['program-subject-history2/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
+					}
+					else{
+						return Html::a('+', ['program-subject-history2/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
+					}
 				}
 			],
-			
             [
 				'class' => 'kartik\grid\ActionColumn',
-				'template' => '{view}',
-				'width'=>'75px',
+				'template' => '{view}',				
 			],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program Subject History</h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program History</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program History', ['program-history/index','tb_program_id'=>(int)$tb_program_id,], ['class' => 'btn btn-warning']),
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id,'revision'=>(int)$revision], ['class' => 'btn btn-info']),
+			'before'=>Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program', ['program2/index'], ['class' => 'btn btn-warning']),
+			//Html::a('<i class="fa fa-fw fa-plus"></i> Create Program History', ['create'], ['class' => 'btn btn-success']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
@@ -151,10 +151,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					],
 				]); 
 			echo Html::endTag('div');
-		echo Html::endTag('div');
-		
-		echo Html::beginTag('div', ['class'=>'col-md-8']);
-			
 		echo Html::endTag('div');
 		
 	echo Html::endTag('div');

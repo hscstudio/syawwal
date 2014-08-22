@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
@@ -81,27 +81,6 @@ use yii\helpers\ArrayHelper;
 		],
 	]);
 	?>
-    
-
-    <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>   
-
-    <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
-
-	<?php if(!$model->isNewRecord){ ?>
-		<?= $form->field($model, 'validationStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
-						'pluginOptions' => [
-							'onText' => 'On',
-							'offText' => 'Off',
-						]
-					]) ?>
-					
-		<?= $form->field($model, 'validationNote')->textInput(['maxlength' => 255]) ?>
-	<?php } ?>
 	
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

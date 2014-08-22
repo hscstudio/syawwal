@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * ProgramHistoryController implements the CRUD actions for ProgramHistory model.
  */
-class ProgramHistoryController extends Controller
+class ProgramHistory2Controller extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
