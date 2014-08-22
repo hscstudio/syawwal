@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use yii\helpers\ArrayHelper;
+use kartik\widgets\Select2;
 /* @var $searchModel backend\models\ProgramCodeSearch */
 
 $this->title = 'Program Codes';
@@ -17,7 +18,9 @@ $datadropdown = ArrayHelper::map(\backend\models\ProgramCode::find()->select(['i
 <div class="program-code-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-program-gridview',
+	]); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -68,12 +71,13 @@ $datadropdown = ArrayHelper::map(\backend\models\ProgramCode::find()->select(['i
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'value' => function ($data){
-						$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok text-success"></span>':'<span class="glyphicon glyphicon-remove text-danger"></span>';
+						$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
 						return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
 							'onclick'=>'
 								$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
 								return false;
-							'
+							',
+							'class'=>($data->status==1)?'label label-info':'label label-warning',
 						]);
 						
 					}
@@ -90,13 +94,32 @@ $datadropdown = ArrayHelper::map(\backend\models\ProgramCode::find()->select(['i
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program Code</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Code', ['create'], ['class' => 'btn btn-success']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Code', ['create'], ['class' => 'btn btn-success']). ' '.
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'status', 
+					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'All'],
+					'value' => $status,
+					'options' => [
+						'placeholder' => 'Status ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/program-code/index']).'?status="+$(this).val(), 
+								container: "#pjax-program-gridview", 
+								timeout: 1,
+							});
+						',	
+					],
+				]).
+				'</div>',
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+    <?php \yii\widgets\Pjax::end(); ?>
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);
