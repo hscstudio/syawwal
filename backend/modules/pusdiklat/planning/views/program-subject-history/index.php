@@ -6,9 +6,9 @@ use yii\bootstrap\Dropdown;
 
 /* @var $searchModel backend\models\ProgramSubjectHistorySearch */
 
-$this->title = 'Program Subject Histories';
+$this->title = \yii\helpers\Inflector::camel2words('History Subject : '.$program_history_name);
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
-$this->params['breadcrumbs'][] = ['label'=>'Program History','url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('History : '.$program_name),'url'=>['program-history/index','tb_program_id'=>(int)$tb_program_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -25,10 +25,22 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
 			[
+				'format' => 'html',
 				'attribute' => 'revision',
+				'label' => 'Rev',
+				'width'=>'75px',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data) {
+					if($data->revision>0){
+						return Html::a($data->revision.'x', '#', ['class' => 'label label-danger']);
+					}
+					else{
+						return Html::a('-', '#', ['class' => 'label label-danger']);
+					}
+				}
 			],
 			[
 				'attribute' => 'name',
@@ -38,14 +50,66 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 			[
 				'attribute' => 'hours',
+				'width'=>'75px',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
-            
+			
+			[
+				'attribute' => 'test',
+				'width'=>'75px',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+			],
+        
+			[
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'width'=>'75px',
+				'hAlign'=>'center',
+				'label' => 'Doc',
+				'value' => function ($data) {
+					$model1=\backend\models\ProgramSubject::findOne($data->tb_program_subject_id);
+					$countDoc = \backend\models\ProgramSubjectDocument::find()
+								->where([
+									'tb_program_subject_id' => $data->tb_program_subject_id,
+									'revision' => $data->revision,
+									])
+								->active()
+								->count();
+					if($countDoc>0){
+						return Html::a($countDoc, ['program-subject-document/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
+					}
+					else{
+						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$model1->tb_program_id,'tb_program_subject_id'=>$data->tb_program_subject_id], ['class' => 'label label-primary']);
+					}
+				}
+			],
+			
+			[
+				'format' => 'raw',
+				'attribute' => 'status',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'75px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){
+					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
+					return Html::a($icon, '#', [
+						'class'=>($data->status==1)?'label label-info':'label label-warning',
+					]);					
+				}
+			],
+			
             [
 				'class' => 'kartik\grid\ActionColumn',
 				'template' => '{view}',
+				'width'=>'75px',
 			],
         ],
 		'panel' => [

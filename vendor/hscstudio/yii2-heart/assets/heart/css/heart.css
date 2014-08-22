@@ -1040,3 +1040,10 @@ color: #f6f6f6;
 .breadcrumb{
 	margin-bottom:0 !important;
 }
+
+.nav-pills > li.active > .nav-pills > li.active > a, 
+.nav-pills > li.active > .nav-pills > li.active > a:hover, 
+.nav-pills > li.active > .nav-pills > li.active > a:focus {
+	color: #fff;
+	background-color: rgb(86, 159, 222);
+}

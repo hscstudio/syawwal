@@ -7,7 +7,7 @@ use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\ProgramSubjectSearch */
 
-$this->title = 'Program Subjects';
+$this->title = \yii\helpers\Inflector::camel2words('Subject : '.$program_name);
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -28,83 +28,73 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-
-            // 'id',
-            /*
-				[
-					'attribute' => 'tb_program_id',
-					'value' => function ($data) {
-						return $data->program->name;
-					}
-				],
-				*/
             
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'type',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
+			[
+				'attribute' => 'type',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'150px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data) {
+					if($data->type==0) return "MP";
+					if($data->type==1) return "CERAMAH";
+					if($data->type==2) return "OJT";
+					if($data->type==3) return "MFD";
+				}
+			],
+		
+			[
+				'class' => 'kartik\grid\EditableColumn',
+				'attribute' => 'name',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			],
             
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'name',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'hours',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Hours', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'sort',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Sort', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'test',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Test', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
+			[
+				'class' => 'kartik\grid\EditableColumn',
+				'attribute' => 'hours',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'75px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'editableOptions'=>['header'=>'Hours', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			],
+		
+			[
+				'class' => 'kartik\grid\EditableColumn',
+				'attribute' => 'test',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'75px',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'editableOptions'=>['header'=>'Test', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			],
            
 			
 			[
-				'format' => 'html',
+				'format' => 'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'label' => 'Document',
+				'width'=>'75px',
+				'label' => 'Doc',
 				'value' => function ($data) {
 					$countSubjectDoc = \backend\models\ProgramSubjectDocument::find()
 								->where(['tb_program_subject_id' => $data->id,])
 								->active()
 								->count();
 					if($countSubjectDoc>0){
-						return Html::a($countSubjectDoc, ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'badge']);
+						return Html::a($countSubjectDoc, 
+							['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], 
+							['class' => 'label label-primary','data-pjax' => '0']);
 					}
 					else{
-						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'badge']);
+						return Html::a('+', ['program-subject-document/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'label label-primary','data-pjax' => '0']);
 					}
 				}
 			],
@@ -114,31 +104,22 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'status',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'50px',
+				'width'=>'75px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data){
-					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok text-success"></span>':'<span class="glyphicon glyphicon-remove text-danger"></span>';
-					return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
-						'onclick'=>'
-							$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
-							return false;
-						'
+					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
+					return Html::a($icon, '#', [
+						'class'=>($data->status==1)?'label label-info':'label label-warning',
 					]);
 					
 				}
 			],
 			
-            [
+			[
 				'class' => 'kartik\grid\ActionColumn',
-				'buttons'=>[
-					'update' => function ($url, $model, $key) {
-						return Html::a('<i class="glyphicon glyphicon-pencil"></i>', ['update','id'=>(int)$model->id,'tb_program_id'=>(int)$model->tb_program_id], ['class' => '']);
-					},
-					'delete' => function ($url, $model, $key) {
-						return Html::a('<i class="glyphicon glyphicon-trash"></i>', ['delete','id'=>(int)$model->id,'tb_program_id'=>(int)$model->tb_program_id], ['title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post", 'data-pjax'=>"0"]);
-					},
-				],
+				'template' => '{view}',
+				'width'=>'75px',
 			],
         ],
 		'panel' => [
@@ -147,7 +128,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			//'type'=>'primary',
 			'before'=>
 			Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Program', ['program/index'], ['class' => 'btn btn-warning']).' '.
-			Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Subject', ['create','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-success']).' '.
+			//Html::a('<i class="fa fa-fw fa-plus"></i> Create Program Subject', ['create','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-success']).' '.
 			'<div class="pull-right" style="margin-right:5px;">'.
 			Select2::widget([
 				'name' => 'status', 

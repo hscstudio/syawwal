@@ -51,12 +51,14 @@ class ProgramDocumentController extends Controller
 			}
 			$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 			$dataProvider = $searchModel->search($queryParams);
-
+			
+			$model1 = \backend\models\Program::findOne($tb_program_id);
 			return $this->render('index', [
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider,
 				'tb_program_id' => $tb_program_id,
 				'status' => $status,
+				'program_name'=>$model1->name,
 			]);
 		}
 		else{
@@ -71,8 +73,11 @@ class ProgramDocumentController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+		$model = $this->findModel($id);
+		
+		return $this->render('view', [
+            'model' => $model,
+			'program_name' => $model->program->name,
         ]);
     }
 
@@ -83,53 +88,56 @@ class ProgramDocumentController extends Controller
      */
     public function actionCreate($tb_program_id)
     {
-        if(isset($tb_program_id)){
-			$model = new ProgramDocument();
-			$files=[];
-			if ($model->load(Yii::$app->request->post())){
-				$model->tb_program_id=$tb_program_id;
-				$model->revision=\backend\models\ProgramHistory::getRevision($tb_program_id);
-				// PREPARING UPLOAD DOCUMENT				
-				$files[0] = \yii\web\UploadedFile::getInstance($model, 'filename');
-				if(!empty($files[0])){
-					$ext = end((explode(".", $files[0]->name)));
-					$model->filename = uniqid() . '.' . $ext;
-					$path = '';
-					if(isset(Yii::$app->params['uploadPath'])){
-						$path = Yii::$app->params['uploadPath'].'/program/'.$tb_program_id.'/document/';
-					}
-					else{
-						$path = Yii::getAlias('@common').'/../files/program/'.$tb_program_id.'/document/';
-					}
-					@mkdir($path, 0755, true);
-					@chmod($path, 0755);
-					$paths[0] = $path . $model->filename;
-				}
-
-				if($model->save()) {
-					Yii::$app->session->setFlash('success', 'Data saved');
-					// SAVEAS / UPLOAD DOCUMENT				
-					$idx=0;
-					foreach($files as $file){
-						if(isset($paths[$idx])){
-							$file->saveAs($paths[$idx]);
-						}
-						$idx++;
-					}
+		$model = new ProgramDocument();
+		$files=[];
+		if ($model->load(Yii::$app->request->post())){
+			$model->tb_program_id=$tb_program_id;
+			$model->revision=\backend\models\ProgramHistory::getRevision($tb_program_id);
+			// PREPARING UPLOAD DOCUMENT				
+			$files[0] = \yii\web\UploadedFile::getInstance($model, 'filename');
+			if(!empty($files[0])){
+				$ext = end((explode(".", $files[0]->name)));
+				$model->filename = uniqid() . '.' . $ext;
+				$path = '';
+				if(isset(Yii::$app->params['uploadPath'])){
+					$path = Yii::$app->params['uploadPath'].'/program/'.$tb_program_id.'/document/';
 				}
 				else{
-					 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+					$path = Yii::getAlias('@common').'/../files/program/'.$tb_program_id.'/document/';
 				}
-				return $this->redirect(['view', 'id' => $model->id]);
-			} else {
-				return $this->render('create', [
-					'model' => $model,
-					'tb_program_id' => $tb_program_id,
-				]);
+				@mkdir($path, 0755, true);
+				@chmod($path, 0755);
+				$paths[0] = $path . $model->filename;
 			}
-		}
-		else{
-			return $this->redirect(['program/index']);
+
+			if($model->save()) {
+				Yii::$app->session->setFlash('success', 'Data saved');
+				// SAVEAS / UPLOAD DOCUMENT				
+				$idx=0;
+				foreach($files as $file){
+					if(isset($paths[$idx])){
+						$file->saveAs($paths[$idx]);
+					}
+					$idx++;
+				}
+			}
+			else{
+				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}
+			
+			$model1 = \backend\models\Program::findOne($model->tb_program_id);				 
+			return $this->redirect([
+				'view', 
+				'id' => $model->id,
+				'program_name' => $model->program->name,
+			]);
+		} else {
+			$model1 = \backend\models\Program::findOne($tb_program_id);
+			return $this->render('create', [
+				'model' => $model,
+				'tb_program_id' => $tb_program_id,
+				'program_name' => $model1->name,
+			]);
 		}
     }
 
@@ -157,6 +165,7 @@ class ProgramDocumentController extends Controller
 			return $this->render('update', [
                 'model' => $model,
 				'tb_program_id' => $model->tb_program_id,
+				'program_name' => $model->program->name,
             ]);
 		}
     }
@@ -548,6 +557,7 @@ class ProgramDocumentController extends Controller
 			'dataProvider' => $dataProvider,
 			'tb_program_id' => $tb_program_id,
 			'status' => $status,
+			'program_name' => $model->program->name,
 		]);
     }
 

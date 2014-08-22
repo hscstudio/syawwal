@@ -52,11 +52,13 @@ class ProgramSubjectController extends Controller
 			$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 			$dataProvider = $searchModel->search($queryParams);
 			
+			$model1 = \backend\models\Program::findOne($tb_program_id);
 			return $this->render('index', [
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider,
 				'tb_program_id' => $tb_program_id,
 				'status' => $status,
+				'program_name'=>$model1->name,
 			]);
 		}
 		else{
@@ -71,8 +73,11 @@ class ProgramSubjectController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+		$model=$this->findModel($id);
+        $model1 = \backend\models\Program::findOne($model->tb_program_id);
+		return $this->render('view', [
+            'model' => $model,
+			'program_name'=>$model1->name,
         ]);
     }
 

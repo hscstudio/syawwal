@@ -144,8 +144,7 @@ class ProgramController extends Controller
 						  ]
 						);				
 						$model3->save();
-					}
-					
+					}					
 					
 					Yii::$app->session->setFlash('success', 'Save as revision');	
 				}
@@ -538,4 +537,42 @@ class ProgramController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	/**
+     * Updates an existing ProgramDocument model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+		
+		$searchModel = new ProgramSearch();
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			$queryParams['ProgramSearch']=[
+				'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['ProgramSearch']=[
+				'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+			'status' => $status,
+        ]);
+		
+    }
 }

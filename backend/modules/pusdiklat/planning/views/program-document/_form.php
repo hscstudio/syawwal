@@ -57,7 +57,8 @@ use yii\helpers\ArrayHelper;
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
-					]
+					],
+					
 				]) ?>
 
     <?= ""//createdBy ?>

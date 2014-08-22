@@ -50,13 +50,18 @@ class ProgramSubjectDocumentController extends Controller
 		}
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 		$dataProvider = $searchModel->search($queryParams);
-
+		
+		
+		$model1 = \backend\models\ProgramSubject::findOne($tb_program_subject_id);
+		 
 		return $this->render('index', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'tb_program_id' => $tb_program_id,
 			'tb_program_subject_id' => $tb_program_subject_id,
 			'status' => $status,
+			'program_name' => $model1->program->name,
+			'program_subject_name' => $model1->name,
 		]);
     }
 
@@ -71,10 +76,14 @@ class ProgramSubjectDocumentController extends Controller
 		$tb_program_id = $model->programSubject->tb_program_id;
 		$tb_program_subject_id = $model->tb_program_subject_id;
 		
+		//$model1 = \backend\models\ProgramSubject::findOne($tb_program_subject_id);	 
+				
         return $this->render('view', [
             'model' => $model,
 			'tb_program_id' => $tb_program_id,
 			'tb_program_subject_id' => $tb_program_subject_id,
+			'program_name' => $model->programSubject->program->name,
+			'program_subject_name' => $model->programSubject->name,
         ]);
     }
 
@@ -129,10 +138,13 @@ class ProgramSubjectDocumentController extends Controller
 				//'tb_program_subject_id' => $tb_program_subject_id,
 			]);
         } else {
+			$model1=\backend\models\ProgramSubject::findOne($tb_program_subject_id);
             return $this->render('create', [
                 'model' => $model,
 				'tb_program_id' => $tb_program_id,
 				'tb_program_subject_id' => $tb_program_subject_id,
+				'program_name' => $model1->program->name,
+				'program_subject_name' => $model1->name,
             ]);
         }
     }

@@ -6,7 +6,7 @@ use yii\bootstrap\Dropdown;
 
 /* @var $searchModel backend\models\ProgramHistorySearch */
 
-$this->title = 'Program Histories';
+$this->title = \yii\helpers\Inflector::camel2words('History : '.$program_name);
 $this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -25,10 +25,20 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],           
 			[
 				'attribute' => 'revision',
+				'format' => 'html',
 				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
+				'hAlign'=>'center',
+				'label' => 'Rev',
+				'width'=>'75px',
+				'value' => function ($data) {
+					if($data->revision>0){
+						return Html::a($data->revision.'x', '#', ['class' => 'label label-danger']);
+					}
+					else{
+						return '-';
+					}
+				}
+			],			
 			[
 				'attribute' => 'number',
 				'vAlign'=>'middle',
@@ -44,30 +54,71 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             [
 				'attribute' => 'hours',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'75px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
 			[
 				'attribute' => 'days',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'75px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
 			[
 				'format' => 'html',
+				'label' => 'Doc',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
+				'width'=>'75px',
+				'value' => function ($data) {
+					$countDoc = \backend\models\ProgramDocument::find()
+								->where(
+									['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,]
+									)
+								->active()
+								->count();
+					if($countDoc>0){
+						return Html::a($countDoc, ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
+					}
+					else{
+						return Html::a('+', ['program-document/index','tb_program_id'=>$data->tb_program_id], ['class' => 'label label-primary']);
+					}
+				}
+			],
+			[
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'75px',
 				'label' => 'Subject',
 				'value' => function ($data) {
 					$countSubject = \backend\models\ProgramSubjectHistory::find()
 								->where(['tb_program_id' => $data->tb_program_id,'revision' => $data->revision,])
 								->count();
 					if($countSubject>0){
-						return Html::a($countSubject, ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'badge']);
+						return Html::a($countSubject, ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
 					}
 					else{
-						return Html::a('+', ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'badge']);
+						return Html::a('+', ['program-subject-history/index','tb_program_id'=>$data->tb_program_id,'revision'=>$data->revision], ['class' => 'label label-success']);
 					}
+				}
+			],
+			[
+				'format' => 'raw',
+				'attribute' => 'status',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'75px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){
+					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
+					return Html::a($icon, '#', [
+						'class'=>($data->status==1)?'label label-info':'label label-warning',
+					]);					
 				}
 			],
             [

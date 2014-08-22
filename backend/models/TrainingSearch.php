@@ -18,7 +18,7 @@ class TrainingSearch extends Training
     public function rules()
     {
         return [
-            [['id', 'tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
+            [['id', 'tb_program_id', 'tb_program_revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted', 'approvedStatusNote', 'approvedStatusDate'], 'safe'],
         ];
     }
@@ -54,7 +54,7 @@ class TrainingSearch extends Training
         $query->andFilterWhere([
             'id' => $this->id,
             'tb_program_id' => $this->tb_program_id,
-            'revision' => $this->revision,
+            'tb_program_revision' => $this->tb_program_revision,
             'ref_satker_id' => $this->ref_satker_id,
             'start' => $this->start,
             'finish' => $this->finish,

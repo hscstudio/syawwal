@@ -43,10 +43,12 @@ class ProgramHistoryController extends Controller
 			$dataProvider = $searchModel->search($queryParams);
 			$dataProvider->getSort()->defaultOrder = ['revision'=>SORT_DESC];
 
+			$model1=\backend\models\Program::findOne($tb_program_id);
 			return $this->render('index', [
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider,
 				'tb_program_id' => $tb_program_id,
+				'program_name' => $model1->name,
 			]);
 		}
 		else{
@@ -62,8 +64,10 @@ class ProgramHistoryController extends Controller
      */
     public function actionView($tb_program_id, $revision)
     {
-        return $this->render('view', [
+        $model1=\backend\models\Program::findOne($tb_program_id);
+		return $this->render('view', [
             'model' => $this->findModel($tb_program_id, $revision),
+			'program_name' => $model1->name,
         ]);
     }
 

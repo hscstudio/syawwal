@@ -14,10 +14,9 @@ use yii\filters\VerbFilter;
  */
 class TrainingController extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -34,14 +33,61 @@ class TrainingController extends Controller
      * Lists all Training models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($year='',$status=1)
     {
+		if(empty($year)) $year = date('Y');
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		
         $searchModel = new TrainingSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainingSearch']=[
+					'YEAR(start)' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+		}
+		else{
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'YEAR(start)' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
+		
+		// GET ALL TRAINING YEAR
+		$year_training = yii\helpers\ArrayHelper::map(Training::find()
+			->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['year'=>'DESC'])
+			->groupBy(['year'])
+			->currentSatker()
+			//->active()
+			->asArray()
+			->all(), 'year', 'year');
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'year' => $year,
+			'status' => $status,
+			'year_training' => $year_training,
         ]);
     }
 
@@ -66,8 +112,28 @@ class TrainingController extends Controller
     {
         $model = new Training();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())){
+			$model->tb_program_revision = (int)\backend\models\ProgramHistory::getRevision($model->tb_program_id);
+			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+			if($model->save()) {
+				Yii::$app->session->setFlash('success', 'Data saved');
+				// SAVE HISTORY OF PROGRAM
+				$model2 = new \backend\models\TrainingHistory();
+				$model2->attributes = array_merge(
+				  $model->attributes,
+				  [
+					'tb_training_id'=>$model->id,
+					'revision'=>'0',					
+				  ]
+				);				
+				$model2->save();
+				 
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+			else{
+				Yii::$app->session->setFlash('error', 'Unable create there are some error <br>'.implode('<br>',$model->firstErrors));
+				return $this->redirect(['index']);
+			}            
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -97,9 +163,11 @@ class TrainingController extends Controller
 					}
 					$idx++;
 				}
+				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{
@@ -185,8 +253,8 @@ class TrainingController extends Controller
 			$OpenTBS->VarRef['modelName']= "Training";
 			$data1[]['col0'] = 'id';			
 			$data1[]['col1'] = 'tb_program_id';			
-			$data1[]['col2'] = 'ref_satker_id';			
-			$data1[]['col3'] = 'name';			
+			$data1[]['col2'] = 'revision';			
+			$data1[]['col3'] = 'ref_satker_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
@@ -194,8 +262,8 @@ class TrainingController extends Controller
 				$data2[] = [
 					'col0'=>$training->id,
 					'col1'=>$training->tb_program_id,
-					'col2'=>$training->ref_satker_id,
-					'col3'=>$training->name,
+					'col2'=>$training->revision,
+					'col3'=>$training->ref_satker_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -234,8 +302,8 @@ class TrainingController extends Controller
 					foreach($dataProvider->getModels() as $training){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->ref_satker_id)
-													  ->setCellValue('D'.$idx, $training->name);
+													  ->setCellValue('C'.$idx, $training->revision)
+													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
 					
@@ -265,8 +333,8 @@ class TrainingController extends Controller
 					foreach($dataProvider->getModels() as $training){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->ref_satker_id)
-													  ->setCellValue('D'.$idx, $training->name);
+													  ->setCellValue('C'.$idx, $training->revision)
+													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
 									
@@ -313,8 +381,8 @@ class TrainingController extends Controller
 						foreach($dataProvider->getModels() as $training){
 							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 														  ->setCellValue('B'.$idx, $training->tb_program_id)
-														  ->setCellValue('C'.$idx, $training->ref_satker_id)
-														  ->setCellValue('D'.$idx, $training->name);
+														  ->setCellValue('C'.$idx, $training->revision)
+														  ->setCellValue('D'.$idx, $training->ref_satker_id);
 							$idx++;
 						}		
 						
@@ -385,45 +453,44 @@ class TrainingController extends Controller
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
 						$tb_program_id=  $sheetData[$baseRow]['B'];
-						$ref_satker_id=  $sheetData[$baseRow]['C'];
-						$name=  $sheetData[$baseRow]['D'];
-						$hours=  $sheetData[$baseRow]['E'];
-						$days=  $sheetData[$baseRow]['F'];
-						$start=  $sheetData[$baseRow]['G'];
-						$finish=  $sheetData[$baseRow]['H'];
-						$note=  $sheetData[$baseRow]['I'];
-						$type=  $sheetData[$baseRow]['J'];
-						$studentCount=  $sheetData[$baseRow]['K'];
-						$classCount=  $sheetData[$baseRow]['L'];
-						$executionSK=  $sheetData[$baseRow]['M'];
-						$resultSK=  $sheetData[$baseRow]['N'];
-						$costPlan=  $sheetData[$baseRow]['O'];
-						$costRealisation=  $sheetData[$baseRow]['P'];
-						$sourceCost=  $sheetData[$baseRow]['Q'];
-						$hostel=  $sheetData[$baseRow]['R'];
-						$reguler=  $sheetData[$baseRow]['S'];
-						$stakeholder=  $sheetData[$baseRow]['T'];
-						$location=  $sheetData[$baseRow]['U'];
-						$test=  $sheetData[$baseRow]['V'];
-						$status=  $sheetData[$baseRow]['W'];
-						//$created=  $sheetData[$baseRow]['X'];
-						//$createdBy=  $sheetData[$baseRow]['Y'];
-						//$modified=  $sheetData[$baseRow]['Z'];
-						//$modifiedBy=  $sheetData[$baseRow]['AA'];
-						//$deleted=  $sheetData[$baseRow]['AB'];
-						//$deletedBy=  $sheetData[$baseRow]['AC'];
+						$revision=  $sheetData[$baseRow]['C'];
+						$ref_satker_id=  $sheetData[$baseRow]['D'];
+						$name=  $sheetData[$baseRow]['E'];
+						$start=  $sheetData[$baseRow]['F'];
+						$finish=  $sheetData[$baseRow]['G'];
+						$note=  $sheetData[$baseRow]['H'];
+						$studentCount=  $sheetData[$baseRow]['I'];
+						$classCount=  $sheetData[$baseRow]['J'];
+						$executionSK=  $sheetData[$baseRow]['K'];
+						$resultSK=  $sheetData[$baseRow]['L'];
+						$costPlan=  $sheetData[$baseRow]['M'];
+						$costRealisation=  $sheetData[$baseRow]['N'];
+						$sourceCost=  $sheetData[$baseRow]['O'];
+						$hostel=  $sheetData[$baseRow]['P'];
+						$reguler=  $sheetData[$baseRow]['Q'];
+						$stakeholder=  $sheetData[$baseRow]['R'];
+						$location=  $sheetData[$baseRow]['S'];
+						$status=  $sheetData[$baseRow]['T'];
+						//$created=  $sheetData[$baseRow]['U'];
+						//$createdBy=  $sheetData[$baseRow]['V'];
+						//$modified=  $sheetData[$baseRow]['W'];
+						//$modifiedBy=  $sheetData[$baseRow]['X'];
+						//$deleted=  $sheetData[$baseRow]['Y'];
+						//$deletedBy=  $sheetData[$baseRow]['Z'];
+						$approvedStatus=  $sheetData[$baseRow]['AA'];
+						$approvedStatusNote=  $sheetData[$baseRow]['AB'];
+						$approvedStatusDate=  $sheetData[$baseRow]['AC'];
+						$approvedStatusBy=  $sheetData[$baseRow]['AD'];
 
 						$model2=new Training;
 						//$model2->id=  $id;
 						$model2->tb_program_id=  $tb_program_id;
+						$model2->revision=  $revision;
 						$model2->ref_satker_id=  $ref_satker_id;
 						$model2->name=  $name;
-						$model2->hours=  $hours;
-						$model2->days=  $days;
 						$model2->start=  $start;
 						$model2->finish=  $finish;
 						$model2->note=  $note;
-						$model2->type=  $type;
 						$model2->studentCount=  $studentCount;
 						$model2->classCount=  $classCount;
 						$model2->executionSK=  $executionSK;
@@ -435,7 +502,6 @@ class TrainingController extends Controller
 						$model2->reguler=  $reguler;
 						$model2->stakeholder=  $stakeholder;
 						$model2->location=  $location;
-						$model2->test=  $test;
 						$model2->status=  $status;
 						//$model2->created=  $created;
 						//$model2->createdBy=  $createdBy;
@@ -443,6 +509,10 @@ class TrainingController extends Controller
 						//$model2->modifiedBy=  $modifiedBy;
 						//$model2->deleted=  $deleted;
 						//$model2->deletedBy=  $deletedBy;
+						$model2->approvedStatus=  $approvedStatus;
+						$model2->approvedStatusNote=  $approvedStatusNote;
+						$model2->approvedStatusDate=  $approvedStatusDate;
+						$model2->approvedStatusBy=  $approvedStatusBy;
 
 						try{
 							if($model2->save()){
@@ -481,4 +551,74 @@ class TrainingController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	/**
+     * Updates an existing ProgramDocument model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionStatus($id, $year='', $status)
+    {
+        $model = $this->findModel($id);
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+		
+		if(empty($year)) $year = date('Y');
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		
+        $searchModel = new TrainingSearch();
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainingSearch']=[
+					'YEAR(start)' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+		}
+		else{
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'YEAR(start)' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
+		
+		// GET ALL TRAINING YEAR
+		$year_training = yii\helpers\ArrayHelper::map(Training::find()
+			->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['year'=>'DESC'])
+			->groupBy(['year'])
+			->currentSatker()
+			//->active()
+			->asArray()
+			->all(), 'year', 'year');
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+			'year' => $year,
+			'status' => $status,
+			'year_training' => $year_training,
+        ]);
+    }
 }

@@ -39,12 +39,19 @@ class ProgramSubjectHistoryController extends Controller
         $queryParams = Yii::$app->request->getQueryParams();
 		$queryParams['ProgramSubjectHistorySearch']=['tb_program_id'=>$tb_program_id,'revision'=>$revision,];
 		$dataProvider = $searchModel->search($queryParams);
-
+		
+		$model1=\backend\models\Program::findOne($tb_program_id);
+		$model2=\backend\models\ProgramHistory::find()->where([
+			'tb_program_id'=>$tb_program_id,
+			'revision'=>$revision
+		])->one();
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
 			'tb_program_id' => $tb_program_id,
 			'revision' => $revision,
+			'program_name'=> $model1->name,
+			'program_history_name'=> $model2->name,
         ]);
     }
 
@@ -57,10 +64,21 @@ class ProgramSubjectHistoryController extends Controller
      */
     public function actionView($tb_program_subject_id, $tb_program_id, $revision)
     {
+		$model = $this->findModel($tb_program_subject_id, $tb_program_id, $revision);
+		
+		$model1=\backend\models\Program::findOne($tb_program_id);
+		$model2=\backend\models\ProgramHistory::find()->where([
+			'tb_program_id'=>$tb_program_id,
+			'revision'=>$revision
+		])->one();
+		
         return $this->render('view', [
-            'model' => $this->findModel($tb_program_subject_id, $tb_program_id, $revision),
+            'model' => $model,
 			'tb_program_id' => $tb_program_id,
 			'revision' => $revision,
+			'program_name'=> $model1->name,
+			'program_history_name'=> $model2->name,
+			'program_subject_name'=> $model->name,
         ]);
     }
 
