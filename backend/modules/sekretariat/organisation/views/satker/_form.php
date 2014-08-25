@@ -26,6 +26,8 @@ use yii\helpers\ArrayHelper;
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
+    
+     <?= $form->field($model, 'id')->textInput(['maxlength' => 255]) ?>
 	
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 

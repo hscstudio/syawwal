@@ -60,7 +60,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'ref_sta_unit_id',
 				'value' => $model->staUnit->name,
 			],
-            'ref_sta_unit_id',
+            //'ref_sta_unit_id',
             'name',
             'nickName',
             'frontTitle',

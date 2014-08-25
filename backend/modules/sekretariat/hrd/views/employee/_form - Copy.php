@@ -13,7 +13,7 @@ use kartik\widgets\DepDrop;
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index'],
+		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
@@ -22,14 +22,12 @@ use kartik\widgets\DepDrop;
 		Employee	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
-		//'type' => ActiveForm::TYPE_HORIZONTAL,
-		'type' => ActiveForm::TYPE_VERTICAL,
+		'type' => ActiveForm::TYPE_HORIZONTAL,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
-	<div class="row">
-      <div class="col-md-6">
-      <?= '' ?>
+	
+    <?= '' ?>
 			<?php
 			$data = ArrayHelper::map(\backend\models\Unit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 			echo $form->field($model, 'ref_unit_id')->widget(Select2::classname(), [
@@ -38,24 +36,8 @@ use kartik\widgets\DepDrop;
 				'pluginOptions' => [
 				'allowClear' => true
 				],
-		]); ?>
-      </div>
-      <div class="col-md-6">
-      <?= '' ?>
-			<?php
-			$data = ArrayHelper::map(\backend\models\Religion::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'ref_religion_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Religion ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
 			]); ?>
-      </div>
-    </div>   
-    <div class="row">
-      <div class="col-md-6">
-      <?= '' ?>
+    <?= '' ?>
 			<?php
 			$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
 				// Nambah dropdown eselon 2
@@ -68,7 +50,7 @@ use kartik\widgets\DepDrop;
 				    	'onchange' => '	$.post("'.Yii::$app->urlManager->createUrl(['sekretariat-hrd/employee/subcat']).'", 
 				    					{ ref_satker_id: $(this).val() })
 				    					.done(function( data ) {
-				       						$( "select#eselon3" ).html( data );
+				       						$( "select#ref_sta_unit_id" ).html( data );
 				        				})'
 					],
 				    'pluginOptions' => [
@@ -76,9 +58,55 @@ use kartik\widgets\DepDrop;
 				    ],
 				]);
 			?>
-      </div>
-      <div class="col-md-6">
-       <?= '' ?>
+            
+    <?= '' ?>
+
+			<?php
+			$data = [];//ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'ref_sta_unit_id')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => [
+						'id' => 'ref_sta_unit_id',
+						'placeholder' => 'Choose Sta Unit ...',
+						'onchange' => '	$.post("'.Yii::$app->urlManager->createUrl(['sekretariat-hrd/employee/prod']).'", 
+				    					{ ref_sta_unit_id: $(this).val() })
+				    					.done(function( data ) {
+				       						$( "select#ref_sta_unit_id2" ).html( data );
+				        				})'
+					],
+				'pluginOptions' => [
+						'allowClear' => true
+				],
+			]);
+			?>
+    <?= '' ?>
+    
+    		<?php
+			$data = [];//ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'ref_sta_unit_id2')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => [
+						'id' => 'ref_sta_unit_id2',
+						'placeholder' => 'Choose Sta Unit 2...',
+					],
+				'pluginOptions' => [
+						'allowClear' => true
+				],
+			]);
+			?>
+    <?= '' ?>
+
+			<?php
+			$data = ArrayHelper::map(\backend\models\Religion::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'ref_religion_id')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => ['placeholder' => 'Choose Religion ...'],
+				'pluginOptions' => [
+				'allowClear' => true
+				],
+			]); ?>
+
+    <?= '' ?>
 
 			<?php
 			$data = ArrayHelper::map(\backend\models\RankClass::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
@@ -89,33 +117,8 @@ use kartik\widgets\DepDrop;
 				'allowClear' => true
 				],
 			]); ?>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-       <?= '' ?>
 
-			<?php
-			$data = [];//ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'eselon3')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => [
-						'id' => 'eselon3',
-						'placeholder' => 'Choose Sta Unit ...',
-						'onchange' => '	$.post("'.Yii::$app->urlManager->createUrl(['sekretariat-hrd/employee/prod']).'", 
-				    					{ eselon3: $(this).val() })
-				    					.done(function( data ) {
-				       						$( "select#eselon4" ).html( data );
-				        				})'
-					],
-				'pluginOptions' => [
-						'allowClear' => true
-				],
-			]);
-			?>
-      </div>
-      <div class="col-md-6">
-       <?= '' ?>
+    <?= '' ?>
 
 			<?php
 			$data = ArrayHelper::map(\backend\models\Graduate::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
@@ -126,59 +129,14 @@ use kartik\widgets\DepDrop;
 				'allowClear' => true
 				],
 			]); ?>
-      </div>
-    </div>    
-    <div class="row">
-      <div class="col-md-6">
-       <?= '' ?>
-    
-    		<?php
-			$data = [];//ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'eselon4')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => [
-						'id' => 'eselon4',
-						'placeholder' => 'Choose Sta Unit 2...',
-					],
-				'pluginOptions' => [
-						'allowClear' => true
-				],
-			]);
-			?>
-      </div>
-      <div class="col-md-6">
-       <?= $form->field($model, 'gender')->widget(\kartik\widgets\SwitchInput::classname(), [
+
+    <?= $form->field($model, 'gender')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'Male',
 						'offText' => 'Female',
 					]
 				]) ?>
-      </div>
-    </div>   
-    <div class="row">
-      <div class="col-md-6">
-      <?= $form->field($model, 'name')->textInput(['maxlength' => 50]) ?>
-      </div>
-      <div class="col-md-6">
-      <?= $form->field($model, 'nip')->textInput(['maxlength' => 18]) ?>
-      </div>
-    </div>  
-    <div class="row">
-      <div class="col-md-6">
-      
-      </div>
-      <div class="col-md-6">
-      
-      </div>
-    </div>  
-    <div class="row">
-      <div class="col-md-6">
-      
-      </div>
-      <div class="col-md-6">
-      
-      </div>
-    </div>      
+
     <?= $form->field($model, 'married')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
@@ -200,6 +158,8 @@ use kartik\widgets\DepDrop;
     <?= ""//deletedBy ?>
 
     <?= $form->field($model, 'user_id')->textInput() ?>
+
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 50]) ?>
 
     <?= $form->field($model, 'birthDay')->widget(\kartik\datecontrol\DateControl::classname(), [
 					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
@@ -226,6 +186,8 @@ use kartik\widgets\DepDrop;
     <?= $form->field($model, 'frontTitle')->textInput(['maxlength' => 20]) ?>
 
     <?= $form->field($model, 'backTitle')->textInput(['maxlength' => 20]) ?>
+
+    <?= $form->field($model, 'nip')->textInput(['maxlength' => 18]) ?>
 
     <?= $form->field($model, 'email', [
 					 'addon' => ['prepend' => ['content'=>'@']]

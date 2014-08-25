@@ -23,7 +23,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
 
-            // 'id',
+             //'id',
+			 	[
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'id',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
