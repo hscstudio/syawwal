@@ -19,6 +19,8 @@ class Module extends \yii\base\Module
 					'program/','program-subject/','program-document/','program-history/','program-subject-document/','program-subject-history/'
 				]],
 				['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'],'path'=>['training/']],
+				['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training Unit Plan', 'url' => ['/'.$this->uniqueId.'/training-unit-plan/index'],'path'=>[
+					'training-unit-plan/']],
 			]],
 			['icon'=>'fa fa-fw fa-university', 'label' => 'Kurikulum', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-list','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program2/index'],'path'=>[

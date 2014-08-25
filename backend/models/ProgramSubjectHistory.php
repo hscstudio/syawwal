@@ -17,7 +17,7 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $revision
  * @property integer $type
  * @property string $name
- * @property integer $hours
+ * @property decimal $hours
  * @property integer $sort
  * @property integer $test
  * @property integer $status
@@ -70,7 +70,8 @@ class ProgramSubjectHistory extends \yii\db\ActiveRecord
     {
         return [
             [['tb_program_subject_id', 'tb_program_id', 'revision', 'name', 'hours', 'sort'], 'required'],
-            [['tb_program_subject_id', 'tb_program_id', 'revision', 'type', 'hours', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_subject_id', 'tb_program_id', 'revision', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+			[['hours'], 'number'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['name'], 'string', 'max' => 255]
         ];
@@ -82,8 +83,8 @@ class ProgramSubjectHistory extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'tb_program_subject_id' => 'Tb Program Subject ID',
-            'tb_program_id' => 'Tb Program ID',
+            'tb_program_subject_id' => 'Program Subject',
+            'tb_program_id' => 'Program',
             'revision' => 'Revision',
             'type' => 'Type',
             'name' => 'Name',

@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Program */
 
-$this->title = 'Update Program: ' . ' ' . $model->name;
+$this->title = 'Update Program: ' . ' ' . \yii\helpers\Inflector::camel2words($model->name);
 $this->params['breadcrumbs'][] = ['label' => 'Programs', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words($model->name), 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();

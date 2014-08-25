@@ -15,11 +15,13 @@ class TrainingSearch extends Training
     /**
      * @inheritdoc
      */
+	public $year;
+	
     public function rules()
     {
         return [
             [['id', 'tb_program_id', 'tb_program_revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
-            [['name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted', 'approvedStatusNote', 'approvedStatusDate'], 'safe'],
+            [['name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted', 'approvedStatusNote', 'approvedStatusDate', 'year'], 'safe'],
         ];
     }
 
@@ -42,7 +44,9 @@ class TrainingSearch extends Training
     public function search($params)
     {
         $query = Training::find();
-
+		
+		if(empty($this->year)) $this->year=date('Y');
+		
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -74,8 +78,9 @@ class TrainingSearch extends Training
             'approvedStatus' => $this->approvedStatus,
             'approvedStatusDate' => $this->approvedStatusDate,
             'approvedStatusBy' => $this->approvedStatusBy,
+			'YEAR(start)' => $this->year,
         ]);
-
+		
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'note', $this->note])
             ->andFilterWhere(['like', 'executionSK', $this->executionSK])
@@ -83,7 +88,8 @@ class TrainingSearch extends Training
             ->andFilterWhere(['like', 'sourceCost', $this->sourceCost])
             ->andFilterWhere(['like', 'stakeholder', $this->stakeholder])
             ->andFilterWhere(['like', 'location', $this->location])
-            ->andFilterWhere(['like', 'approvedStatusNote', $this->approvedStatusNote]);
+			->andFilterWhere(['like', 'approvedStatusNote', $this->approvedStatusNote]);
+            //->andFilterWhere(['like', 'YEAR(start)', $this->year]);
 
         return $dataProvider;
     }

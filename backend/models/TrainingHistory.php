@@ -17,6 +17,7 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $tb_program_revision
  * @property integer $revision
  * @property integer $ref_satker_id
+ * @property string $number  
  * @property string $name
  * @property string $start
  * @property string $finish
@@ -85,9 +86,10 @@ class TrainingHistory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_id', 'tb_program_id', 'tb_program_revision', 'revision', 'ref_satker_id', 'name', 'approvedStatus', 'approvedStatusNote', 'approvedStatusDate', 'approvedStatusBy'], 'required'],
+            [['tb_training_id', 'tb_program_id', 'tb_program_revision', 'revision', 'start', 'finish', 'ref_satker_id', 'name'], 'required'],
             [['tb_training_id', 'tb_program_id', 'tb_program_revision', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
+			[['number'], 'string', 'max' => 30],
             [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255]
         ];
     }
@@ -103,7 +105,8 @@ class TrainingHistory extends \yii\db\ActiveRecord
             'tb_program_revision' => 'Tb Program Revision',
             'revision' => 'Revision',
             'ref_satker_id' => 'Ref Satker ID',
-            'name' => 'Name',
+            'number' => 'Number',
+			'name' => 'Name',
             'start' => 'Start',
             'finish' => 'Finish',
             'note' => 'Note',
@@ -131,4 +134,8 @@ class TrainingHistory extends \yii\db\ActiveRecord
             'approvedStatusBy' => 'Approved Status By',
         ];
     }
+	
+	public static function getRevision($id){
+		return self::find()->where(['tb_training_id' => $id,])->max('revision');
+	}
 }

@@ -22,94 +22,95 @@ use yii\helpers\ArrayHelper;
 		Program	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
-		'type' => ActiveForm::TYPE_HORIZONTAL,
+		//'type' => ActiveForm::TYPE_HORIZONTAL,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 
-	<?php
-	/*
-	$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-	echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
-		'data' => $data,
-		'options' => ['placeholder' => 'Choose Satker ...'],
-		'pluginOptions' => [
-		'allowClear' => true
-		],
-	]); 
-	*/
-	?>
-	
-	<?php
-	$data = ArrayHelper::map(
-		\backend\models\ProgramCode::find()
-			->select(['id','code', 'CONCAT(name," => ",code) as name_code'])
-			->orderBy(['[[id]]'=> SORT_ASC])			
-			->asArray()
-			->all(), 
-			'code', 'name_code'
-	);
-	
-	echo $form->field($model, 'number')->widget(Select2::classname(), [
-		'data' => $data,
-		'options' => ['placeholder' => 'Choose code ...'],
-		'pluginOptions' => [
-			'allowClear' => true
-		],
-	]);
-	?>
-	
-	<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-	
-    <?= $form->field($model, 'hours')->textInput() ?>
-
-    <?= $form->field($model, 'days')->textInput(['maxlength' => 3]) ?>
-
-    <?= $form->field($model, 'test')->widget(\kartik\widgets\SwitchInput::classname(), [
+	<div class="row">
+		<div class="col-md-6">
+			<?php
+			$data = ArrayHelper::map(
+				\backend\models\ProgramCode::find()
+					->select(['id','code', 'CONCAT(name," => ",code) as name_code'])
+					->orderBy(['[[id]]'=> SORT_ASC])			
+					->asArray()
+					->all(), 
+					'code', 'name_code'
+			);
+			
+			echo $form->field($model, 'number')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => ['placeholder' => 'Choose code ...'],
+				'pluginOptions' => [
+					'allowClear' => true
+				],
+			]);
+			?>
+			
+			<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+			
+			<div class="row">
+				<div class="col-md-6">
+				<?= $form->field($model, 'hours')->textInput() ?>
+				</div>
+				<div class="col-md-6">
+				<?= $form->field($model, 'days')->textInput(['maxlength' => 3]) ?>
+				</div>
+			</div>		
+		</div>
+		<div class="col-md-6">
+			
+			<?php /////Merubah Bentuk type dari switch input jadi select2 dikarenakan size switch input terlalu kecil///////
+				echo $form->field($model, 'type')->widget(Select2::classname(), [
+					'data' => array(0=>'Lulus',1=>'Mengikuti'),
+					'options' => ['placeholder' => 'Choose code ...'],
 					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
-	<?php /////Merubah Bentuk type dari switch input jadi select2 dikarenakan size switch input terlalu kecil///////
-	echo $form->field($model, 'type')->widget(Select2::classname(), [
-		'data' => array(0=>'Lulus',1=>'Mengikuti'),
-		'options' => ['placeholder' => 'Choose code ...'],
-		'pluginOptions' => [
-			'allowClear' => true
-		],
-	]);
-	?>
-    
-
-    <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
+						'allowClear' => true
 					],
-				]) ?>   
+				]);
+				?>			
 
-    <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
+			<?= $form->field($model, 'note')->textArea(['maxlength' => 255]) ?>
 
-	<?php if(!$model->isNewRecord){ ?>
-		<?= $form->field($model, 'validationStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
-						'pluginOptions' => [
-							'onText' => 'On',
-							'offText' => 'Off',
-						]
-					]) ?>
-					
-		<?= $form->field($model, 'validationNote')->textInput(['maxlength' => 255]) ?>
-	<?php } ?>
+			<div class="row">
+				<div class="col-md-6">
+				<?= $form->field($model, 'test')->widget(\kartik\widgets\SwitchInput::classname(), [
+							'pluginOptions' => [
+								'onText' => 'On',
+								'offText' => 'Off',
+							]
+						]) ?>
+				</div>
+				<div class="col-md-6">
+				<?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
+							'pluginOptions' => [
+								'onText' => 'On',
+								'offText' => 'Off',
+							],
+						]) ?>   
+				</div>
+			</div>
+			
+			<?php if(!$model->isNewRecord){ ?>
+				<?= $form->field($model, 'validationStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
+								'pluginOptions' => [
+									'onText' => 'On',
+									'offText' => 'Off',
+								]
+							]) ?>
+							
+				<?= $form->field($model, 'validationNote')->textArea(['maxlength' => 255]) ?>
+			<?php } ?>
+		</div>
+	</div>
 	
-    <div class="form-group">
-		<label class="col-md-2 control-label"></label>
-		<div class="col-md-10">
+	
+	
+    <div class="clearfix">
         <?= Html::submitButton(
 			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
 			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-		</div>
 	</div>
 	
     <?php ActiveForm::end(); ?>

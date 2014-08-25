@@ -19,7 +19,7 @@ class TrainingHistorySearch extends TrainingHistory
     {
         return [
             [['id', 'tb_training_id', 'tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
-            [['name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted', 'approvedStatusNote', 'approvedStatusDate'], 'safe'],
+            [['number', 'name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted', 'approvedStatusNote', 'approvedStatusDate'], 'safe'],
         ];
     }
 
@@ -78,6 +78,7 @@ class TrainingHistorySearch extends TrainingHistory
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+			->andFilterWhere(['like', 'number', $this->number])
             ->andFilterWhere(['like', 'note', $this->note])
             ->andFilterWhere(['like', 'executionSK', $this->executionSK])
             ->andFilterWhere(['like', 'resultSK', $this->resultSK])

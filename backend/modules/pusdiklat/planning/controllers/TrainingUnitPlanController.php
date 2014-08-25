@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * TrainingController implements the CRUD actions for Training model.
  */
-class TrainingController extends Controller
+class TrainingUnitPlanController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 

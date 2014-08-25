@@ -10,14 +10,13 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * Training2Controller implements the CRUD actions for Training model.
+ * TrainingController implements the CRUD actions for Training model.
  */
 class Training2Controller extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -34,14 +33,61 @@ class Training2Controller extends Controller
      * Lists all Training models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($year='',$status='all')
     {
+		if(empty($year)) $year = date('Y');
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		
         $searchModel = new TrainingSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+		}
+		else{
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
+		
+		// GET ALL TRAINING YEAR
+		$year_training = yii\helpers\ArrayHelper::map(Training::find()
+			->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['year'=>'DESC'])
+			->groupBy(['year'])
+			->currentSatker()
+			->active()
+			->asArray()
+			->all(), 'year', 'year');
+		$year_training['all']='All'	;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'year' => $year,
+			'status' => $status,
+			'year_training' => $year_training,
         ]);
     }
 
@@ -58,24 +104,6 @@ class Training2Controller extends Controller
     }
 
     /**
-     * Creates a new Training model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Training();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
      * Updates an existing Training model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
@@ -86,20 +114,56 @@ class Training2Controller extends Controller
         $model = $this->findModel($id);
         $currentFiles=[];
         
+		// CHECK SATKER
+		if ($model->ref_satker_id != (int)Yii::$app->user->identity->employee->ref_satker_id){
+			Yii::$app->session->setFlash('error', 'You dont allowed to edit it');
+			return $this->redirect(['index']);
+		}
+		
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-			
+			if(Yii::$app->request->post('generate_number')==1){
+			// GENERATE TRAINING NUMBER				
+				$year = date('Y',strtotime($model->start));
+				$program_owner = sprintf("%02s", $model->program->ref_satker_id);
+				$training_owner = sprintf("%02s", $model->ref_satker_id);
+				if($program_owner==$training_owner) $training_owner='00';
+				$program_number = $model->program->number;
+				$training_of_program_this_year = Training::find()
+					->andWhere('start<=:start and id<>:id',[':id'=>$id,':start'=>$model->start])			
+					->currentSatker()
+					->active()
+					->count()+1;
+				$model->number = $year.'-'.$program_owner.'-'.$training_owner.'-'.$program_number.'.'.$training_of_program_this_year;
+			}
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
+				Yii::$app->session->setFlash('success', 'Data saved');
+				// SAVE HISTORY OF TRAINING
+				if(Yii::$app->request->post('create_revision')!==null){
+					// CREATE NEW HISTORY
+					$revision = \backend\models\TrainingHistory::getRevision($model->id);				
+					$model2 = new \backend\models\TrainingHistory();
+					$model2->attributes = array_merge(
+					  $model->attributes,[
+						'tb_training_id'=>$model->id,
+						'revision'=>$revision+1,				
+					  ]
+					);				
+					$model2->save();				
+					
+					Yii::$app->session->setFlash('success', 'Save as revision'.implode(',',$model->errors));	
+				}
+				else{
+					$model2 = \backend\models\TrainingHistory::find()
+									->where(['tb_training_id' => $model->id,])
+									->orderBy(['revision'=>'DESC'])
+									->one();
+					$model2->attributes = array_merge($model->attributes);				
+					$model2->save();
 				}
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{
@@ -118,8 +182,11 @@ class Training2Controller extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+		Yii::$app->session->setFlash('success', 'Data deleted');
+		if ($model->delete()){
+			\backend\models\TrainingHistory::deleteAll(['tb_training_id' => $id,]);
+		}
         return $this->redirect(['index']);
     }
 
@@ -132,7 +199,7 @@ class Training2Controller extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Training::findOne($id)) !== null) {
+		if (($model = Training::find()->where(['id'=>$id])->currentSatker()->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -151,6 +218,8 @@ class Training2Controller extends Controller
 				$value=$_POST['Training'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
+				
+				
 				// return JSON encoded output in the below format
 				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
 				// alternatively you can return a validation error
@@ -185,8 +254,8 @@ class Training2Controller extends Controller
 			$OpenTBS->VarRef['modelName']= "Training";
 			$data1[]['col0'] = 'id';			
 			$data1[]['col1'] = 'tb_program_id';			
-			$data1[]['col2'] = 'ref_satker_id';			
-			$data1[]['col3'] = 'name';			
+			$data1[]['col2'] = 'revision';			
+			$data1[]['col3'] = 'ref_satker_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
@@ -194,8 +263,8 @@ class Training2Controller extends Controller
 				$data2[] = [
 					'col0'=>$training->id,
 					'col1'=>$training->tb_program_id,
-					'col2'=>$training->ref_satker_id,
-					'col3'=>$training->name,
+					'col2'=>$training->revision,
+					'col3'=>$training->ref_satker_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -234,8 +303,8 @@ class Training2Controller extends Controller
 					foreach($dataProvider->getModels() as $training){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->ref_satker_id)
-													  ->setCellValue('D'.$idx, $training->name);
+													  ->setCellValue('C'.$idx, $training->revision)
+													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
 					
@@ -265,8 +334,8 @@ class Training2Controller extends Controller
 					foreach($dataProvider->getModels() as $training){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->ref_satker_id)
-													  ->setCellValue('D'.$idx, $training->name);
+													  ->setCellValue('C'.$idx, $training->revision)
+													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
 									
@@ -313,8 +382,8 @@ class Training2Controller extends Controller
 						foreach($dataProvider->getModels() as $training){
 							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 														  ->setCellValue('B'.$idx, $training->tb_program_id)
-														  ->setCellValue('C'.$idx, $training->ref_satker_id)
-														  ->setCellValue('D'.$idx, $training->name);
+														  ->setCellValue('C'.$idx, $training->revision)
+														  ->setCellValue('D'.$idx, $training->ref_satker_id);
 							$idx++;
 						}		
 						
@@ -385,45 +454,44 @@ class Training2Controller extends Controller
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
 						$tb_program_id=  $sheetData[$baseRow]['B'];
-						$ref_satker_id=  $sheetData[$baseRow]['C'];
-						$name=  $sheetData[$baseRow]['D'];
-						$hours=  $sheetData[$baseRow]['E'];
-						$days=  $sheetData[$baseRow]['F'];
-						$start=  $sheetData[$baseRow]['G'];
-						$finish=  $sheetData[$baseRow]['H'];
-						$note=  $sheetData[$baseRow]['I'];
-						$type=  $sheetData[$baseRow]['J'];
-						$studentCount=  $sheetData[$baseRow]['K'];
-						$classCount=  $sheetData[$baseRow]['L'];
-						$executionSK=  $sheetData[$baseRow]['M'];
-						$resultSK=  $sheetData[$baseRow]['N'];
-						$costPlan=  $sheetData[$baseRow]['O'];
-						$costRealisation=  $sheetData[$baseRow]['P'];
-						$sourceCost=  $sheetData[$baseRow]['Q'];
-						$hostel=  $sheetData[$baseRow]['R'];
-						$reguler=  $sheetData[$baseRow]['S'];
-						$stakeholder=  $sheetData[$baseRow]['T'];
-						$location=  $sheetData[$baseRow]['U'];
-						$test=  $sheetData[$baseRow]['V'];
-						$status=  $sheetData[$baseRow]['W'];
-						//$created=  $sheetData[$baseRow]['X'];
-						//$createdBy=  $sheetData[$baseRow]['Y'];
-						//$modified=  $sheetData[$baseRow]['Z'];
-						//$modifiedBy=  $sheetData[$baseRow]['AA'];
-						//$deleted=  $sheetData[$baseRow]['AB'];
-						//$deletedBy=  $sheetData[$baseRow]['AC'];
+						$revision=  $sheetData[$baseRow]['C'];
+						$ref_satker_id=  $sheetData[$baseRow]['D'];
+						$name=  $sheetData[$baseRow]['E'];
+						$start=  $sheetData[$baseRow]['F'];
+						$finish=  $sheetData[$baseRow]['G'];
+						$note=  $sheetData[$baseRow]['H'];
+						$studentCount=  $sheetData[$baseRow]['I'];
+						$classCount=  $sheetData[$baseRow]['J'];
+						$executionSK=  $sheetData[$baseRow]['K'];
+						$resultSK=  $sheetData[$baseRow]['L'];
+						$costPlan=  $sheetData[$baseRow]['M'];
+						$costRealisation=  $sheetData[$baseRow]['N'];
+						$sourceCost=  $sheetData[$baseRow]['O'];
+						$hostel=  $sheetData[$baseRow]['P'];
+						$reguler=  $sheetData[$baseRow]['Q'];
+						$stakeholder=  $sheetData[$baseRow]['R'];
+						$location=  $sheetData[$baseRow]['S'];
+						$status=  $sheetData[$baseRow]['T'];
+						//$created=  $sheetData[$baseRow]['U'];
+						//$createdBy=  $sheetData[$baseRow]['V'];
+						//$modified=  $sheetData[$baseRow]['W'];
+						//$modifiedBy=  $sheetData[$baseRow]['X'];
+						//$deleted=  $sheetData[$baseRow]['Y'];
+						//$deletedBy=  $sheetData[$baseRow]['Z'];
+						$approvedStatus=  $sheetData[$baseRow]['AA'];
+						$approvedStatusNote=  $sheetData[$baseRow]['AB'];
+						$approvedStatusDate=  $sheetData[$baseRow]['AC'];
+						$approvedStatusBy=  $sheetData[$baseRow]['AD'];
 
 						$model2=new Training;
 						//$model2->id=  $id;
 						$model2->tb_program_id=  $tb_program_id;
+						$model2->revision=  $revision;
 						$model2->ref_satker_id=  $ref_satker_id;
 						$model2->name=  $name;
-						$model2->hours=  $hours;
-						$model2->days=  $days;
 						$model2->start=  $start;
 						$model2->finish=  $finish;
 						$model2->note=  $note;
-						$model2->type=  $type;
 						$model2->studentCount=  $studentCount;
 						$model2->classCount=  $classCount;
 						$model2->executionSK=  $executionSK;
@@ -435,7 +503,6 @@ class Training2Controller extends Controller
 						$model2->reguler=  $reguler;
 						$model2->stakeholder=  $stakeholder;
 						$model2->location=  $location;
-						$model2->test=  $test;
 						$model2->status=  $status;
 						//$model2->created=  $created;
 						//$model2->createdBy=  $createdBy;
@@ -443,6 +510,10 @@ class Training2Controller extends Controller
 						//$model2->modifiedBy=  $modifiedBy;
 						//$model2->deleted=  $deleted;
 						//$model2->deletedBy=  $deletedBy;
+						$model2->approvedStatus=  $approvedStatus;
+						$model2->approvedStatusNote=  $approvedStatusNote;
+						$model2->approvedStatusDate=  $approvedStatusDate;
+						$model2->approvedStatusBy=  $approvedStatusBy;
 
 						try{
 							if($model2->save()){

@@ -17,16 +17,17 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="program-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+	
 	<?php \yii\widgets\Pjax::begin([
 		'id'=>'pjax-program-gridview',
 	]); ?>
+	
+	
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-            
 			[
 				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'number',

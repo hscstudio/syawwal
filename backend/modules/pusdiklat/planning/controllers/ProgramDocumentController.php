@@ -81,127 +81,7 @@ class ProgramDocumentController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new ProgramDocument model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate($tb_program_id)
-    {
-		$model = new ProgramDocument();
-		$files=[];
-		if ($model->load(Yii::$app->request->post())){
-			$model->tb_program_id=$tb_program_id;
-			$model->revision=\backend\models\ProgramHistory::getRevision($tb_program_id);
-			// PREPARING UPLOAD DOCUMENT				
-			$files[0] = \yii\web\UploadedFile::getInstance($model, 'filename');
-			if(!empty($files[0])){
-				$ext = end((explode(".", $files[0]->name)));
-				$model->filename = uniqid() . '.' . $ext;
-				$path = '';
-				if(isset(Yii::$app->params['uploadPath'])){
-					$path = Yii::$app->params['uploadPath'].'/program/'.$tb_program_id.'/document/';
-				}
-				else{
-					$path = Yii::getAlias('@common').'/../files/program/'.$tb_program_id.'/document/';
-				}
-				@mkdir($path, 0755, true);
-				@chmod($path, 0755);
-				$paths[0] = $path . $model->filename;
-			}
-
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', 'Data saved');
-				// SAVEAS / UPLOAD DOCUMENT				
-				$idx=0;
-				foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
-			}
-			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}
-			
-			$model1 = \backend\models\Program::findOne($model->tb_program_id);				 
-			return $this->redirect([
-				'view', 
-				'id' => $model->id,
-				'program_name' => $model->program->name,
-			]);
-		} else {
-			$model1 = \backend\models\Program::findOne($tb_program_id);
-			return $this->render('create', [
-				'model' => $model,
-				'tb_program_id' => $tb_program_id,
-				'program_name' => $model1->name,
-			]);
-		}
-    }
-
-    /**
-     * Updates an existing ProgramDocument model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-        
-        if ($model->load(Yii::$app->request->post())) {			
-            if($model->save()){
-				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                // error in saving model
-				Yii::$app->session->setFlash('error', 'There are some errors');
-            }            
-        }
-		else{
-			//return $this->render(['update', 'id' => $model->id]);
-			return $this->render('update', [
-                'model' => $model,
-				'tb_program_id' => $model->tb_program_id,
-				'program_name' => $model->program->name,
-            ]);
-		}
-    }
-
-    /**
-     * Deletes an existing ProgramDocument model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $model = $this->findModel($id);
-		$tb_program_id = $model->tb_program_id;
-		
-		if($model->delete()){
-			$path = '';
-			if(isset(Yii::$app->params['uploadPath'])){
-				$path = Yii::$app->params['uploadPath'].'/program/'.$tb_program_id.'/document/';
-			}
-			else{
-				$path = Yii::getAlias('@common').'/../files/program/'.$tb_program_id.'/document/';
-			}
-			@unlink($path . $model->filename);
-			Yii::$app->session->setFlash('success', 'Delete success');
-		}
-		else{
-			Yii::$app->session->setFlash('error', 'Delete failed');
-		}
-		
-        return $this->redirect([
-			'index',
-			'tb_program_id' => $tb_program_id,
-		]);
-    }
-
+    
     /**
      * Finds the ProgramDocument model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -212,39 +92,18 @@ class ProgramDocumentController extends Controller
     protected function findModel($id)
     {
         if (($model = ProgramDocument::findOne($id)) !== null) {
-            return $model;
+            if($model->program->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
+				return $model;
+			}
+			else{
+				throw new NotFoundHttpException('The requested page does not exist.');
+			}
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
 	
-	public function actionEditable() {
-		$model = new ProgramDocument; // your model can be loaded here
-		// Check if there is an Editable ajax request
-		if (isset($_POST['hasEditable'])) {
-			// read your posted model attributes
-			if ($model->load($_POST)) {
-				// read or convert your posted information
-				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['ProgramDocument'][$_POST['editableIndex']]);
-				$value=$_POST['ProgramDocument'][$_POST['editableIndex']][$name];
-				$model2->$name = $value ;
-				$model2->save();
-				// return JSON encoded output in the below format
-				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
-				// alternatively you can return a validation error
-				// echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'Validation error']);
-			}
-			// else if nothing to do always return an empty JSON encoded output
-			else {
-				echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'']);
-			}
-		return;
-		}
-		// Else return to rendering a normal view
-		return $this->render('view', ['model'=>$model]);
-	}
-
+	
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
             'query' => ProgramDocument::find(),
@@ -433,132 +292,6 @@ class ProgramDocumentController extends Controller
         return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);	
-    }
-	
-	public function actionImport(){
-		$dataProvider = new ActiveDataProvider([
-            'query' => ProgramDocument::find(),
-        ]);
-		
-		/* 
-		Please read guide of upload https://github.com/yiisoft/yii2/blob/master/docs/guide/input-file-upload.md
-		maybe I do mistake :)
-		*/		
-		if (!empty($_FILES)) {
-			$importFile = \yii\web\UploadedFile::getInstanceByName('importFile');
-			if(!empty($importFile)){
-				$fileTypes = ['xls','xlsx']; // File extensions allowed
-				//$ext = end((explode(".", $importFile->name)));
-				$ext=$importFile->extension;
-				if(in_array($ext,$fileTypes)){
-					$inputFileType = \PHPExcel_IOFactory::identify($importFile->tempName );
-					$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-					$objPHPExcel = $objReader->load($importFile->tempName );
-					$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
-					$baseRow = 2;
-					$inserted=0;
-					$read_status = false;
-					$err=[];
-					while(!empty($sheetData[$baseRow]['A'])){
-						$read_status = true;
-						$abjadX=array();
-						//$id=  $sheetData[$baseRow]['A'];
-						$tb_program_id=  $sheetData[$baseRow]['B'];
-						$name=  $sheetData[$baseRow]['C'];
-						$type=  $sheetData[$baseRow]['D'];
-						$filename=  $sheetData[$baseRow]['E'];
-						$description=  $sheetData[$baseRow]['F'];
-						$status=  $sheetData[$baseRow]['G'];
-						//$created=  $sheetData[$baseRow]['H'];
-						//$createdBy=  $sheetData[$baseRow]['I'];
-						//$modified=  $sheetData[$baseRow]['J'];
-						//$modifiedBy=  $sheetData[$baseRow]['K'];
-						//$deleted=  $sheetData[$baseRow]['L'];
-						//$deletedBy=  $sheetData[$baseRow]['M'];
-
-						$model2=new ProgramDocument;
-						//$model2->id=  $id;
-						$model2->tb_program_id=  $tb_program_id;
-						$model2->name=  $name;
-						$model2->type=  $type;
-						$model2->filename=  $filename;
-						$model2->description=  $description;
-						$model2->status=  $status;
-						//$model2->created=  $created;
-						//$model2->createdBy=  $createdBy;
-						//$model2->modified=  $modified;
-						//$model2->modifiedBy=  $modifiedBy;
-						//$model2->deleted=  $deleted;
-						//$model2->deletedBy=  $deletedBy;
-
-						try{
-							if($model2->save()){
-								$inserted++;
-							}
-							else{
-								foreach ($model2->errors as $error){
-									$err[]=($baseRow-1).'. '.implode('|',$error);
-								}
-							}
-						}
-						catch (\yii\base\ErrorException $e){
-							Yii::$app->session->setFlash('error', "{$e->getMessage()}");
-							//$this->refresh();
-						} 
-						$baseRow++;
-					}	
-					Yii::$app->session->setFlash('success', ($inserted).' row inserted');
-					if(!empty($err)){
-						Yii::$app->session->setFlash('warning', 'There are error: <br>'.implode('<br>',$err));
-					}
-				}
-				else{
-					Yii::$app->session->setFlash('error', 'Filetype allowed only xls and xlsx');
-				}				
-			}
-			else{
-				Yii::$app->session->setFlash('error', 'File import empty!');
-			}
-		}
-		else{
-			Yii::$app->session->setFlash('error', 'File import empty!');
-		}
-		
-		return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);					
-	}
-	
-	/**
-     * Updates an existing ProgramDocument model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionStatus($id, $status)
-    {
-        $model = $this->findModel($id);
-        $tb_program_id = $model->tb_program_id;
-		
-		$status = ($status==1)?0:1;
-		$model->status = $status;
-		$model->save();
-
-		$searchModel = new ProgramDocumentSearch();
-		$queryParams = Yii::$app->request->getQueryParams();			
-		$queryParams['ProgramDocumentSearch']=[
-				'tb_program_id'=>$tb_program_id,					
-			];
-		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-		$dataProvider = $searchModel->search($queryParams);
-
-		return $this->render('index', [
-			'searchModel' => $searchModel,
-			'dataProvider' => $dataProvider,
-			'tb_program_id' => $tb_program_id,
-			'status' => $status,
-			'program_name' => $model->program->name,
-		]);
     }
 
 }

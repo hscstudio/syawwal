@@ -20,52 +20,54 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	<?php \yii\widgets\Pjax::begin([
 		'id'=>'pjax-gridview',
 	]); ?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-
             [
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'name',
 				'format'=>'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'left',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
 				'value' => function ($data){
-					return Html::a($data->name,'#',['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+					return Html::tag('span', $data->name, ['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
 				},
 			],
             
             
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'start',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'100px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Start', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				'value' => function ($data) {
+					return date('d M y',strtotime($data->start));
+				}
 			],
 		
 			[
-				'class' => 'kartik\grid\EditableColumn',
+				'class' => 'kartik\grid\DataColumn',
 				'attribute' => 'finish',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'100px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Finish', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				//'editableOptions'=>['header'=>'Finish', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
+				'value' => function ($data) {
+					return date('d M y',strtotime($data->finish));
+				}
 			],
        
             
 			[
-				'class' => 'kartik\grid\EditableColumn',
+				'class' => 'kartik\grid\DataColumn',
 				'attribute' => 'studentCount',
 				'label'=> 'Student',
 				'vAlign'=>'middle',
@@ -74,7 +76,25 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'StudentCount', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			],
+			
+			[
+				'format' => 'html',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'label' => 'Rev',
+				'width'=>'80px',
+				'value' => function ($data) {
+					$countRevision = \backend\models\TrainingHistory::find()
+								->where(['tb_training_id' => $data->id,])
+								->count()-1;
+					if($countRevision>0){
+						return Html::a($countRevision.'x', ['training-history/index','tb_training	ZAAZZZ_id'=>$data->id], ['class' => 'label label-danger']);
+					}
+					else{
+						return '-';
+					}
+				}
 			],
 			
 			[
@@ -85,19 +105,49 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'80px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'value' => function ($data) use ($year){					
-					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
-					return Html::a($icon, ['status','year'=>$year, 'status'=>$data->status, 'id'=>$data->id], [
-						'onclick'=>'
-							$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','year'=>$year,'status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
-							return false;
-						',
-						'class'=>($data->status==1)?'label label-info':'label label-warning',
-					]);					
+				'value' => function ($data) use ($year){				
+					
+					if ($data->status==1){
+						$icon='<span class="glyphicon glyphicon-check"></span>';
+						$label='label label-info';
+						$title='READY';
+					}	
+					else if ($data->status==2){ 
+						$icon='<span class="glyphicon glyphicon-refresh"></span>';
+						$label='label label-success';
+						$title='EXECUTE';
+					}
+					else if ($data->status==3){ 
+						$icon='<span class="glyphicon glyphicon-trash"></span>';
+						$label='label label-danger';
+						$title='CANCEL';
+					}
+					else {
+						$icon='<span class="glyphicon glyphicon-fire"></span>';
+						$label='label label-warning';
+						$title='PLAN';
+					}
+					return Html::tag('span', $icon, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
 				}
 			],
-			
-            ['class' => 'kartik\grid\ActionColumn'],
+            [
+				'class' => 'kartik\grid\ActionColumn',
+				'buttons' => [
+					'update' => function ($url, $model) {
+								$icon='<span class="glyphicon glyphicon-pencil"></span>';
+								return ($model->status==2)?'':Html::a($icon,$url,[
+									'data-pjax'=>"0",
+								]);
+							},
+					'delete' => function ($url, $model) {
+								$icon='<span class="glyphicon glyphicon-trash"></span>';
+								return ($model->status==2)?'':Html::a($icon,$url,[
+									'title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post",
+									'data-pjax'=>"0",
+								]);
+							},
+				],			
+			],
         ],
 		'panel' => [
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training</h3>',
@@ -114,7 +164,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'class'=>'form-control', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
 								container: "#pjax-gridview", 
 								timeout: 1,
 							});
@@ -125,7 +175,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'status', 
-					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'All'],
+					'data' => ['all'=>'All','0'=>'Plan','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
 					'value' => $status,
 					'options' => [
 						'placeholder' => 'Status ...', 
@@ -134,7 +184,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							$.pjax.reload({
 								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
 								container: "#pjax-gridview", 
-								timeout: 1,
+								timeout: 1000,
 							});
 						',	
 					],

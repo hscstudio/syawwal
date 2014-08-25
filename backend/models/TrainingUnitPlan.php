@@ -3,22 +3,19 @@
 namespace backend\models;
 
 use Yii;
-														
+											
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
 /**
- * This is the model class for table "tb_program_subject".
+ * This is the model class for table "tb_training_unit_plan".
  *
 
  * @property integer $id
- * @property integer $tb_program_id
- * @property integer $type
- * @property string $name
- * @property decimal $hours
- * @property integer $sort
- * @property integer $test
+ * @property integer $tb_training_id
+ * @property integer $ref_unit_id
+ * @property string $spread
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
@@ -27,17 +24,17 @@ use yii\behaviors\BlameableBehavior;
  * @property string $deleted
  * @property integer $deletedBy
  *
- * @property Program $tbProgram
- * @property TrainingSubjectTrainerRecommendation[] $trainingSubjectTrainerRecommendations
+ * @property Unit $refUnit
+ * @property Training $tbTraining
  */
-class ProgramSubject extends \yii\db\ActiveRecord
+class TrainingUnitPlan extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'tb_program_subject';
+        return 'tb_training_unit_plan';
     }
 	
     /**
@@ -71,11 +68,10 @@ class ProgramSubject extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'name', 'hours', 'sort'], 'required'],
-            [['tb_program_id', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-			[['hours'], 'number'],
+            [['tb_training_id', 'ref_unit_id', 'spread'], 'required'],
+            [['tb_training_id', 'ref_unit_id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
-            [['name'], 'string', 'max' => 255]
+            [['spread'], 'string', 'max' => 500]
         ];
     }
 
@@ -86,12 +82,9 @@ class ProgramSubject extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tb_program_id' => 'Tb Program ID',
-            'type' => 'Type',
-            'name' => 'Name',
-            'hours' => 'Hours',
-            'sort' => 'Sort',
-            'test' => 'Test',
+            'tb_training_id' => 'Tb Training ID',
+            'ref_unit_id' => 'Ref Unit ID',
+            'spread' => 'Spread',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
@@ -101,40 +94,23 @@ class ProgramSubject extends \yii\db\ActiveRecord
             'deletedBy' => 'Deleted By',
         ];
     }
-	
-	/**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProgram()
+    public function getUnit()
     {
-        return $this->hasOne(Program::className(), ['id' => 'tb_program_id']);
+        return $this->hasOne(Unit::className(), ['id' => 'ref_unit_id']);
     }
-	
-	/**
+	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingSubjectTrainerRecommendations()
+    public function getTraining()
     {
-        return $this->hasMany(TrainingSubjectTrainerRecommendation::className(), ['tb_program_subject_id' => 'id']);
+        return $this->hasOne(Training::className(), ['id' => 'tb_training_id']);
     }
 	
-	/**
-     * @inheritdoc
-     * @return ProgramQuery
-     */
-    public static function find()
+	public function getStudentCount()
     {
-        return new ProgramSubjectQuery(get_called_class());
+        return explode('|', $this->spread);
     }
 }
-
-class ProgramSubjectQuery extends \yii\db\ActiveQuery
-{
-	
-	public function active($status=1)
-    {
-        $this->andWhere(['status'=>$status]);
-        return $this;
-    }
-}
-

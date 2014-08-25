@@ -139,36 +139,6 @@ class Program2Controller extends Controller
     }
 
     /**
-     * Deletes an existing Program model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $model=$this->findModel($id);
-		try {
-			if($model->delete()){
-				// DROP ALL HISTORY OF PROGRAM
-				\backend\models\ProgramHistory::deleteAll(['tb_program_id' => $model->id,]);
-				// DROP ALL PROGRAM SUBJECT
-				\backend\models\ProgramSubject::deleteAll(['tb_program_id' => $model->id,]);
-				// DROP ALL HISTORY OF PROGRAM SUBJECT
-				\backend\models\ProgramSubjectHistory::deleteAll(['tb_program_id' => $model->id,]);
-				
-				Yii::$app->session->setFlash('success', 'Data has deleted');
-			}
-			else{
-				Yii::$app->session->setFlash('warning', 'There are few errors');
-			}
-		} catch (\yii\db\IntegrityException $e) {
-			 Yii::$app->session->setFlash('error', 'Program cannot delete because it have used by others');
-		}
-		
-        return $this->redirect(['index']);
-    }
-
-    /**
      * Finds the Program model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -196,6 +166,15 @@ class Program2Controller extends Controller
 				$value=$_POST['Program'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
+				
+				// SAVE HISTORY PROGRAM
+				$model3 = \backend\models\ProgramHistory::find()
+								->where(['tb_program_id' => $model2->id,])
+								->orderBy(['revision'=>'DESC'])
+								->one();
+				$model3->$name = $value;		
+				$model3->save();
+				
 				// return JSON encoded output in the below format
 				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
 				// alternatively you can return a validation error
@@ -401,42 +380,4 @@ class Program2Controller extends Controller
         ]);	
     }
 	
-	
-	/**
-     * Updates an existing ProgramDocument model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionStatus($id, $status)
-    {
-        $model = $this->findModel($id);
-		
-		$status = ($status==1)?0:1;
-		$model->status = $status;
-		$model->save();
-		
-		$searchModel = new ProgramSearch();
-		$queryParams = Yii::$app->request->getQueryParams();
-		if($status!='all'){
-			$queryParams['ProgramSearch']=[
-				'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
-				'status'=>$status,
-			];
-		}
-		else{
-			$queryParams['ProgramSearch']=[
-				'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
-			];
-		}
-		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-		$dataProvider = $searchModel->search($queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-			'status' => $status,
-        ]);
-		
-    }
 }

@@ -18,7 +18,8 @@ class ProgramSubjectHistorySearch extends ProgramSubjectHistory
     public function rules()
     {
         return [
-            [['tb_program_subject_id', 'tb_program_id', 'revision', 'type', 'hours', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_subject_id', 'tb_program_id', 'revision', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+			[['hours'], 'number'],
             [['name', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }

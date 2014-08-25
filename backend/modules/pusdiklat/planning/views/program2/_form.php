@@ -26,19 +26,6 @@ use yii\helpers\ArrayHelper;
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
-
-	<?php
-	/*
-	$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-	echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
-		'data' => $data,
-		'options' => ['placeholder' => 'Choose Satker ...'],
-		'pluginOptions' => [
-		'allowClear' => true
-		],
-	]); 
-	*/
-	?>
 	
 	<?php
 	$data = ArrayHelper::map(
@@ -85,15 +72,17 @@ use yii\helpers\ArrayHelper;
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>
 		<div class="col-md-10">
-        <?= Html::submitButton(
-			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
-			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-			
-		<?php if(!$model->isNewRecord){ ?>
-			<?= Html::submitButton(
-				'<span class="fa fa-fw fa-save"></span> '.'Update & Save as Revision', 
-				['class' => 'btn btn-warning','name'=>'create_revision']) ?>
-		<?php } ?>
+			<div class="btn-group">
+				<?= Html::submitButton(
+					$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
+					['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+					
+				<?php if(!$model->isNewRecord){ ?>
+					<?= Html::submitButton(
+						'<span class="fa fa-fw fa-save"></span> '.'Save as Revision', 
+						['class' => 'btn btn-warning','name'=>'create_revision']) ?>
+				<?php } ?>
+			</div>
 		</div>
 	</div>
 	

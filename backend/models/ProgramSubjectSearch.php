@@ -18,7 +18,8 @@ class ProgramSubjectSearch extends ProgramSubject
     public function rules()
     {
         return [
-            [['id', 'tb_program_id', 'type', 'hours', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['id', 'tb_program_id', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+			[['hours'], 'number'],
             [['name', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }

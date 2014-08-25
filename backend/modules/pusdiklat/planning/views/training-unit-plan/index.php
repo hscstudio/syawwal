@@ -20,26 +20,39 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	<?php \yii\widgets\Pjax::begin([
 		'id'=>'pjax-gridview',
 	]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
-            [
+	
+	<?php
+	$grid_columns[] = ['class' => 'kartik\grid\SerialColumn'];
+	$grid_columns[] = [
 				'attribute' => 'name',
 				'format'=>'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'left',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'headerOptions'=>['class'=>'kv-sticky-column','style'=>'height:100px;'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data){
 					return Html::tag('span', $data->name, ['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
 				},
-			],
-            
-            
-			[
+			];
+			
+	$units = \backend\models\Unit::find()->select(['id','shortname'])->where('id>:id',[':id'=>0])->all();
+	$idx=0;
+	foreach($units as $unit){
+		$grid_columns[]=[
+			'format'=>'raw',
+			'attribute' => 'StudentCount.'.$idx++,
+			'width' => '40px',
+			//'vAlign'=>'middle',
+			//'hAlign'=>'center',
+			'headerOptions'=>['class'=>'kv-sticky-column'],
+			'header' => '<div class="rotate" style="width:30px;">'.$unit->shortname.'</div>',
+			'value' => function ($data){
+				//return $unit->shortname;
+			}
+		];
+	}
+	
+	$grid_columns[] = [
 				'attribute' => 'start',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
@@ -49,9 +62,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data) {
 					return date('d M y',strtotime($data->start));
 				}
-			],
+			];
 		
-			[
+	$grid_columns[] = [
 				'class' => 'kartik\grid\DataColumn',
 				'attribute' => 'finish',
 				'vAlign'=>'middle',
@@ -63,47 +76,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data) {
 					return date('d M y',strtotime($data->finish));
 				}
-			],
+			];
        
-            
-			[
-				'class' => 'kartik\grid\DataColumn',
-				'attribute' => 'studentCount',
-				'label'=> 'Student',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'100px',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
-			
-			[
-				'format' => 'html',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'label' => 'Rev',
-				'width'=>'80px',
-				'value' => function ($data) {
-					$countRevision = \backend\models\TrainingHistory::find()
-								->where(['tb_training_id' => $data->id,])
-								->count()-1;
-					if($countRevision>0){
-						return Html::a($countRevision.'x', ['training-history/index','tb_training	ZAAZZZ_id'=>$data->id], ['class' => 'label label-danger']);
-					}
-					else{
-						return '-';
-					}
-				}
-			],
-			
-			[
+    $grid_columns[] = [
 				'format' => 'raw',
 				'attribute' => 'status',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'80px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'headerOptions'=>['class'=>'kv-sticky-column rotate'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) use ($year){				
 					
@@ -129,13 +110,20 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					}
 					return Html::tag('span', $icon, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
 				}
-			],
-            [
+			];
+			
+    $grid_columns[] = [
 				'class' => 'kartik\grid\ActionColumn',
 				'template' => '{view}',
 				
-			],
-        ],
+			];
+	
+	?>
+	
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => $grid_columns,
 		'panel' => [
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',

@@ -231,7 +231,12 @@ class ProgramSubjectDocument2Controller extends Controller
     protected function findModel($id)
     {
         if (($model = ProgramSubjectDocument::findOne($id)) !== null) {
-            return $model;
+            if($model->programSubject->program->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
+				return $model;
+			}
+			else{
+				throw new NotFoundHttpException('The requested page does not exist.');
+			}
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }

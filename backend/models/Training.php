@@ -16,6 +16,7 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $tb_program_id
  * @property integer $tb_program_revision
  * @property integer $ref_satker_id
+ * @property string $number 
  * @property string $name
  * @property string $start
  * @property string $finish
@@ -52,7 +53,8 @@ use yii\behaviors\BlameableBehavior;
  */
 class Training extends \yii\db\ActiveRecord
 {
-    /**
+
+	/**
      * @inheritdoc
      */
     public static function tableName()
@@ -91,9 +93,10 @@ class Training extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'tb_program_revision', 'ref_satker_id', 'name'], 'required'],
+            [['tb_program_id', 'tb_program_revision', 'ref_satker_id', 'name', 'start', 'finish'], 'required'],
             [['tb_program_id', 'tb_program_revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
+			[['number'], 'string', 'max' => 30],
             [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255]
         ];
     }
@@ -105,9 +108,10 @@ class Training extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tb_program_id' => 'Tb Program ID',
+            'tb_program_id' => 'Program',
             'tb_program_revision' => 'Tb Program Revision',
             'ref_satker_id' => 'Ref Satker ID',
+			'number' => 'Number',
             'name' => 'Name',
             'start' => 'Start',
             'finish' => 'Finish',
@@ -196,9 +200,9 @@ class TrainingQuery extends \yii\db\ActiveQuery
         return $this;
     }
 	
-	public function active($status=1)
+	public function active($status='2',$compare='<>')
     {
-        $this->andWhere(['status'=>$status]);
+        $this->andWhere('status'.$compare.$status);
         return $this;
     }
 }

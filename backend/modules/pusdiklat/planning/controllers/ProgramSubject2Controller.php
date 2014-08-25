@@ -2,7 +2,7 @@
 
 namespace backend\modules\pusdiklat\planning\controllers;
 
-use Yii;
+use Yii.
 use backend\models\ProgramSubject;
 use backend\models\ProgramSubjectSearch;
 use yii\web\Controller;
@@ -207,7 +207,12 @@ class ProgramSubject2Controller extends Controller
     protected function findModel($id)
     {
         if (($model = ProgramSubject::findOne($id)) !== null) {
-            return $model;
+            if($model->program->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
+				return $model;
+			}
+			else{
+				throw new NotFoundHttpException('The requested page does not exist.');
+			}
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }

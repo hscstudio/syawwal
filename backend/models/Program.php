@@ -77,8 +77,9 @@ class Program extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['ref_satker_id', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['name'], 'required'],
+			[['hours'], 'number'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['number'], 'string', 'max' => 15],
             [['name', 'note', 'validationNote'], 'string', 'max' => 255]

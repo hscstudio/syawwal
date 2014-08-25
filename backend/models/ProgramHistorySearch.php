@@ -18,7 +18,8 @@ class ProgramHistorySearch extends ProgramHistory
     public function rules()
     {
         return [
-            [['tb_program_id', 'revision', 'ref_satker_id', 'hours', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_id', 'revision', 'ref_satker_id', 'days', 'test', 'type', 'validationStatus', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+			[['hours'], 'number'],
             [['number', 'name', 'note', 'validationNote', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }

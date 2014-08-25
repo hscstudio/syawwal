@@ -113,6 +113,7 @@ class ProgramController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		
         $currentFiles=[];
         
         if ($model->load(Yii::$app->request->post())) {			
@@ -180,6 +181,7 @@ class ProgramController extends Controller
     public function actionDelete($id)
     {
         $model=$this->findModel($id);
+		
 		try {
 			if($model->delete()){
 				// DROP ALL HISTORY OF PROGRAM
@@ -229,6 +231,16 @@ class ProgramController extends Controller
 				$value=$_POST['Program'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
+				
+				// SAVE HISTORY PROGRAM
+				$model3 = \backend\models\ProgramHistory::find()
+								->where(['tb_program_id' => $model2->id,])
+								->orderBy(['revision'=>'DESC'])
+								->one();
+				$model3->$name = $value;		
+				$model3->save();
+				
+				
 				// return JSON encoded output in the below format
 				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
 				// alternatively you can return a validation error
@@ -503,6 +515,15 @@ class ProgramController extends Controller
 						try{
 							if($model2->save()){
 								$inserted++;
+								// SAVE HISTORY OF PROGRAM
+								$model3 = new \backend\models\ProgramHistory();
+								$model3->attributes = array_merge(
+								  $model2->attributes,[
+									'tb_program_id'=>$model2->id,
+									'revision'=>'0',					
+								  ]
+								);				
+								$model3->save();
 							}
 							else{
 								foreach ($model2->errors as $error){
