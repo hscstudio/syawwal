@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 22, 2014 at 09:43 AM
+-- Generation Time: Aug 25, 2014 at 11:14 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.9
 
@@ -931,7 +931,7 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `ref_satker_id` int(3) NOT NULL DEFAULT '0',
   `number` varchar(15) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `hours` int(5) DEFAULT NULL,
+  `hours` decimal(5,2) DEFAULT NULL,
   `days` int(3) DEFAULT NULL,
   `test` tinyint(1) DEFAULT '0',
   `type` tinyint(1) DEFAULT NULL COMMENT 'tipe kelulusan (lulus/mengikuti)',
@@ -954,8 +954,8 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
 --
 
 INSERT INTO `tb_program` (`id`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(3, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:08:27', 1, NULL, NULL),
-(4, 3, '2.2.1.0', 'PRANATA KOMPUTER AHLI', NULL, NULL, 0, 0, '', 0, '', 1, '2014-08-20 09:42:32', 1, '2014-08-21 13:46:36', 1, NULL, NULL);
+(3, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', '9.99', NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:08:27', 1, NULL, NULL),
+(4, 3, '2.2.1.0', 'PRANATA KOMPUTER AHLI EDITABLE', '2.50', NULL, 0, 0, '', 0, '', 1, '2014-08-20 09:42:32', 1, '2014-08-24 08:21:11', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1003,7 +1003,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_history` (
   `ref_satker_id` int(3) NOT NULL DEFAULT '0',
   `number` varchar(15) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `hours` int(5) DEFAULT NULL,
+  `hours` decimal(5,2) DEFAULT NULL,
   `days` int(3) DEFAULT NULL,
   `test` tinyint(1) DEFAULT '0',
   `type` int(1) DEFAULT NULL,
@@ -1026,9 +1026,9 @@ CREATE TABLE IF NOT EXISTS `tb_program_history` (
 --
 
 INSERT INTO `tb_program_history` (`tb_program_id`, `revision`, `ref_satker_id`, `number`, `name`, `hours`, `days`, `test`, `type`, `note`, `validationStatus`, `validationNote`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(3, 0, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:07:56', 1, NULL, NULL),
-(3, 1, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', 100, NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:08:27', 1, '2014-08-15 14:08:27', 1, NULL, NULL),
-(4, 0, 3, '2.2.1.0', 'PRANATA KOMPUTER AHLI', NULL, NULL, 0, 0, '', 0, '', 1, '2014-08-20 09:42:32', 1, '2014-08-21 13:46:36', 1, NULL, NULL),
+(3, 0, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI', '100.00', NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:05:05', 1, '2014-08-15 14:07:56', 1, NULL, NULL),
+(3, 1, 1, '2.2.1.0', 'DIKLAT PRANATA KOMPUTER AHLI XX', '100.00', NULL, 0, 0, '', 0, '', 0, '2014-08-15 14:08:27', 1, '2014-08-15 14:08:27', 1, NULL, NULL),
+(4, 0, 3, '2.2.1.0', 'PRANATA KOMPUTER AHLI EDITABLE', '2.50', NULL, 0, 0, '', 0, '', 1, '2014-08-20 09:42:32', 1, '2014-08-24 08:21:11', 1, NULL, NULL),
 (4, 1, 3, '2.2.1.0', 'PRANATA KOMPUTER AHLI', NULL, NULL, 0, 0, '', 0, '', 1, '2014-08-20 16:00:26', 1, '2014-08-20 16:00:26', 1, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -1042,7 +1042,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
   `tb_program_id` int(11) NOT NULL,
   `type` int(1) NOT NULL DEFAULT '1' COMMENT '1: MP;2: CERAMAH;3:OJT;4:MFD;',
   `name` varchar(255) NOT NULL,
-  `hours` int(3) NOT NULL COMMENT 'KAP, GBPP, SILABI',
+  `hours` decimal(3,2) NOT NULL COMMENT 'KAP, GBPP, SILABI',
   `sort` int(3) NOT NULL,
   `test` tinyint(1) NOT NULL DEFAULT '0',
   `status` int(1) NOT NULL DEFAULT '1',
@@ -1061,7 +1061,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
 --
 
 INSERT INTO `tb_program_subject` (`id`, `tb_program_id`, `type`, `name`, `hours`, `sort`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 4, 0, 'PHP', 10, 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-22 07:46:41', 1, NULL, NULL);
+(1, 4, 0, 'PHP', '9.99', 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-22 07:46:41', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1109,7 +1109,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject_history` (
   `revision` int(11) NOT NULL,
   `type` int(1) NOT NULL DEFAULT '1' COMMENT '1: MP;2: CERAMAH;3:OJT;4:MFD;',
   `name` varchar(255) NOT NULL,
-  `hours` int(3) NOT NULL COMMENT 'KAP, GBPP, SILABI',
+  `hours` decimal(3,2) NOT NULL COMMENT 'KAP, GBPP, SILABI',
   `sort` int(3) NOT NULL,
   `test` tinyint(1) NOT NULL DEFAULT '0',
   `status` int(1) NOT NULL DEFAULT '1',
@@ -1128,8 +1128,8 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject_history` (
 --
 
 INSERT INTO `tb_program_subject_history` (`tb_program_subject_id`, `tb_program_id`, `revision`, `type`, `name`, `hours`, `sort`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 4, 0, 0, 'PHP', 10, 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-20 13:20:57', 1, NULL, NULL),
-(1, 4, 1, 0, 'PHP', 10, 0, 0, 1, '2014-08-20 16:00:27', 1, '2014-08-20 16:00:27', 1, NULL, NULL);
+(1, 4, 0, 0, 'PHP', '9.99', 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-20 13:20:57', 1, NULL, NULL),
+(1, 4, 1, 0, 'PHP', '9.99', 0, 0, 1, '2014-08-20 16:00:27', 1, '2014-08-20 16:00:27', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1300,9 +1300,10 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   `tb_program_id` int(11) NOT NULL,
   `tb_program_revision` int(11) NOT NULL,
   `ref_satker_id` int(3) NOT NULL,
+  `number` varchar(30) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `start` date DEFAULT NULL,
-  `finish` date DEFAULT NULL,
+  `start` date NOT NULL,
+  `finish` date NOT NULL,
   `note` varchar(255) DEFAULT NULL,
   `studentCount` int(5) DEFAULT NULL,
   `classCount` int(3) DEFAULT NULL,
@@ -1329,15 +1330,17 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   PRIMARY KEY (`id`),
   KEY `fk_tb_training_tb_program1` (`tb_program_id`),
   KEY `fk_tb_training_ref_satker1` (`ref_satker_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `tb_training`
 --
 
-INSERT INTO `tb_training` (`id`, `tb_program_id`, `tb_program_revision`, `ref_satker_id`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
-(1, 4, 1, 3, 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-22', '2014-08-15', 'Oke dah', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-22 11:55:15', 1, '2014-08-22 14:23:58', 1, NULL, NULL, 0, '', NULL, NULL),
-(2, 4, 1, 3, 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2013-08-06', '2013-08-14', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 1, '2014-08-22 14:17:16', 1, '2014-08-22 14:23:14', 1, NULL, NULL, 0, '', NULL, NULL);
+INSERT INTO `tb_training` (`id`, `tb_program_id`, `tb_program_revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
+(7, 4, 1, 3, '2014-03-00-2.2.1.0.1', 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-04', '2014-08-29', 'Halo', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 0, '2014-08-25 10:59:34', 1, '2014-08-25 11:44:05', 1, NULL, NULL, 0, '', NULL, NULL),
+(8, 4, 1, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 2, '2014-08-25 11:37:50', 1, '2014-08-25 11:39:44', 1, NULL, NULL, 0, '', NULL, NULL),
+(9, 4, 1, 3, '2014-03-00-2.2.1.0.3', 'PRANATA KOMPUTER AHLI AKT I', '2014-08-27', '2014-08-28', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 1, '2014-08-25 11:40:53', 1, '2014-08-25 11:40:53', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 4, 1, 3, '2014-03-00-2.2.1.0.4', 'KOM', '2014-08-27', '2014-08-27', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 3, '2014-08-25 11:41:37', 1, '2014-08-25 11:41:37', 1, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1368,27 +1371,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_certificate` (
   KEY `fk_tb_training_certificate_ref_unit1` (`ref_unit_id`),
   KEY `fk_tb_training_certificate_ref_graduate1` (`ref_graduate_id`),
   KEY `fk_tb_training_certificate_ref_rank_class1` (`ref_rank_class_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_training_class`
---
-
-CREATE TABLE IF NOT EXISTS `tb_training_class` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tb_training` int(11) NOT NULL,
-  `class` int(3) NOT NULL DEFAULT '0' COMMENT '0-25',
-  `status` int(1) NOT NULL DEFAULT '1',
-  `created` datetime DEFAULT NULL,
-  `createdBy` int(11) DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` int(11) DEFAULT NULL,
-  `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1602,9 +1584,10 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
   `tb_program_revision` int(11) NOT NULL,
   `revision` int(11) NOT NULL,
   `ref_satker_id` int(3) NOT NULL,
+  `number` varchar(30) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
-  `start` date DEFAULT NULL,
-  `finish` date DEFAULT NULL,
+  `start` date NOT NULL,
+  `finish` date NOT NULL,
   `note` varchar(255) DEFAULT NULL,
   `studentCount` int(5) DEFAULT NULL,
   `classCount` int(3) DEFAULT NULL,
@@ -1617,17 +1600,17 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
   `reguler` tinyint(1) DEFAULT '1' COMMENT '1=REGULER;0:PARALEL',
   `stakeholder` varchar(255) DEFAULT 'BPPK' COMMENT 'INSTANSI KERJASAMA DIKLAT',
   `location` varchar(255) DEFAULT '-',
-  `status` int(1) NOT NULL DEFAULT '1',
+  `status` int(1) DEFAULT '1',
   `created` datetime DEFAULT NULL,
   `createdBy` int(11) DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL,
-  `approvedStatus` tinyint(1) NOT NULL,
-  `approvedStatusNote` varchar(255) NOT NULL,
-  `approvedStatusDate` datetime NOT NULL,
-  `approvedStatusBy` int(11) NOT NULL,
+  `approvedStatus` tinyint(1) DEFAULT NULL,
+  `approvedStatusNote` varchar(255) DEFAULT NULL,
+  `approvedStatusDate` datetime DEFAULT NULL,
+  `approvedStatusBy` int(11) DEFAULT NULL,
   KEY `fk_tb_training_tb_program1` (`tb_program_id`),
   KEY `fk_tb_training_ref_satker1` (`ref_satker_id`),
   KEY `tb_training_id` (`tb_training_id`)
@@ -1637,8 +1620,13 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
 -- Dumping data for table `tb_training_history`
 --
 
-INSERT INTO `tb_training_history` (`tb_training_id`, `tb_program_id`, `tb_program_revision`, `revision`, `ref_satker_id`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
-(0, 1, 0, 0, 5, 'Diklat Intelejen Tingkat Dasar Angkatan I', '2014-04-21', '2014-04-25', '', NULL, NULL, '', '', NULL, NULL, '', 1, 1, 'BPPK', '-', 1, '2014-04-18 14:33:44', 1, NULL, NULL, NULL, NULL, 0, '', '0000-00-00 00:00:00', 0);
+INSERT INTO `tb_training_history` (`tb_training_id`, `tb_program_id`, `tb_program_revision`, `revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
+(7, 4, 1, 0, 3, '2014-03-00-2.2.1.0.1', 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-04', '2014-08-29', 'Halo', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, '', NULL, NULL),
+(8, 4, 1, 0, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, '', NULL, NULL),
+(8, 4, 1, 1, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, '', NULL, NULL),
+(9, 4, 1, 0, 3, '2014-03-00-2.2.1.0.3', 'PRANATA KOMPUTER AHLI AKT I', '2014-08-27', '2014-08-28', '', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, NULL, NULL, NULL),
+(10, 4, 1, 0, 3, '2014-03-00-2.2.1.0.4', 'KOM', '2014-08-27', '2014-08-27', '', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, NULL, NULL, NULL),
+(7, 4, 1, 1, 3, '2014-03-00-2.2.1.0.1', 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-04', '2014-08-29', 'Halo', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 0, '2014-08-25 11:44:05', 1, '2014-08-25 11:44:05', 1, NULL, NULL, 0, '', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1676,7 +1664,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
   `activity` varchar(255) DEFAULT NULL COMMENT 'Honor untuk PIC/JP',
   `pic` varchar(100) DEFAULT NULL COMMENT '0-25',
   `date` date DEFAULT NULL,
-  `hours` int(3) DEFAULT NULL COMMENT '1JP = 45menit',
+  `hours` decimal(3,2) DEFAULT NULL COMMENT '1JP = 45menit',
   `startTime` time DEFAULT NULL,
   `finishTime` time DEFAULT NULL,
   `status` int(1) NOT NULL DEFAULT '1',
@@ -1742,7 +1730,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_student_attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_schedule_id` int(11) NOT NULL,
   `tb_student_id` int(11) NOT NULL,
-  `hours` int(3) DEFAULT NULL,
+  `hours` decimal(3,2) DEFAULT NULL,
   `reason` varchar(255) DEFAULT NULL,
   `status` int(1) DEFAULT '1',
   `created` datetime DEFAULT NULL,
@@ -1754,31 +1742,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_student_attendance` (
   PRIMARY KEY (`id`),
   KEY `fk_tb_training_student_attendance_tb_training_schedule1` (`tb_training_schedule_id`),
   KEY `fk_tb_training_student_attendance_tb_student1` (`tb_student_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_training_subject`
---
-
-CREATE TABLE IF NOT EXISTS `tb_training_subject` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tb_training_id` int(11) NOT NULL,
-  `type` int(1) NOT NULL DEFAULT '1' COMMENT '1: MP;2: CERAMAH;3:OJT;4:MFD;',
-  `name` varchar(255) NOT NULL,
-  `hours` int(3) NOT NULL COMMENT 'KAP, GBPP, SILABI',
-  `order` int(3) NOT NULL,
-  `test` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Diujikan nggak?',
-  `status` int(1) NOT NULL DEFAULT '1',
-  `created` datetime DEFAULT NULL,
-  `createdBy` int(11) DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` int(11) DEFAULT NULL,
-  `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_tb_training_subject_tb_training1` (`tb_training_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -1884,11 +1847,9 @@ CREATE TABLE IF NOT EXISTS `tb_training_trainer_evaluation` (
 --
 
 CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `tb_training_id` int(11) NOT NULL,
   `ref_unit_id` int(3) NOT NULL,
   `spread` varchar(500) NOT NULL COMMENT 'KAP, GBPP, SILABI',
-  `total` int(11) NOT NULL,
   `status` int(1) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `createdBy` int(11) DEFAULT NULL,
@@ -1896,10 +1857,9 @@ CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
   KEY `fk_tb_training_student_spread_plan_tb_training1` (`tb_training_id`),
   KEY `fk_tb_training_student_spread_plan_ref_unit1` (`ref_unit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1938,7 +1898,7 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 --
 
 INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmation_token`, `confirmation_sent_at`, `confirmed_at`, `unconfirmed_email`, `recovery_token`, `recovery_sent_at`, `blocked_at`, `role`, `registered_from`, `logged_in_from`, `logged_in_at`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1408073996, 1405728264, 1408073996);
+(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1408899176, 1405728264, 1408899176);
 
 --
 -- Constraints for dumped tables
@@ -2081,8 +2041,8 @@ ALTER TABLE `tb_training_certificate`
 -- Constraints for table `tb_training_class_room`
 --
 ALTER TABLE `tb_training_class_room`
-  ADD CONSTRAINT `tb_training_class_room_ibfk_2` FOREIGN KEY (`tb_room_id`) REFERENCES `tb_room` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `tb_training_class_room_ibfk_1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `tb_training_class_room_ibfk_1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `tb_training_class_room_ibfk_2` FOREIGN KEY (`tb_room_id`) REFERENCES `tb_room` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_class_student`
@@ -2095,8 +2055,7 @@ ALTER TABLE `tb_training_class_student`
 -- Constraints for table `tb_training_class_subject`
 --
 ALTER TABLE `tb_training_class_subject`
-  ADD CONSTRAINT `fk_tb_training_assignment_tb_trainer1` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_tb_training_assignment_tb_training_subject1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_tb_training_assignment_tb_trainer1` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_trainer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_document`
@@ -2138,7 +2097,7 @@ ALTER TABLE `tb_training_student_attendance`
 -- Constraints for table `tb_training_subject_document`
 --
 ALTER TABLE `tb_training_subject_document`
-  ADD CONSTRAINT `fk_tb_training_subject_document_tb_training_subject1` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_training_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `tb_training_subject_document_ibfk_1` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_program_subject` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_subject_trainer_recommendation`
@@ -2164,8 +2123,8 @@ ALTER TABLE `tb_training_trainer_evaluation`
 -- Constraints for table `tb_training_unit_plan`
 --
 ALTER TABLE `tb_training_unit_plan`
-  ADD CONSTRAINT `fk_tb_training_student_spread_plan_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_tb_training_student_spread_plan_tb_training1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `tb_training_unit_plan_ibfk_1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tb_training_student_spread_plan_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

@@ -8,14 +8,13 @@ use backend\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use backend\models\StaUnit;
 /**
  * EmployeeController implements the CRUD actions for Employee model.
  */
 class EmployeeController extends Controller
 {
-		public $layout = '@hscstudio/heart/views/layouts/column2';
-	 
+		public $layout = '@hscstudio/heart/views/layouts/column2';	 
  	
 	public function behaviors()
     {
@@ -64,6 +63,7 @@ class EmployeeController extends Controller
     public function actionCreate()
     {
         $model = new Employee();
+		$model->ref_sta_unit_id = ($model->eselon4 > 1)? $model->eselon4 : $model->eselon3;
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -89,14 +89,14 @@ class EmployeeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		//echo $model->eselon4;
         $currentFiles=[];
                 $currentFiles[0]=$model->photo;
                             $currentFiles[1]=$model->document1;
                             $currentFiles[2]=$model->document2;
                     
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-								
+            $files=[];				
 				$files[0] = \yii\web\UploadedFile::getInstance($model, 'photo');
 				$model->photo=isset($currentFiles[0])?$currentFiles[0]:'';
 				if(!empty($files[0])){
@@ -149,8 +149,15 @@ class EmployeeController extends Controller
 					@chmod($path, 0755);
 					$paths[2] = $path . $model->document2;
 					if(isset($currentFiles[2])) @unlink($path . $currentFiles[2]);
-				}
-						
+				} 
+				
+			if(!empty($model->eselon4)){
+				$model->ref_sta_unit_id = $model->eselon4;
+			}
+			else{
+				$model->ref_sta_unit_id = $model->eselon3;
+			}
+			
             if($model->save()){
 				$idx=0;
                 foreach($files as $file){
@@ -572,5 +579,44 @@ class EmployeeController extends Controller
 		return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);					
+	}
+	
+	public function actionSubcat() {
+		if ( Yii::$app->request->post('ref_satker_id') == 0)
+		{
+	    	$StaUnit = StaUnit::find()->all();
+		}
+		else
+		{
+	    	$StaUnit = StaUnit::find()
+	        	->select(['id','induk','name'])
+	        	->where(['induk' => Yii::$app->request->post('ref_satker_id') ])
+	        	->all();
+		}
+			echo '<option>-- No Satker 2 --</option>';
+        foreach($StaUnit as $p) 
+        {
+            echo "<option value='".$p->id."'>".$p->name."</option>";
+        }
+	}
+	
+	public function actionProd() {
+		if ( Yii::$app->request->post('eselon3') == 0)
+		{
+	    	$StaUnit2 = StaUnit::find()->all();
+		}
+		else
+		{
+	    	$StaUnit2 = StaUnit::find()
+	        	->select(['id','induk','name','eselon'])
+	        	->where(['induk' => Yii::$app->request->post('eselon3') ])
+	        	->all();
+		}
+			echo '<option>-- No Satker 2 --</option>';
+			foreach($StaUnit2 as $p2) 
+			{
+				echo "<option value='".$p2->id."'>".$p2->name."</option>";
+			}
+		
 	}
 }

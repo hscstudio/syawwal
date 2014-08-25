@@ -22,9 +22,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Trainings # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
-						['class'=>'btn btn-xs btn-primary',
-						 'title'=>'Back to Index',
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back to Training',['index', 'status' => $model->status],
+						['class'=>'btn btn-xs btn-primary'
 						]).' '.
 					 Html::a('<i class="fa fa-fw fa-trash-o"></i>',['#'],
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',

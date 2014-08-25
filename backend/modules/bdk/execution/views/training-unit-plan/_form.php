@@ -6,10 +6,10 @@ use kartik\widgets\Select2;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Satker */
+/* @var $model backend\models\TrainingUnitPlan */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="satker-form">
+<div class="training-unit-plan-form">
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
@@ -19,19 +19,41 @@ use yii\helpers\ArrayHelper;
 						]) ?>
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
-		Satker	</div>
+		TrainingUnitPlan	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
-    
-     <?= $form->field($model, 'id')->textInput(['maxlength' => 255]) ?>
 	
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+    <?= '' ?>
 
-    <?= $form->field($model, 'letterNumber')->textInput(['maxlength' => 25]) ?>
+			<?php
+			$data = ArrayHelper::map(\backend\models\Training::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'tb_training_id')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => ['placeholder' => 'Choose Training ...'],
+				'pluginOptions' => [
+				'allowClear' => true
+				],
+			]); ?>
+
+    <?= '' ?>
+
+			<?php
+			$data = ArrayHelper::map(\backend\models\Unit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'ref_unit_id')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => ['placeholder' => 'Choose Unit ...'],
+				'pluginOptions' => [
+				'allowClear' => true
+				],
+			]); ?>
+
+    <?= $form->field($model, 'spread')->textInput(['maxlength' => 500]) ?>
+
+    <?= $form->field($model, 'total')->textInput() ?>
 
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
@@ -51,22 +73,6 @@ use yii\helpers\ArrayHelper;
     <?= ""//modified ?>
 
     <?= ""//deleted ?>
-
-    <?= $form->field($model, 'website')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'shortname')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'city')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'fax')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'address')->textInput(['maxlength' => 500]) ?>
-
-    <?= $form->field($model, 'email', [
-					 'addon' => ['prepend' => ['content'=>'@']]
-				 ]); ?>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>
