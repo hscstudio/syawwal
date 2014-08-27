@@ -123,11 +123,11 @@ class Training extends \yii\db\ActiveRecord
             'costPlan' => 'Cost Plan',
             'costRealisation' => 'Cost Realisation',
             'sourceCost' => 'Source Cost',
-            'hostel' => 'Hostel',
+            'hostel' => 'Stay in?',
             'reguler' => 'Reguler',
             'stakeholder' => 'Stakeholder',
             'location' => 'Location',
-            'status' => 'Status',
+            'status' => 'Published',
             'created' => 'Created',
             'createdBy' => 'Created By',
             'modified' => 'Modified',
@@ -180,7 +180,7 @@ class Training extends \yii\db\ActiveRecord
      */
     public function getTrainingUnitPlans()
     {
-        return $this->hasMany(TrainingUnitPlan::className(), ['tb_training_id' => 'id']);
+        return $this->hasOne(TrainingUnitPlan::className(), ['tb_training_id' => 'id']);
     }
 	/**
      * @inheritdoc

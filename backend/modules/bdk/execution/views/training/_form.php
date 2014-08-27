@@ -30,7 +30,7 @@ use kartik\widgets\DepDrop;
 		    		{
 		    			echo Html::submitButton('<span class="fa fa-fw fa-save"></span> '.'Update', ['class' => 'btn btn-xs btn-primary']);
 		    			echo ' ';
-		    			echo Html::submitButton('<span class="fa fa-fw fa-clipboard"></span> '.'Save as Revision', ['class' => 'btn btn-xs btn-warning',
+		    			echo Html::submitButton('<span class="fa fa-fw fa-clipboard"></span> '.'Save as Revision', ['class' => 'btn btn-xs btn-danger',
 		    				'name' => 'create_revision']);
 		    		}
 				?>
