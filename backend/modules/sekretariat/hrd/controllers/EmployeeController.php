@@ -63,16 +63,33 @@ class EmployeeController extends Controller
     public function actionCreate()
     {
         $model = new Employee();
-		$model->ref_sta_unit_id = ($model->eselon4 > 1)? $model->eselon4 : $model->eselon3;
-
+		
         if ($model->load(Yii::$app->request->post())){
-			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
+			
+			$model2 = new \backend\models\User(['scenario' => 'create']);					
+			 $model2->username = $model->nip;
+			 $model2->password = $model->nip;	
+			 $model2->role = '';
+			 $model2->save();
+			
+			// update employee			
+			$model->user_id = \backend\models\User::find()->max('id');
+			
+			if(!empty($model->ref_sub_satker_2)){
+				$model->ref_sta_unit_id = $model->ref_sub_satker_2;
+			}
+			else{
+				$model->ref_sta_unit_id = $model->ref_sub_satker;
+			}
+			$max_id = $model::find()->max('id');
+			
+			if($this->actionUpdate($max_id)) {
+				 Yii::$app->session->setFlash('success', 'Data saved');										 
 			}
 			else{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $max_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -89,7 +106,7 @@ class EmployeeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-		//echo $model->eselon4;
+		
         $currentFiles=[];
                 $currentFiles[0]=$model->photo;
                             $currentFiles[1]=$model->document1;
@@ -151,11 +168,11 @@ class EmployeeController extends Controller
 					if(isset($currentFiles[2])) @unlink($path . $currentFiles[2]);
 				} 
 				
-			if(!empty($model->eselon4)){
-				$model->ref_sta_unit_id = $model->eselon4;
+			if(!empty($model->ref_sub_satker_2)){
+				$model->ref_sta_unit_id = $model->ref_sub_satker_2;
 			}
 			else{
-				$model->ref_sta_unit_id = $model->eselon3;
+				$model->ref_sta_unit_id = $model->ref_sub_satker;
 			}
 			
             if($model->save()){
@@ -582,9 +599,9 @@ class EmployeeController extends Controller
 	}
 	
 	public function actionSubcat() {
-		if ( Yii::$app->request->post('ref_satker_id') == 0)
+		if ( empty(Yii::$app->request->post('ref_satker_id')) || Yii::$app->request->post('ref_satker_id') == 0)
 		{
-	    	$StaUnit = StaUnit::find()->all();
+	    	$StaUnit = StaUnit::find()->select('id,name')->all();
 		}
 		else
 		{
@@ -601,7 +618,7 @@ class EmployeeController extends Controller
 	}
 	
 	public function actionProd() {
-		if ( Yii::$app->request->post('eselon3') == 0)
+		if ( Yii::$app->request->post('ref_sub_satker') == 0)
 		{
 	    	$StaUnit2 = StaUnit::find()->all();
 		}
@@ -609,7 +626,7 @@ class EmployeeController extends Controller
 		{
 	    	$StaUnit2 = StaUnit::find()
 	        	->select(['id','induk','name','eselon'])
-	        	->where(['induk' => Yii::$app->request->post('eselon3') ])
+	        	->where(['induk' => Yii::$app->request->post('ref_sub_satker') ])
 	        	->all();
 		}
 			echo '<option>-- No Satker 2 --</option>';

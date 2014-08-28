@@ -26,7 +26,37 @@ use kartik\widgets\DepDrop;
 		'type' => ActiveForm::TYPE_VERTICAL,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
-	<?= $form->errorSummary($model) ?>
+	<?= $form->errorSummary($model) ?>   
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          Data Account
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
+      <div class="row">
+          <div class="col-md-4">
+          <?= $form->field($model, 'frontTitle')->textInput(['maxlength' => 20]) ?> 
+          </div>
+          <div class="col-md-4">
+          <?= $form->field($model, 'name')->textInput(['maxlength' => 50]) ?>
+          </div>
+          <div class="col-md-4">
+          <?= $form->field($model, 'backTitle')->textInput(['maxlength' => 20]) ?>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+          <?= $form->field($model, 'nip')->textInput(['maxlength' => 18]) ?>
+          </div>
+          <div class="col-md-6">
+          <?= $form->field($model, 'nickName')->textInput(['maxlength' => 50]) ?>
+          </div>
+        </div>
 	<div class="row">
       <div class="col-md-6">
       <?= '' ?>
@@ -68,7 +98,7 @@ use kartik\widgets\DepDrop;
 				    	'onchange' => '	$.post("'.Yii::$app->urlManager->createUrl(['sekretariat-hrd/employee/subcat']).'", 
 				    					{ ref_satker_id: $(this).val() })
 				    					.done(function( data ) {
-				       						$( "select#eselon3" ).html( data );
+				       						$( "select#ref_sub_satker" ).html( data );
 				        				})'
 					],
 				    'pluginOptions' => [
@@ -96,16 +126,16 @@ use kartik\widgets\DepDrop;
        <?= '' ?>
 
 			<?php
-			$data = [];//ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'eselon3')->widget(Select2::classname(), [
+			$data = ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','induk','name'])->where(['induk' =>$model->ref_satker_id])->all(), 'id', 'name');
+			echo $form->field($model, 'ref_sub_satker')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => [
-						'id' => 'eselon3',
+						'id' => 'ref_sub_satker',
 						'placeholder' => 'Choose Sta Unit ...',
 						'onchange' => '	$.post("'.Yii::$app->urlManager->createUrl(['sekretariat-hrd/employee/prod']).'", 
-				    					{ eselon3: $(this).val() })
+				    					{ ref_sub_satker: $(this).val() })
 				    					.done(function( data ) {
-				       						$( "select#eselon4" ).html( data );
+				       						$( "select#ref_sub_satker_2" ).html( data );
 				        				})'
 					],
 				'pluginOptions' => [
@@ -133,11 +163,11 @@ use kartik\widgets\DepDrop;
        <?= '' ?>
     
     		<?php
-			$data = [];//ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'eselon4')->widget(Select2::classname(), [
+			$data = ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','induk','name'])->where(['id' =>$model->ref_sta_unit_id])->all(), 'id', 'name');
+			echo $form->field($model, 'ref_sub_satker_2')->widget(Select2::classname(), [
 				'data' => $data,
 				'options' => [
-						'id' => 'eselon4',
+						'id' => 'ref_sub_satker_2',
 						'placeholder' => 'Choose Sta Unit 2...',
 					],
 				'pluginOptions' => [
@@ -147,93 +177,96 @@ use kartik\widgets\DepDrop;
 			?>
       </div>
       <div class="col-md-6">
-       <?= $form->field($model, 'gender')->widget(\kartik\widgets\SwitchInput::classname(), [
+       <?= $form->field($model, 'education')->textInput(['maxlength' => 255]) ?>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+      <?= $form->field($model, 'position')->textInput(['maxlength' => 255]) ?>
+      </div>
+      <div class="col-md-6">
+      <?= $form->field($model, 'blood')->textInput(['maxlength' => 10]) ?>
+      </div>
+    </div> 
+    <div class="row">
+      <div class="col-md-4">
+      <?= $form->field($model, 'gender')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'Male',
 						'offText' => 'Female',
 					]
-				]) ?>
+				]) ?>     
       </div>
-    </div>   
-    <div class="row">
-      <div class="col-md-6">
-      <?= $form->field($model, 'name')->textInput(['maxlength' => 50]) ?>
-      </div>
-      <div class="col-md-6">
-      <?= $form->field($model, 'nip')->textInput(['maxlength' => 18]) ?>
-      </div>
-    </div>  
-    <div class="row">
-      <div class="col-md-6">
-      
-      </div>
-      <div class="col-md-6">
-      
-      </div>
-    </div>  
-    <div class="row">
-      <div class="col-md-6">
-      
-      </div>
-      <div class="col-md-6">
-      
-      </div>
-    </div>      
-    <?= $form->field($model, 'married')->widget(\kartik\widgets\SwitchInput::classname(), [
+      <div class="col-md-4">
+      <?= $form->field($model, 'married')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
 					]
 				]) ?>
-
-    <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
+      </div>
+      <div class="col-md-4">
+      <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
 					]
 				]) ?>
-
-    <?= ""//createdBy ?>
-
-    <?= ""//modifiedBy ?>
-
-    <?= ""//deletedBy ?>
-
-    <?= $form->field($model, 'user_id')->textInput() ?>
-
-    <?= $form->field($model, 'birthDay')->widget(\kartik\datecontrol\DateControl::classname(), [
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+      <?= $form->field($model, 'born')->textInput(['maxlength' => 50]) ?>
+      </div>
+      <div class="col-md-6">
+      <?= $form->field($model, 'birthDay')->widget(\kartik\datecontrol\DateControl::classname(), [
 					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
 				]); ?>
-
-    <?= ""//created ?>
-
-    <?= ""//modified ?>
-
-    <?= ""//deleted ?>
-
-    <?= $form->field($model, 'bio')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'nickName')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'born')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'officePhone')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'officeFax')->textInput(['maxlength' => 50]) ?>
-
-    <?= $form->field($model, 'frontTitle')->textInput(['maxlength' => 20]) ?>
-
-    <?= $form->field($model, 'backTitle')->textInput(['maxlength' => 20]) ?>
-
-    <?= $form->field($model, 'email', [
+      </div>
+    </div>  
+	<div class="row">
+      <div class="col-md-4">
+      <?= $form->field($model, 'phone')->textInput(['maxlength' => 50]) ?>
+      </div>
+      <div class="col-md-4">      
+      <?= $form->field($model, 'officePhone')->textInput(['maxlength' => 50]) ?>    
+      </div>
+      <div class="col-md-4">
+      <?= $form->field($model, 'officeFax')->textInput(['maxlength' => 50]) ?>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+      <?= $form->field($model, 'email', [
 					 'addon' => ['prepend' => ['content'=>'@']]
 				 ]); ?>
-
-    <?= $form->field($model, 'officeEmail')->textInput(['maxlength' => 100]) ?>
-
-    <?= $form->field($model, 'address')->textInput(['maxlength' => 255]) ?>
+      </div>
+      <div class="col-md-6">
+      <?= $form->field($model, 'officeEmail')->textInput(['maxlength' => 100]) ?>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+      <?= $form->field($model, 'address')->textInput(['maxlength' => 255]) ?>
+      </div>
+      <div class="col-md-6">
+      <?= $form->field($model, 'officeAddress')->textInput(['maxlength' => 255]) ?>
+      </div>
+    </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          Document
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
+        <?= $form->field($model, 'bio')->textarea(['rows' => 6]) ?>    
 
     <?= $form->field($model, 'photo')->widget(\kartik\widgets\FileInput::classname(), [
 					'pluginOptions' => [
@@ -241,12 +274,6 @@ use kartik\widgets\DepDrop;
 						'showUpload' => false,
 						]
 					]); ?>
-
-    <?= $form->field($model, 'position')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'education')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'officeAddress')->textInput(['maxlength' => 255]) ?>
 
     <?= $form->field($model, 'document1')->widget(\kartik\widgets\FileInput::classname(), [
 					'pluginOptions' => [
@@ -261,18 +288,32 @@ use kartik\widgets\DepDrop;
 						'showUpload' => false,
 						]
 					]); ?>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+          Another Data Account
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
+        <?= $form->field($model, 'public_email')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'public_email')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'gravatar_email')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'website')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'blood')->textInput(['maxlength' => 10]) ?>
-
-    <?= $form->field($model, 'gravatar_id')->textInput(['maxlength' => 32]) ?>
+		<?= $form->field($model, 'gravatar_email')->textInput(['maxlength' => 255]) ?>
+    
+        <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
+    
+        <?= $form->field($model, 'website')->textInput(['maxlength' => 255]) ?>
+    
+        <?= $form->field($model, 'gravatar_id')->textInput(['maxlength' => 32]) ?>
+      </div>
+    </div>
+  </div>
+</div>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

@@ -3,7 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
-
+use yii\helpers\ArrayHelper;
+use kartik\widgets\Select2;
 /* @var $searchModel backend\models\StaUnitSearch */
 
 $this->title = 'Sta Units';
@@ -12,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
+$datadropdown = ArrayHelper::map(\backend\models\StaUnit::find()->select(['id','name'])->asArray()->all(),'id','name');
 ?>
 <div class="sta-unit-index">
 
@@ -28,17 +30,21 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'induk',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Induk', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data) {
+						$parent = \backend\models\StaUnit::findOne($data->induk);
+						return ($data->induk==0)?'----' : $parent->name;
+					},
+					'editableOptions'=>['header'=>'induk',
+										'inputType' => 'dropDownList',
+										'data'=>array_merge([0=>'----'],$datadropdown),
+										'editableValueOptions'=>['class'=>'text-danger'],
+										'formOptions'=>['action'=>\yii\helpers\Url::to('editable')]
+										]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'name',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],

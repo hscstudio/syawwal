@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
-
+use kartik\widgets\Select2;
 /* @var $searchModel backend\models\SbuSearch */
 
 $this->title = 'Sbus';
@@ -46,18 +46,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'raw',
 					'attribute' => 'status',
-					'value' => function ($data) {if($data->status == '0'){
-						return 'Off';}
-						else
-						{ return 'On';}},
-					'editableOptions'=>['header'=>'Status',
-										'inputType' => '\kartik\widgets\SwitchInput',
-										'data'=>array(0=>'Off',1=>'ON'),
-										'editableValueOptions'=>['class'=>'text-danger'],
-										'formOptions'=>['action'=>\yii\helpers\Url::to('editable')]
-										]
+					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'width'=>'50px',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data){
+						$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove text-danger"></span>';
+						return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
+							'onclick'=>'
+								$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
+								return false;
+							',
+							'class'=>($data->status==1)?'label label-info':'label label-warning',
+						]);
+						
+					}
 				],
             // 'created',
             // 'createdBy',
@@ -72,7 +78,25 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Sbu</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Sbu', ['create'], ['class' => 'btn btn-success']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Sbu', ['create'], ['class' => 'btn btn-success']). ' '.
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'status', 
+					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'All'],
+					'value' => $status,
+					'options' => [
+						'placeholder' => 'Status ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/sbu/index']).'?status="+$(this).val(), 
+								container: "#pjax-program-gridview", 
+								timeout: 1,
+							});
+						',	
+					],
+				]).
+				'</div>',
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],

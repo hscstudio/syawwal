@@ -27,7 +27,7 @@ class User extends BaseUser
             ['username', 'trim'],
 
             // email rules
-            ['email', 'required', 'on' => ['register', 'connect', 'create', 'update', 'update_email']],
+            ['email', 'required', 'on' => ['register', 'connect', 'update_email']],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique'],
@@ -51,6 +51,38 @@ class User extends BaseUser
             }, 'on' => ['update_email', 'update_password']],
         ];
     }
+	
+	public function scenarios()
+    {
+        return [
+            'register'        => ['username', 'email', 'password'],
+            'connect'         => ['username', 'email'],
+            'create'          => ['username', 'password', 'role'],
+            'update'          => ['username', 'email', 'password', 'role'],
+            'update_password' => ['password', 'current_password'],
+            'update_email'    => ['unconfirmed_email', 'current_password']
+        ];
+    }
+	
+	public function create()
+    {
+        if ($this->password == null) {
+            $this->password = Password::generate(8);
+        }
+
+        if ($this->module->confirmable) {
+            $this->generateConfirmationData();
+        } else {
+            $this->confirmed_at = time();
+        }
+
+        if ($this->save()) {
+            $this->module->mailer->sendWelcomeMessage($this);
+            return true;
+        }
+
+        return false;
+    }
 
     /*
     Menambah relasi, 1-1 ke Employee
@@ -59,5 +91,4 @@ class User extends BaseUser
     {
     	return $this->hasOne(Employee::classname(), ['user_id' => 'id']);
     }
-
 }

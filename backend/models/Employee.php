@@ -69,8 +69,8 @@ class Employee extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-	public $eselon3;
-	public $eselon4;
+	public $ref_sub_satker;
+	public $ref_sub_satker_2;
 	 
     public static function tableName()
     {
@@ -110,7 +110,7 @@ class Employee extends \yii\db\ActiveRecord
         return [
             [['ref_satker_id', 'ref_unit_id', 'ref_religion_id', 'ref_rank_class_id', 'ref_graduate_id', 'ref_sta_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'user_id'], 'integer'],
             [['name', 'user_id'], 'required'],
-            [['birthDay', 'created', 'modified', 'deleted','eselon3','eselon4'], 'safe'],
+            [['birthDay', 'created', 'modified', 'deleted','ref_sub_satker','ref_sub_satker_2'], 'safe'],
             [['bio'], 'string'],
             [['name', 'nickName', 'born', 'phone', 'officePhone', 'officeFax'], 'string', 'max' => 50],
             [['frontTitle', 'backTitle'], 'string', 'max' => 20],
