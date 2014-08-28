@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 27, 2014 at 03:30 PM
+-- Generation Time: Aug 28, 2014 at 10:13 AM
 -- Server version: 5.5.38-MariaDB
 -- PHP Version: 5.5.15
 
@@ -1258,7 +1258,15 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   `approvedStatusNote` varchar(255) DEFAULT NULL,
   `approvedStatusDate` datetime DEFAULT NULL,
   `approvedStatusBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `tb_training`
+--
+
+INSERT INTO `tb_training` (`id`, `tb_program_id`, `tb_program_revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
+(1, 4, 1, 3, '2014-03-00-2.2.1.0.1', 'Diklat Linux Administrator', '2014-08-26', '2014-08-30', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:11:57', 1, '2014-08-28 10:12:07', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 4, 1, 3, '2014-03-00-2.2.1.0.2', 'Diklat Pranata Komputer Advance', '2014-08-27', '2014-08-29', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:26', 1, '2014-08-28 10:12:42', 1, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1505,6 +1513,16 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
   `approvedStatusBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tb_training_history`
+--
+
+INSERT INTO `tb_training_history` (`tb_training_id`, `tb_program_id`, `tb_program_revision`, `revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
+(1, 4, 1, 0, 3, '2014-03-00-2.2.1.0.1', 'Diklat Linux', '2014-08-26', '2014-08-30', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:11:57', 1, '2014-08-28 10:11:57', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(1, 4, 1, 1, 3, '2014-03-00-2.2.1.0.1', 'Diklat Linux Administrator', '2014-08-26', '2014-08-30', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:07', 1, '2014-08-28 10:12:07', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 4, 1, 0, 3, '2014-03-00-2.2.1.0.2', 'Diklat Pranata Komputer Ahli', '2014-08-27', '2014-08-29', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:26', 1, '2014-08-28 10:12:26', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 4, 1, 1, 3, '2014-03-00-2.2.1.0.2', 'Diklat Pranata Komputer Advance', '2014-08-27', '2014-08-29', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:42', 1, '2014-08-28 10:12:42', 1, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -1710,6 +1728,14 @@ CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
   `deletedBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tb_training_unit_plan`
+--
+
+INSERT INTO `tb_training_unit_plan` (`tb_training_id`, `ref_unit_id`, `spread`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 0, '20|0|0|0|0|20|0|0|0|0|0|0|0', 1, '2014-08-28 10:11:57', 1, '2014-08-28 10:13:02', 1, NULL, NULL),
+(2, 0, '0|0|0|0|0|0|0|0|0|0|0|0|0', 1, '2014-08-28 10:12:26', 1, '2014-08-28 10:12:26', 1, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -1742,7 +1768,7 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 --
 
 INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmation_token`, `confirmation_sent_at`, `confirmed_at`, `unconfirmed_email`, `recovery_token`, `recovery_sent_at`, `blocked_at`, `role`, `registered_from`, `logged_in_from`, `logged_in_at`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1409120680, 1405728264, 1409120680),
+(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1409190952, 1405728264, 1409190952),
 (2, '198910102010121004', 'admin@a.a', '$2y$13$FDwUC3IMg4OEORMp/kD1COsZivLx91m5hTZ5k1XL4esWTGmIyjhOS', '', NULL, NULL, 1409034736, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1409034737, 1409034737);
 
 --
@@ -2160,7 +2186,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `tb_training`
 --
 ALTER TABLE `tb_training`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `tb_training_certificate`
 --
@@ -2421,6 +2447,12 @@ ALTER TABLE `tb_training_execution_evaluation`
 ADD CONSTRAINT `fk_tb_training_execution_evaluation_tb_training_student1` FOREIGN KEY (`tb_training_student_id`) REFERENCES `tb_training_student` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
+-- Constraints for table `tb_training_history`
+--
+ALTER TABLE `tb_training_history`
+ADD CONSTRAINT `training_history_to_training` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `tb_training_pic`
 --
 ALTER TABLE `tb_training_pic`
@@ -2474,8 +2506,8 @@ ADD CONSTRAINT `fk_tb_training_trainer_evaluation_tb_training_assignment1` FOREI
 -- Constraints for table `tb_training_unit_plan`
 --
 ALTER TABLE `tb_training_unit_plan`
-ADD CONSTRAINT `fk_tb_training_student_spread_plan_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-ADD CONSTRAINT `tb_training_unit_plan_ibfk_1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ADD CONSTRAINT `tb_training_unit_plan_ibfk_1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_tb_training_student_spread_plan_ref_unit1` FOREIGN KEY (`ref_unit_id`) REFERENCES `ref_unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

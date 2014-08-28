@@ -316,6 +316,9 @@ class TrainingController extends Controller
     {
         $this->findModel($id)->delete();
 
+        // Ngapus training unit plan, all
+        TrainingUnitPlan::deleteAll('tb_training_id = :tb_training_id', [':tb_training_id' => $id]);
+        
         // Ngapus historynya juga, all
         TrainingHistory::deleteAll('tb_training_id = :tb_training_id', [':tb_training_id' => $id]);
 
