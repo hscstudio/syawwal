@@ -67,7 +67,7 @@ class TrainingClassRoom extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_id', 'class', 'tb_room_id', 'note', 'status', 'created', 'createdBy', 'modified', 'modifiedBy'], 'required'],
+            [['tb_training_id', 'class', 'tb_room_id', 'status', 'created', 'createdBy', 'modified', 'modifiedBy'], 'required'],
             [['tb_training_id', 'tb_room_id', 'status', 'createdBy', 'modifiedBy'], 'integer'],
             [['created', 'modified'], 'safe'],
             [['class'], 'string', 'max' => 3],

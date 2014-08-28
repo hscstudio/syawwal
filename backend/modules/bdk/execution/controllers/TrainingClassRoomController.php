@@ -3,8 +3,12 @@
 namespace backend\modules\bdk\execution\controllers;
 
 use Yii;
+use backend\models\Training;
+use backend\models\TrainingSearch;
 use backend\models\TrainingClassRoom;
 use backend\models\TrainingClassRoomSearch;
+use backend\models\Room;
+use backend\models\RoomSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,12 +39,19 @@ class TrainingClassRoomController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TrainingClassRoomSearch();
+        $searchModel = new TrainingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $roomDb = Room::find()->all();
+        $packageRoom = array();
+        foreach ($roomDb as $k) {
+        	$packageRoom[$k->id] = $k->name;
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'packageRoom' => $packageRoom
         ]);
     }
 
@@ -64,20 +75,25 @@ class TrainingClassRoomController extends Controller
     public function actionCreate()
     {
         $model = new TrainingClassRoom();
+        $model->tb_training_id = Yii::$app->request->post('tb_training_id');
+        $model->class = Yii::$app->request->post('class');
+        $model->tb_room_id = Yii::$app->request->post('tb_room_id');
+        $model->status = 0;
+        $model->note = '';
+        $model->created = date('Y-m-d H:i:s');
+        $model->createdBy = Yii::$app->user->id;
+        $model->modified = date('Y-m-d H:i:s');
+        $model->modifiedBy = Yii::$app->user->id;
 
-        if ($model->load(Yii::$app->request->post())){
-			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
-			}
-			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+		if($model->save()) {
+			 Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>Class successfully added!');
+		}
+		else
+		{
+			 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+		}
+
+        return $this->redirect(['index']);
     }
 
     /**
@@ -125,8 +141,16 @@ class TrainingClassRoomController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+    	$calonDelete = TrainingClassRoom::find($id)->one();
+    	
+    	if($calonDelete->delete()) {
 
+			 Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>Class successfully deleted!');
+		}
+		else
+		{
+			 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+		}
         return $this->redirect(['index']);
     }
 
@@ -145,33 +169,6 @@ class TrainingClassRoomController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-	
-	public function actionEditable() {
-		$model = new TrainingClassRoom; // your model can be loaded here
-		// Check if there is an Editable ajax request
-		if (isset($_POST['hasEditable'])) {
-			// read your posted model attributes
-			if ($model->load($_POST)) {
-				// read or convert your posted information
-				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['TrainingClassRoom'][$_POST['editableIndex']]);
-				$value=$_POST['TrainingClassRoom'][$_POST['editableIndex']][$name];
-				$model2->$name = $value ;
-				$model2->save();
-				// return JSON encoded output in the below format
-				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
-				// alternatively you can return a validation error
-				// echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'Validation error']);
-			}
-			// else if nothing to do always return an empty JSON encoded output
-			else {
-				echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'']);
-			}
-		return;
-		}
-		// Else return to rendering a normal view
-		return $this->render('view', ['model'=>$model]);
-	}
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([

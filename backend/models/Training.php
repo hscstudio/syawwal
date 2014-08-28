@@ -190,6 +190,12 @@ class Training extends \yii\db\ActiveRecord
     {
         return new TrainingQuery(get_called_class());
     }
+
+    // Relational function to class room
+    public function getTrainingClassRoom()
+    {
+        return $this->hasMany(TrainingClassRoom::className(), ['tb_training_id' => 'id']);
+    }
 }
 
 class TrainingQuery extends \yii\db\ActiveQuery

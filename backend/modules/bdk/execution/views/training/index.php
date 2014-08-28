@@ -42,6 +42,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data)
+					{
+						return date('d F Y', strtotime($data->start));
+					}
 				],
             
 				[
@@ -49,6 +53,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data)
+					{
+						return date('d F Y', strtotime($data->finish));
+					}
 				],
             
 				[
