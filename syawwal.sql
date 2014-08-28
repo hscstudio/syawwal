@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 28, 2014 at 10:13 AM
+-- Generation Time: Aug 28, 2014 at 04:51 PM
 -- Server version: 5.5.38-MariaDB
 -- PHP Version: 5.5.15
 
@@ -1100,7 +1100,15 @@ CREATE TABLE IF NOT EXISTS `tb_room` (
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `tb_room`
+--
+
+INSERT INTO `tb_room` (`id`, `ref_satker_id`, `code`, `name`, `capacity`, `owner`, `computer`, `hostel`, `address`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 1, '101', 'R 101', 30, 1, 0, 0, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 1, '102', 'R 102', 30, 1, 0, 0, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1258,15 +1266,7 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   `approvedStatusNote` varchar(255) DEFAULT NULL,
   `approvedStatusDate` datetime DEFAULT NULL,
   `approvedStatusBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `tb_training`
---
-
-INSERT INTO `tb_training` (`id`, `tb_program_id`, `tb_program_revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
-(1, 4, 1, 3, '2014-03-00-2.2.1.0.1', 'Diklat Linux Administrator', '2014-08-26', '2014-08-30', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:11:57', 1, '2014-08-28 10:12:07', 1, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 4, 1, 3, '2014-03-00-2.2.1.0.2', 'Diklat Pranata Komputer Advance', '2014-08-27', '2014-08-29', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:26', 1, '2014-08-28 10:12:42', 1, NULL, NULL, NULL, NULL, NULL, NULL);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1302,9 +1302,9 @@ CREATE TABLE IF NOT EXISTS `tb_training_certificate` (
 CREATE TABLE IF NOT EXISTS `tb_training_class_room` (
 `id` int(11) NOT NULL,
   `tb_training_id` int(11) NOT NULL,
-  `class` int(11) NOT NULL,
+  `class` varchar(3) NOT NULL,
   `tb_room_id` int(11) NOT NULL,
-  `note` varchar(255) NOT NULL,
+  `note` varchar(255) DEFAULT NULL,
   `status` tinyint(1) NOT NULL,
   `created` datetime NOT NULL,
   `createdBy` int(11) NOT NULL,
@@ -1513,16 +1513,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
   `approvedStatusBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `tb_training_history`
---
-
-INSERT INTO `tb_training_history` (`tb_training_id`, `tb_program_id`, `tb_program_revision`, `revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
-(1, 4, 1, 0, 3, '2014-03-00-2.2.1.0.1', 'Diklat Linux', '2014-08-26', '2014-08-30', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:11:57', 1, '2014-08-28 10:11:57', 1, NULL, NULL, NULL, NULL, NULL, NULL),
-(1, 4, 1, 1, 3, '2014-03-00-2.2.1.0.1', 'Diklat Linux Administrator', '2014-08-26', '2014-08-30', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:07', 1, '2014-08-28 10:12:07', 1, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 4, 1, 0, 3, '2014-03-00-2.2.1.0.2', 'Diklat Pranata Komputer Ahli', '2014-08-27', '2014-08-29', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:26', 1, '2014-08-28 10:12:26', 1, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 4, 1, 1, 3, '2014-03-00-2.2.1.0.2', 'Diklat Pranata Komputer Advance', '2014-08-27', '2014-08-29', '', NULL, NULL, '', '', NULL, NULL, '', 0, 0, '', '', 0, '2014-08-28 10:12:42', 1, '2014-08-28 10:12:42', 1, NULL, NULL, NULL, NULL, NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -1727,14 +1717,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `tb_training_unit_plan`
---
-
-INSERT INTO `tb_training_unit_plan` (`tb_training_id`, `ref_unit_id`, `spread`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 0, '20|0|0|0|0|20|0|0|0|0|0|0|0', 1, '2014-08-28 10:11:57', 1, '2014-08-28 10:13:02', 1, NULL, NULL),
-(2, 0, '0|0|0|0|0|0|0|0|0|0|0|0|0', 1, '2014-08-28 10:12:26', 1, '2014-08-28 10:12:26', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2166,7 +2148,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 -- AUTO_INCREMENT for table `tb_room`
 --
 ALTER TABLE `tb_room`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
+MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `tb_satker_pic`
 --
@@ -2186,7 +2168,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `tb_training`
 --
 ALTER TABLE `tb_training`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tb_training_certificate`
 --
