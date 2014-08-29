@@ -217,15 +217,58 @@ class TrainingController extends Controller
 	}
 
 
-	public function addClassCount($id)
+
+
+
+	public function actionAddClassCount()
 	{
 		if (Yii::$app->request->post('classCount') != null or Yii::$app->request->post('classCount') != '')
 		{	
-			$training = Training::find(Yii::$app->request->post('id'));
+			$training = Training::find()->where(['id' => Yii::$app->request->post('id')])->one();
 			$training->classCount = Yii::$app->request->post('classCount');
-			$training->
+
+			if ($training->save())
+			{
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>Class count has been added!');
+
+				return $this->redirect(['index']);
+			}
+
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>Failed to save to database!');
+			return $this->redirect(['index']);
 		}
+
+		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>The input should not be empty!');
+		return $this->redirect(['index']);
 	}
+
+
+
+
+
+	public function actionAddStudentCount()
+	{
+		if (Yii::$app->request->post('studentCount') != null or Yii::$app->request->post('studentCount') != '')
+		{	
+			$training = Training::find()->where(['id' => Yii::$app->request->post('id')])->one();
+			$training->studentCount = Yii::$app->request->post('studentCount');
+
+			if ($training->save())
+			{
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>Student count has been added!');
+
+				return $this->redirect(['index']);
+			}
+
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>Failed to save to database!');
+			return $this->redirect(['index']);
+		}
+
+		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>The input should not be empty!');
+		return $this->redirect(['index']);
+	}
+
+
 
     /**
      * Updates an existing Training model.
