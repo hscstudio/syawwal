@@ -39,13 +39,13 @@ class GraduateController extends Controller
 		$queryParams = Yii::$app->request->getQueryParams();
 		if($status!='all'){
 			$queryParams['GraduateSearch']=[
-				'ref_graduate_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				//'ref_graduate_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
 				'status'=>$status,
 			];
 		}
 		else{
 			$queryParams['GraduateSearch']=[
-				'ref_graduate_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				//'ref_graduate_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
 			];
 		}
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);

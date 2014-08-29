@@ -3,7 +3,8 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
-
+use yii\helpers\ArrayHelper;
+use kartik\widgets\Select2;
 /* @var $searchModel backend\models\EmployeeSearch */
 
 $this->title = 'Employees';
@@ -16,63 +17,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="employee-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-program-gridview',
+	]); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
-
-            // 'id',
-            /*
-				[
-					'attribute' => 'ref_satker_id',
-					'value' => function ($data) {
-						return $data->satker->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_unit_id',
-					'value' => function ($data) {
-						return $data->unit->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_religion_id',
-					'value' => function ($data) {
-						return $data->religion->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_rank_class_id',
-					'value' => function ($data) {
-						return $data->rankClass->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_graduate_id',
-					'value' => function ($data) {
-						return $data->graduate->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_sta_unit_id',
-					'value' => function ($data) {
-						return $data->staUnit->name;
-					}
-				],
-				*/
-            
+            ['class' => 'kartik\grid\SerialColumn'],            
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'name',
@@ -81,6 +33,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
+				
+				[
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'nip',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'Nip', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
@@ -114,23 +76,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'nip',
-					//'pageSummary' => 'Page Total',
+					'format' => 'raw',
+					'attribute' => 'status',
 					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'width'=>'50px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Nip', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'born',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Born', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data){
+						$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
+						return Html::a($icon, ['status','status'=>$data->status, 'id'=>$data->id], [
+							'onclick'=>'
+								$.pjax.reload({url: "'.\yii\helpers\Url::to(['status','status'=>$data->status, 'id'=>$data->id]).'", container: "#pjax-gridview", timeout: 3000});
+								return false;
+							',
+							'class'=>($data->status==1)?'label label-info':'label label-warning',
+						]);
+						
+					}
 				],
 
             ['class' => 'kartik\grid\ActionColumn'],
@@ -139,13 +102,32 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Employee</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Employee', ['create'], ['class' => 'btn btn-success']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Employee', ['create'], ['class' => 'btn btn-success']). ' '.
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'status', 
+					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'All'],
+					'value' => $status,
+					'options' => [
+						'placeholder' => 'Status ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/employee/index']).'?status="+$(this).val(), 
+								container: "#pjax-program-gridview", 
+								timeout: 1,
+							});
+						',	
+					],
+				]).
+				'</div>',
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+    <?php \yii\widgets\Pjax::end(); ?>
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

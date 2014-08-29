@@ -39,13 +39,13 @@ class ReligionController extends Controller
 		$queryParams = Yii::$app->request->getQueryParams();
 		if($status!='all'){
 			$queryParams['ReligionSearch']=[
-				'ref_religion_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				//'ref_religion_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
 				'status'=>$status,
 			];
 		}
 		else{
 			$queryParams['ReligionSearch']=[
-				'ref_religion_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				//'ref_religion_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
 			];
 		}
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);

@@ -3,8 +3,10 @@
 namespace backend\models;
 
 use Yii;
-																																											
+		
+use yii\db\ActiveRecord;								
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 

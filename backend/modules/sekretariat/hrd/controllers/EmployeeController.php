@@ -32,14 +32,26 @@ class EmployeeController extends Controller
      * Lists all Employee models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel = new EmployeeSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    public function actionIndex($status=1)
+    {				
+		$searchModel = new EmployeeSearch();
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			$queryParams['EmployeeSearch']=[
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['EmployeeSearch']=[				
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'status' => $status,
         ]);
     }
 
@@ -106,6 +118,8 @@ class EmployeeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		$model->ref_sub_satker = \backend\models\StaUnit::findOne($model->ref_sta_unit_id)->induk ;
+		$model->ref_sub_satker_2 = $model->ref_sta_unit_id;
 		
         $currentFiles=[];
                 $currentFiles[0]=$model->photo;
@@ -211,6 +225,8 @@ class EmployeeController extends Controller
 		\backend\models\User::findOne(['id' => $user_id])->delete();
 		
 		$this->findModel($id)->delete();
+		
+		Yii::$app->session->setFlash('success', 'Data Deleted');
 		
         return $this->redirect(['index']);
     }
@@ -640,4 +656,37 @@ class EmployeeController extends Controller
 			}
 		
 	}
+	
+	 public function actionStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+		$ref_employee_id = $model->id;
+		
+		$status = ($status==1)?0:1;
+		$model->status = $status;
+		$model->save();
+		
+		$searchModel = new EmployeeSearch();
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			$queryParams['EmployeeSearch']=[
+				'ref_employee_id'=>$ref_employee_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['EmployeeSearch']=[
+				'ref_employee_id'=>$ref_employee_id,
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+			'status' => $status,
+        ]);
+		
+    }
 }

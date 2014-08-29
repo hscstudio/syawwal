@@ -39,13 +39,13 @@ class RankClassController extends Controller
 		$queryParams = Yii::$app->request->getQueryParams();
 		if($status!='all'){
 			$queryParams['RankClassSearch']=[
-				'ref_rank_class_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				//'ref_rank_class_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
 				'status'=>$status,
 			];
 		}
 		else{
 			$queryParams['RankClassSearch']=[
-				'ref_rank_class_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
+				//'ref_rank_class_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
 			];
 		}
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);

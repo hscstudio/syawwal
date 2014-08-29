@@ -30,8 +30,8 @@ $StaUnit2 = \backend\models\StaUnit::find()->select('id,name')->where(['id' =>$m
 					 Html::a('<i class="fa fa-fw fa-trash-o"></i>',['#'],
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
-        'attributes' => [
-           // 'id',
+        'attributes' => [			 
+						
             [
 				'attribute' => 'ref_unit_id',
 				'value' => $model->unit->name,
@@ -73,7 +73,11 @@ $StaUnit2 = \backend\models\StaUnit::find()->select('id,name')->where(['id' =>$m
             'email:email',
             'address',
             'married',
-            'photo',
+			[
+				'attribute' => 'photo',
+				'value' => '\file\employee\/'.$model->id.'\/'.$model->photo,
+			],
+            //'photo',
             'blood',
             'position',
             'education',
