@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use kartik\widgets\Select2;
@@ -56,6 +57,64 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'value' => function ($data)
 					{
 						return date('d F Y', strtotime($data->finish));
+					}
+				],
+            
+				[
+					'attribute' => 'classCount',
+					'format' => 'raw',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data)
+					{
+						if ($data->classCount > 0)
+						{
+							$fOut = '<div class="label alert-success">';
+							$fOut .= $data->classCount;
+							$fOut .= '</div>';
+							return $fOut;
+						}
+						else
+						{
+							$fOut = '<a class="label alert-danger" data-toggle="modal" data-target="#modalAddClass">
+										<i class="fa fa-fw fa-plus-square"></i>
+										Add Class
+									</a>';
+
+							$fOut .= '<div class="modal fade" id="modalAddClass" tabindex="-1" role="dialog" aria-labelledby="modalAddClass" aria-hidden="true">
+									  <div class="modal-dialog modal-sm">
+									    <div class="modal-content">';
+
+							$fOut .= Html::beginForm(Url::to('bdk-execution/training/addClassCount'), 'post', [
+								'class' => 'form',
+								'role' => 'form'
+							]);
+
+							$fOut .= '    <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+									        <h4 class="modal-title">Add Class Count</h4>
+									      </div>
+									      <div class="modal-body">';
+
+							$fOut .= Html::input('text', 'classCount', null, [
+									'class' => 'form-control'
+								]);
+
+							$fOut .= '     </div>';
+							$fOut .= '    <div class="modal-footer">
+									        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>';
+							$fOut .= Html::hiddenInput('id', $data->id);
+							$fOut .= '      <button type="button" class="btn btn-primary">Save</button>
+									      </div>';
+							
+							$fOut .= Html::endForm();
+
+							$fOut .= '  </div>
+									  </div>
+									</div>';
+							return $fOut;
+						}
 					}
 				],
             

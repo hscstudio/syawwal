@@ -216,6 +216,17 @@ class TrainingController extends Controller
 
 	}
 
+
+	public function addClassCount($id)
+	{
+		if (Yii::$app->request->post('classCount') != null or Yii::$app->request->post('classCount') != '')
+		{	
+			$training = Training::find(Yii::$app->request->post('id'));
+			$training->classCount = Yii::$app->request->post('classCount');
+			$training->
+		}
+	}
+
     /**
      * Updates an existing Training model.
      * If update is successful, the browser will be redirected to the 'view' page.
