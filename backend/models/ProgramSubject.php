@@ -14,7 +14,7 @@ use yii\behaviors\BlameableBehavior;
 
  * @property integer $id
  * @property integer $tb_program_id
- * @property integer $type
+ * @property integer $ref_subject_type_id
  * @property string $name
  * @property decimal $hours
  * @property integer $sort
@@ -71,8 +71,8 @@ class ProgramSubject extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_id', 'name', 'hours', 'sort'], 'required'],
-            [['tb_program_id', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_id', 'name', 'hours', 'ref_subject_type_id', 'sort'], 'required'],
+            [['tb_program_id', 'ref_subject_type_id', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
 			[['hours'], 'number'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['name'], 'string', 'max' => 255]
@@ -87,7 +87,7 @@ class ProgramSubject extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'tb_program_id' => 'Tb Program ID',
-            'type' => 'Type',
+            'ref_subject_type_id' => 'Type',
             'name' => 'Name',
             'hours' => 'Hours',
             'sort' => 'Sort',
@@ -110,6 +110,14 @@ class ProgramSubject extends \yii\db\ActiveRecord
         return $this->hasOne(Program::className(), ['id' => 'tb_program_id']);
     }
 	
+	/**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getSubjectType()
+   {
+       return $this->hasOne(SubjectType::className(), ['id' => 'ref_subject_type_id']);
+   }
+   
 	/**
      * @return \yii\db\ActiveQuery
      */

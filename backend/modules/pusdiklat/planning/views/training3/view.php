@@ -1,64 +1,78 @@
 <?php
 
 use yii\helpers\Html;
-//use yii\widgets\DetailView;
 use kartik\detail\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Training */
 
-$this->title = $model->name;
+$this->title = \yii\helpers\Inflector::camel2words($model->name);
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
-$this->params['sideMenu']=$menus;
+$this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="training-view">
-
-    <!-- <h1><?= Html::encode($this->title) ?></h1> -->
-	<!--
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
-	-->
+	<?php
+	function showLabel($status){
+		if ($status==1){
+			$icon='<span class="glyphicon glyphicon-check"></span>';
+			$label='label label-info';
+			$title='READY';
+		}	
+		else if ($status==2){ 
+			$icon='<span class="glyphicon glyphicon-refresh"></span>';
+			$label='label label-success';
+			$title='EXECUTE';
+		}
+		else if ($status==3){ 
+			$icon='<span class="glyphicon glyphicon-trash"></span>';
+			$label='label label-danger';
+			$title='CANCEL';
+		}
+		else {
+			$icon='<span class="glyphicon glyphicon-fire"></span>';
+			$label='label label-warning';
+			$title='PLAN';
+		}
+		return Html::tag('span', $icon.' '.$title, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
+	}
+	?>
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'Trainings # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Trainings # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index'],
+						['class'=>'btn btn-xs btn-primary',
+						 'title'=>'Back to Index',
+						]).' '.
+					 Html::a('<i class="fa fa-fw fa-trash-o"></i> DELETE',['#'],
+						['class'=>'btn btn-xs btn-danger kv-btn-delete',
+						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
             'id',
             [
 				'attribute' => 'tb_program_id',
-				'value' => function ($model) {
-					return $model->program->name;
-				}
+				'format' => 'html',
+				'label' => 'Program',
+				'value' => $model->program->name.' => Rev : '.Html::a(($model->tb_program_revision>0)?$model->tb_program_revision.'x':'-', '#', [
+						'class'=>'label label-danger',
+					]).' ',
 			],
-            'tb_program_id',
             [
 				'attribute' => 'ref_satker_id',
-				'value' => function ($model) {
-					return $model->satker->name;
-				}
+				'label' => 'Satker',
+				'value' => $model->satker->name,
 			],
-            'ref_satker_id',
-            'name',
-            'hours',
-            'days',
+            'number',
+			'name',
             'start',
             'finish',
             'note',
-            'type',
             'studentCount',
             'classCount',
             'executionSK',
@@ -70,14 +84,21 @@ $this->params['sideMenu']=$menus;
             'reguler',
             'stakeholder',
             'location',
-            'test',
-            'status',
+            [
+				'format' => 'html',
+				'attribute' => 'status',
+				'value' => showLabel($model->status),
+			],
             'created',
             'createdBy',
             'modified',
             'modifiedBy',
             'deleted',
             'deletedBy',
+            'approvedStatus',
+            'approvedStatusNote',
+            'approvedStatusDate',
+            'approvedStatusBy',
         ],
     ]) ?>
 

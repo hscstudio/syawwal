@@ -104,58 +104,6 @@ class TrainingUnitPlanController extends Controller
     }
 
     /**
-     * Creates a new Training model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Training();
-
-        if ($model->load(Yii::$app->request->post())){
-			$model->tb_program_revision = (int)\backend\models\ProgramHistory::getRevision($model->tb_program_id);
-			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-			$model->status =0;
-			// GENERATE TRAINING NUMBER
-			$year = date('Y',strtotime($model->start));
-			$program_owner = sprintf("%02s", $model->program->ref_satker_id);
-			$training_owner = sprintf("%02s", $model->ref_satker_id);
-			if($program_owner==$training_owner) $training_owner='00';
-			$program_number = $model->program->number;
-			$training_of_program_this_year = Training::find()
-				->andWhere('start<=:start',[':start'=>$model->start])			
-				->currentSatker()
-				->active()
-				->count()+1;
-			$model->number = $year.'-'.$program_owner.'-'.$training_owner.'-'.$program_number.'.'.$training_of_program_this_year;
-			
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', 'Data saved');
-				// SAVE HISTORY OF TRAINING
-				$model2 = new \backend\models\TrainingHistory();
-				$model2->attributes = array_merge(
-				  $model->attributes,
-				  [
-					'tb_training_id'=>$model->id,
-					'revision'=>'0',					
-				  ]
-				);				
-				$model2->save();
-				//die(print_r($model2->errors));
-				return $this->redirect(['view', 'id' => $model->id]);
-			}
-			else{
-				Yii::$app->session->setFlash('error', 'Unable create there are some error <br>'.implode('<br>',$model->firstErrors));
-				return $this->redirect(['index']);
-			}            
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
      * Updates an existing Training model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
@@ -163,60 +111,18 @@ class TrainingUnitPlanController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $currentFiles=[];
-        
-		// CHECK SATKER
-		if ($model->ref_satker_id != (int)Yii::$app->user->identity->employee->ref_satker_id){
-			Yii::$app->session->setFlash('error', 'You dont allowed to edit it');
-			return $this->redirect(['index']);
+        $model = \backend\models\TrainingUnitPlan::find()->where(['tb_training_id'=>$id])->one();
+        if(!$model){
+			$model = new \backend\models\TrainingUnitPlan();
+			$model->tb_training_id = $id;
+			$model->status = 1;
+			$model->save();
 		}
 		
         if ($model->load(Yii::$app->request->post())) {
-			if(Yii::$app->request->post('generate_number')==1){
-			// GENERATE TRAINING NUMBER				
-				$year = date('Y',strtotime($model->start));
-				$program_owner = sprintf("%02s", $model->program->ref_satker_id);
-				$training_owner = sprintf("%02s", $model->ref_satker_id);
-				if($program_owner==$training_owner) $training_owner='00';
-				$program_number = $model->program->number;
-				$training_of_program_this_year = Training::find()
-					->andWhere('start<=:start and id<>:id',[':id'=>$id,':start'=>$model->start])			
-					->currentSatker()
-					->active()
-					->count()+1;
-				$model->number = $year.'-'.$program_owner.'-'.$training_owner.'-'.$program_number.'.'.$training_of_program_this_year;
-			}
-            if($model->save()){
-				Yii::$app->session->setFlash('success', 'Data saved');
-				// SAVE HISTORY OF TRAINING
-				if(Yii::$app->request->post('create_revision')!==null){
-					// CREATE NEW HISTORY
-					$revision = \backend\models\TrainingHistory::getRevision($model->id);				
-					$model2 = new \backend\models\TrainingHistory();
-					$model2->attributes = array_merge(
-					  $model->attributes,[
-						'tb_training_id'=>$model->id,
-						'revision'=>$revision+1,				
-					  ]
-					);				
-					$model2->save();				
-					
-					Yii::$app->session->setFlash('success', 'Save as revision'.implode(',',$model->errors));	
-				}
-				else{
-					$model2 = \backend\models\TrainingHistory::find()
-									->where(['tb_training_id' => $model->id,])
-									->orderBy(['revision'=>'DESC'])
-									->one();
-					$model2->attributes = array_merge($model->attributes);				
-					$model2->save();
-				}
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                // error in saving model
-				Yii::$app->session->setFlash('error', 'There are some errors');
-            }            
+			$model->spread = implode('|',Yii::$app->request->post('TrainingUnitPlan')['studentCount']);
+			$model->save();
+			return $this->redirect(['view', 'id' => $model->tb_training_id]);
         }
 		else{
 			//return $this->render(['update', 'id' => $model->id]);

@@ -12,12 +12,11 @@ use yii\filters\VerbFilter;
 /**
  * TrainerController implements the CRUD actions for Trainer model.
  */
-class TrainerController extends Controller
+class Trainer3Controller extends Controller
 {
-
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
-	
+ 	
 	public function behaviors()
     {
         return [
@@ -34,41 +33,10 @@ class TrainerController extends Controller
      * Lists all Trainer models.
      * @return mixed
      */
-    public function actionIndex($year=date('Y'),$status=1)
+    public function actionIndex()
     {
         $searchModel = new TrainerSearch();
-		$queryParams = Yii::$app->request->getQueryParams();
-		if($status!='all'){
-			if($year!='all'){
-				$queryParams['TrainerSearch']=[
-					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
-					'status'=>$status,
-				];
-			}
-			else{
-				$queryParams['TrainerSearch']=[
-					'YEAR(start)' => $year,
-					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
-					'status'=>$status,
-				];
-			}
-		}
-		else{
-			if($year!='all'){
-				$queryParams['TrainerSearch']=[
-					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
-				];
-			}
-			else{
-				$queryParams['TrainerSearch']=[
-					'YEAR(start)' => $year,
-					'ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id,
-				];
-			}
-		}
-		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-		$dataProvider = $searchModel->search($queryParams);
-		
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -98,22 +66,12 @@ class TrainerController extends Controller
         $model = new Trainer();
 
         if ($model->load(Yii::$app->request->post())){
-			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', 'Data saved');
-				// SAVE HISTORY OF PROGRAM
-				$model2 = new \backend\models\TrainingHistory();
-				$model2->attributes = array_merge(
-				  $model->attributes,[
-					'tb_training_id'=>$model->id,
-					'revision'=>'0',					
-				  ]
-				);				
-				$model2->save();
+				 Yii::$app->session->setFlash('success', 'Data saved');
 			}
 			else{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}		
+			}
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -151,8 +109,8 @@ class TrainerController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/trainer/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[0] = $path . $model->photo;
 					if(isset($currentFiles[0])) @unlink($path . $currentFiles[0]);
 				}
@@ -169,8 +127,8 @@ class TrainerController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/trainer/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[1] = $path . $model->document1;
 					if(isset($currentFiles[1])) @unlink($path . $currentFiles[1]);
 				}
@@ -187,8 +145,8 @@ class TrainerController extends Controller
 					else{
 						$path = Yii::getAlias('@common').'/../files/trainer/'.$model->id.'/';
 					}
-					@mkdir($path, 0777, true);
-					@chmod($path, 0777);
+					@mkdir($path, 0755, true);
+					@chmod($path, 0755);
 					$paths[2] = $path . $model->document2;
 					if(isset($currentFiles[2])) @unlink($path . $currentFiles[2]);
 				}
@@ -201,9 +159,11 @@ class TrainerController extends Controller
 					}
 					$idx++;
 				}
+				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
         }
 		else{
@@ -288,18 +248,18 @@ class TrainerController extends Controller
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
 			$OpenTBS->VarRef['modelName']= "Trainer";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'ref_graduate_id';			
-			$data1[]['col2'] = 'ref_rank_class_id';			
-			$data1[]['col3'] = 'ref_religion_id';			
+			$data1[]['col1'] = 'idn';			
+			$data1[]['col2'] = 'ref_graduate_id';			
+			$data1[]['col3'] = 'ref_rank_class_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
 			foreach($dataProvider->getModels() as $trainer){
 				$data2[] = [
 					'col0'=>$trainer->id,
-					'col1'=>$trainer->ref_graduate_id,
-					'col2'=>$trainer->ref_rank_class_id,
-					'col3'=>$trainer->ref_religion_id,
+					'col1'=>$trainer->idn,
+					'col2'=>$trainer->ref_graduate_id,
+					'col3'=>$trainer->ref_rank_class_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -337,9 +297,9 @@ class TrainerController extends Controller
 					$idx=2; // line 2
 					foreach($dataProvider->getModels() as $trainer){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainer->id)
-													  ->setCellValue('B'.$idx, $trainer->ref_graduate_id)
-													  ->setCellValue('C'.$idx, $trainer->ref_rank_class_id)
-													  ->setCellValue('D'.$idx, $trainer->ref_religion_id);
+													  ->setCellValue('B'.$idx, $trainer->idn)
+													  ->setCellValue('C'.$idx, $trainer->ref_graduate_id)
+													  ->setCellValue('D'.$idx, $trainer->ref_rank_class_id);
 						$idx++;
 					}		
 					
@@ -368,9 +328,9 @@ class TrainerController extends Controller
 					$idx=2; // line 2
 					foreach($dataProvider->getModels() as $trainer){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainer->id)
-													  ->setCellValue('B'.$idx, $trainer->ref_graduate_id)
-													  ->setCellValue('C'.$idx, $trainer->ref_rank_class_id)
-													  ->setCellValue('D'.$idx, $trainer->ref_religion_id);
+													  ->setCellValue('B'.$idx, $trainer->idn)
+													  ->setCellValue('C'.$idx, $trainer->ref_graduate_id)
+													  ->setCellValue('D'.$idx, $trainer->ref_rank_class_id);
 						$idx++;
 					}		
 									
@@ -416,9 +376,9 @@ class TrainerController extends Controller
 						$idx=2; // line 2
 						foreach($dataProvider->getModels() as $trainer){
 							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainer->id)
-														  ->setCellValue('B'.$idx, $trainer->ref_graduate_id)
-														  ->setCellValue('C'.$idx, $trainer->ref_rank_class_id)
-														  ->setCellValue('D'.$idx, $trainer->ref_religion_id);
+														  ->setCellValue('B'.$idx, $trainer->idn)
+														  ->setCellValue('C'.$idx, $trainer->ref_graduate_id)
+														  ->setCellValue('D'.$idx, $trainer->ref_rank_class_id);
 							$idx++;
 						}		
 						
@@ -488,49 +448,51 @@ class TrainerController extends Controller
 						$read_status = true;
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
-						$ref_graduate_id=  $sheetData[$baseRow]['B'];
-						$ref_rank_class_id=  $sheetData[$baseRow]['C'];
-						$ref_religion_id=  $sheetData[$baseRow]['D'];
-						$name=  $sheetData[$baseRow]['E'];
-						$nickName=  $sheetData[$baseRow]['F'];
-						$frontTitle=  $sheetData[$baseRow]['G'];
-						$backTitle=  $sheetData[$baseRow]['H'];
-						$nip=  $sheetData[$baseRow]['I'];
-						$born=  $sheetData[$baseRow]['J'];
-						$birthDay=  $sheetData[$baseRow]['K'];
-						$gender=  $sheetData[$baseRow]['L'];
-						$phone=  $sheetData[$baseRow]['M'];
-						$email=  $sheetData[$baseRow]['N'];
-						$address=  $sheetData[$baseRow]['O'];
-						$married=  $sheetData[$baseRow]['P'];
-						$photo=  $sheetData[$baseRow]['Q'];
-						$blood=  $sheetData[$baseRow]['R'];
-						$position=  $sheetData[$baseRow]['S'];
-						$organization=  $sheetData[$baseRow]['T'];
-						$widyaiswara=  $sheetData[$baseRow]['U'];
-						$education=  $sheetData[$baseRow]['V'];
-						$educationHistory=  $sheetData[$baseRow]['W'];
-						$trainingHistory=  $sheetData[$baseRow]['X'];
-						$experience=  $sheetData[$baseRow]['Y'];
-						$competency=  $sheetData[$baseRow]['Z'];
-						$npwp=  $sheetData[$baseRow]['AA'];
-						$bankAccount=  $sheetData[$baseRow]['AB'];
-						$officePhone=  $sheetData[$baseRow]['AC'];
-						$officeFax=  $sheetData[$baseRow]['AD'];
-						$officeEmail=  $sheetData[$baseRow]['AE'];
-						$officeAddress=  $sheetData[$baseRow]['AF'];
-						$document1=  $sheetData[$baseRow]['AG'];
-						$document2=  $sheetData[$baseRow]['AH'];
-						$status=  $sheetData[$baseRow]['AI'];
-						//$created=  $sheetData[$baseRow]['AJ'];
-						//$createdBy=  $sheetData[$baseRow]['AK'];
-						//$modified=  $sheetData[$baseRow]['AL'];
-						//$modifiedBy=  $sheetData[$baseRow]['AM'];
-						//$deleted=  $sheetData[$baseRow]['AN'];
-						//$deletedBy=  $sheetData[$baseRow]['AO'];
+						$idn=  $sheetData[$baseRow]['B'];
+						$ref_graduate_id=  $sheetData[$baseRow]['C'];
+						$ref_rank_class_id=  $sheetData[$baseRow]['D'];
+						$ref_religion_id=  $sheetData[$baseRow]['E'];
+						$name=  $sheetData[$baseRow]['F'];
+						$nickName=  $sheetData[$baseRow]['G'];
+						$frontTitle=  $sheetData[$baseRow]['H'];
+						$backTitle=  $sheetData[$baseRow]['I'];
+						$nip=  $sheetData[$baseRow]['J'];
+						$born=  $sheetData[$baseRow]['K'];
+						$birthDay=  $sheetData[$baseRow]['L'];
+						$gender=  $sheetData[$baseRow]['M'];
+						$phone=  $sheetData[$baseRow]['N'];
+						$email=  $sheetData[$baseRow]['O'];
+						$address=  $sheetData[$baseRow]['P'];
+						$married=  $sheetData[$baseRow]['Q'];
+						$photo=  $sheetData[$baseRow]['R'];
+						$blood=  $sheetData[$baseRow]['S'];
+						$position=  $sheetData[$baseRow]['T'];
+						$organization=  $sheetData[$baseRow]['U'];
+						$widyaiswara=  $sheetData[$baseRow]['V'];
+						$education=  $sheetData[$baseRow]['W'];
+						$educationHistory=  $sheetData[$baseRow]['X'];
+						$trainingHistory=  $sheetData[$baseRow]['Y'];
+						$experience=  $sheetData[$baseRow]['Z'];
+						$competency=  $sheetData[$baseRow]['AA'];
+						$npwp=  $sheetData[$baseRow]['AB'];
+						$bankAccount=  $sheetData[$baseRow]['AC'];
+						$officePhone=  $sheetData[$baseRow]['AD'];
+						$officeFax=  $sheetData[$baseRow]['AE'];
+						$officeEmail=  $sheetData[$baseRow]['AF'];
+						$officeAddress=  $sheetData[$baseRow]['AG'];
+						$document1=  $sheetData[$baseRow]['AH'];
+						$document2=  $sheetData[$baseRow]['AI'];
+						$status=  $sheetData[$baseRow]['AJ'];
+						//$created=  $sheetData[$baseRow]['AK'];
+						//$createdBy=  $sheetData[$baseRow]['AL'];
+						//$modified=  $sheetData[$baseRow]['AM'];
+						//$modifiedBy=  $sheetData[$baseRow]['AN'];
+						//$deleted=  $sheetData[$baseRow]['AO'];
+						//$deletedBy=  $sheetData[$baseRow]['AP'];
 
 						$model2=new Trainer;
 						//$model2->id=  $id;
+						$model2->idn=  $idn;
 						$model2->ref_graduate_id=  $ref_graduate_id;
 						$model2->ref_rank_class_id=  $ref_rank_class_id;
 						$model2->ref_religion_id=  $ref_religion_id;

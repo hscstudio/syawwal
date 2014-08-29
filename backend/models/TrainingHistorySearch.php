@@ -18,7 +18,7 @@ class TrainingHistorySearch extends TrainingHistory
     public function rules()
     {
         return [
-            [['id', 'tb_training_id', 'tb_program_id', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
+            [['tb_training_id', 'tb_program_id', 'tb_program_revision', 'revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['number', 'name', 'start', 'finish', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'created', 'modified', 'deleted', 'approvedStatusNote', 'approvedStatusDate'], 'safe'],
         ];
     }
@@ -52,9 +52,9 @@ class TrainingHistorySearch extends TrainingHistory
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
             'tb_training_id' => $this->tb_training_id,
             'tb_program_id' => $this->tb_program_id,
+            'tb_program_revision' => $this->tb_program_revision,
             'revision' => $this->revision,
             'ref_satker_id' => $this->ref_satker_id,
             'start' => $this->start,
@@ -77,8 +77,8 @@ class TrainingHistorySearch extends TrainingHistory
             'approvedStatusBy' => $this->approvedStatusBy,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-			->andFilterWhere(['like', 'number', $this->number])
+        $query->andFilterWhere(['like', 'number', $this->number])
+            ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'note', $this->note])
             ->andFilterWhere(['like', 'executionSK', $this->executionSK])
             ->andFilterWhere(['like', 'resultSK', $this->resultSK])

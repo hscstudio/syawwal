@@ -23,6 +23,8 @@ use yii\behaviors\BlameableBehavior;
  * @property string $note
  * @property integer $validationStatus
  * @property string $validationNote
+ * @property string $category
+ * @property string $stage 
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
@@ -82,6 +84,7 @@ class Program extends \yii\db\ActiveRecord
 			[['hours'], 'number'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['number'], 'string', 'max' => 15],
+			[['category', 'stage'], 'string', 'max' => 100],
             [['name', 'note', 'validationNote'], 'string', 'max' => 255]
         ];
     }
@@ -103,6 +106,8 @@ class Program extends \yii\db\ActiveRecord
             'note' => 'Note',
             'validationStatus' => 'Validation Status',
             'validationNote' => 'Validation Note',
+			'category' => 'Category',
+			'stage' => 'Stage',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',

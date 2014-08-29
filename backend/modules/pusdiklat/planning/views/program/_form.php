@@ -57,7 +57,16 @@ use yii\helpers\ArrayHelper;
 				<div class="col-md-6">
 				<?= $form->field($model, 'days')->textInput(['maxlength' => 3]) ?>
 				</div>
-			</div>		
+			</div>	
+
+			<div class="row">
+				<div class="col-md-6">
+				<?= $form->field($model, 'category')->textInput() ?>
+				</div>
+				<div class="col-md-6">
+				<?= $form->field($model, 'stage')->textInput(['maxlength' => 3]) ?>
+				</div>
+			</div>				
 		</div>
 		<div class="col-md-6">
 			
@@ -102,6 +111,8 @@ use yii\helpers\ArrayHelper;
 							
 				<?= $form->field($model, 'validationNote')->textArea(['maxlength' => 255]) ?>
 			<?php } ?>
+			
+			
 		</div>
 	</div>
 	

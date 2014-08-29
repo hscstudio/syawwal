@@ -2,7 +2,7 @@
 
 namespace backend\modules\pusdiklat\planning\controllers;
 
-use Yii.
+use Yii;
 use backend\models\ProgramSubject;
 use backend\models\ProgramSubjectSearch;
 use yii\web\Controller;

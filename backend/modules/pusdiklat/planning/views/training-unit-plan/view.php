@@ -38,68 +38,31 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		}
 		return Html::tag('span', $icon.' '.$title, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
 	}
+	
+	$attributes=[];
+	$units = \backend\models\Unit::find()->select(['id','shortname'])->where('id>:id',[':id'=>0])->all();
+	$idx=0;
+	foreach($units as $unit){
+		$attributes[]=[
+			'label' => $unit->shortname,
+			'attribute' => 'id',
+			'value' => isset($model->trainingUnitPlans->studentCount[$idx])?$model->trainingUnitPlans->studentCount[$idx]:'-',
+		];
+		$idx++;
+	}
 	?>
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Trainings # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Training Student Unit Plan # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
-						]).' '.
-					 Html::a('<i class="fa fa-fw fa-trash-o"></i> DELETE',['#'],
-						['class'=>'btn btn-xs btn-danger kv-btn-delete',
-						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
-        'attributes' => [
-            'id',
-            [
-				'attribute' => 'tb_program_id',
-				'format' => 'html',
-				'label' => 'Program',
-				'value' => $model->program->name.' => Rev : '.Html::a(($model->tb_program_revision>0)?$model->tb_program_revision.'x':'-', '#', [
-						'class'=>'label label-danger',
-					]).' ',
-			],
-            [
-				'attribute' => 'ref_satker_id',
-				'label' => 'Satker',
-				'value' => $model->satker->name,
-			],
-            'number',
-			'name',
-            'start',
-            'finish',
-            'note',
-            'studentCount',
-            'classCount',
-            'executionSK',
-            'resultSK',
-            'costPlan',
-            'costRealisation',
-            'sourceCost',
-            'hostel',
-            'reguler',
-            'stakeholder',
-            'location',
-            [
-				'format' => 'html',
-				'attribute' => 'status',
-				'value' => showLabel($model->status),
-			],
-            'created',
-            'createdBy',
-            'modified',
-            'modifiedBy',
-            'deleted',
-            'deletedBy',
-            'approvedStatus',
-            'approvedStatusNote',
-            'approvedStatusDate',
-            'approvedStatusBy',
-        ],
+						]).' ',
+		'attributes' => $attributes,
     ]) ?>
 
 </div>

@@ -8,7 +8,7 @@ use kartik\widgets\Select2;
 /* @var $searchModel backend\models\ProgramSubjectSearch */
 
 $this->title = \yii\helpers\Inflector::camel2words('Subject : '.$program_name);
-$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program/index']];
+$this->params['breadcrumbs'][] = ['label'=>'Program','url'=>['program2/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -36,11 +36,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'150px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'format' => 'html',
 				'value' => function ($data) {
-					if($data->type==0) return "MP";
-					if($data->type==1) return "CERAMAH";
-					if($data->type==2) return "OJT";
-					if($data->type==3) return "MFD";
+					$type ="";
+					if($data->type==0) $type = "NORMAL";
+					if($data->type==1) $type =  "CERAMAH";
+					if($data->type==2) $type = "MFD";
+					if($data->type==3) $type = "OJT";
+					return '<span class="badge">'.$type.'</div>';
 				}
 			],
 		

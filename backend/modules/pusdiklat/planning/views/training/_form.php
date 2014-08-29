@@ -33,13 +33,21 @@ use yii\helpers\ArrayHelper;
 			$data = ArrayHelper::map(\backend\models\Program::find()->select(['id','name', 'num_name' => 'CONCAT(number," - ",name)'])->currentSatker()->active()->asArray()->all(), 'id', 'num_name');
 			echo $form->field($model, 'tb_program_id')->widget(Select2::classname(), [
 				'data' => $data,
-				'options' => ['placeholder' => 'Choose Program ...'],
+				'options' => [
+					'placeholder' => 'Choose Program ...',
+					'onchange'=>'
+						$.post( "'.\yii\helpers\Url::to(['program-name']).'?id="+$(this).val(), function( data ) {
+						  $( "input#training_name" ).val( data + " ");
+						  $( "input#training_name" ).focus();
+						});
+					'
+				],
 				'pluginOptions' => [
 					'allowClear' => true,
 				],
 			]); ?>
 
-			<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+			<?= $form->field($model, 'name')->textInput(['maxlength' => 255, 'id'=>'training_name']) ?>
 			
 			<div class='row'>
 				<div class='col-md-6'>
@@ -74,6 +82,7 @@ use yii\helpers\ArrayHelper;
 						'pluginOptions' => [
 							'onText' => 'On',
 							'offText' => 'Off',
+							'state'=>false,
 						]
 					]) ?>
 					

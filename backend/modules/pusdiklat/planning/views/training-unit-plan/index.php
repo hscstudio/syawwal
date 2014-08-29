@@ -31,7 +31,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column','style'=>'height:100px;'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data){
-					return Html::tag('span', $data->name, ['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
+					return Html::tag('span', $data->name, 
+						['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']).
+						'<br>'.
+						'<div class="label label-default">'.date('d M y',strtotime($data->start)).' s.d '.date('d M y',strtotime($data->start)).'</div>';
 				},
 			];
 			
@@ -40,50 +43,28 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	foreach($units as $unit){
 		$grid_columns[]=[
 			'format'=>'raw',
-			'attribute' => 'StudentCount.'.$idx++,
-			'width' => '40px',
-			//'vAlign'=>'middle',
-			//'hAlign'=>'center',
+			//'attribute' => 'StudentCount.'.$idx,
+			'width' => '30px',
+			'vAlign'=>'left',
+			'hAlign'=>'center',
 			'headerOptions'=>['class'=>'kv-sticky-column'],
-			'header' => '<div class="rotate" style="width:30px;">'.$unit->shortname.'</div>',
-			'value' => function ($data){
-				//return $unit->shortname;
+			'header' => '<div class="rotate" style="width:25px;">'.$unit->shortname.'</div>',
+			'value' => function ($data) use ($idx){
+				if(isset($data->trainingUnitPlans->studentCount[$idx]))
+					return '<div class="label  alert-success">'.$data->trainingUnitPlans->studentCount[$idx].'</div>';
+				else 
+					return '<div class="label alert-success">'.'-'.'</div>';
 			}
 		];
+		$idx++;
 	}
-	
-	$grid_columns[] = [
-				'attribute' => 'start',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'100px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'value' => function ($data) {
-					return date('d M y',strtotime($data->start));
-				}
-			];
-		
-	$grid_columns[] = [
-				'class' => 'kartik\grid\DataColumn',
-				'attribute' => 'finish',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'100px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Finish', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
-				'value' => function ($data) {
-					return date('d M y',strtotime($data->finish));
-				}
-			];
        
     $grid_columns[] = [
 				'format' => 'raw',
 				'attribute' => 'status',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'80px',
+				'width'=>'30px',
 				'headerOptions'=>['class'=>'kv-sticky-column rotate'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) use ($year){				
@@ -114,8 +95,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			
     $grid_columns[] = [
 				'class' => 'kartik\grid\ActionColumn',
-				'template' => '{view}',
-				
+				'template' => '{update} {view}',
+				'buttons' => [
+					'update' => function ($url, $model) {
+								$icon='<span class="glyphicon glyphicon-pencil"></span>';
+								return ($model->status==2)?'':Html::a($icon,$url,[
+									'data-pjax'=>"0",
+								]);
+							},
+				],						
 			];
 	
 	?>
@@ -139,7 +127,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'class'=>'form-control', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training-unit-plan/index']).'?status='.$status.'&year="+$(this).val(), 
 								container: "#pjax-gridview", 
 								timeout: 1,
 							});
@@ -157,7 +145,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'class'=>'form-control', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training-unit-plan/index']).'?year='.$year.'&status="+$(this).val(), 
 								container: "#pjax-gridview", 
 								timeout: 1000,
 							});

@@ -90,6 +90,12 @@ class TrainingController extends Controller
 			'year_training' => $year_training,
         ]);
     }
+	
+	public function actionIndexByProgram()
+    {
+		
+        return $this->render('indexByProgram');
+    }
 
     /**
      * Displays a single Training model.
@@ -141,7 +147,15 @@ class TrainingController extends Controller
 				  ]
 				);				
 				$model2->save();
-				//die(print_r($model2->errors));
+				
+				// SAVE TRAINING UNIT PLAN
+				$model3 = new \backend\models\TrainingUnitPlan();
+				$model3->tb_training_id = $model->id;
+				$model3->created = $model->created;
+				$model3->createdBy = $model->createdBy;
+				$model3->status = $model->status;
+				$model3->save();
+
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
 			else{
@@ -238,6 +252,7 @@ class TrainingController extends Controller
 		Yii::$app->session->setFlash('success', 'Data deleted');
 		if ($model->delete()){
 			\backend\models\TrainingHistory::deleteAll(['tb_training_id' => $id,]);
+			\backend\models\TrainingUnitPlan::delete(['tb_training_id' => $id,]);
 		}
         return $this->redirect(['index']);
     }
@@ -603,5 +618,10 @@ class TrainingController extends Controller
 		return $this->render('index', [
             'dataProvider' => $dataProvider,
         ]);					
+	}
+	
+	public function actionProgramName($id){
+		$model = \backend\models\Program::find()->where(['id'=>$id])->currentSatker()->one();
+		return $model->name;
 	}
 }

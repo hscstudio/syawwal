@@ -59,7 +59,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'100px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Finish', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
 				'value' => function ($data) {
 					return date('d M y',strtotime($data->finish));
 				}
@@ -79,7 +78,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 			
 			[
-				'format' => 'html',
+				'format' => 'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'label' => 'Rev',
@@ -89,7 +88,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->where(['tb_training_id' => $data->id,])
 								->count()-1;
 					if($countRevision>0){
-						return Html::a($countRevision.'x', ['training-history/index','tb_training	ZAAZZZ_id'=>$data->id], ['class' => 'label label-danger']);
+						return Html::a($countRevision.'x', ['training-history/index','tb_training_id'=>$data->id], ['class' => 'label label-danger','data-pjax'=>0]);
 					}
 					else{
 						return '-';
@@ -190,14 +189,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					],
 				]).
 				'</div>',
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+			'after'=>
+				Html::a('<i class="fa fa-fw fa-link"></i> By Program', ['index-by-program'], ['class' => 'btn btn-default']).' '.
+				Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
 	<?php \yii\widgets\Pjax::end(); ?>
-	
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

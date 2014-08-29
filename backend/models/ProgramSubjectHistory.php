@@ -15,7 +15,7 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $tb_program_subject_id
  * @property integer $tb_program_id
  * @property integer $revision
- * @property integer $type
+ * @property integer $ref_subject_type_id
  * @property string $name
  * @property decimal $hours
  * @property integer $sort
@@ -69,8 +69,8 @@ class ProgramSubjectHistory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_program_subject_id', 'tb_program_id', 'revision', 'name', 'hours', 'sort'], 'required'],
-            [['tb_program_subject_id', 'tb_program_id', 'revision', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_subject_id', 'tb_program_id', 'revision', 'name', 'ref_subject_type_id', 'hours', 'sort'], 'required'],
+            [['tb_program_subject_id', 'tb_program_id', 'revision', 'ref_subject_type_id', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
 			[['hours'], 'number'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['name'], 'string', 'max' => 255]
@@ -86,7 +86,7 @@ class ProgramSubjectHistory extends \yii\db\ActiveRecord
             'tb_program_subject_id' => 'Program Subject',
             'tb_program_id' => 'Program',
             'revision' => 'Revision',
-            'type' => 'Type',
+            'ref_subject_type_id' => 'Type',
             'name' => 'Name',
             'hours' => 'Hours',
             'sort' => 'Sort',

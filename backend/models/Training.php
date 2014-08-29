@@ -180,7 +180,13 @@ class Training extends \yii\db\ActiveRecord
      */
     public function getTrainingUnitPlans()
     {
-        return $this->hasMany(TrainingUnitPlan::className(), ['tb_training_id' => 'id']);
+        return $this->hasOne(TrainingUnitPlan::className(), ['tb_training_id' => 'id']);
+    }
+	
+	public function getStudentCount()
+    {
+        
+		return explode('|', $this->spread);
     }
 	/**
      * @inheritdoc

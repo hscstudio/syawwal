@@ -30,42 +30,34 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],
             
 			[
-				'attribute' => 'type',
+				'attribute' => 'ref_subject_type_id',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'150px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
-					if($data->type==0) return "MP";
-					if($data->type==1) return "CERAMAH";
-					if($data->type==2) return "OJT";
-					if($data->type==3) return "MFD";
+					return $data->subjectType->name;
 				}
 			],
 		
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'name',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
             
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'hours',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'75px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Hours', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
 		
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'test',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
@@ -73,7 +65,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Test', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
            
 			

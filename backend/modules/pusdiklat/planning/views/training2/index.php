@@ -89,7 +89,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->where(['tb_training_id' => $data->id,])
 								->count()-1;
 					if($countRevision>0){
-						return Html::a($countRevision.'x', ['training-history/index','tb_training	ZAAZZZ_id'=>$data->id], ['class' => 'label label-danger']);
+						return Html::a($countRevision.'x', ['training-history2/index','tb_training_id'=>$data->id], ['class' => 'label label-danger']);
 					}
 					else{
 						return '-';
@@ -151,7 +151,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'class'=>'form-control', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training2/index']).'?status='.$status.'&year="+$(this).val(), 
 								container: "#pjax-gridview", 
 								timeout: 1,
 							});
@@ -169,7 +169,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'class'=>'form-control', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training2/index']).'?year='.$year.'&status="+$(this).val(), 
 								container: "#pjax-gridview", 
 								timeout: 1000,
 							});

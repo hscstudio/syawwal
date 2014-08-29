@@ -42,14 +42,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 		
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'type',
 				'width'=>'75px',
 				'hAlign'=>'center',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
             
 			[

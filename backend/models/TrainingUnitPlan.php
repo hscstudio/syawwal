@@ -67,7 +67,7 @@ class TrainingUnitPlan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_id', 'ref_unit_id', 'spread'], 'required'],
+            [['tb_training_id'], 'required'],
             [['tb_training_id', 'ref_unit_id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['spread'], 'string', 'max' => 500]

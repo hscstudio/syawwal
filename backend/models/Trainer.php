@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-																																									
+																																										
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
@@ -13,6 +13,7 @@ use yii\behaviors\BlameableBehavior;
  *
 
  * @property integer $id
+ * @property string $idn
  * @property integer $ref_graduate_id
  * @property integer $ref_rank_class_id
  * @property integer $ref_religion_id
@@ -102,17 +103,18 @@ class Trainer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['idn', 'name'], 'required'],
             [['ref_graduate_id', 'ref_rank_class_id', 'ref_religion_id', 'gender', 'married', 'widyaiswara', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name'], 'required'],
             [['birthDay', 'created', 'modified', 'deleted'], 'safe'],
+            [['idn', 'address', 'photo', 'position', 'education', 'competency', 'bankAccount', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
             [['name', 'nickName', 'born', 'phone', 'npwp', 'officePhone', 'officeFax'], 'string', 'max' => 50],
             [['frontTitle', 'backTitle'], 'string', 'max' => 20],
             [['nip'], 'string', 'max' => 18],
             [['email', 'officeEmail'], 'string', 'max' => 100],
-            [['address', 'photo', 'position', 'education', 'competency', 'bankAccount', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
             [['blood'], 'string', 'max' => 10],
             [['organization'], 'string', 'max' => 45],
-            [['educationHistory', 'trainingHistory', 'experience'], 'string', 'max' => 1000]
+            [['educationHistory', 'trainingHistory', 'experience'], 'string', 'max' => 1000],
+            [['idn'], 'unique']
         ];
     }
 
@@ -123,6 +125,7 @@ class Trainer extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'idn' => 'Idn',
             'ref_graduate_id' => 'Ref Graduate ID',
             'ref_rank_class_id' => 'Ref Rank Class ID',
             'ref_religion_id' => 'Ref Religion ID',

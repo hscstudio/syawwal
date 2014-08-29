@@ -29,12 +29,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],
             
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'name',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
 				'format' => 'raw',
 				'value' => function ($data){
 					return Html::a($data->name,'#',['title'=>$data->description,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
@@ -43,14 +41,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 		
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'type',
 				'width'=>'75px',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
 		
 			[

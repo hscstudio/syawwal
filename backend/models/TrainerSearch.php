@@ -19,7 +19,7 @@ class TrainerSearch extends Trainer
     {
         return [
             [['id', 'ref_graduate_id', 'ref_rank_class_id', 'ref_religion_id', 'gender', 'married', 'widyaiswara', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name', 'nickName', 'frontTitle', 'backTitle', 'nip', 'born', 'birthDay', 'phone', 'email', 'address', 'photo', 'blood', 'position', 'organization', 'education', 'educationHistory', 'trainingHistory', 'experience', 'competency', 'npwp', 'bankAccount', 'officePhone', 'officeFax', 'officeEmail', 'officeAddress', 'document1', 'document2', 'created', 'modified', 'deleted'], 'safe'],
+            [['idn', 'name', 'nickName', 'frontTitle', 'backTitle', 'nip', 'born', 'birthDay', 'phone', 'email', 'address', 'photo', 'blood', 'position', 'organization', 'education', 'educationHistory', 'trainingHistory', 'experience', 'competency', 'npwp', 'bankAccount', 'officePhone', 'officeFax', 'officeEmail', 'officeAddress', 'document1', 'document2', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }
 
@@ -69,7 +69,8 @@ class TrainerSearch extends Trainer
             'deletedBy' => $this->deletedBy,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
+        $query->andFilterWhere(['like', 'idn', $this->idn])
+            ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'nickName', $this->nickName])
             ->andFilterWhere(['like', 'frontTitle', $this->frontTitle])
             ->andFilterWhere(['like', 'backTitle', $this->backTitle])
