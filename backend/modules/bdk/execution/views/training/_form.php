@@ -30,7 +30,7 @@ use kartik\widgets\DepDrop;
 		    		{
 		    			echo Html::submitButton('<span class="fa fa-fw fa-save"></span> '.'Update', ['class' => 'btn btn-xs btn-primary']);
 		    			echo ' ';
-		    			echo Html::submitButton('<span class="fa fa-fw fa-clipboard"></span> '.'Save as Revision', ['class' => 'btn btn-xs btn-warning',
+		    			echo Html::submitButton('<span class="fa fa-fw fa-clipboard"></span> '.'Save as Revision', ['class' => 'btn btn-xs btn-danger',
 		    				'name' => 'create_revision']);
 		    		}
 				?>
@@ -50,7 +50,7 @@ use kartik\widgets\DepDrop;
 				// row 1
 				echo	'<div class="row">';
 
-					echo '<div class="col-md-4">';
+					echo '<div class="col-md-6">';
 						// Nambah dropdown eselon 2
 						echo '
 							<div class="form-group field-training-eselon">
@@ -75,7 +75,7 @@ use kartik\widgets\DepDrop;
 						echo '</div>';
 					echo '</div>';
 
-					echo '<div class="col-md-4">';
+					echo '<div class="col-md-6">';
 							$data = ArrayHelper::map(\backend\models\Program::find()
 								->select(['id','name'])
 								->where(['status' => 1])
@@ -92,17 +92,6 @@ use kartik\widgets\DepDrop;
 									'allowClear' => true
 								],
 							]);
-					echo '</div>';
-
-					echo '<div class="col-md-4">';
-						$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-						echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
-							'data' => $data,
-							'options' => ['placeholder' => 'Choose Satker ...'],
-							'pluginOptions' => [
-							'allowClear' => true
-							],
-						]); 
 					echo '</div>';
 
 				echo	'</div>';

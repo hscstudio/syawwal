@@ -3,8 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
-
-/* @var $searchModel backend\models\TrainingUnitPlanSearch */
+use kartik\widgets\Select2;
 
 $this->title = 'Training Unit Plans';
 $this->params['breadcrumbs'][] = $this->title;
@@ -15,246 +14,156 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 ?>
 <div class="training-unit-plan-index">
-
+	
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-gridview',
+	]); ?>
+	
+	<?php
+	$grid_columns[] = ['class' => 'kartik\grid\SerialColumn'];
+	$grid_columns[] = [
+				'attribute' => 'name',
+				'format'=>'raw',
+				'vAlign'=>'middle',
+				'hAlign'=>'left',
+				'headerOptions'=>['class'=>'kv-sticky-column','style'=>'height:100px;'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){
+					return Html::tag('span', $data->name, ['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']).
+					'<br><span class="label label-default">'.date('d M y',strtotime($data->start)).' s.d. '.date('d M y',strtotime($data->finish)).'</span>';
+				},
+			];
+			
+	$units = \backend\models\Unit::find()->select(['id','shortname'])->where('id>:id',[':id'=>0])->all();
+	$idx=0;
+	foreach($units as $unit){
+		$grid_columns[]=[
+			'format'=>'raw',
+			'attribute' => 'StudentCount.'.$idx,
+			'width' => '40px',
+			//'vAlign'=>'middle',
+			//'hAlign'=>'center',
+			'headerOptions'=>['class'=>'kv-sticky-column'],
+			'header' => '<div class="rotate" style="width:30px;">'.$unit->shortname.'</div>',
+			'value' => function ($data) use ($idx) {
+				if (!empty($data->trainingUnitPlans->studentCount[$idx]))
+				{
+					return '<div class="label alert-success">'.$data->trainingUnitPlans->studentCount[$idx].'</div>';
+				}
+				else
+				{
+					return '<div class="label alert-success">-</div>';
+				}
+			}
+		];
+		$idx++;
+	}
+	
+    $grid_columns[] = [
+				'format' => 'raw',
+				'attribute' => 'status',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'80px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data) use ($year){				
+					
+					if ($data->status==1){
+						$icon='<span class="glyphicon glyphicon-check"></span>';
+						$label='label label-info';
+						$title='READY';
+					}	
+					else if ($data->status==2){ 
+						$icon='<span class="glyphicon glyphicon-refresh"></span>';
+						$label='label label-success';
+						$title='EXECUTE';
+					}
+					else if ($data->status==3){ 
+						$icon='<span class="glyphicon glyphicon-trash"></span>';
+						$label='label label-danger';
+						$title='CANCEL';
+					}
+					else {
+						$icon='<span class="glyphicon glyphicon-fire"></span>';
+						$label='label label-warning';
+						$title='PLAN';
+					}
+					return Html::tag('span', $icon, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
+				}
+			];
+			
+    $grid_columns[] = [
+				'class' => 'kartik\grid\ActionColumn',
+				'buttons' => [
+					'update' => function ($url, $model) {
+								$icon='<span class="glyphicon glyphicon-pencil"></span>';
+								return ($model->status==2)?'':Html::a($icon,$url,[
+									'data-pjax'=>"0",
+								]);
+							},
+					'delete' => function ($url, $model) {
+								$icon='<span class="glyphicon glyphicon-trash"></span>';
+								return '';
+							},
+				],
+			];
+	
+	?>
+	
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-        'columns' => [
-            	['class' => 'kartik\grid\SerialColumn'],
-            
-				[
-					'attribute' => 'tb_training_id',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-				],
-
-				[
-					'attribute' => 'created',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'Setjen',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); line-height:100px; padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[0];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'Itjen',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[1];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'DJA',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[2];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'DJP',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[3];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'DJBC',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[4];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'DJPBn',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[5];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'vAlign'=>'middle',
-					'label' => 'DJKN',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[6];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'vAlign'=>'middle',
-					'label' => 'DJPK',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[7];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'DJPU',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[8];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'BKF',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[9];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'Bapepam-LK',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[10];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'BPPK',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[11];
-					}
-				],
-
-				[
-					'attribute' => 'spread',
-					'label' => 'Lainnya',
-					'vAlign'=>'middle',
-					'headerOptions'=>[
-						'class'=>'kv-sticky-column',
-						'style' => 'transform: rotate(-90deg); padding:0px; width:10px; margin:0px;'
-					],
-					'contentOptions'=>['class'=>'kv-sticky-column',],
-					'value' => function($data) {
-						$as = explode('|', $data->spread);
-						return $as[12];
-					}
-				],
-            
-				[
-					'attribute' => 'total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-				],
-            
-				[
-					'attribute' => 'status',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-				],
-            ['class' => 'kartik\grid\ActionColumn'],
-        ],
+        'columns' => $grid_columns,
 		'panel' => [
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Unit Plan', ['create'], ['class' => 'btn btn-success']),
+			//'type'=>'primary',
+			'before'=>
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'year', 
+					'data' => $year_training,
+					'value' => $year,
+					'options' => [
+						'placeholder' => 'Year ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
+								container: "#pjax-gridview", 
+								timeout: 1,
+							});
+						',	
+					],
+				]).
+				'</div>'.
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'status', 
+					'data' => ['all'=>'All','0'=>'Plan','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
+					'value' => $status,
+					'options' => [
+						'placeholder' => 'Status ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
+								container: "#pjax-gridview", 
+								timeout: 1000,
+							});
+						',	
+					],
+				]).
+				'</div>',
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	<?php \yii\widgets\Pjax::end(); ?>
+
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

@@ -41,7 +41,14 @@ class TrainingHistorySearch extends TrainingHistory
      */
     public function search($params)
     {
-        $query = TrainingHistory::find();
+        if (Yii::$app->request->get('tb_training_id') == '')
+        {
+            $query = TrainingHistory::find();
+        }
+        else
+        {
+            $query = TrainingHistory::find()->where(['tb_training_id' => Yii::$app->request->get('tb_training_id')]);
+        }
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,14 +64,21 @@ class TrainingHistorySearch extends TrainingHistory
             'tb_program_revision' => $this->tb_program_revision,
             'revision' => $this->revision,
             'ref_satker_id' => $this->ref_satker_id,
+            'number' => $this->number,
+            'name' => $this->name,
             'start' => $this->start,
             'finish' => $this->finish,
+            'note' => $this->note,
             'studentCount' => $this->studentCount,
             'classCount' => $this->classCount,
+            'executionSK' => $this->executionSK,
+            'resultSK' => $this->resultSK,
             'costPlan' => $this->costPlan,
             'costRealisation' => $this->costRealisation,
+            'sourceCost' => $this->sourceCost,
             'hostel' => $this->hostel,
             'reguler' => $this->reguler,
+            'stakeholder' => $this->stakeholder,
             'status' => $this->status,
             'created' => $this->created,
             'createdBy' => $this->createdBy,
@@ -73,6 +87,7 @@ class TrainingHistorySearch extends TrainingHistory
             'deleted' => $this->deleted,
             'deletedBy' => $this->deletedBy,
             'approvedStatus' => $this->approvedStatus,
+            'approvedStatusNote' => $this->approvedStatusNote,
             'approvedStatusDate' => $this->approvedStatusDate,
             'approvedStatusBy' => $this->approvedStatusBy,
         ]);

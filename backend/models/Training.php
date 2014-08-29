@@ -46,10 +46,12 @@ use yii\behaviors\BlameableBehavior;
  *
  * @property Satker $refSatker
  * @property Program $tbProgram
- * @property TrainingCertificate[] $trainingCertificates
+ * @property TrainingClass[] $trainingClasses
  * @property TrainingDocument[] $trainingDocuments
+ * @property TrainingHistory[] $trainingHistories 
  * @property TrainingPic[] $trainingPics
- * @property TrainingUnitPlan[] $trainingUnitPlans
+ * @property TrainingSubjectTrainerRecommendation[] $trainingSubjectTrainerRecommendations
+ * @property TrainingUnitPlan $trainingUnitPlan
  */
 class Training extends \yii\db\ActiveRecord
 {
@@ -108,7 +110,7 @@ class Training extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tb_program_id' => 'Program',
+            'tb_program_id' => 'Tb Program ID',
             'tb_program_revision' => 'Tb Program Revision',
             'ref_satker_id' => 'Ref Satker ID',
 			'number' => 'Number',
@@ -123,11 +125,11 @@ class Training extends \yii\db\ActiveRecord
             'costPlan' => 'Cost Plan',
             'costRealisation' => 'Cost Realisation',
             'sourceCost' => 'Source Cost',
-            'hostel' => 'Hostel',
+            'hostel' => 'Stay in?',
             'reguler' => 'Reguler',
             'stakeholder' => 'Stakeholder',
             'location' => 'Location',
-            'status' => 'Status',
+            'status' => 'Published',
             'created' => 'Created',
             'createdBy' => 'Created By',
             'modified' => 'Modified',
@@ -157,9 +159,9 @@ class Training extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingCertificates()
+    public function getTrainingClasses()
     {
-        return $this->hasMany(TrainingCertificate::className(), ['tb_training_id' => 'id']);
+       return $this->hasMany(TrainingClass::className(), ['tb_training_id' => 'id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery
@@ -171,6 +173,15 @@ class Training extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
+    public function getTrainingHistories() 
+    { 
+       return $this->hasMany(TrainingHistory::className(), ['tb_training_id' => 'id']); 
+    } 
+    
+       /** 
+    * @return \yii\db\ActiveQuery 
+    */ 
+
     public function getTrainingPics()
     {
         return $this->hasMany(TrainingPic::className(), ['tb_training_id' => 'id']);
@@ -178,14 +189,21 @@ class Training extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingUnitPlans()
+    public function getTrainingSubjectTrainerRecommendations()
+   {
+       return $this->hasMany(TrainingSubjectTrainerRecommendation::className(), ['tb_training_id' => 'id']);
+   }
+       /**
+    * @return \yii\db\ActiveQuery
+    */
+   public function getTrainingUnitPlan()
     {
         return $this->hasOne(TrainingUnitPlan::className(), ['tb_training_id' => 'id']);
     }
 	
 	public function getStudentCount()
     {
-        
+       
 		return explode('|', $this->spread);
     }
 	/**
@@ -195,6 +213,12 @@ class Training extends \yii\db\ActiveRecord
     public static function find()
     {
         return new TrainingQuery(get_called_class());
+    }
+
+    // Relational function to class room
+    public function getTrainingClassRoom()
+    {
+        return $this->hasMany(TrainingClassRoom::className(), ['tb_training_id' => 'id']);
     }
 }
 

@@ -12,6 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
+$StaUnit2 = \backend\models\StaUnit::find()->select('id,name')->where(['id' =>$model->staUnit->induk])->one();
 ?>
 <div class="employee-view">
 
@@ -22,7 +23,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Employees # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>BACK',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]).' '.
@@ -30,37 +31,36 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
-            'id',
-            [
-				'attribute' => 'ref_satker_id',
-				'value' => $model->satker->name,
-			],
-            'ref_satker_id',
+           // 'id',
             [
 				'attribute' => 'ref_unit_id',
 				'value' => $model->unit->name,
 			],
-            'ref_unit_id',
+			[
+				'attribute' => 'ref_satker_id',
+				'value' => $model->satker->name,
+			],
+			[
+			 	
+				'attribute' => 'ref_sub_satker',
+				'value' => $StaUnit2->name,
+			],
+			[
+				'attribute' => 'ref_sub_satker_2',
+				'value' => $model->staUnit->name,
+			],
             [
 				'attribute' => 'ref_religion_id',
 				'value' => $model->religion->name,
 			],
-            'ref_religion_id',
             [
 				'attribute' => 'ref_rank_class_id',
 				'value' => $model->rankClass->name,
 			],
-            'ref_rank_class_id',
             [
 				'attribute' => 'ref_graduate_id',
 				'value' => $model->graduate->name,
 			],
-            'ref_graduate_id',
-            [
-				'attribute' => 'ref_sta_unit_id',
-				'value' => $model->staUnit->name,
-			],
-            //'ref_sta_unit_id',
             'name',
             'nickName',
             'frontTitle',

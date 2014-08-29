@@ -3,6 +3,8 @@
 namespace backend\modules\bdk\execution\controllers;
 
 use Yii;
+use backend\models\Training;
+use backend\models\TrainingSearch;
 use backend\models\TrainingUnitPlan;
 use backend\models\TrainingUnitPlanSearch;
 use yii\web\Controller;
@@ -34,20 +36,62 @@ class TrainingUnitPlanController extends Controller
      * Lists all TrainingUnitPlan models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($year='',$status='all')
     {
-        $searchModel = new TrainingUnitPlanSearch();
+    	if(empty($year)) $year = date('Y');
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+        
+        $searchModel = new TrainingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        // Ngambil data unit kementerian
-        $unit = Unit::find()
-        	->select(['id', 'name'])
-        	->all();
-
+		if($status!='all'){
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+		}
+		else{
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
+		
+		// GET ALL TRAINING YEAR
+		$year_training = yii\helpers\ArrayHelper::map(Training::find()
+			->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['year'=>'DESC'])
+			->groupBy(['year'])
+			->currentSatker()
+			->active()
+			->asArray()
+			->all(), 'year', 'year');
+		$year_training['all']='All'	;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'unit' => $unit
+			'year' => $year,
+			'status' => $status,
+			'year_training' => $year_training,
         ]);
     }
 
@@ -59,32 +103,8 @@ class TrainingUnitPlanController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => TrainingUnitPlan::find()->where(['tb_training_id' => $id])->one(),
         ]);
-    }
-
-    /**
-     * Creates a new TrainingUnitPlan model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new TrainingUnitPlan();
-
-        if ($model->load(Yii::$app->request->post())){
-			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
-			}
-			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
     }
 
     /**
@@ -95,22 +115,13 @@ class TrainingUnitPlanController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $currentFiles=[];
-        
+        $model = TrainingUnitPlan::find()->where(['tb_training_id' => $id])->one();
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
+            $model->spread = implode('|', $model->spread);
 			
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
 				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             } else {
                 // error in saving model
 				Yii::$app->session->setFlash('error', 'There are some errors');
@@ -125,19 +136,6 @@ class TrainingUnitPlanController extends Controller
     }
 
     /**
-     * Deletes an existing TrainingUnitPlan model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
      * Finds the TrainingUnitPlan model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -146,43 +144,16 @@ class TrainingUnitPlanController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = TrainingUnitPlan::findOne($id)) !== null) {
+        if (($model = Training::find()->where(['id'=>$id])->currentSatker()->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
-	
-	public function actionEditable() {
-		$model = new TrainingUnitPlan; // your model can be loaded here
-		// Check if there is an Editable ajax request
-		if (isset($_POST['hasEditable'])) {
-			// read your posted model attributes
-			if ($model->load($_POST)) {
-				// read or convert your posted information
-				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['TrainingUnitPlan'][$_POST['editableIndex']]);
-				$value=$_POST['TrainingUnitPlan'][$_POST['editableIndex']][$name];
-				$model2->$name = $value ;
-				$model2->save();
-				// return JSON encoded output in the below format
-				echo \yii\helpers\Json::encode(['output'=>$value, 'message'=>'']);
-				// alternatively you can return a validation error
-				// echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'Validation error']);
-			}
-			// else if nothing to do always return an empty JSON encoded output
-			else {
-				echo \yii\helpers\Json::encode(['output'=>'', 'message'=>'']);
-			}
-		return;
-		}
-		// Else return to rendering a normal view
-		return $this->render('view', ['model'=>$model]);
-	}
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingUnitPlan::find(),
+            'query' => Training::find(),
         ]);
 		
 		try {
@@ -196,7 +167,7 @@ class TrainingUnitPlanController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "TrainingUnitPlan";
+			$OpenTBS->VarRef['modelName']= "Training";
 			$data1[]['col0'] = 'id';			
 			$data1[]['col1'] = 'tb_training_id';			
 			$data1[]['col2'] = 'ref_unit_id';			
@@ -228,7 +199,7 @@ class TrainingUnitPlanController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingUnitPlan::find(),
+            'query' => Training::find(),
         ]);
 		
 		try {
@@ -243,7 +214,7 @@ class TrainingUnitPlanController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingUnitPlan');
+								->setCellValue('A1', 'Tabel Training');
 					$idx=2; // line 2
 					foreach($dataProvider->getModels() as $trainingunitplan){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingunitplan->id)
@@ -274,7 +245,7 @@ class TrainingUnitPlanController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingUnitPlan');
+								->setCellValue('A1', 'Tabel Training');
 					$idx=2; // line 2
 					foreach($dataProvider->getModels() as $trainingunitplan){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingunitplan->id)
@@ -322,7 +293,7 @@ class TrainingUnitPlanController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel TrainingUnitPlan');
+									->setCellValue('A1', 'Tabel Training');
 						$idx=2; // line 2
 						foreach($dataProvider->getModels() as $trainingunitplan){
 							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingunitplan->id)
@@ -372,7 +343,7 @@ class TrainingUnitPlanController extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingUnitPlan::find(),
+            'query' => Training::find(),
         ]);
 		
 		/* 
@@ -410,7 +381,7 @@ class TrainingUnitPlanController extends Controller
 						//$deleted=  $sheetData[$baseRow]['K'];
 						//$deletedBy=  $sheetData[$baseRow]['L'];
 
-						$model2=new TrainingUnitPlan;
+						$model2=new Training;
 						//$model2->id=  $id;
 						$model2->tb_training_id=  $tb_training_id;
 						$model2->ref_unit_id=  $ref_unit_id;

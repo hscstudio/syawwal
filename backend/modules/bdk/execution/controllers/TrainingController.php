@@ -4,6 +4,7 @@ namespace backend\modules\bdk\execution\controllers;
 
 use Yii;
 use backend\models\Training;
+use backend\models\TrainingUnitPlan;
 use backend\models\TrainingSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -101,22 +102,43 @@ class TrainingController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-        	// Ambil revision terakhir dari program history
-        	$model->revision = ProgramHistory::getRevision($model->tb_program_id);
+        	$model->tb_program_revision = (int)\backend\models\ProgramHistory::getRevision($model->tb_program_id);
+			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+			$model->status =0;
 
-        	// Ngeset approved status ke 0
-        	$model->approvedStatus = null;
-
+			// GENERATE TRAINING NUMBER
+			$year = date('Y',strtotime($model->start));
+			$program_owner = sprintf("%02s", $model->program->ref_satker_id);
+			$training_owner = sprintf("%02s", $model->ref_satker_id);
+			if($program_owner==$training_owner) $training_owner='00';
+			$program_number = $model->program->number;
+			$training_of_program_this_year = Training::find()
+				->andWhere('start<=:start',[':start'=>$model->start])			
+				->currentSatker()
+				->active()
+				->count()+1;
+			$model->number = $year.'-'.$program_owner.'-'.$training_owner.'-'.$program_number.'.'.$training_of_program_this_year;
+			
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', 'Data saved');
-				// Nyimpen history training
-				$model2 = new TrainingHistory();
+				// SAVE HISTORY OF TRAINING
+				$model2 = new \backend\models\TrainingHistory();
 				$model2->attributes = array_merge(
-				  $model->attributes,[
-					'tb_training_id'=> $model->id,
+				  $model->attributes,
+				  [
+					'tb_training_id'=>$model->id,
+					'revision'=>'0',					
 				  ]
 				);				
 				$model2->save();
+
+				// Nyimpen training unit plan
+				$model3 = new TrainingUnitPlan();
+				$model3->tb_training_id = $model->id;
+				$model3->status = 1;
+				$model3->ref_unit_id = 0;
+				$model3->spread = '0|0|0|0|0|0|0|0|0|0|0|0|0';
+				$model3->save();
 			}
 			else
 			{
@@ -194,6 +216,17 @@ class TrainingController extends Controller
 
 	}
 
+
+	public function addClassCount($id)
+	{
+		if (Yii::$app->request->post('classCount') != null or Yii::$app->request->post('classCount') != '')
+		{	
+			$training = Training::find(Yii::$app->request->post('id'));
+			$training->classCount = Yii::$app->request->post('classCount');
+			$training->
+		}
+	}
+
     /**
      * Updates an existing Training model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -214,47 +247,56 @@ class TrainingController extends Controller
         	->all(),
         'id', 'name');
         
+        // CHECK SATKER
+		if ($model->ref_satker_id != (int)Yii::$app->user->identity->employee->ref_satker_id){
+			Yii::$app->session->setFlash('error', 'You dont allowed to edit it');
+			return $this->redirect(['index']);
+		}
+
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-			
+            
+			if(Yii::$app->request->post('generate_number')==1){
+			// GENERATE TRAINING NUMBER				
+				$year = date('Y',strtotime($model->start));
+				$program_owner = sprintf("%02s", $model->program->ref_satker_id);
+				$training_owner = sprintf("%02s", $model->ref_satker_id);
+				if($program_owner==$training_owner) $training_owner='00';
+				$program_number = $model->program->number;
+				$training_of_program_this_year = Training::find()
+					->andWhere('start<=:start and id<>:id',[':id'=>$id,':start'=>$model->start])			
+					->currentSatker()
+					->active()
+					->count()+1;
+				$model->number = $year.'-'.$program_owner.'-'.$training_owner.'-'.$program_number.'.'.$training_of_program_this_year;
+			}
+
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
 
 				Yii::$app->session->setFlash('success', 'Data saved');
 
 				// Klo neken tombol save as revision
 				if(Yii::$app->request->post('create_revision') !== null )
 				{
-					// Nyimpen revisi
-					$model2 = new TrainingHistory();
+					// CREATE NEW HISTORY
+					$revision = \backend\models\TrainingHistory::getRevision($model->id);				
+					$model2 = new \backend\models\TrainingHistory();
 					$model2->attributes = array_merge(
 					  $model->attributes,[
-						'tb_training_id' => $model->id,
-						'revision' => $model->revision + 1,
+						'tb_training_id'=>$model->id,
+						'revision'=>$revision+1,				
 					  ]
-					);
+					);				
 					$model2->save();
-
-					// Ngapdate field revision menjadi yang terbaru
-					$model->revision += 1;
-					$model->save();
 					
 					Yii::$app->session->setFlash('success', 'Save as revision');	
 				}
 				else
 				{
-					// Ngupdate history aja
-					$model2 = TrainingHistory::find()
-						->where(['tb_training_id' => $model->id])
-						->orderBy(['revision'=>'DESC'])
-						->one();
-					$model2->attributes = array_merge($model->attributes);
+					$model2 = \backend\models\TrainingHistory::find()
+									->where(['tb_training_id' => $model->id,])
+									->orderBy(['revision'=>'DESC'])
+									->one();
+					$model2->attributes = array_merge($model->attributes);				
 					$model2->save();
 				}
 				// done
@@ -285,6 +327,9 @@ class TrainingController extends Controller
     {
         $this->findModel($id)->delete();
 
+        // Ngapus training unit plan, all
+        TrainingUnitPlan::deleteAll('tb_training_id = :tb_training_id', [':tb_training_id' => $id]);
+        
         // Ngapus historynya juga, all
         TrainingHistory::deleteAll('tb_training_id = :tb_training_id', [':tb_training_id' => $id]);
 

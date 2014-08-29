@@ -52,10 +52,8 @@ class TrainingUnitPlanSearch extends TrainingUnitPlan
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
             'tb_training_id' => $this->tb_training_id,
             'ref_unit_id' => $this->ref_unit_id,
-            'total' => $this->total,
             'status' => $this->status,
             'created' => $this->created,
             'createdBy' => $this->createdBy,
