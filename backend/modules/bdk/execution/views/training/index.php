@@ -6,6 +6,7 @@ use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use kartik\widgets\Select2;
 use backend\models\ActivityRoom;
+use kartik\widgets\DepDrop;
 
 /* @var $searchModel backend\models\TrainingSearch */
 
@@ -86,7 +87,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							]);
 
 							$fOut .= '    <div class="modal-header">
-									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 									        <h4 class="modal-title"><i class="fa fa-fw fa-pencil-square"></i>Edit Class Count</h4>
 									      </div>
 									      <div class="modal-body">';
@@ -126,7 +126,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							]);
 
 							$fOut .= '    <div class="modal-header">
-									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 									        <h4 class="modal-title"><i class="fa fa-fw fa-plus-square"></i>Add Class Count</h4>
 									      </div>
 									      <div class="modal-body">';
@@ -177,7 +176,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							]);
 
 							$fOut .= '    <div class="modal-header">
-									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 									        <h4 class="modal-title"><i class="fa fa-fw fa-pencil-square"></i>Edit Student Count</h4>
 									      </div>
 									      <div class="modal-body">';
@@ -217,7 +215,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							]);
 
 							$fOut .= '    <div class="modal-header">
-									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 									        <h4 class="modal-title"><i class="fa fa-fw fa-plus-square"></i>Add Student Count</h4>
 									      </div>
 									      <div class="modal-body">';
@@ -253,14 +250,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'value' => function ($data)
 					{
 						$roomCount = ActivityRoom::find()->where(['type' => 0, 'activity_id' => $data->id])->count();
-						if ($roomCount > 0)
-						{
-							return '<div class="badge alert-success"> '.$roomCount.' </div>';
-						}
-						else
-						{
-							return '<div class="badge alert-danger"> 0 </div>';
-						}
+
+						$fOut = '<a class="badge alert-info" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
+									'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
+								</a>';
+
+						return $fOut;
 					}
 				],
 

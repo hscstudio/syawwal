@@ -46,6 +46,13 @@ class TrainingController extends Controller
         $searchModel = new TrainingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        // Bikin data map dari model satker
+        $dataEs2 = ArrayHelper::map(Satker::find()
+        	->select(['id','name'])
+        	->asArray()
+        	->all(),
+        'id', 'name');
+
         $queryParams = Yii::$app->request->getQueryParams();
 		if($status!='all'){
 			$queryParams['TrainingSearch']=[
@@ -63,6 +70,7 @@ class TrainingController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
 			'status' => $status,
+			'dataEs2' => $dataEs2
         ]);
     }
 

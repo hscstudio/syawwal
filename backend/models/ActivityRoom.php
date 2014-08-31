@@ -68,9 +68,9 @@ class ActivityRoom extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'activity_id', 'tb_room_id', 'startTime', 'finishTime', 'note', 'status', 'created', 'createdBy', 'modified', 'modifiedBy'], 'required'],
+            [['type', 'activity_id', 'tb_room_id', 'startTime', 'finishTime', 'status', 'created', 'createdBy', 'modified', 'modifiedBy'], 'required'],
             [['type', 'activity_id', 'tb_room_id', 'status', 'createdBy', 'modifiedBy'], 'integer'],
-            [['startTime', 'finishTime', 'created', 'modified'], 'safe'],
+            [['startTime', 'finishTime', 'created', 'modified', 'note'], 'safe'],
             [['note'], 'string', 'max' => 255]
         ];
     }
