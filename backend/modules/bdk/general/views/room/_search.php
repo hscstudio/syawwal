@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\SatkerPicSearch */
+/* @var $model backend\models\RoomSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="satker-pic-search">
+<div class="room-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -23,7 +23,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name') ?>
 
-    <?= $form->field($model, 'value') ?>
+    <?= $form->field($model, 'capacity') ?>
+
+    <?php // echo $form->field($model, 'owner') ?>
+
+    <?php // echo $form->field($model, 'computer') ?>
+
+    <?php // echo $form->field($model, 'hostel') ?>
+
+    <?php // echo $form->field($model, 'address') ?>
 
     <?php // echo $form->field($model, 'status') ?>
 

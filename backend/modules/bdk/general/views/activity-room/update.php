@@ -3,11 +3,11 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\SatkerPic */
+/* @var $model backend\models\ActivityRoom */
 
-$this->title = 'Update Satker Pic: ' . ' ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Satker Pics', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->title = 'Update Activity Room: ' . ' ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Activity Rooms', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -18,7 +18,7 @@ echo \kartik\widgets\AlertBlock::widget([
     'type' => \kartik\widgets\AlertBlock::TYPE_ALERT
 ]);
 ?>
-<div class="satker-pic-update">
+<div class="activity-room-update">
 
     <?= $this->render('_form', [
         'model' => $model,

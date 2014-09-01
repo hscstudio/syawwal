@@ -4,15 +4,20 @@ namespace backend\modules\bdk\general\controllers;
 
 use Yii;
 use backend\models\Training;
-use backend\models\TrainingSearch;
+use backend\models\ActivityRoom;
+use backend\models\ActivityRoomSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use hscstudio\heart\helpers\Heart;
 
 /**
- * TrainingIpkController implements the CRUD actions for Training model.
+ * ActivityRoomController implements the CRUD actions for ActivityRoom model.
  */
-class TrainingIpkController extends Controller
+class ActivityRoomController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -29,23 +34,54 @@ class TrainingIpkController extends Controller
         ];
     }
 
-    /**
-     * Lists all Training models.
-     * @return mixed
-     */
+    
     public function actionIndex()
     {
-        $searchModel = new TrainingSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    	return $this->render('index');
+    }
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+
+
+    public function actionEvents()
+	{
+		$start = Yii::$app->request->get('start');
+		$end = Yii::$app->request->get('end');
+        
+		$items = array();
+		$model= ActivityRoom::find()
+				->where('startTime >= :start and finishTime <= :end',[':start' => $start,':end' => $end])
+				->all();
+
+		foreach ($model as $value) {
+			
+			if ($value->status == 0)
+			{
+				$color =  '#f0ad4e';
+			}
+			else
+			{
+				$color = '#5cb85c';
+			}
+
+			$items[]=[
+				'title'=> Training::find()->where(['id' => $value->activity_id])->one()->name.' | '
+							.Heart::twodate($value->startTime,$value->finishTime,1).' | ',
+				'start'=> date('Y-m-d',strtotime($value->startTime)),
+				'end'=> date('Y-m-d', strtotime('+1 day', strtotime($value->finishTime))),
+				'color'=> $color,
+				'editable' => false,
+				'activityId' => $value->id,
+				//'allDay'=>true,
+				//'url'=>'http://anyurl.com'
+			];
+
+		}
+
+		echo Json::encode($items);
     }
 
     /**
-     * Displays a single Training model.
+     * Displays a single ActivityRoom model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +93,13 @@ class TrainingIpkController extends Controller
     }
 
     /**
-     * Creates a new Training model.
+     * Creates a new ActivityRoom model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Training();
+        $model = new ActivityRoom();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -81,7 +117,7 @@ class TrainingIpkController extends Controller
     }
 
     /**
-     * Updates an existing Training model.
+     * Updates an existing ActivityRoom model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -118,7 +154,7 @@ class TrainingIpkController extends Controller
     }
 
     /**
-     * Deletes an existing Training model.
+     * Deletes an existing ActivityRoom model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -131,15 +167,15 @@ class TrainingIpkController extends Controller
     }
 
     /**
-     * Finds the Training model based on its primary key value.
+     * Finds the ActivityRoom model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Training the loaded model
+     * @return ActivityRoom the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Training::findOne($id)) !== null) {
+        if (($model = ActivityRoom::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -147,15 +183,15 @@ class TrainingIpkController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new Training; // your model can be loaded here
+		$model = new ActivityRoom; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['Training'][$_POST['editableIndex']]);
-				$value=$_POST['Training'][$_POST['editableIndex']][$name];
+				$name=key($_POST['ActivityRoom'][$_POST['editableIndex']]);
+				$value=$_POST['ActivityRoom'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -175,7 +211,7 @@ class TrainingIpkController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => ActivityRoom::find(),
         ]);
 		
 		try {
@@ -189,20 +225,20 @@ class TrainingIpkController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "Training";
+			$OpenTBS->VarRef['modelName']= "ActivityRoom";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_program_id';			
-			$data1[]['col2'] = 'revision';			
-			$data1[]['col3'] = 'ref_satker_id';			
+			$data1[]['col1'] = 'type';			
+			$data1[]['col2'] = 'activity_id';			
+			$data1[]['col3'] = 'tb_room_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $training){
+			foreach($dataProvider->getModels() as $activityroom){
 				$data2[] = [
-					'col0'=>$training->id,
-					'col1'=>$training->tb_program_id,
-					'col2'=>$training->revision,
-					'col3'=>$training->ref_satker_id,
+					'col0'=>$activityroom->id,
+					'col1'=>$activityroom->type,
+					'col2'=>$activityroom->activity_id,
+					'col3'=>$activityroom->tb_room_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -221,7 +257,7 @@ class TrainingIpkController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => ActivityRoom::find(),
         ]);
 		
 		try {
@@ -236,13 +272,13 @@ class TrainingIpkController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Training');
+								->setCellValue('A1', 'Tabel ActivityRoom');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $training){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->revision)
-													  ->setCellValue('D'.$idx, $training->ref_satker_id);
+					foreach($dataProvider->getModels() as $activityroom){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $activityroom->id)
+													  ->setCellValue('B'.$idx, $activityroom->type)
+													  ->setCellValue('C'.$idx, $activityroom->activity_id)
+													  ->setCellValue('D'.$idx, $activityroom->tb_room_id);
 						$idx++;
 					}		
 					
@@ -267,13 +303,13 @@ class TrainingIpkController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Training');
+								->setCellValue('A1', 'Tabel ActivityRoom');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $training){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->revision)
-													  ->setCellValue('D'.$idx, $training->ref_satker_id);
+					foreach($dataProvider->getModels() as $activityroom){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $activityroom->id)
+													  ->setCellValue('B'.$idx, $activityroom->type)
+													  ->setCellValue('C'.$idx, $activityroom->activity_id)
+													  ->setCellValue('D'.$idx, $activityroom->tb_room_id);
 						$idx++;
 					}		
 									
@@ -315,13 +351,13 @@ class TrainingIpkController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel Training');
+									->setCellValue('A1', 'Tabel ActivityRoom');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $training){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-														  ->setCellValue('B'.$idx, $training->tb_program_id)
-														  ->setCellValue('C'.$idx, $training->revision)
-														  ->setCellValue('D'.$idx, $training->ref_satker_id);
+						foreach($dataProvider->getModels() as $activityroom){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $activityroom->id)
+														  ->setCellValue('B'.$idx, $activityroom->type)
+														  ->setCellValue('C'.$idx, $activityroom->activity_id)
+														  ->setCellValue('D'.$idx, $activityroom->tb_room_id);
 							$idx++;
 						}		
 						
@@ -365,7 +401,7 @@ class TrainingIpkController extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => ActivityRoom::find(),
         ]);
 		
 		/* 
@@ -391,67 +427,31 @@ class TrainingIpkController extends Controller
 						$read_status = true;
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
-						$tb_program_id=  $sheetData[$baseRow]['B'];
-						$revision=  $sheetData[$baseRow]['C'];
-						$ref_satker_id=  $sheetData[$baseRow]['D'];
-						$name=  $sheetData[$baseRow]['E'];
-						$start=  $sheetData[$baseRow]['F'];
-						$finish=  $sheetData[$baseRow]['G'];
-						$note=  $sheetData[$baseRow]['H'];
-						$studentCount=  $sheetData[$baseRow]['I'];
-						$classCount=  $sheetData[$baseRow]['J'];
-						$executionSK=  $sheetData[$baseRow]['K'];
-						$resultSK=  $sheetData[$baseRow]['L'];
-						$costPlan=  $sheetData[$baseRow]['M'];
-						$costRealisation=  $sheetData[$baseRow]['N'];
-						$sourceCost=  $sheetData[$baseRow]['O'];
-						$hostel=  $sheetData[$baseRow]['P'];
-						$reguler=  $sheetData[$baseRow]['Q'];
-						$stakeholder=  $sheetData[$baseRow]['R'];
-						$location=  $sheetData[$baseRow]['S'];
-						$status=  $sheetData[$baseRow]['T'];
-						//$created=  $sheetData[$baseRow]['U'];
-						//$createdBy=  $sheetData[$baseRow]['V'];
-						//$modified=  $sheetData[$baseRow]['W'];
-						//$modifiedBy=  $sheetData[$baseRow]['X'];
-						//$deleted=  $sheetData[$baseRow]['Y'];
-						//$deletedBy=  $sheetData[$baseRow]['Z'];
-						$approvedStatus=  $sheetData[$baseRow]['AA'];
-						$approvedStatusNote=  $sheetData[$baseRow]['AB'];
-						$approvedStatusDate=  $sheetData[$baseRow]['AC'];
-						$approvedStatusBy=  $sheetData[$baseRow]['AD'];
+						$type=  $sheetData[$baseRow]['B'];
+						$activity_id=  $sheetData[$baseRow]['C'];
+						$tb_room_id=  $sheetData[$baseRow]['D'];
+						$startTime=  $sheetData[$baseRow]['E'];
+						$finishTime=  $sheetData[$baseRow]['F'];
+						$note=  $sheetData[$baseRow]['G'];
+						$status=  $sheetData[$baseRow]['H'];
+						//$created=  $sheetData[$baseRow]['I'];
+						//$createdBy=  $sheetData[$baseRow]['J'];
+						//$modified=  $sheetData[$baseRow]['K'];
+						//$modifiedBy=  $sheetData[$baseRow]['L'];
 
-						$model2=new Training;
+						$model2=new ActivityRoom;
 						//$model2->id=  $id;
-						$model2->tb_program_id=  $tb_program_id;
-						$model2->revision=  $revision;
-						$model2->ref_satker_id=  $ref_satker_id;
-						$model2->name=  $name;
-						$model2->start=  $start;
-						$model2->finish=  $finish;
+						$model2->type=  $type;
+						$model2->activity_id=  $activity_id;
+						$model2->tb_room_id=  $tb_room_id;
+						$model2->startTime=  $startTime;
+						$model2->finishTime=  $finishTime;
 						$model2->note=  $note;
-						$model2->studentCount=  $studentCount;
-						$model2->classCount=  $classCount;
-						$model2->executionSK=  $executionSK;
-						$model2->resultSK=  $resultSK;
-						$model2->costPlan=  $costPlan;
-						$model2->costRealisation=  $costRealisation;
-						$model2->sourceCost=  $sourceCost;
-						$model2->hostel=  $hostel;
-						$model2->reguler=  $reguler;
-						$model2->stakeholder=  $stakeholder;
-						$model2->location=  $location;
 						$model2->status=  $status;
 						//$model2->created=  $created;
 						//$model2->createdBy=  $createdBy;
 						//$model2->modified=  $modified;
 						//$model2->modifiedBy=  $modifiedBy;
-						//$model2->deleted=  $deleted;
-						//$model2->deletedBy=  $deletedBy;
-						$model2->approvedStatus=  $approvedStatus;
-						$model2->approvedStatusNote=  $approvedStatusNote;
-						$model2->approvedStatusDate=  $approvedStatusDate;
-						$model2->approvedStatusBy=  $approvedStatusBy;
 
 						try{
 							if($model2->save()){

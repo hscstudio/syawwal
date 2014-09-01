@@ -6,10 +6,10 @@ use kartik\widgets\Select2;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\SatkerPic */
+/* @var $model backend\models\Room */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="satker-pic-form">
+<div class="room-form">
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
@@ -19,7 +19,7 @@ use yii\helpers\ArrayHelper;
 						]) ?>
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
-		SatkerPic	</div>
+		Room	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
@@ -39,9 +39,28 @@ use yii\helpers\ArrayHelper;
 				],
 			]); ?>
 
-    <?= $form->field($model, 'code')->textInput(['maxlength' => 25]) ?>
+    <?= $form->field($model, 'capacity')->textInput() ?>
 
-    <?= $form->field($model, 'value')->textInput() ?>
+    <?= $form->field($model, 'owner')->widget(\kartik\widgets\SwitchInput::classname(), [
+					'pluginOptions' => [
+						'onText' => 'On',
+						'offText' => 'Off',
+					]
+				]) ?>
+
+    <?= $form->field($model, 'computer')->widget(\kartik\widgets\SwitchInput::classname(), [
+					'pluginOptions' => [
+						'onText' => 'On',
+						'offText' => 'Off',
+					]
+				]) ?>
+
+    <?= $form->field($model, 'hostel')->widget(\kartik\widgets\SwitchInput::classname(), [
+					'pluginOptions' => [
+						'onText' => 'On',
+						'offText' => 'Off',
+					]
+				]) ?>
 
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
@@ -56,13 +75,17 @@ use yii\helpers\ArrayHelper;
 
     <?= ""//deletedBy ?>
 
+    <?= $form->field($model, 'code')->textInput(['maxlength' => 25]) ?>
+
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+
     <?= ""//created ?>
 
     <?= ""//modified ?>
 
     <?= ""//deleted ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+    <?= $form->field($model, 'address')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

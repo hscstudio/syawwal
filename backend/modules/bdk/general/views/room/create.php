@@ -4,10 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Training */
+/* @var $model backend\models\Room */
 
-$this->title = 'Create Training';
-$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
+$this->title = 'Create Room';
+$this->params['breadcrumbs'][] = ['label' => 'Rooms', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -18,7 +18,7 @@ echo \kartik\widgets\AlertBlock::widget([
     'type' => \kartik\widgets\AlertBlock::TYPE_ALERT
 ]);
 ?>
-<div class="training-create">
+<div class="room-create">
 
     <?= $this->render('_form', [
         'model' => $model,

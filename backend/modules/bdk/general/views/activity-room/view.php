@@ -4,22 +4,22 @@ use yii\helpers\Html;
 use kartik\detail\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\SatkerPic */
+/* @var $model backend\models\ActivityRoom */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Satker Pics', 'url' => ['index']];
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Activity Rooms', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="satker-pic-view">
+<div class="activity-room-view">
 
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Satker Pics # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Activity Rooms # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
@@ -31,21 +31,21 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
         'attributes' => [
             'id',
+            'type',
+            'activity_id',
             [
-				'attribute' => 'ref_satker_id',
-				'value' => $model->satker->name,
+				'attribute' => 'tb_room_id',
+				'value' => $model->room->name,
 			],
-            'ref_satker_id',
-            'code',
-            'name',
-            'value',
+            'tb_room_id',
+            'startTime',
+            'finishTime',
+            'note',
             'status',
             'created',
             'createdBy',
             'modified',
             'modifiedBy',
-            'deleted',
-            'deletedBy',
         ],
     ]) ?>
 

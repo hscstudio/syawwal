@@ -4,16 +4,16 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $searchModel backend\models\EmployeeSearch */
+/* @var $searchModel backend\models\RoomSearch */
 
-$this->title = 'Employees';
+$this->title = 'Rooms';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="employee-index">
+<div class="room-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -32,46 +32,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					}
 				],
 				*/
-            /*
+            
 				[
-					'attribute' => 'ref_unit_id',
-					'value' => function ($data) {
-						return $data->unit->name;
-					}
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'code',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'Code', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_religion_id',
-					'value' => function ($data) {
-						return $data->religion->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_rank_class_id',
-					'value' => function ($data) {
-						return $data->rankClass->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_graduate_id',
-					'value' => function ($data) {
-						return $data->graduate->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_sta_unit_id',
-					'value' => function ($data) {
-						return $data->staUnit->name;
-					}
-				],
-				*/
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
@@ -85,61 +55,51 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'nickName',
+					'attribute' => 'capacity',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'NickName', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Capacity', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'frontTitle',
+					'attribute' => 'owner',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'FrontTitle', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Owner', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'backTitle',
+					'attribute' => 'computer',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'BackTitle', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Computer', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'nip',
+					'attribute' => 'hostel',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Nip', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'born',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Born', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Hostel', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
 
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Employee</h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Room</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Employee', ['create'], ['class' => 'btn btn-success']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Room', ['create'], ['class' => 'btn btn-success']),
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
