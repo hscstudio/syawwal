@@ -18,7 +18,7 @@ class ProgramSubjectSearch extends ProgramSubject
     public function rules()
     {
         return [
-            [['id', 'tb_program_id', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['id', 'tb_program_id', 'ref_subject_type_id', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
 			[['hours'], 'number'],
             [['name', 'created', 'modified', 'deleted'], 'safe'],
         ];
@@ -55,7 +55,7 @@ class ProgramSubjectSearch extends ProgramSubject
         $query->andFilterWhere([
             'id' => $this->id,
             'tb_program_id' => $this->tb_program_id,
-            'type' => $this->type,
+            'ref_subject_type_id' => $this->ref_subject_type_id,
             'hours' => $this->hours,
             'sort' => $this->sort,
             'test' => $this->test,

@@ -19,11 +19,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'tb_program_id') ?>
 
-    <?= $form->field($model, 'revision') ?>
+    <?= $form->field($model, 'tb_program_revision') ?>
 
     <?= $form->field($model, 'ref_satker_id') ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'number') ?>
+
+    <?php // echo $form->field($model, 'name') ?>
 
     <?php // echo $form->field($model, 'start') ?>
 

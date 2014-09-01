@@ -39,7 +39,17 @@ use yii\helpers\ArrayHelper;
 				],
 			]); ?>
 
-    <?= $form->field($model, 'revision')->textInput() ?>
+    <?= '' ?>
+
+			<?php
+			$data = ArrayHelper::map(\backend\models\ProgramRevis::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'tb_program_revision')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => ['placeholder' => 'Choose ProgramRevis ...'],
+				'pluginOptions' => [
+				'allowClear' => true
+				],
+			]); ?>
 
     <?= '' ?>
 
@@ -55,20 +65,13 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'approvedStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
-    <?= $form->field($model, 'approvedStatusNote')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'approvedStatusDate')->widget(\kartik\datecontrol\DateControl::classname(), [
-					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+    <?= $form->field($model, 'start')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
 				]); ?>
 
-    <?= $form->field($model, 'approvedStatusBy')->textInput() ?>
+    <?= $form->field($model, 'finish')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
+				]); ?>
 
     <?= $form->field($model, 'studentCount')->textInput() ?>
 
@@ -105,19 +108,26 @@ use yii\helpers\ArrayHelper;
 
     <?= ""//deletedBy ?>
 
-    <?= $form->field($model, 'start')->widget(\kartik\datecontrol\DateControl::classname(), [
-					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
-				]); ?>
+    <?= $form->field($model, 'approvedStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
+					'pluginOptions' => [
+						'onText' => 'On',
+						'offText' => 'Off',
+					]
+				]) ?>
 
-    <?= $form->field($model, 'finish')->widget(\kartik\datecontrol\DateControl::classname(), [
-					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
-				]); ?>
+    <?= $form->field($model, 'approvedStatusBy')->textInput() ?>
 
     <?= ""//created ?>
 
     <?= ""//modified ?>
 
     <?= ""//deleted ?>
+
+    <?= $form->field($model, 'approvedStatusDate')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+				]); ?>
+
+    <?= $form->field($model, 'number')->textInput(['maxlength' => 30]) ?>
 
     <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
 
@@ -130,6 +140,8 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'stakeholder')->textInput(['maxlength' => 255]) ?>
 
     <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
+
+    <?= $form->field($model, 'approvedStatusNote')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

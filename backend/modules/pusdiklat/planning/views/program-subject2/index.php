@@ -30,20 +30,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],
 
             [
-				'attribute' => 'type',
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
 				'vAlign'=>'middle',
-				'hAlign'=>'center',
+				'hAlign'=>'center',				
 				'width'=>'150px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'format' => 'html',
 				'value' => function ($data) {
-					$type ="";
-					if($data->type==0) $type = "NORMAL";
-					if($data->type==1) $type =  "CERAMAH";
-					if($data->type==2) $type = "MFD";
-					if($data->type==3) $type = "OJT";
-					return '<span class="badge">'.$type.'</div>';
+					return '<span class="badge">'.$data->subjectType->name.'</span>';
 				}
 			],
 		

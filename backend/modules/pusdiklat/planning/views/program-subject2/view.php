@@ -38,12 +38,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => $model->program->name,
 			],
             [
-				'attribute' => 'type',
-				'label'=> 'Type',
-				'format'=>'html',
-				'value' => '<span class="badge">'.(($model->type==0)?"NORMAL":(($model->type==1)?"CERAMAH":(($model->type==2)?"MFD":(($model->type==3)?"OJT":"")))).'</span>',
-			],
-			
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
+				'label'=>'Type',
+				'value' => '<span class="badge">'.$model->subjectType->name.'</span>',
+			],			
             'name',
             'hours',
             'sort',

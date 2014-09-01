@@ -7,7 +7,7 @@ use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\ProgramSubjectSearch */
 
-$this->title = \yii\helpers\Inflector::camel2words('Subject : '.$program_name);
+$this->title = \yii\helpers\Inflector::camel2words('Subject : '.$training_name);
 $this->params['breadcrumbs'][] = ['label'=>'Training','url'=>['training3/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -28,25 +28,18 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-
             [
-				'attribute' => 'type',
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
 				'vAlign'=>'middle',
-				'hAlign'=>'center',
+				'hAlign'=>'center',				
 				'width'=>'150px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'format' => 'html',
 				'value' => function ($data) {
-					$type ="";
-					if($data->type==0) $type = "MP";
-					if($data->type==1) $type = "CERAMAH";
-					if($data->type==2) $type = "MFD";
-					if($data->type==3) $type = "OJT";
-					return '<span class="badge">'.$type.'</div>';
+					return '<span class="badge">'.$data->subjectType->name.'</span>';
 				}
-			],
-		
+			],		
 			[
 				'attribute' => 'name',
 				'vAlign'=>'middle',
@@ -101,14 +94,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'hAlign'=>'center',
 				'width'=>'75px',
 				'label' => 'Trainer',
-				'value' => function ($data) {
+				'value' => function ($data) use ($tb_training_id) {
 					$countSubjectDoc = \backend\models\ProgramSubjectDocument::find()
 								->where(['tb_program_subject_id' => $data->id,])
 								->active()
 								->count();
 					if($countSubjectDoc>0){
 						return Html::a($countSubjectDoc, 
-							['training-subject-trainer-recommendation3/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], 
+							['training-subject-trainer-recommendation3/index','tb_training_id'=>$tb_training_id,'tb_program_subject_id'=>$data->id], 
 							['class' => 'label label-primary','data-pjax' => '0']);
 					}
 					else{
@@ -152,13 +145,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'placeholder' => 'Status ...', 
 					'class'=>'form-control', 
 					'onchange'=>'
-						$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training-subject3/index']).'?tb_program_id='.(int)$tb_program_id.'&status="+$(this).val(), container: "#pjax-gridview", timeout: 1});
+						$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training-subject3/index']).'?tb_training_id='.(int)$tb_training_id.'&status="+$(this).val(), container: "#pjax-gridview", timeout: 1});
 					',	
 					'data-pjax' => '1',
 				],
 			]).
 			'</div>',
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id,'status'=>$status], ['class' => 'btn btn-info']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_training_id'=>(int)$tb_training_id,'status'=>$status], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,

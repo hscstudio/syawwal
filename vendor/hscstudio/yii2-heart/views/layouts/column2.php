@@ -4,7 +4,7 @@ use kartik\widgets\SideNav;
 use hscstudio\heart\widgets\Breadcrumbs;
 use kartik\widgets\AlertBlock;
 use kartik\icons\Icon;
- 
+echo hscstudio\heart\widgets\SM::widget(); 
 // Set default icon fontawesome
 Icon::map($this, Icon::FA);
 /**
@@ -141,4 +141,5 @@ Icon::map($this, Icon::FA);
         </section>		
     </aside>
 </div>
+
 <?php $this->endContent();

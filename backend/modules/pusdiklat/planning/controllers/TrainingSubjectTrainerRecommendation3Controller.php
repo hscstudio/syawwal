@@ -33,9 +33,10 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
      * Lists all TrainingSubjectTrainerRecommendation models.
      * @return mixed
      */
-    public function actionIndex($tb_program_id,$tb_program_subject_id,$status=1)
+    public function actionIndex($tb_training_id,$tb_program_subject_id,$status=1)
     {
-        $searchModel = new TrainingSubjectTrainerRecommendationSearch();
+        
+		$searchModel = new TrainingSubjectTrainerRecommendationSearch();
         $queryParams = Yii::$app->request->getQueryParams();			
 		if($status!='all'){
 			$queryParams['TrainingSubjectTrainerRecommendationSearch']=[
@@ -50,17 +51,18 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 		}
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 		$dataProvider = $searchModel->search($queryParams);
-
-        $model1 = \backend\models\ProgramSubject::findOne($tb_program_subject_id);
-		 
+	
+        $model1 = \backend\models\Training::find($tb_training_id)->one();
+		$model2 = \backend\models\ProgramSubject::findOne($tb_program_subject_id);
+		
 		return $this->render('index', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
-			'tb_program_id' => $tb_program_id,
+			'tb_training_id' => $tb_training_id,
 			'tb_program_subject_id' => $tb_program_subject_id,
 			'status' => $status,
-			'program_name' => $model1->program->name,
-			'program_subject_name' => $model1->name,
+			'training_name' => $model1->name,
+			'program_subject_name' => $model2->name,
 		]);
     }
 
@@ -88,26 +90,34 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($tb_program_id,$tb_program_subject_id)
+    public function actionCreate($tb_training_id,$tb_program_subject_id)
     {
         $model = new TrainingSubjectTrainerRecommendation();
 
         if ($model->load(Yii::$app->request->post())){
+			$model->tb_training_id = (int) $tb_training_id;
+			$model->tb_program_subject_id = (int) $tb_program_subject_id;
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
+				 return $this->redirect(['view', 'id' => $model->id]);
 			}
 			else{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+				 return $this->redirect([
+					'index',
+					'tb_training_id' => $tb_training_id,
+					'tb_program_subject_id' => $tb_program_subject_id,
+				]);
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
         } else {	
-			$model1=\backend\models\ProgramSubject::findOne($tb_program_subject_id);
+			$model1 = \backend\models\Training::find($tb_training_id)->one();
+			$model2 = \backend\models\ProgramSubject::findOne($tb_program_subject_id);
             return $this->render('create', [
                 'model' => $model,
-				'tb_program_id' => $tb_program_id,
+				'tb_training_id' => $tb_training_id,
 				'tb_program_subject_id' => $tb_program_subject_id,
-				'program_name' => $model1->program->name,
-				'program_subject_name' => $model1->name,
+				'training_name' => $model1->name,
+				'program_subject_name' => $model2->name,
             ]);
         }
     }

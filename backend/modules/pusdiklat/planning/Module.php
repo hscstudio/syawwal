@@ -41,6 +41,9 @@ class Module extends \yii\base\Module
 					'trainer3/',
 				]],
 			]],
+			['icon'=>'fa fa-fw fa-university', 'label' => 'Testing', 'url' => ['/'.$this->uniqueId.'/testing/index'],'path'=>[
+					'testing/',
+				]],
 		];
 	}
 }

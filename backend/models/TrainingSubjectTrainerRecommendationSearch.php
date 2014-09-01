@@ -18,7 +18,7 @@ class TrainingSubjectTrainerRecommendationSearch extends TrainingSubjectTrainerR
     public function rules()
     {
         return [
-            [['id', 'tb_training_id', 'tb_program_subject_id', 'tb_trainer_id', 'type', 'sort', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['id', 'tb_training_id', 'tb_program_subject_id', 'tb_trainer_id', 'ref_trainer_type_id', 'sort', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['note', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }
@@ -56,7 +56,7 @@ class TrainingSubjectTrainerRecommendationSearch extends TrainingSubjectTrainerR
             'tb_training_id' => $this->tb_training_id,
             'tb_program_subject_id' => $this->tb_program_subject_id,
             'tb_trainer_id' => $this->tb_trainer_id,
-            'type' => $this->type,
+            'ref_trainer_type_id' => $this->ref_trainer_type_id,
             'sort' => $this->sort,
             'status' => $this->status,
             'created' => $this->created,

@@ -72,7 +72,7 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
     {
         return [
             [['tb_training_id', 'tb_program_subject_id', 'tb_trainer_id'], 'required'],
-            [['tb_training_id', 'tb_program_subject_id', 'tb_trainer_id', 'type', 'sort', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_training_id', 'tb_program_subject_id', 'tb_trainer_id', 'ref_trainer_type_id', 'sort', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['note'], 'string', 'max' => 255]
         ];
@@ -88,7 +88,7 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
             'tb_training_id' => 'Tb Training ID',
             'tb_program_subject_id' => 'Tb Program Subject ID',
             'tb_trainer_id' => 'Tb Trainer ID',
-            'type' => 'Type',
+            'ref_trainer_type_id' => 'Subject Type',
             'note' => 'Note',
             'sort' => 'Sort',
             'status' => 'Status',
@@ -114,4 +114,12 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Trainer::className(), ['id' => 'tb_trainer_id']);
     }
+	
+	/** 
+    * @return \yii\db\ActiveQuery 
+    */ 
+   public function getTrainerType() 
+   { 
+       return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type_id']); 
+   } 
 }
