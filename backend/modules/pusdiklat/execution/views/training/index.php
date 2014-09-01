@@ -32,16 +32,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					}
 				],
 				*/
-            
+            /*
 				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'revision',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Revision', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'attribute' => 'tb_program_revision',
+					'value' => function ($data) {
+						return $data->programRevis->name;
+					}
 				],
+				*/
             /*
 				[
 					'attribute' => 'ref_satker_id',
@@ -50,6 +48,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					}
 				],
 				*/
+            
+				[
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'number',
+					//'pageSummary' => 'Page Total',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'editableOptions'=>['header'=>'Number', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',

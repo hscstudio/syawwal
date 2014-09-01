@@ -37,14 +37,14 @@ use yii\helpers\ArrayHelper;
 	</div>
 	<div class="col-md-6">
 	<?php
-	$data = [''=>'','0'=>'NORMAL','1'=>'CERAMAH','2'=>'MENTAL FISIK DISIPLIN (MFD)','3'=>'ON THE JOB TRAINING (OJT)'];
-	echo $form->field($model, 'type')->widget(Select2::classname(), [
+	$data = ArrayHelper::map(\backend\models\SubjectType::find()->select(['id','name'])->orderBy('id')->asArray()->all(), 'id', 'name');
+	echo $form->field($model, 'ref_subject_type_id')->widget(Select2::classname(), [
 		'data' => $data,
-		'options' => ['placeholder' => 'Choose type ...'],
+		'options' => ['placeholder' => 'Choose Type ...'],
 		'pluginOptions' => [
 		'allowClear' => true
 		],
-	]); 
+	]);
 	?>
 	
     <?= $form->field($model, 'test')->widget(\kartik\widgets\SwitchInput::classname(), [
@@ -60,18 +60,6 @@ use yii\helpers\ArrayHelper;
 						'offText' => 'Off',
 					]
 				]) ?>
-
-    <?= ""//createdBy ?>
-
-    <?= ""//modifiedBy ?>
-
-    <?= ""//deletedBy ?>
-
-    <?= ""//created ?>
-
-    <?= ""//modified ?>
-
-    <?= ""//deleted ?>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

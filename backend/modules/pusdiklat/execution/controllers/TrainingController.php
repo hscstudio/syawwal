@@ -192,7 +192,7 @@ class TrainingController extends Controller
 			$OpenTBS->VarRef['modelName']= "Training";
 			$data1[]['col0'] = 'id';			
 			$data1[]['col1'] = 'tb_program_id';			
-			$data1[]['col2'] = 'revision';			
+			$data1[]['col2'] = 'tb_program_revision';			
 			$data1[]['col3'] = 'ref_satker_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
@@ -201,7 +201,7 @@ class TrainingController extends Controller
 				$data2[] = [
 					'col0'=>$training->id,
 					'col1'=>$training->tb_program_id,
-					'col2'=>$training->revision,
+					'col2'=>$training->tb_program_revision,
 					'col3'=>$training->ref_satker_id,
 				];
 			}
@@ -241,7 +241,7 @@ class TrainingController extends Controller
 					foreach($dataProvider->getModels() as $training){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->revision)
+													  ->setCellValue('C'.$idx, $training->tb_program_revision)
 													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
@@ -272,7 +272,7 @@ class TrainingController extends Controller
 					foreach($dataProvider->getModels() as $training){
 						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->revision)
+													  ->setCellValue('C'.$idx, $training->tb_program_revision)
 													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
@@ -320,7 +320,7 @@ class TrainingController extends Controller
 						foreach($dataProvider->getModels() as $training){
 							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
 														  ->setCellValue('B'.$idx, $training->tb_program_id)
-														  ->setCellValue('C'.$idx, $training->revision)
+														  ->setCellValue('C'.$idx, $training->tb_program_revision)
 														  ->setCellValue('D'.$idx, $training->ref_satker_id);
 							$idx++;
 						}		
@@ -392,40 +392,42 @@ class TrainingController extends Controller
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
 						$tb_program_id=  $sheetData[$baseRow]['B'];
-						$revision=  $sheetData[$baseRow]['C'];
+						$tb_program_revision=  $sheetData[$baseRow]['C'];
 						$ref_satker_id=  $sheetData[$baseRow]['D'];
-						$name=  $sheetData[$baseRow]['E'];
-						$start=  $sheetData[$baseRow]['F'];
-						$finish=  $sheetData[$baseRow]['G'];
-						$note=  $sheetData[$baseRow]['H'];
-						$studentCount=  $sheetData[$baseRow]['I'];
-						$classCount=  $sheetData[$baseRow]['J'];
-						$executionSK=  $sheetData[$baseRow]['K'];
-						$resultSK=  $sheetData[$baseRow]['L'];
-						$costPlan=  $sheetData[$baseRow]['M'];
-						$costRealisation=  $sheetData[$baseRow]['N'];
-						$sourceCost=  $sheetData[$baseRow]['O'];
-						$hostel=  $sheetData[$baseRow]['P'];
-						$reguler=  $sheetData[$baseRow]['Q'];
-						$stakeholder=  $sheetData[$baseRow]['R'];
-						$location=  $sheetData[$baseRow]['S'];
-						$status=  $sheetData[$baseRow]['T'];
-						//$created=  $sheetData[$baseRow]['U'];
-						//$createdBy=  $sheetData[$baseRow]['V'];
-						//$modified=  $sheetData[$baseRow]['W'];
-						//$modifiedBy=  $sheetData[$baseRow]['X'];
-						//$deleted=  $sheetData[$baseRow]['Y'];
-						//$deletedBy=  $sheetData[$baseRow]['Z'];
-						$approvedStatus=  $sheetData[$baseRow]['AA'];
-						$approvedStatusNote=  $sheetData[$baseRow]['AB'];
-						$approvedStatusDate=  $sheetData[$baseRow]['AC'];
-						$approvedStatusBy=  $sheetData[$baseRow]['AD'];
+						$number=  $sheetData[$baseRow]['E'];
+						$name=  $sheetData[$baseRow]['F'];
+						$start=  $sheetData[$baseRow]['G'];
+						$finish=  $sheetData[$baseRow]['H'];
+						$note=  $sheetData[$baseRow]['I'];
+						$studentCount=  $sheetData[$baseRow]['J'];
+						$classCount=  $sheetData[$baseRow]['K'];
+						$executionSK=  $sheetData[$baseRow]['L'];
+						$resultSK=  $sheetData[$baseRow]['M'];
+						$costPlan=  $sheetData[$baseRow]['N'];
+						$costRealisation=  $sheetData[$baseRow]['O'];
+						$sourceCost=  $sheetData[$baseRow]['P'];
+						$hostel=  $sheetData[$baseRow]['Q'];
+						$reguler=  $sheetData[$baseRow]['R'];
+						$stakeholder=  $sheetData[$baseRow]['S'];
+						$location=  $sheetData[$baseRow]['T'];
+						$status=  $sheetData[$baseRow]['U'];
+						//$created=  $sheetData[$baseRow]['V'];
+						//$createdBy=  $sheetData[$baseRow]['W'];
+						//$modified=  $sheetData[$baseRow]['X'];
+						//$modifiedBy=  $sheetData[$baseRow]['Y'];
+						//$deleted=  $sheetData[$baseRow]['Z'];
+						//$deletedBy=  $sheetData[$baseRow]['AA'];
+						$approvedStatus=  $sheetData[$baseRow]['AB'];
+						$approvedStatusNote=  $sheetData[$baseRow]['AC'];
+						$approvedStatusDate=  $sheetData[$baseRow]['AD'];
+						$approvedStatusBy=  $sheetData[$baseRow]['AE'];
 
 						$model2=new Training;
 						//$model2->id=  $id;
 						$model2->tb_program_id=  $tb_program_id;
-						$model2->revision=  $revision;
+						$model2->tb_program_revision=  $tb_program_revision;
 						$model2->ref_satker_id=  $ref_satker_id;
+						$model2->number=  $number;
 						$model2->name=  $name;
 						$model2->start=  $start;
 						$model2->finish=  $finish;

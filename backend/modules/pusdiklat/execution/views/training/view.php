@@ -36,12 +36,17 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => $model->program->name,
 			],
             'tb_program_id',
-            'revision',
+            [
+				'attribute' => 'tb_program_revision',
+				'value' => $model->programRevis->name,
+			],
+            'tb_program_revision',
             [
 				'attribute' => 'ref_satker_id',
 				'value' => $model->satker->name,
 			],
             'ref_satker_id',
+            'number',
             'name',
             'start',
             'finish',

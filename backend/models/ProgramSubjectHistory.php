@@ -109,4 +109,11 @@ class ProgramSubjectHistory extends \yii\db\ActiveRecord
         return $this->hasOne(Program::className(), ['id' => 'tb_program_id']);
     }
 	
+	/**
+	* @return \yii\db\ActiveQuery
+	*/
+	public function getSubjectType()
+	{
+	   return $this->hasOne(SubjectType::className(), ['id' => 'ref_subject_type_id']);
+	}
 }

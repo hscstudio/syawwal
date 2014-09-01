@@ -89,10 +89,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->active()
 								->count();
 					if($countSubject>0){
-						return Html::a($countSubject, ['training-subject3/index','tb_program_id'=>$data->program->id], ['class' => 'label label-success','data-pjax' => '0']);
+						return Html::a($countSubject, ['training-subject3/index','tb_training_id'=>$data->id], ['class' => 'label label-success','data-pjax' => '0']);
 					}
 					else{
-						return Html::a('+', ['training-subject3/index','tb_program_id'=>$data->program->id], ['class' => 'label label-success','data-pjax' => '0']);
+						return Html::a('+', ['training-subject3/index','tb_training_id'=>$data->id], ['class' => 'label label-success','data-pjax' => '0']);
 					}
 				}
 			],
@@ -107,7 +107,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								->where(['tb_training_id' => $data->id,])
 								->count()-1;
 					if($countRevision>0){
-						return Html::a($countRevision.'x', ['training-history2/index','tb_training_id'=>$data->id], ['class' => 'label label-danger','data-pjax' => '0']);
+						return Html::a($countRevision.'x', ['training-history3/index','tb_training_id'=>$data->id], ['class' => 'label label-danger','data-pjax' => '0']);
 					}
 					else{
 						return '-';

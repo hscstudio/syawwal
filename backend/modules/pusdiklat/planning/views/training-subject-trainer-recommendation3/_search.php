@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'tb_trainer_id') ?>
 
-    <?= $form->field($model, 'type') ?>
+    <?= $form->field($model, 'ref_trainer_type_id') ?>
 
     <?php // echo $form->field($model, 'note') ?>
 

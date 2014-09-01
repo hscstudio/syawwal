@@ -18,7 +18,7 @@ class ProgramSubjectHistorySearch extends ProgramSubjectHistory
     public function rules()
     {
         return [
-            [['tb_program_subject_id', 'tb_program_id', 'revision', 'type', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_program_subject_id', 'tb_program_id', 'revision', 'ref_subject_type_id', 'sort', 'test', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
 			[['hours'], 'number'],
             [['name', 'created', 'modified', 'deleted'], 'safe'],
         ];
@@ -56,7 +56,7 @@ class ProgramSubjectHistorySearch extends ProgramSubjectHistory
             'tb_program_subject_id' => $this->tb_program_subject_id,
             'tb_program_id' => $this->tb_program_id,
             'revision' => $this->revision,
-            'type' => $this->type,
+            'ref_subject_type_id' => $this->ref_subject_type_id,
             'hours' => $this->hours,
             'sort' => $this->sort,
             'test' => $this->test,

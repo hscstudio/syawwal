@@ -150,7 +150,19 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				}
 			],
 			
-            ['class' => 'kartik\grid\ActionColumn'],
+            [
+				'class' => 'kartik\grid\ActionColumn',
+				'buttons' => [
+					'view' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+						return Html::a($icon,$url,['class'=>'modal-heart','data-pjax'=>"0",'source'=>'.table-responsive','title'=>$model->name]);
+					},
+					'update' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-pencil"></span>';
+						return Html::a($icon,$url,['class'=>'modal-heart','data-pjax'=>"0",]);
+					},
+				],
+			],
         ],
 		'panel' => [
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Program</h3>',
@@ -186,6 +198,25 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	?>
 	<?php \yii\widgets\Pjax::end(); ?>
 	
+	<?php
+	$initScript = '
+	 $("a.modal-heart").on("click", function () {
+		var $modal = $("#modal-heart");
+		$.ajax({
+			type: "POST",
+			cache: false,
+			url: $(this).attr("href"), 
+			success: function (data) {
+				$modal.find(".modal-body").html(data);
+			}
+		});		
+		$modal.modal("show");
+		return false;
+	 });
+	';
+	//$this->registerJS($initScript);
+	echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
+	?>
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

@@ -45,7 +45,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'class'=>'label label-danger',
 					]),
 			],
-            'type',
+			[
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
+				'label'=>'Type',
+				'value' => '<span class="badge">'.$model->subjectType->name.'</span>',
+			],
             'name',
             'hours',
             'sort',

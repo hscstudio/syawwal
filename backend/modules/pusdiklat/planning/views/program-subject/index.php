@@ -30,14 +30,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],
             
 			[
+				'format'=>'raw',
 				'attribute' => 'ref_subject_type_id',
 				'vAlign'=>'middle',
-				'hAlign'=>'center',
+				'hAlign'=>'center',				
 				'width'=>'150px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
-					return $data->subjectType->name;
+					return '<span class="badge">'.$data->subjectType->name.'</span>';
 				}
 			],
 		

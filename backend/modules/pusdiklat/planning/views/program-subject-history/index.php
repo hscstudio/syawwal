@@ -43,6 +43,18 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				}
 			],
 			[
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',				
+				'width'=>'150px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data) {
+					return '<span class="badge">'.$data->subjectType->name.'</span>';
+				}
+			],
+			[
 				'attribute' => 'name',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
