@@ -32,9 +32,12 @@ class TrainingSubject3Controller extends Controller
      * Lists all ProgramSubject models.
      * @return mixed
      */
-    public function actionIndex($tb_program_id,$status=1)
+    public function actionIndex($tb_training_id,$status=1)
     {
-         if(isset($tb_program_id)){
+		$model = \backend\models\Training::find($tb_training_id)->active()->one();
+		if($model!=null){
+			$tb_program_id = $model->tb_program_id;
+			
 			$searchModel = new ProgramSubjectSearch();
 			$queryParams = Yii::$app->request->getQueryParams();			
 			if($status!='all'){
@@ -55,13 +58,13 @@ class TrainingSubject3Controller extends Controller
 			return $this->render('index', [
 				'searchModel' => $searchModel,
 				'dataProvider' => $dataProvider,
-				'tb_program_id' => $tb_program_id,
+				'tb_training_id' => $tb_training_id,
 				'status' => $status,
-				'program_name'=>$model1->name,
-			]);
+				'training_name'=>$model->name,
+			]);		
 		}
 		else{
-			return $this->redirect(['program/index']);
+			return $this->redirect(['index']);
 		}
     }
 
@@ -73,10 +76,9 @@ class TrainingSubject3Controller extends Controller
     public function actionView($id)
     {
         $model=$this->findModel($id);
-        $model1 = \backend\models\Program::findOne($model->tb_program_id);
 		return $this->render('view', [
             'model' => $model,
-			'program_name'=>$model1->name,
+			'training_name'=>$model->name,
         ]);	
     }
 

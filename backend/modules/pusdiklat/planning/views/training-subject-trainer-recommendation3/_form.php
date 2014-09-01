@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id],
+		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index','tb_training_id'=>(int)$tb_training_id,'tb_program_subject_id'=>(int)$tb_program_subject_id],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
@@ -38,10 +38,10 @@ use yii\helpers\ArrayHelper;
 	]); ?>
 
     <?php
-	$data = ArrayHelper::map(\backend\models\Trainer::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-	echo $form->field($model, 'tb_trainer_id')->widget(Select2::classname(), [
+	$data = ArrayHelper::map(\backend\models\TrainerType::find()->select(['id','name'])->orderBy('id')->asArray()->all(), 'id', 'name');
+	echo $form->field($model, 'ref_trainer_type_id')->widget(Select2::classname(), [
 		'data' => $data,
-		'options' => ['placeholder' => 'Choose Trainer ...'],
+		'options' => ['placeholder' => 'Choose Trainer Type ...'],
 		'pluginOptions' => [
 		'allowClear' => true
 		],

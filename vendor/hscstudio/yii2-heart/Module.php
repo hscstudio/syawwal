@@ -170,7 +170,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		$assets = $view->assetManager->publish('@hscstudio/heart/assets/heart');
 		$view->registerCssFile($assets[1].'/css/heart.css', ['yii\bootstrap\BootstrapAsset']);
 		$view->registerJsFile($assets[1].'/js/heart.js', ['yii\web\JqueryAsset']);
-		
+
 		\yii\base\Event::on('yii\web\Controller','beforeAction',function($event){
 			if($event->sender->uniqueId=='site'){
 				$event->sender->layout = 'column1';

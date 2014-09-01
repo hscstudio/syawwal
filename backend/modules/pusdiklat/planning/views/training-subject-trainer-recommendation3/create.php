@@ -8,8 +8,8 @@ use yii\helpers\Html;
 
 $this->title = 'Create';
 $this->params['breadcrumbs'][] = ['label'=>'Training','url'=>['training3/index']];
-$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('Subject : '.$program_name),'url'=>['training-subject3/index','tb_program_id'=>(int)$tb_program_id]];
-$this->params['breadcrumbs'][] = ['label' => $program_subject_name, 'url' => ['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id]];
+$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('Subject : '.$training_name),'url'=>['training-subject3/index','tb_training_id'=>(int)$tb_training_id]];
+$this->params['breadcrumbs'][] = ['label' => $program_subject_name, 'url' => ['index','tb_training_id'=>(int)$tb_training_id,'tb_program_subject_id'=>(int)$tb_program_subject_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -24,7 +24,7 @@ echo \kartik\widgets\AlertBlock::widget([
 
     <?= $this->render('_form', [
         'model' => $model,
-		'tb_program_id'=>(int)$tb_program_id,
+		'tb_training_id'=>(int)$tb_training_id,
 		'tb_program_subject_id'=>(int)$tb_program_subject_id
     ]) ?>
 

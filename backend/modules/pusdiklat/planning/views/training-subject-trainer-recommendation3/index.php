@@ -8,7 +8,7 @@ use yii\bootstrap\Dropdown;
 
 $this->title = 'Recommendations : '.$program_subject_name;
 $this->params['breadcrumbs'][] = ['label'=>'Training','url'=>['training3/index']];
-$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('Subject : '.$program_name),'url'=>['training-subject3/index','tb_program_id'=>(int)$tb_program_id]];
+$this->params['breadcrumbs'][] = ['label'=>\yii\helpers\Inflector::camel2words('Subject : '.$training_name),'url'=>['training-subject3/index','tb_training_id'=>(int)$tb_training_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -26,13 +26,33 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],
             
 			[
-				'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'type',
+				'format'=>'raw',
+				'attribute' => 'tb_trainer_id',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',				
+				'width'=>'150px',
+				'label' => 'Trainer',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+				'value' => function ($data) {
+					return $data->trainer->name;
+				}
 			],
+			
+			[
+				'format'=>'raw',
+				'label' => 'Trainer Type',
+				'attribute' => 'ref_trainer_type_id',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',				
+				'width'=>'150px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data) {
+					return '<span class="badge">'.$data->trainerType->name.'</span>';
+				}
+			],
+				
 		
 			[
 				'class' => 'kartik\grid\EditableColumn',
@@ -64,17 +84,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training Subject Trainer Recommendation</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To '.\yii\helpers\Inflector::camel2words('Subject : '.$program_name), ['training-subject3/index','tb_program_id'=>(int)$tb_program_id], ['class' => 'btn btn-warning']).' '.
-			Html::a('<i class="fa fa-fw fa-plus"></i> Create', ['create','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_program_id'=>(int)$tb_program_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-info']),
+			'before'=>Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To '.\yii\helpers\Inflector::camel2words('Subject : '.$training_name), ['training-subject3/index','tb_training_id'=>(int)$tb_training_id], ['class' => 'btn btn-warning']).' '.
+			Html::a('<i class="fa fa-fw fa-plus"></i> Create', ['create','tb_training_id'=>(int)$tb_training_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-success']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_training_id'=>(int)$tb_training_id,'tb_program_subject_id'=>(int)$tb_program_subject_id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

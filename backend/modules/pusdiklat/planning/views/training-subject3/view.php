@@ -8,7 +8,7 @@ use kartik\detail\DetailView;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label'=>'Training','url'=>['training/index']];
-$this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words('Subject : '.$program_name), 'url' => ['index','tb_program_id'=>$model->tb_program_id]];
+$this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words('Subject : '.$training_name), 'url' => ['index','tb_training_id'=>$model->id]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -23,7 +23,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Program Subjects # ' . $model->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index','tb_program_id'=>$model->tb_program_id],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index','tb_training_id'=>$model->id],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]),
@@ -35,11 +35,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => $model->program->name,
 			],
             [
-				'attribute' => 'type',
-				'label'=> 'Type',
-				'format'=>'html',
-				'value' => '<span class="badge">'.(($model->type==0)?"NORMAL":(($model->type==1)?"CERAMAH":(($model->type==2)?"MFD":(($model->type==3)?"OJT":"")))).'</span>',
-			],
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
+				'label'=>'Type',
+				'value' => '<span class="badge">'.$model->subjectType->name.'</span>',
+			],	
 			
             'name',
             'hours',

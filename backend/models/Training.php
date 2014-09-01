@@ -193,10 +193,11 @@ class Training extends \yii\db\ActiveRecord
    {
        return $this->hasMany(TrainingSubjectTrainerRecommendation::className(), ['tb_training_id' => 'id']);
    }
-       /**
-    * @return \yii\db\ActiveQuery
-    */
-   public function getTrainingUnitPlan()
+
+	/**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingUnitPlans()
     {
         return $this->hasOne(TrainingUnitPlan::className(), ['tb_training_id' => 'id']);
     }

@@ -33,6 +33,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'tb_program_subject_id',
 				'label'=> 'ID',
 			],
+			[
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
+				'label'=>'Type',
+				'value' => '<span class="badge">'.$model->subjectType->name.'</span>',
+			],
             [
 				'attribute' => 'tb_program_id',
 				'label'=> 'Program',
@@ -45,7 +51,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						'class'=>'label label-danger',
 					]),
 			],
-            'type',
             'name',
             'hours',
             'sort',

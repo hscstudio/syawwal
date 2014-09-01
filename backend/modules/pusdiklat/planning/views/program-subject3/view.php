@@ -26,10 +26,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index','tb_program_id'=>$model->tb_program_id],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
-						]).' '.
-					 Html::a('<i class="fa fa-fw fa-trash-o"></i> DELETE',['#'],
-						['class'=>'btn btn-xs btn-danger kv-btn-delete',
-						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
+						]),
         'attributes' => [
             'id',
             [
@@ -38,12 +35,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => $model->program->name,
 			],
             [
-				'attribute' => 'type',
-				'label'=> 'Type',
-				'format'=>'html',
-				'value' => '<span class="badge">'.(($model->type==0)?"NORMAL":(($model->type==1)?"CERAMAH":(($model->type==2)?"MFD":(($model->type==3)?"OJT":"")))).'</span>',
-			],
-			
+				'format'=>'raw',
+				'attribute' => 'ref_subject_type_id',
+				'label'=>'Type',
+				'value' => '<span class="badge">'.$model->subjectType->name.'</span>',
+			],	
             'name',
             'hours',
             'sort',
