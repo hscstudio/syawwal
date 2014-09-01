@@ -154,8 +154,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'vAlign'=>'middle',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($data){
-									$room = Room::find()->where(['id' => $data->tb_room_id])->one();
+								'value' => function ($model){
+									$room = Room::find()->where(['id' => $model->tb_room_id])->one();
 									return '<div class="">'.$room->name.'</div>';
 								}
 							],
@@ -166,8 +166,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'vAlign'=>'middle',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($data){
-									return '<div class="">'.date('d M Y', strtotime($data->startTime)).'</div>';
+								'value' => function ($model){
+									return '<div class="">'.date('d M Y', strtotime($model->startTime)).'</div>';
 								}
 							],
 
@@ -177,8 +177,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'vAlign'=>'middle',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($data){
-									return '<div class="">'.date('d M Y', strtotime($data->finishTime)).'</div>';
+								'value' => function ($model){
+									return '<div class="">'.date('d M Y', strtotime($model->finishTime)).'</div>';
 								}
 							],
 
@@ -188,8 +188,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'vAlign'=>'middle',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($data){
-									return '<div class="">'.date('H:i:s', strtotime($data->startTime)).'</div>';
+								'value' => function ($model){
+									return '<div class="">'.date('H:i:s', strtotime($model->startTime)).'</div>';
 								}
 							],
 
@@ -199,8 +199,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'vAlign'=>'middle',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($data){
-									return '<div class="">'.date('H:i:s', strtotime($data->finishTime)).'</div>';
+								'value' => function ($model){
+									return '<div class="">'.date('H:i:s', strtotime($model->finishTime)).'</div>';
 								}
 							],
 
@@ -211,12 +211,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'hAlign' => 'center',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($data){
-									if ($data->status == 1)
+								'value' => function ($model){
+									if ($model->status == 0)
 									{
 										return '<div class="label label-warning"><i class="fa fa-fw fa-spinner fa-spin"></i></div>';
 									}
-									if ($data->status == 2)
+									if ($model->status == 1)
 									{
 										return '<div class="label label-success"><i class="fa fa-fw fa-check"></i></div>';
 									}
@@ -233,10 +233,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 												return '';
 											},
 									'delete' => function ($url, $model) {
-												$icon='<i class="fa fa-fw fa-trash-o"></i>';
-												return Html::a($icon,$url,[
+												if ($model->status == 0)
+												{
+													$icon='<i class="fa fa-fw fa-trash-o"></i>';
+													return Html::a($icon,$url,[
 													'title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post",
-												]);
+													]);
+												}
 											},
 								],			
 							],
@@ -244,14 +247,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						echo GridView::widget([
 						    'dataProvider'=> $activityRoomDP,
 						    'columns' => $gridColumns,
-						    'rowOptions' => function($data)
+						    'rowOptions' => function($model)
 						    {
-						    	if ($data->status == 1)
+						    	if ($model->status == 0)
 						    	{
 						    		return ['class' => 'warning'];
 						    	}
 
-						    	if ($data->status == 2)
+						    	if ($model->status == 1)
 						    	{
 						    		return ['class' => 'success'];
 						    	}
