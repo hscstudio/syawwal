@@ -41,7 +41,11 @@ class TrainingRoomController extends Controller
     	{
             $satkerModel = Satker::find()->one();
 
-            $roomModel = Room::find()->one();
+            if ( ! $roomModel = Room::find()->one())
+            {
+                Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i> No room! You should create room first!');
+                return $this->redirect(Url::to(['training/index'], true));
+            }
 
             $trainingCurrent = Training::find()->where(['id' => Yii::$app->request->get('tb_training_id')])->one();
 
@@ -113,10 +117,6 @@ class TrainingRoomController extends Controller
         $activityRoom->finishTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('endDate').' '.Yii::$app->request->post('endTime')));
         $activityRoom->status = 0;
         $activityRoom->note = null;
-        $activityRoom->created = date('Y-m-d H:i:s');
-        $activityRoom->createdBy = Yii::$app->user->id;
-        $activityRoom->modified = date('Y-m-d H:i:s');
-        $activityRoom->modifiedBy = Yii::$app->user->id;
 
         if ($activityRoom->save())
         {
