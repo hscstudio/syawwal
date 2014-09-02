@@ -30,14 +30,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             	['class' => 'kartik\grid\SerialColumn'],
                         
 				[
-					'format' => 'raw',
+					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'name',
 					'vAlign'=>'middle',
+					'hAlign' => 'left',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data){
-						return '<div title="'.$data->note.'" data-toggle="tooltip" data-placement="top">'.$data->name.'</div>';
-					}
+					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
@@ -63,181 +62,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
             
 				[
-					'label' => 'Class Count',
-					'format' => 'raw',
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'classCount',
 					'vAlign'=>'middle',
 					'hAlign' => 'center',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data)
-					{
-						if ($data->classCount > 0)
-						{
-							$fOut = '<a class="badge alert-success" data-toggle="modal" data-target="#modalAddClass'.$data->id.'">';
-							$fOut .= $data->classCount;
-							$fOut .= ' | Edit <i class="fa fa-fw fa-pencil-square"></i>';
-							$fOut .= '</a>';
-							$fOut .= '<div class="modal fade" id="modalAddClass'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modalAddClass" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-class-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-pencil-square"></i>Edit Class Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'classCount', $data->classCount, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-						else
-						{
-							$fOut = '<a class="badge alert-danger" data-toggle="modal" data-target="#modalAddClass'.$data->id.'">
-										<i class="fa fa-fw fa-plus-square"></i>
-										Add Class Count
-									</a>';
-
-							$fOut .= '<div class="modal fade" id="modalAddClass'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modalAddClass" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-class-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-plus-square"></i>Add Class Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'classCount', null, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-					}
+					'editableOptions'=>['header'=>'Class Count', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
 					'label' => 'Student Count',
-					'format' => 'raw',
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'studentCount',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data)
-					{
-						if ($data->studentCount > 0)
-						{
-							$fOut = '<a class="badge alert-success" data-toggle="modal" data-target="#modelStudentCount'.$data->id.'">';
-							$fOut .= $data->studentCount;
-							$fOut .= ' | Edit <i class="fa fa-fw fa-pencil-square"></i>';
-							$fOut .= '</a>';
-							$fOut .= '<div class="modal fade" id="modelStudentCount'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modelStudentCount" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-student-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-pencil-square"></i>Edit Student Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'studentCount', $data->studentCount, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-						else
-						{
-							$fOut = '<a class="badge alert-danger" data-toggle="modal" data-target="#modelStudentCount'.$data->id.'">
-										<i class="fa fa-fw fa-plus-square"></i>
-										Add Student Count
-									</a>';
-
-							$fOut .= '<div class="modal fade" id="modelStudentCount'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modelStudentCount" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-student-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-plus-square"></i>Add Student Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'studentCount', null, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-					}
+					'editableOptions'=>['header'=>'Student Count', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
 
 				[
