@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
  */
 class RoomController extends Controller
 {
-		public $layout = '@hscstudio/heart/views/layouts/column2';
+	public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
  	
 	public function behaviors()

@@ -1,12 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\detail\DetailView;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\ActivityRoom */
-
-$this->title = $model->id;
+$this->title = $modelActivityRoom->training->name;
 $this->params['breadcrumbs'][] = ['label' => 'Activity Rooms', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
@@ -16,10 +14,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="activity-room-view">
 
     <?= DetailView::widget([
-        'model' => $model,
-		'mode'=>DetailView::MODE_VIEW,
+        'model' => $modelActivityRoom,
+		'mode'=> DetailView::MODE_VIEW,
 		'panel'=>[
-			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Activity Rooms # ' . $model->id,
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Activity Rooms # ' . $modelActivityRoom->training->id,
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i>',['index'],
@@ -33,10 +31,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             'id',
             'type',
             'activity_id',
-            [
-				'attribute' => 'tb_room_id',
-				'value' => $model->room->name,
-			],
             'tb_room_id',
             'startTime',
             'finishTime',
@@ -48,5 +42,34 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             'modifiedBy',
         ],
     ]) ?>
+
+    <div class="row">
+        <?php
+            echo '<div class="col-md-4">';
+            echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
+            echo Html::hiddenInput('actId', null, ['class' => 'actId']);
+            echo Html::hiddenInput('command', 0);
+            echo Html::submitButton('<i class="fa fa-fw fa-history"></i>Revert', ['class' => 'btn btn-default']);
+            echo Html::endForm();
+            echo '</div>';
+
+            echo '<div class="col-md-4">';
+            echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
+            echo Html::hiddenInput('actId', null, ['class' => 'actId']);
+            echo Html::hiddenInput('command', 2);
+            echo Html::submitButton('<i class="fa fa-fw fa-times-circle"></i>Reject', ['class' => 'btn btn-danger']);
+            echo Html::endForm();
+            echo '</div>';
+
+            echo '<div class="col-md-4">';
+            echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
+            echo Html::hiddenInput('actId', null, ['class' => 'actId']);
+            echo Html::hiddenInput('command', 1);
+            echo Html::submitButton('<i class="fa fa-fw fa-check-circle"></i>Approve', ['class' => 'btn btn-success']);
+            echo Html::endForm();
+            echo '</div>';
+        ?>
+    </div>
+
 
 </div>

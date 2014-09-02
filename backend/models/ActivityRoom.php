@@ -102,4 +102,10 @@ class ActivityRoom extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Room::className(), ['id' => 'tb_room_id']);
     }
+
+
+    public function getTraining()
+    {
+        return $this->hasOne(Training::classname(), ['id' => 'activity_id']);
+    }
 }
