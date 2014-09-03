@@ -77,7 +77,6 @@ class ActivityRoomController extends Controller
 				'start'=> date('Y-m-d H:i:s',strtotime($value->startTime)),
 				'end'=> date('Y-m-d H:i:s', strtotime('+1 day', strtotime($value->finishTime))),
 				'color'=> $color,
-				'editable' => true,
 				'url' => Url::to(['view', 'id' => $value->id])
 			];
 
