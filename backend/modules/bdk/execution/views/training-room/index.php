@@ -173,23 +173,23 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 							[
 								'format' => 'raw',
-								'label' => 'End Date',
-								'vAlign'=>'middle',
-								'headerOptions'=>['class'=>'kv-sticky-column'],
-								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($model){
-									return '<div class="">'.date('d M Y', strtotime($model->finishTime)).'</div>';
-								}
-							],
-
-							[
-								'format' => 'raw',
 								'label' => 'Start Time',
 								'vAlign'=>'middle',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
 								'value' => function ($model){
 									return '<div class="">'.date('H:i:s', strtotime($model->startTime)).'</div>';
+								}
+							],
+
+							[
+								'format' => 'raw',
+								'label' => 'End Date',
+								'vAlign'=>'middle',
+								'headerOptions'=>['class'=>'kv-sticky-column'],
+								'contentOptions'=>['class'=>'kv-sticky-column'],
+								'value' => function ($model){
+									return '<div class="">'.date('d M Y', strtotime($model->finishTime)).'</div>';
 								}
 							],
 

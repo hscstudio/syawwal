@@ -93,9 +93,53 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					{
 						$roomCount = ActivityRoom::find()->where(['type' => 0, 'activity_id' => $data->id])->count();
 
-						$fOut = '<a class="badge alert-info" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
+						$roomWaitingCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 0
+										])->count();
+						$roomProcessCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 1
+										])->count();
+						$roomApprovedCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 2
+										])->count();
+						$roomRejectedCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 3
+										])->count();
+						
+						$fOut = '<div class="col-md-3">
+									<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting...">
+									'.$roomWaitingCount.'
+									</div>
+								</div>';
+						$fOut .= '<div class="col-md-3">
+									<div class="label label-info" data-toggle="tooltip" data-placement="top" title="Process...">
+									'.$roomProcessCount.'
+									</div>
+								</div>';
+						$fOut .= '<div class="col-md-3">
+									<div class="label label-success" data-toggle="tooltip" data-placement="top" title="Approved!">
+									'.$roomApprovedCount.'
+									</div>
+								</div>';
+						$fOut .= '<div class="col-md-3">
+									<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!">
+									'.$roomRejectedCount.'
+									</div>
+								</div>';
+
+						$fOut .= '<div class="col-md-12">
+									<a class="label label-default" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
 									'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
-								</a>';
+									</a>
+								</div>';
 
 						return $fOut;
 					}
@@ -110,14 +154,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					{
 						if ($data->approvedStatus === null)
 						{
-							return '<p class="label label-warning"><i class="fa fa-fw fa-square"></i> Waiting for approval</p>';
+							return '<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting for approval..."><i class="fa fa-fw fa-spinner fa-spin"></i></div>';
 						}
 						elseif ($data->approvedStatus === 0) {
-							return '<p class="label label-danger"><i class="fa fa-fw fa-minus-square"></i> Rejected</p>';
+							return '<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!"><i class="fa fa-fw fa-times"></i></div>';
 						}
 						else
 						{
-							return '<p class="label label-success"><i class="fa fa-fw fa-check-square"></i> Approved</p>';
+							return '<div class="label label-success" data-toggle="tooltip" data-placement="top" title="Approved!"><i class="fa fa-fw fa-check"></i></div>';
 						}
 					}
 				],
