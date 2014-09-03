@@ -12,7 +12,7 @@ use kartik\widgets\TimePicker;
 use backend\models\ActivityRoom;
 use backend\models\Room;
 
-$this->title = 'Training Room';
+$this->title = 'Request Room for '.$trainingCurrent->name;
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -27,6 +27,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		<div class="row">
 			<div class="panel panel-default">
 				<div class="panel-body">
+					<div class="alert alert-info">
+						<p>
+							<i class="fa fa-fw fa-info-circle"></i>Use this tools below to select room from all satker.
+							After that, just wait until General decide what to do with your request.
+						</p>
+					</div>
 					<?php
 						$form = ActiveForm::begin([
 					        'id' => 'order-room-form',
@@ -214,11 +220,19 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'value' => function ($model){
 									if ($model->status == 0)
 									{
-										return '<div class="label label-warning"><i class="fa fa-fw fa-spinner fa-spin"></i></div>';
+										return '<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting for approval..."><i class="fa fa-fw fa-spinner fa-spin"></i></div>';
 									}
 									if ($model->status == 1)
 									{
-										return '<div class="label label-success"><i class="fa fa-fw fa-check"></i></div>';
+										return '<div class="label label-info" data-toggle="tooltip" data-placement="top" title="Processing..."><i class="fa fa-fw fa-play"></i></div>';
+									}
+									if ($model->status == 2)
+									{
+										return '<div class="label label-success" data-toggle="tooltip" data-placement="top" title="Approved!"><i class="fa fa-fw fa-check"></i></div>';
+									}
+									if ($model->status == 3)
+									{
+										return '<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!"><i class="fa fa-fw fa-times"></i></div>';
 									}
 								}
 							],
@@ -256,7 +270,17 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 						    	if ($model->status == 1)
 						    	{
+						    		return ['class' => 'info'];
+						    	}
+						    	
+						    	if ($model->status == 2)
+						    	{
 						    		return ['class' => 'success'];
+						    	}
+						    	
+						    	if ($model->status == 3)
+						    	{
+						    		return ['class' => 'danger'];
 						    	}
 						    },
 						    'striped' => false

@@ -53,11 +53,22 @@ class ActivityRoomController extends Controller
 			
 			if ($value->status == 0)
 			{
-				$color =  '#f0ad4e';
+				$color =  '#f0ad4e'; // warning
 			}
-			else
+			
+			if ($value->status == 1)
 			{
-				$color = '#5cb85c';
+				$color =  '#5bc0de'; // process
+			}
+			
+			if ($value->status == 2)
+			{
+				$color =  '#5cb85c'; // approved
+			}
+			
+			if ($value->status == 3)
+			{
+				$color = '#d9534f'; // rejected
 			}
 
 			$items[]=[
@@ -80,16 +91,31 @@ class ActivityRoomController extends Controller
     public function actionApprove()
     {
 
-    	$activityRoom = ActivityRoom::find()->where(['id' => yii::$app->request->post('actId')])->one();
+    	$activityRoom = ActivityRoom::find()->where(['id' => Yii::$app->request->post('actId')])->one();
+    	$activityRoom->status = Yii::$app->request->post('command');
 
     	if ($activityRoom->save())
     	{
-    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have approved a room request!');
+    		switch (Yii::$app->request->post('command'))
+    		{
+	    		case 0:
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have revert a room request!');
+		    		break;
+	    		case 1:
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have allowed a room request to be processed!');
+		    		break;
+	    		case 2:
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have approved a room request!');
+		    		break;
+	    		case 3:
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have rejected a room request!');
+		    		break;
+    		}
     		return $this->redirect('index');
     	}
     	else
     	{
-    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Somehow you failed to approve a room request..');
+    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Failed to commit change!');
     		return $this->redirect('index');
     	}
     }

@@ -136,7 +136,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								</div>';
 
 						$fOut .= '<div class="col-md-12">
-									<a class="label label-default" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
+									<a class="label label-primary" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
 									'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
 									</a>
 								</div>';

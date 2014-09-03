@@ -45,27 +45,35 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
     <div class="row">
         <?php
-            echo '<div class="col-md-4">';
+            echo '<div class="col-md-3">';
             echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
-            echo Html::hiddenInput('actId', null, ['class' => 'actId']);
+            echo Html::hiddenInput('actId', $modelActivityRoom->id, ['class' => 'actId']);
             echo Html::hiddenInput('command', 0);
             echo Html::submitButton('<i class="fa fa-fw fa-history"></i>Revert', ['class' => 'btn btn-default']);
             echo Html::endForm();
             echo '</div>';
 
-            echo '<div class="col-md-4">';
+            echo '<div class="col-md-3">';
             echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
-            echo Html::hiddenInput('actId', null, ['class' => 'actId']);
-            echo Html::hiddenInput('command', 2);
-            echo Html::submitButton('<i class="fa fa-fw fa-times-circle"></i>Reject', ['class' => 'btn btn-danger']);
+            echo Html::hiddenInput('actId', $modelActivityRoom->id, ['class' => 'actId']);
+            echo Html::hiddenInput('command', 1);
+            echo Html::submitButton('<i class="fa fa-fw fa-play"></i>Process', ['class' => 'btn btn-info']);
             echo Html::endForm();
             echo '</div>';
 
-            echo '<div class="col-md-4">';
+            echo '<div class="col-md-3">';
             echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
-            echo Html::hiddenInput('actId', null, ['class' => 'actId']);
-            echo Html::hiddenInput('command', 1);
+            echo Html::hiddenInput('actId', $modelActivityRoom->id, ['class' => 'actId']);
+            echo Html::hiddenInput('command', 2);
             echo Html::submitButton('<i class="fa fa-fw fa-check-circle"></i>Approve', ['class' => 'btn btn-success']);
+            echo Html::endForm();
+            echo '</div>';
+
+            echo '<div class="col-md-3">';
+            echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
+            echo Html::hiddenInput('actId', $modelActivityRoom->id, ['class' => 'actId']);
+            echo Html::hiddenInput('command', 3);
+            echo Html::submitButton('<i class="fa fa-fw fa-times-circle"></i>Reject', ['class' => 'btn btn-danger']);
             echo Html::endForm();
             echo '</div>';
         ?>
