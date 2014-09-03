@@ -37,12 +37,15 @@ class TrainingController extends Controller
         ];
     }
 
-    /**
-     * Lists all Training models.
-     * @return mixed
-     */
-    public function actionIndex($status = 1)
+
+
+
+
+    public function actionIndex($year='',$status='all')
     {
+    	if(empty($year)) $year = date('Y');
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+
         $searchModel = new TrainingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -52,33 +55,66 @@ class TrainingController extends Controller
         	->asArray()
         	->all(),
         'id', 'name');
-
-        $queryParams = Yii::$app->request->getQueryParams();
+	
 		if($status!='all'){
-			$queryParams['TrainingSearch']=[
-				'status'=>$status,
-			];
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
 		}
 		else{
-			$queryParams['TrainingSearch']=[
-			];
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
 		}
+
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
 
+		// GET ALL TRAINING YEAR
+		$year_training = yii\helpers\ArrayHelper::map(Training::find()
+			->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['year'=>'DESC'])
+			->groupBy(['year'])
+			->currentSatker()
+			->active()
+			->asArray()
+			->all(), 'year', 'year');
+		$year_training['all']='All'	;
+		
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'year' => $year,
 			'status' => $status,
+			'year_training' => $year_training,
 			'dataEs2' => $dataEs2
         ]);
     }
 
-    /**
-     * Displays a single Training model.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
+
+
     public function actionView($id)
     {
         return $this->render('view', [

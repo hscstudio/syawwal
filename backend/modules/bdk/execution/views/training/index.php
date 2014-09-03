@@ -20,7 +20,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="training-index">
 
 	<?php \yii\widgets\Pjax::begin([
-		'id'=>'pjax-training-gridview',
+		'id'=>'pjax-gridview',
 	]); ?>
 
     <?= GridView::widget([
@@ -146,24 +146,38 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 
 				[
-					'format' => 'html',
+					'format' => 'raw',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
 					'label' => 'Status',
 					'value' => function ($data)
 					{
-						if ($data->approvedStatus === null)
+						if ($data->status==1)
 						{
-							return '<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting for approval..."><i class="fa fa-fw fa-spinner fa-spin"></i></div>';
+							$icon='<span class="fa fa-fw fa-check-square-o"></span>';
+							$label='label label-info';
+							$title='Ready';
+						}	
+						else if ($data->status==2)
+						{ 
+							$icon='<span class="fa fa-fw fa-refresh"></span>';
+							$label='label label-success';
+							$title='Execute';
 						}
-						elseif ($data->approvedStatus === 0) {
-							return '<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!"><i class="fa fa-fw fa-times"></i></div>';
+						else if ($data->status==3)
+						{
+							$icon='<span class="fa fa-fw fa-trash-o"></span>';
+							$label='label label-danger';
+							$title='Cancel';
 						}
 						else
 						{
-							return '<div class="label label-success" data-toggle="tooltip" data-placement="top" title="Approved!"><i class="fa fa-fw fa-check"></i></div>';
+							$icon='<span class="fa fa-fw fa-fire"></span>';
+							$label='label label-warning';
+							$title='Plan';
 						}
-					}
+						return Html::tag('span', $icon, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+						}
 				],
 				[
 					'format' => 'html',
@@ -190,16 +204,37 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']). ' '.
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
+					'name' => 'year', 
+					'data' => $year_training,
+					'value' => $year,
+					'options' => [
+						'placeholder' => 'Year ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
+								container: "#pjax-gridview", 
+								timeout: 1,
+							});
+						',	
+					],
+				]).
+				'</div>'.
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
 					'name' => 'status', 
-					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'Show All'],
+					'data' => ['all'=>'All','0'=>'Plan','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
 					'value' => $status,
 					'options' => [
 						'placeholder' => 'Status ...', 
 						'class'=>'form-control', 
 						'onchange'=>'
-							$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status="+$(this).val(), container: "#pjax-training-gridview", timeout: 1});
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
+								container: "#pjax-gridview", 
+								timeout: 1000,
+							});
 						',	
-						'data-pjax' => true,
 					],
 				]).
 				'</div>',
