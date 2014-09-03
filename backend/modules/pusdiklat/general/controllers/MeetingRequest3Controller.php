@@ -1,18 +1,19 @@
 <?php
 
-namespace backend\modules\pusdiklat\execution\controllers;
+namespace backend\modules\pusdiklat\general\controllers;
 
 use Yii;
-use backend\models\Training;
-use backend\models\TrainingSearch;
+use backend\models\Meeting;
+use backend\models\MeetingSearch;
+use backend\models\RoomSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TrainingController implements the CRUD actions for Training model.
+ * Meeting3Controller implements the CRUD actions for Meeting model.
  */
-class TrainingController extends Controller
+class MeetingRequest3Controller extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,69 +31,39 @@ class TrainingController extends Controller
     }
 
     /**
-     * Lists all Training models.
+     * Lists all Meeting models.
      * @return mixed
      */
-     public function actionIndex($year='',$status='all')
+    public function actionIndex($executor='all')
     {
-		if(empty($year)) $year = date('Y');
+        $searchModel = new MeetingSearch();
 		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-		
-        $searchModel = new TrainingSearch();
-		$queryParams = Yii::$app->request->getQueryParams();
-		if($status!='all'){
-			if($year!='all'){
-				$queryParams['TrainingSearch']=[
-					'year' => $year,
-					'ref_satker_id'=>$ref_satker_id,
-					'status'=>$status,
-				];
-			}
-			else{
-				$queryParams['TrainingSearch']=[
-					'ref_satker_id'=>$ref_satker_id,
-					'status'=>$status,
-				];
-			}
+		if($executor=='all'){
+			$queryParams['MeetingSearch']=[
+				'ref_satker_id'=>$ref_satker_id,
+				'status'=>1,
+			];
 		}
 		else{
-			if($year!='all'){
-				$queryParams['TrainingSearch']=[
-					'year' => $year,
-					'ref_satker_id'=>$ref_satker_id,
-				];
-			}
-			else{
-				$queryParams['TrainerSearch']=[
-					'ref_satker_id'=>$ref_satker_id,
-				];
-			}
+			$queryParams['MeetingSearch']=[
+				'ref_satker_id'=>$ref_satker_id,
+				'status'=>1,
+				'executor'=>$executor,
+			];
 		}
-		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-		$dataProvider = $searchModel->search($queryParams);
-		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
+        $queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        $dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_DESC,'finishTime'=>SORT_DESC];
 		
-		// GET ALL TRAINING YEAR
-		$year_training = yii\helpers\ArrayHelper::map(Training::find()
-			->select(['year'=>'YEAR(start)','start','finish'])
-			->orderBy(['year'=>'DESC'])
-			->groupBy(['year'])
-			->currentSatker()
-			->active()
-			->asArray()
-			->all(), 'year', 'year');
-		$year_training['all']='All'	;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-			'year' => $year,
-			'status' => $status,
-			'year_training' => $year_training,
+			'executor'=>$executor,
         ]);
     }
 
     /**
-     * Displays a single Training model.
+     * Displays a single Meeting model.
      * @param integer $id
      * @return mixed
      */
@@ -104,15 +75,16 @@ class TrainingController extends Controller
     }
 
     /**
-     * Creates a new Training model.
+     * Creates a new Meeting model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Training();
-
+        $model = new Meeting();
         if ($model->load(Yii::$app->request->post())){
+			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+			$model->executor = 'GENERAL3'; // SUBBID ASSET
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
 			}
@@ -128,27 +100,23 @@ class TrainingController extends Controller
     }
 
     /**
-     * Updates an existing Training model.
+     * Updates an existing Meeting model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $currentFiles=[];
-        
+        $model = $this->findModel($id);       
+		if($model->ref_satker_id!=(int)Yii::$app->user->identity->employee->ref_satker_id){
+			return $this->redirect(['index']);
+		}
+		if($model->executor != 'GENERAL3'){
+			return $this->redirect(['index']);
+		}
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-			
+            	
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
 				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -165,28 +133,34 @@ class TrainingController extends Controller
     }
 
     /**
-     * Deletes an existing Training model.
+     * Deletes an existing Meeting model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model=$this->findModel($id);
+		if($model->ref_satker_id!=(int)Yii::$app->user->identity->employee->ref_satker_id){
+			return $this->redirect(['index']);
+		}
+		if($model->executor != 'GENERAL3'){
+			return $this->redirect(['index']);
+		}
+		$model->delete();
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Training model based on its primary key value.
+     * Finds the Meeting model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Training the loaded model
+     * @return Meeting the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Training::findOne($id)) !== null) {
+        if (($model = Meeting::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -194,15 +168,15 @@ class TrainingController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new Training; // your model can be loaded here
+		$model = new Meeting; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['Training'][$_POST['editableIndex']]);
-				$value=$_POST['Training'][$_POST['editableIndex']][$name];
+				$name=key($_POST['Meeting'][$_POST['editableIndex']]);
+				$value=$_POST['Meeting'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -222,7 +196,7 @@ class TrainingController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => Meeting::find(),
         ]);
 		
 		try {
@@ -236,20 +210,20 @@ class TrainingController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "Training";
+			$OpenTBS->VarRef['modelName']= "Meeting";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_program_id';			
-			$data1[]['col2'] = 'tb_program_revision';			
-			$data1[]['col3'] = 'ref_satker_id';			
+			$data1[]['col1'] = 'ref_satker_id';			
+			$data1[]['col2'] = 'name';			
+			$data1[]['col3'] = 'startTime';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $training){
+			foreach($dataProvider->getModels() as $meeting){
 				$data2[] = [
-					'col0'=>$training->id,
-					'col1'=>$training->tb_program_id,
-					'col2'=>$training->tb_program_revision,
-					'col3'=>$training->ref_satker_id,
+					'col0'=>$meeting->id,
+					'col1'=>$meeting->ref_satker_id,
+					'col2'=>$meeting->name,
+					'col3'=>$meeting->startTime,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -268,7 +242,7 @@ class TrainingController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => Meeting::find(),
         ]);
 		
 		try {
@@ -283,13 +257,13 @@ class TrainingController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Training');
+								->setCellValue('A1', 'Tabel Meeting');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $training){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->tb_program_revision)
-													  ->setCellValue('D'.$idx, $training->ref_satker_id);
+					foreach($dataProvider->getModels() as $meeting){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $meeting->id)
+													  ->setCellValue('B'.$idx, $meeting->ref_satker_id)
+													  ->setCellValue('C'.$idx, $meeting->name)
+													  ->setCellValue('D'.$idx, $meeting->startTime);
 						$idx++;
 					}		
 					
@@ -314,13 +288,13 @@ class TrainingController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Training');
+								->setCellValue('A1', 'Tabel Meeting');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $training){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->tb_program_revision)
-													  ->setCellValue('D'.$idx, $training->ref_satker_id);
+					foreach($dataProvider->getModels() as $meeting){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $meeting->id)
+													  ->setCellValue('B'.$idx, $meeting->ref_satker_id)
+													  ->setCellValue('C'.$idx, $meeting->name)
+													  ->setCellValue('D'.$idx, $meeting->startTime);
 						$idx++;
 					}		
 									
@@ -362,13 +336,13 @@ class TrainingController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel Training');
+									->setCellValue('A1', 'Tabel Meeting');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $training){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-														  ->setCellValue('B'.$idx, $training->tb_program_id)
-														  ->setCellValue('C'.$idx, $training->tb_program_revision)
-														  ->setCellValue('D'.$idx, $training->ref_satker_id);
+						foreach($dataProvider->getModels() as $meeting){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $meeting->id)
+														  ->setCellValue('B'.$idx, $meeting->ref_satker_id)
+														  ->setCellValue('C'.$idx, $meeting->name)
+														  ->setCellValue('D'.$idx, $meeting->startTime);
 							$idx++;
 						}		
 						
@@ -412,7 +386,7 @@ class TrainingController extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => Meeting::find(),
         ]);
 		
 		/* 
@@ -438,57 +412,33 @@ class TrainingController extends Controller
 						$read_status = true;
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
-						$tb_program_id=  $sheetData[$baseRow]['B'];
-						$tb_program_revision=  $sheetData[$baseRow]['C'];
-						$ref_satker_id=  $sheetData[$baseRow]['D'];
-						$number=  $sheetData[$baseRow]['E'];
-						$name=  $sheetData[$baseRow]['F'];
-						$start=  $sheetData[$baseRow]['G'];
-						$finish=  $sheetData[$baseRow]['H'];
-						$note=  $sheetData[$baseRow]['I'];
-						$studentCount=  $sheetData[$baseRow]['J'];
-						$classCount=  $sheetData[$baseRow]['K'];
-						$executionSK=  $sheetData[$baseRow]['L'];
-						$resultSK=  $sheetData[$baseRow]['M'];
-						$costPlan=  $sheetData[$baseRow]['N'];
-						$costRealisation=  $sheetData[$baseRow]['O'];
-						$sourceCost=  $sheetData[$baseRow]['P'];
-						$hostel=  $sheetData[$baseRow]['Q'];
-						$reguler=  $sheetData[$baseRow]['R'];
-						$stakeholder=  $sheetData[$baseRow]['S'];
-						$location=  $sheetData[$baseRow]['T'];
-						$status=  $sheetData[$baseRow]['U'];
-						//$created=  $sheetData[$baseRow]['V'];
-						//$createdBy=  $sheetData[$baseRow]['W'];
-						//$modified=  $sheetData[$baseRow]['X'];
-						//$modifiedBy=  $sheetData[$baseRow]['Y'];
-						//$deleted=  $sheetData[$baseRow]['Z'];
-						//$deletedBy=  $sheetData[$baseRow]['AA'];
-						$approvedStatus=  $sheetData[$baseRow]['AB'];
-						$approvedStatusNote=  $sheetData[$baseRow]['AC'];
-						$approvedStatusDate=  $sheetData[$baseRow]['AD'];
-						$approvedStatusBy=  $sheetData[$baseRow]['AE'];
+						$ref_satker_id=  $sheetData[$baseRow]['B'];
+						$name=  $sheetData[$baseRow]['C'];
+						$startTime=  $sheetData[$baseRow]['D'];
+						$finishTime=  $sheetData[$baseRow]['E'];
+						$note=  $sheetData[$baseRow]['F'];
+						$attendanceCount=  $sheetData[$baseRow]['G'];
+						$classCount=  $sheetData[$baseRow]['H'];
+						$hostel=  $sheetData[$baseRow]['I'];
+						$location=  $sheetData[$baseRow]['J'];
+						$status=  $sheetData[$baseRow]['K'];
+						//$created=  $sheetData[$baseRow]['L'];
+						//$createdBy=  $sheetData[$baseRow]['M'];
+						//$modified=  $sheetData[$baseRow]['N'];
+						//$modifiedBy=  $sheetData[$baseRow]['O'];
+						//$deleted=  $sheetData[$baseRow]['P'];
+						//$deletedBy=  $sheetData[$baseRow]['Q'];
 
-						$model2=new Training;
+						$model2=new Meeting;
 						//$model2->id=  $id;
-						$model2->tb_program_id=  $tb_program_id;
-						$model2->tb_program_revision=  $tb_program_revision;
 						$model2->ref_satker_id=  $ref_satker_id;
-						$model2->number=  $number;
 						$model2->name=  $name;
-						$model2->start=  $start;
-						$model2->finish=  $finish;
+						$model2->startTime=  $startTime;
+						$model2->finishTime=  $finishTime;
 						$model2->note=  $note;
-						$model2->studentCount=  $studentCount;
+						$model2->attendanceCount=  $attendanceCount;
 						$model2->classCount=  $classCount;
-						$model2->executionSK=  $executionSK;
-						$model2->resultSK=  $resultSK;
-						$model2->costPlan=  $costPlan;
-						$model2->costRealisation=  $costRealisation;
-						$model2->sourceCost=  $sourceCost;
 						$model2->hostel=  $hostel;
-						$model2->reguler=  $reguler;
-						$model2->stakeholder=  $stakeholder;
 						$model2->location=  $location;
 						$model2->status=  $status;
 						//$model2->created=  $created;
@@ -497,10 +447,6 @@ class TrainingController extends Controller
 						//$model2->modifiedBy=  $modifiedBy;
 						//$model2->deleted=  $deleted;
 						//$model2->deletedBy=  $deletedBy;
-						$model2->approvedStatus=  $approvedStatus;
-						$model2->approvedStatusNote=  $approvedStatusNote;
-						$model2->approvedStatusDate=  $approvedStatusDate;
-						$model2->approvedStatusBy=  $approvedStatusBy;
 
 						try{
 							if($model2->save()){
@@ -539,4 +485,45 @@ class TrainingController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	 /**
+     * Lists all Room models.
+     * @return mixed
+     */
+    public function actionRoom($activity_id, $ref_satker_id=0)
+    {
+        $searchModel = new RoomSearch();
+		if($ref_satker_id===0) $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		if($ref_satker_id=='all'){
+			$queryParams['RoomSearch']=[
+				'status'=>1,
+			];
+		}
+		else{
+			$queryParams['RoomSearch']=[
+				'ref_satker_id'=>$ref_satker_id,
+				'status'=>1,
+			];
+		}	
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        $dataProvider = $searchModel->search($queryParams);
+
+		// GET ALL TRAINING YEAR
+		$satkers['all']='All';
+		$satkers = yii\helpers\ArrayHelper::map(\backend\models\Satker::find()
+			//->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['eselon'=>'ASC',])
+			//->active()
+			->asArray()
+			->all(), 'id', 'name');
+		$activity=$this->findModel($activity_id);
+        return $this->render('room', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+			'activity_id'=>$activity_id,
+			'activity'=>$activity,
+			'ref_satker_id'=>$ref_satker_id,
+			'satkers'=>$satkers,
+        ]);
+    }
 }

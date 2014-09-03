@@ -1,26 +1,24 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
-use yii\bootstrap\Dropdown;
+use kartik\detail\DetailView;
 
-/* @var $searchModel backend\models\TestingSearch */
+/* @var $this yii\web\View */
+/* @var $model backend\models\Room */
 
-$this->title = 'Testings';
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Rooms', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="testing-index">
-
-    <?php
-	$abjad = hscstudio\heart\helpers\Heart::abjad(1,1000);
-	echo hscstudio\heart\helpers\Heart::terbilang(100000000000);
-	echo hscstudio\heart\helpers\Heart::twodate('','',1);
+<div class="room-view">
 	
-	use hscstudio\heart\widgets\FullCalendar; 
+	<?= Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Room', ['index'], ['class' => 'btn btn-warning']) ?>
+	<hr>
+    <?php
+    use hscstudio\heart\widgets\FullCalendar; 
 	use yii\helpers\Url;
 	
 	echo FullCalendar::widget([
