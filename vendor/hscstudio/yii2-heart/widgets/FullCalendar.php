@@ -107,7 +107,7 @@ class FullCalendar extends Widget{
 		echo Html::beginTag('div',$this->htmlOptions);
 		echo Html::endTag('div');		
 		$encodeoptions=Json::encode($this->options);
-		$view->registerJs("jQuery('#$id').fullCalendar($encodeoptions);");
+		$view->registerJs("$('#$id').fullCalendar($encodeoptions);");
 	}
 	
 	public function registerScript($view){		

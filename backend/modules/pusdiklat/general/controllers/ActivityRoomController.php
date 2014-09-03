@@ -1,18 +1,18 @@
 <?php
 
-namespace backend\modules\pusdiklat\execution\controllers;
+namespace backend\modules\pusdiklat\general\controllers;
 
 use Yii;
-use backend\models\Training;
-use backend\models\TrainingSearch;
+use backend\models\ActivityRoom;
+use backend\models\ActivityRoomSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TrainingController implements the CRUD actions for Training model.
+ * ActivityRoomController implements the CRUD actions for ActivityRoom model.
  */
-class TrainingController extends Controller
+class ActivityRoomController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,87 +30,63 @@ class TrainingController extends Controller
     }
 
     /**
-     * Lists all Training models.
+     * Lists all ActivityRoom models.
      * @return mixed
      */
-     public function actionIndex($year='',$status='all')
+    public function actionIndex($tb_room_id,$status='all')
     {
-		if(empty($year)) $year = date('Y');
-		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-		
-        $searchModel = new TrainingSearch();
-		$queryParams = Yii::$app->request->getQueryParams();
-		if($status!='all'){
-			if($year!='all'){
-				$queryParams['TrainingSearch']=[
-					'year' => $year,
-					'ref_satker_id'=>$ref_satker_id,
-					'status'=>$status,
-				];
-			}
-			else{
-				$queryParams['TrainingSearch']=[
-					'ref_satker_id'=>$ref_satker_id,
-					'status'=>$status,
-				];
-			}
-		}
-		else{
-			if($year!='all'){
-				$queryParams['TrainingSearch']=[
-					'year' => $year,
-					'ref_satker_id'=>$ref_satker_id,
-				];
-			}
-			else{
-				$queryParams['TrainerSearch']=[
-					'ref_satker_id'=>$ref_satker_id,
-				];
-			}
-		}
+        $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$searchModel = new ActivityRoomSearch();
+        $queryParams = Yii::$app->request->getQueryParams();
+		$params = [];
+		if($status=='all') $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,];
+		else $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,'status' => $status,];
+		$queryParams['ActivityRoomSearch']=$params;
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 		$dataProvider = $searchModel->search($queryParams);
-		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_DESC,'finishTime'=>SORT_DESC];
 		
-		// GET ALL TRAINING YEAR
-		$year_training = yii\helpers\ArrayHelper::map(Training::find()
-			->select(['year'=>'YEAR(start)','start','finish'])
-			->orderBy(['year'=>'DESC'])
-			->groupBy(['year'])
-			->currentSatker()
-			->active()
-			->asArray()
-			->all(), 'year', 'year');
-		$year_training['all']='All'	;
+		$room = \backend\models\Room::findOne($tb_room_id);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-			'year' => $year,
+			'room' => $room,
+			'tb_room_id' => $tb_room_id,
 			'status' => $status,
-			'year_training' => $year_training,
         ]);
     }
-
+	
+	
     /**
-     * Displays a single Training model.
+     * Displays a single ActivityRoom model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = ActivityRoom::find($id)->one(); 
+		if (Yii::$app->request->isAjax){		
+			return $this->renderPartial('view', [
+				'model' => $model,
+				'tb_room_id' => $model->tb_room_id,
+			]);
+		}
+		else{
+			return $this->render('view', [
+				'model' => $model,
+				'tb_room_id' => $model->tb_room_id,
+			]);
+		}
     }
 
     /**
-     * Creates a new Training model.
+     * Creates a new ActivityRoom model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($tb_room_id)
     {
-        $model = new Training();
+        $model = new ActivityRoom();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -123,70 +99,81 @@ class TrainingController extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
+				'tb_room_id' => $tb_room_id,
             ]);
         }
     }
 
     /**
-     * Updates an existing Training model.
+     * Updates an existing ActivityRoom model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $currentFiles=[];
-        
+        $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$model = ActivityRoom::find($id)->one();        
+		//CHECKING ACTIVITY ID OF CURRENT SATKER
+		if($model->type==0){
+			$training = \backend\models\Training::findOne($model->activity_id);
+			if($training->ref_satker_id!=$ref_satker_id){
+				Yii::$app->session->setFlash('error', 'You have not privileges to update this activity!');
+				return $this->redirect(['index','tb_room_id'=>$model->tb_room_id]);
+			}
+		}
+		
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-			
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
 				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
 				Yii::$app->session->setFlash('error', 'There are some errors');
+				return $this->redirect(['index','tb_room_id'=>$model->tb_room_id]);
             }            
         }
 		else{
 			//return $this->render(['update', 'id' => $model->id]);
 			return $this->render('update', [
                 'model' => $model,
+				'tb_room_id' => $model->tb_room_id,
             ]);
 		}
     }
 
     /**
-     * Deletes an existing Training model.
+     * Deletes an existing ActivityRoom model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$model = ActivityRoom::find($id)->one();        
+		//CHECKING ACTIVITY ID OF CURRENT SATKER
+		if($model->type==0){
+			$training = \backend\models\Training::findOne($model->activity_id);
+			if($training->ref_satker_id!=$ref_satker_id){
+				Yii::$app->session->setFlash('error', 'You have not privileges to delete this activity!');
+				return $this->redirect(['index','tb_room_id'=>$model->tb_room_id]);
+			}
+		}
+		$model->delete();
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Training model based on its primary key value.
+     * Finds the ActivityRoom model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Training the loaded model
+     * @return ActivityRoom the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Training::findOne($id)) !== null) {
+        if (($model = ActivityRoom::find($id)->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -194,15 +181,15 @@ class TrainingController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new Training; // your model can be loaded here
+		$model = new ActivityRoom; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['Training'][$_POST['editableIndex']]);
-				$value=$_POST['Training'][$_POST['editableIndex']][$name];
+				$name=key($_POST['ActivityRoom'][$_POST['editableIndex']]);
+				$value=$_POST['ActivityRoom'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -222,7 +209,7 @@ class TrainingController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => ActivityRoom::find(),
         ]);
 		
 		try {
@@ -236,20 +223,20 @@ class TrainingController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "Training";
+			$OpenTBS->VarRef['modelName']= "ActivityRoom";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_program_id';			
-			$data1[]['col2'] = 'tb_program_revision';			
-			$data1[]['col3'] = 'ref_satker_id';			
+			$data1[]['col1'] = 'type';			
+			$data1[]['col2'] = 'activity_id';			
+			$data1[]['col3'] = 'tb_room_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $training){
+			foreach($dataProvider->getModels() as $activityroom){
 				$data2[] = [
-					'col0'=>$training->id,
-					'col1'=>$training->tb_program_id,
-					'col2'=>$training->tb_program_revision,
-					'col3'=>$training->ref_satker_id,
+					'col0'=>$activityroom->id,
+					'col1'=>$activityroom->type,
+					'col2'=>$activityroom->activity_id,
+					'col3'=>$activityroom->tb_room_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -268,7 +255,7 @@ class TrainingController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
+            'query' => ActivityRoom::find(),
         ]);
 		
 		try {
@@ -283,13 +270,13 @@ class TrainingController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Training');
+								->setCellValue('A1', 'Tabel ActivityRoom');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $training){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->tb_program_revision)
-													  ->setCellValue('D'.$idx, $training->ref_satker_id);
+					foreach($dataProvider->getModels() as $activityroom){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $activityroom->id)
+													  ->setCellValue('B'.$idx, $activityroom->type)
+													  ->setCellValue('C'.$idx, $activityroom->activity_id)
+													  ->setCellValue('D'.$idx, $activityroom->tb_room_id);
 						$idx++;
 					}		
 					
@@ -314,13 +301,13 @@ class TrainingController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel Training');
+								->setCellValue('A1', 'Tabel ActivityRoom');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $training){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-													  ->setCellValue('B'.$idx, $training->tb_program_id)
-													  ->setCellValue('C'.$idx, $training->tb_program_revision)
-													  ->setCellValue('D'.$idx, $training->ref_satker_id);
+					foreach($dataProvider->getModels() as $activityroom){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $activityroom->id)
+													  ->setCellValue('B'.$idx, $activityroom->type)
+													  ->setCellValue('C'.$idx, $activityroom->activity_id)
+													  ->setCellValue('D'.$idx, $activityroom->tb_room_id);
 						$idx++;
 					}		
 									
@@ -362,13 +349,13 @@ class TrainingController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel Training');
+									->setCellValue('A1', 'Tabel ActivityRoom');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $training){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
-														  ->setCellValue('B'.$idx, $training->tb_program_id)
-														  ->setCellValue('C'.$idx, $training->tb_program_revision)
-														  ->setCellValue('D'.$idx, $training->ref_satker_id);
+						foreach($dataProvider->getModels() as $activityroom){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $activityroom->id)
+														  ->setCellValue('B'.$idx, $activityroom->type)
+														  ->setCellValue('C'.$idx, $activityroom->activity_id)
+														  ->setCellValue('D'.$idx, $activityroom->tb_room_id);
 							$idx++;
 						}		
 						
@@ -410,133 +397,83 @@ class TrainingController extends Controller
         ]);	
     }
 	
-	public function actionImport(){
-		$dataProvider = new ActiveDataProvider([
-            'query' => Training::find(),
-        ]);
+	/**
+     * Lists all ActivityRoom models.
+     * @return mixed
+     */
+    public function actionCalendar($tb_room_id,$status='all')
+    {
+        /*
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$searchModel = new ActivityRoomSearch();
+        $queryParams = Yii::$app->request->getQueryParams();
+		$params = [];
+		if($status=='all') $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,];
+		else $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,'status' => $status,];
+		$queryParams['ActivityRoomSearch']=$params;
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_DESC,'finishTime'=>SORT_DESC];*/
 		
-		/* 
-		Please read guide of upload https://github.com/yiisoft/yii2/blob/master/docs/guide/input-file-upload.md
-		maybe I do mistake :)
-		*/		
-		if (!empty($_FILES)) {
-			$importFile = \yii\web\UploadedFile::getInstanceByName('importFile');
-			if(!empty($importFile)){
-				$fileTypes = ['xls','xlsx']; // File extensions allowed
-				//$ext = end((explode(".", $importFile->name)));
-				$ext=$importFile->extension;
-				if(in_array($ext,$fileTypes)){
-					$inputFileType = \PHPExcel_IOFactory::identify($importFile->tempName );
-					$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-					$objPHPExcel = $objReader->load($importFile->tempName );
-					$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
-					$baseRow = 2;
-					$inserted=0;
-					$read_status = false;
-					$err=[];
-					while(!empty($sheetData[$baseRow]['A'])){
-						$read_status = true;
-						$abjadX=array();
-						//$id=  $sheetData[$baseRow]['A'];
-						$tb_program_id=  $sheetData[$baseRow]['B'];
-						$tb_program_revision=  $sheetData[$baseRow]['C'];
-						$ref_satker_id=  $sheetData[$baseRow]['D'];
-						$number=  $sheetData[$baseRow]['E'];
-						$name=  $sheetData[$baseRow]['F'];
-						$start=  $sheetData[$baseRow]['G'];
-						$finish=  $sheetData[$baseRow]['H'];
-						$note=  $sheetData[$baseRow]['I'];
-						$studentCount=  $sheetData[$baseRow]['J'];
-						$classCount=  $sheetData[$baseRow]['K'];
-						$executionSK=  $sheetData[$baseRow]['L'];
-						$resultSK=  $sheetData[$baseRow]['M'];
-						$costPlan=  $sheetData[$baseRow]['N'];
-						$costRealisation=  $sheetData[$baseRow]['O'];
-						$sourceCost=  $sheetData[$baseRow]['P'];
-						$hostel=  $sheetData[$baseRow]['Q'];
-						$reguler=  $sheetData[$baseRow]['R'];
-						$stakeholder=  $sheetData[$baseRow]['S'];
-						$location=  $sheetData[$baseRow]['T'];
-						$status=  $sheetData[$baseRow]['U'];
-						//$created=  $sheetData[$baseRow]['V'];
-						//$createdBy=  $sheetData[$baseRow]['W'];
-						//$modified=  $sheetData[$baseRow]['X'];
-						//$modifiedBy=  $sheetData[$baseRow]['Y'];
-						//$deleted=  $sheetData[$baseRow]['Z'];
-						//$deletedBy=  $sheetData[$baseRow]['AA'];
-						$approvedStatus=  $sheetData[$baseRow]['AB'];
-						$approvedStatusNote=  $sheetData[$baseRow]['AC'];
-						$approvedStatusDate=  $sheetData[$baseRow]['AD'];
-						$approvedStatusBy=  $sheetData[$baseRow]['AE'];
-
-						$model2=new Training;
-						//$model2->id=  $id;
-						$model2->tb_program_id=  $tb_program_id;
-						$model2->tb_program_revision=  $tb_program_revision;
-						$model2->ref_satker_id=  $ref_satker_id;
-						$model2->number=  $number;
-						$model2->name=  $name;
-						$model2->start=  $start;
-						$model2->finish=  $finish;
-						$model2->note=  $note;
-						$model2->studentCount=  $studentCount;
-						$model2->classCount=  $classCount;
-						$model2->executionSK=  $executionSK;
-						$model2->resultSK=  $resultSK;
-						$model2->costPlan=  $costPlan;
-						$model2->costRealisation=  $costRealisation;
-						$model2->sourceCost=  $sourceCost;
-						$model2->hostel=  $hostel;
-						$model2->reguler=  $reguler;
-						$model2->stakeholder=  $stakeholder;
-						$model2->location=  $location;
-						$model2->status=  $status;
-						//$model2->created=  $created;
-						//$model2->createdBy=  $createdBy;
-						//$model2->modified=  $modified;
-						//$model2->modifiedBy=  $modifiedBy;
-						//$model2->deleted=  $deleted;
-						//$model2->deletedBy=  $deletedBy;
-						$model2->approvedStatus=  $approvedStatus;
-						$model2->approvedStatusNote=  $approvedStatusNote;
-						$model2->approvedStatusDate=  $approvedStatusDate;
-						$model2->approvedStatusBy=  $approvedStatusBy;
-
-						try{
-							if($model2->save()){
-								$inserted++;
-							}
-							else{
-								foreach ($model2->errors as $error){
-									$err[]=($baseRow-1).'. '.implode('|',$error);
-								}
-							}
-						}
-						catch (\yii\base\ErrorException $e){
-							Yii::$app->session->setFlash('error', "{$e->getMessage()}");
-							//$this->refresh();
-						} 
-						$baseRow++;
-					}	
-					Yii::$app->session->setFlash('success', ($inserted).' row inserted');
-					if(!empty($err)){
-						Yii::$app->session->setFlash('warning', 'There are error: <br>'.implode('<br>',$err));
-					}
-				}
-				else{
-					Yii::$app->session->setFlash('error', 'Filetype allowed only xls and xlsx');
-				}				
-			}
-			else{
-				Yii::$app->session->setFlash('error', 'File import empty!');
-			}
+		$room = \backend\models\Room::findOne($tb_room_id);
+        return $this->render('calendar', [
+			'room' => $room,
+			'tb_room_id' => $tb_room_id,
+			'status' => $status,
+        ]);
+    }
+	
+	public function actionEvents($tb_room_id,$status='all')
+	{
+		$start = Yii::$app->request->get('start');
+		$end = Yii::$app->request->get('end');
+        
+		$items = array();
+		if($status=='all'){
+			$model= \backend\models\ActivityRoom::find()
+					 ->where('(startTime >= :start and finishTime<= :end) and tb_room_id=:tb_room_id',
+						[':start' => $start,':end' => $end,':tb_room_id' => $tb_room_id])
+					 ->all();  
 		}
 		else{
-			Yii::$app->session->setFlash('error', 'File import empty!');
+			$model= \backend\models\ActivityRoom::find()
+					 ->where('startTime >= :start and finishTime<= :end and tb_room_id=:tb_room_id and status=:status',
+						[':start' => $start,':end' => $end,':tb_room_id' => $tb_room_id,':status' => $status])
+					 ->all();   
 		}
 		
-		return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);					
-	}
+		$title = 'Untitle';
+		$start = date('Y-m-d');
+		$end = date('Y-m-d');
+		$color = '';
+		$link = '';
+		foreach ($model as $value) {
+			
+			if($value->type==0){
+				$training = \backend\models\Training::find()
+					 ->where('id >= :id ',[':id' => $value->activity_id])
+					 ->one();
+				$title = $training->name.' | '.\hscstudio\heart\helpers\Heart::twodate($value->startTime,$value->finishTime,1);
+				$start=date('Y-m-d',strtotime($value->startTime));
+				$end=date('Y-m-d', strtotime('+1 day', strtotime($value->finishTime)));
+				if($value->status==0) $color='#f0ad4e';
+				else if($value->status==1) $color='#5cb85c';
+				else if($value->status==2) $color='#d9534f';
+				$link = \yii\helpers\Url::to(['view','id'=>$value->id]);
+			}
+			else{
+				// NEXT FOR MEETING ACTIVTY
+			}
+			
+			$items[]=[
+				'title'=> $title,
+				'start'=> $start,
+				'end'=> $end,
+				'color'=> $color,
+				//'allDay'=>true,
+				'url'=>$link
+			];
+		}
+		echo \yii\helpers\Json::encode($items);
+    }
 }

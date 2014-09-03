@@ -3,24 +3,26 @@
 namespace backend\models;
 
 use Yii;
-																
+																	
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
 /**
- * This is the model class for table "tb_room".
+ * This is the model class for table "tb_meeting".
  *
 
  * @property integer $id
  * @property integer $ref_satker_id
- * @property string $code
+ * @property string $executor
  * @property string $name
- * @property integer $capacity
- * @property integer $owner
- * @property integer $computer
+ * @property string $startTime
+ * @property string $finishTime
+ * @property string $note
+ * @property integer $attendanceCount
+ * @property integer $classCount
  * @property integer $hostel
- * @property string $address
+ * @property string $location
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
@@ -29,17 +31,16 @@ use yii\behaviors\BlameableBehavior;
  * @property string $deleted
  * @property integer $deletedBy
  *
- * @property ActivityRoom[] $activityRooms
  * @property Satker $refSatker
  */
-class Room extends \yii\db\ActiveRecord
+class Meeting extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'tb_room';
+        return 'tb_meeting';
     }
 	
     /**
@@ -73,12 +74,11 @@ class Room extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ref_satker_id', 'capacity', 'owner', 'computer', 'hostel', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['code', 'name'], 'required'],
-            [['created', 'modified', 'deleted'], 'safe'],
-            [['code'], 'string', 'max' => 25],
-            [['name', 'address'], 'string', 'max' => 255],
-            [['code'], 'unique']
+            [['ref_satker_id', 'executor',  'name', 'startTime', 'finishTime'], 'required'],
+            [['ref_satker_id', 'attendanceCount', 'classCount', 'hostel', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['startTime', 'finishTime', 'created', 'modified', 'deleted'], 'safe'],
+            [['name', 'note', 'location'], 'string', 'max' => 255],
+			[['executor'], 'string', 'max' => 50],
         ];
     }
 
@@ -90,13 +90,15 @@ class Room extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'ref_satker_id' => 'Ref Satker ID',
-            'code' => 'Code',
-            'name' => 'Name',
-            'capacity' => 'Capacity',
-            'owner' => 'Owner',
-            'computer' => 'Computer',
+            'executor' => 'Executor',
+			'name' => 'Name',
+            'startTime' => 'Start Time',
+            'finishTime' => 'Finish Time',
+            'note' => 'Note',
+            'attendanceCount' => 'Attendance Count',
+            'classCount' => 'Class Count',
             'hostel' => 'Hostel',
-            'address' => 'Address',
+            'location' => 'Location',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
@@ -109,38 +111,8 @@ class Room extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getActivityRooms()
-    {
-        return $this->hasMany(ActivityRoom::className(), ['tb_room_id' => 'id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getSatker()
     {
         return $this->hasOne(Satker::className(), ['id' => 'ref_satker_id']);
-    }
-	/**
-     * @inheritdoc
-     * @return RoomQuery
-     */
-    public static function find()
-    {
-        return new RoomQuery(get_called_class());
-    }
-}
-
-class RoomQuery extends \yii\db\ActiveQuery
-{
-    public function currentSatker()
-    {
-        $this->andWhere(['ref_satker_id'=>(int)Yii::$app->user->identity->employee->ref_satker_id]);
-        return $this;
-    }
-	
-	public function active($status=1)
-    {
-        $this->andWhere(['status'=>$status]);
-        return $this;
     }
 }

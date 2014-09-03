@@ -75,7 +75,11 @@ $StaUnit2 = \backend\models\StaUnit::find()->select('id,name')->where(['id' =>$m
             'married',
 			[
 				'attribute' => 'photo',
-				'value' => '\file\employee\/'.$model->id.'\/'.$model->photo,
+				'value' => '<img src='.$model->photo.'/>',
+				/*'attribute' => 'photo',
+				'format' => 'image',
+				'value' => function($data) {return $model->photo;},*/
+				//'contentOptions' => ['class' => 'come-class']
 			],
             //'photo',
             'blood',
