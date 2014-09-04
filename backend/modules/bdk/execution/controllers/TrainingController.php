@@ -89,7 +89,7 @@ class TrainingController extends Controller
 
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 		$dataProvider = $searchModel->search($queryParams);
-		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
+		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_DESC,'finish'=>SORT_DESC];
 
 		// GET ALL TRAINING YEAR
 		$year_training = yii\helpers\ArrayHelper::map(Training::find()
@@ -148,6 +148,12 @@ class TrainingController extends Controller
 			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
 			$model->status = 1;
 
+			// Ngecek logika tanggal
+			if ($model->start > $model->finish) {
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Start date should not be greater than end date!');
+				return $this->redirect('index');
+			}
+
 			// GENERATE TRAINING NUMBER
 			$year = date('Y',strtotime($model->start));
 			$program_owner = sprintf("%02s", $model->program->ref_satker_id);
@@ -184,7 +190,7 @@ class TrainingController extends Controller
 			}
 			else
 			{
-				 Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Unable create training');
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Unable create training');
 			}
             return $this->redirect('index');
         } 
@@ -348,6 +354,12 @@ class TrainingController extends Controller
 		}
 
         if ($model->load(Yii::$app->request->post())) {
+
+			// Ngecek logika tanggal
+			if ($model->start > $model->finish) {
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Start date should not be greater than end date!');
+				return $this->redirect('index');
+			}
             
 			if(Yii::$app->request->post('generate_number')==1){
 			// GENERATE TRAINING NUMBER				
@@ -388,7 +400,7 @@ class TrainingController extends Controller
 				{
 					$model2 = \backend\models\TrainingHistory::find()
 									->where(['tb_training_id' => $model->id,])
-									->orderBy(['revision'=>'DESC'])
+									->orderBy(['revision'=>SORT_DESC])
 									->one();
 					$model2->attributes = array_merge($model->attributes);				
 					$model2->save();
