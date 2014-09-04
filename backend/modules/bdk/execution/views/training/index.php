@@ -29,12 +29,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
                         
 				[
 					'class' => 'kartik\grid\EditableColumn',
+					'format' => 'raw',
 					'attribute' => 'name',
 					'vAlign'=>'middle',
 					'hAlign' => 'left',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
+					'value' => function ($data) {
+						return '<div data-toggle="tooltip" data-placement="top" title="'.$data->note.'">'.$data->name.'</div>';
+					}
 				],
             
 				[
