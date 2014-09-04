@@ -29,14 +29,33 @@ class RoomController extends Controller
 
 
 
-    public function actionIndex()
+    public function actionIndex($status = 1)
     {
         $searchModel = new RoomSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        // Ngambil data berdasarkan status
+        if($status!='all'){
+			$queryParams['RoomSearch']=[
+				'ref_satker_id' => Yii::$app->user->identity->employee->ref_satker_id,
+				'status'=>$status,
+			];
+		}
+		else{
+			$queryParams['RoomSearch']=[
+				'ref_satker_id' => Yii::$app->user->identity->employee->ref_satker_id,
+			];
+		}
+
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['code'=>SORT_DESC];
+		// dah
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'status' => $status
         ]);
     }
 
@@ -52,11 +71,9 @@ class RoomController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Room model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+
+
+
     public function actionCreate()
     {
         $model = new Room();
@@ -67,25 +84,30 @@ class RoomController extends Controller
         	$model->ref_satker_id = Yii::$app->user->identity->employee->ref_satker_id;
 
 			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
+				 Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Room created!');
 			}
 			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+				 Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Cannot create room!');
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            return $this->redirect(['index', 'status' => $model->status]);
+        } 
+        else {
+        	if (Yii::$app->request->isAjax) {
+	            return $this->renderAjax('create', [
+	                'model' => $model,
+	            ]);	
+        	}
+        	else {
+	            return $this->render('create', [
+	                'model' => $model,
+	            ]);
+        	}
         }
     }
 
-    /**
-     * Updates an existing Room model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -102,17 +124,24 @@ class RoomController extends Controller
 					}
 					$idx++;
 				}
-				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', 'id' => $model->id]);
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Room updated!');
+                return $this->redirect(['index', 'status' => $model->status]);
             } else {
                 // error in saving model
-				Yii::$app->session->setFlash('error', 'There are some errors');
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Failed to save changes!');
             }            
         }
 		else{
-			return $this->render('update', [
-                'model' => $model,
-            ]);
+			if (Yii::$app->request->isAjax) {
+				return $this->renderAjax('update', [
+	                'model' => $model,
+	            ]);	
+			}
+			else {
+				return $this->render('update', [
+	                'model' => $model,
+	            ]);	
+			}
 		}
     }
 

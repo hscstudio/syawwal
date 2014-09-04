@@ -1,10 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\grid\GridView;
+use kartik\widgets\Select2;
 use yii\bootstrap\Dropdown;
-
-/* @var $searchModel backend\models\RoomSearch */
 
 $this->title = 'Rooms';
 $this->params['breadcrumbs'][] = $this->title;
@@ -15,97 +15,141 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="room-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-gridview',
+	]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
-
-            // 'id',
-            /*
-				[
-					'attribute' => 'ref_satker_id',
-					'value' => function ($data) {
-						return $data->satker->name;
-					}
-				],
-				*/
+	            ['class' => 'kartik\grid\SerialColumn'],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'code',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
+					'width' => '100px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Code', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Code', 'size'=>'md','formOptions'=>['action'=>Url::to('editable')]]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'name',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>Url::to('editable')]]
 				],
             
 				[
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'capacity',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
+					'width' => '80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Capacity', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Capacity', 'size'=>'md','formOptions'=>['action'=>Url::to('editable')]]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'class' => '\kartik\grid\BooleanColumn',
+			        'trueLabel' => 'Yes', 
+			        'falseLabel' => 'No',
 					'attribute' => 'owner',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
+					'width' => '80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Owner', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'class' => '\kartik\grid\BooleanColumn',
+			        'trueLabel' => 'Yes', 
+			        'falseLabel' => 'No',
 					'attribute' => 'computer',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
+					'width' => '80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Computer', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
+					'class' => '\kartik\grid\BooleanColumn',
+			        'trueLabel' => 'Yes', 
+			        'falseLabel' => 'No',
 					'attribute' => 'hostel',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
+					'width' => '80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Hostel', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
 
-            ['class' => 'kartik\grid\ActionColumn'],
+            	[
+            		'class' => 'kartik\grid\ActionColumn',
+            		'buttons' => [
+						'view' => function ($url, $model) {
+							$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+							return Html::a($icon,$url,[
+								'class'=>'modal-heart',
+								'data-pjax'=>"0",
+								'source'=>'.table-responsive',
+								'title'=> 'See Detail',
+								'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->name
+							]);
+						},
+						'update' => function ($url, $model) {
+							$icon='<span class="glyphicon glyphicon-pencil"></span>';
+							return Html::a($icon,$url,[
+								'class'=>'modal-heart',
+								'data-pjax'=>"0",
+								'modal-title' => '<i class="fa fa-fw fa-pencil-square-o"></i> Editing: '.$model->name
+							]);
+						},
+					],
+            	],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Room</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Room', ['create'], ['class' => 'btn btn-success']),
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Room', ['create'], [
+						'class' => 'modal-heart btn btn-success',
+						'data-pjax' => "0",
+						'modal-title' => '<i class="fa fa-fw fa-inbox"></i> Create New Room'
+					]).
+					'<div class="pull-right" style="margin-right:5px;">'.
+					Select2::widget([
+						'name' => 'status', 
+						'data' => ['1'=>'Published','0'=>'Hidden','all'=>'All'],
+						'value' => $status,
+						'options' => [
+							'placeholder' => 'Status ...', 
+							'class'=>'form-control', 
+							'onchange'=>'
+								$.pjax.reload({
+									url: "'.Url::to(['/'.$controller->module->uniqueId.'/room/index']).'?status="+$(this).val(), 
+									container: "#pjax-gridview", 
+									timeout: 1,
+								});
+							',	
+						],
+					]).
+					'</div>',
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+
+    <?php \yii\widgets\Pjax::end(); ?>
+
+
+	<?php
+		echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
+	?>
+
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);
