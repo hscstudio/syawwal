@@ -123,7 +123,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					<div class="col-md-2">
 					<?php
 						echo '<div class="form-group">';
-						echo '<label class="hidden-sm hidden-xs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>';
+						echo '<label class="hidden-sm hidden-xs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>';
 						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), ['class' => 'btn btn-default']);
 						echo '</div>';
 					?>
