@@ -9,9 +9,6 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * RoomController implements the CRUD actions for Room model.
- */
 class RoomController extends Controller
 {
 	public $layout = '@hscstudio/heart/views/layouts/column2';
@@ -29,10 +26,9 @@ class RoomController extends Controller
         ];
     }
 
-    /**
-     * Lists all Room models.
-     * @return mixed
-     */
+
+
+
     public function actionIndex()
     {
         $searchModel = new RoomSearch();
@@ -65,7 +61,11 @@ class RoomController extends Controller
     {
         $model = new Room();
 
-        if ($model->load(Yii::$app->request->post())){
+        if ($model->load(Yii::$app->request->post())) {
+
+        	// Ngeset satker_id sesuai user
+        	$model->ref_satker_id = Yii::$app->user->identity->employee->ref_satker_id;
+
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
 			}
@@ -110,22 +110,20 @@ class RoomController extends Controller
             }            
         }
 		else{
-			//return $this->render(['update', 'id' => $model->id]);
 			return $this->render('update', [
                 'model' => $model,
             ]);
 		}
     }
 
-    /**
-     * Deletes an existing Room model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+
+        Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-times-circle"></i> Room has been deleted!');
 
         return $this->redirect(['index']);
     }

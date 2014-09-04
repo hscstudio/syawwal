@@ -29,16 +29,6 @@ use yii\helpers\ArrayHelper;
 	
     <?= '' ?>
 
-			<?php
-			$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Satker ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
-			]); ?>
-
     <?= $form->field($model, 'capacity')->textInput() ?>
 
     <?= $form->field($model, 'owner')->widget(\kartik\widgets\SwitchInput::classname(), [
@@ -69,21 +59,9 @@ use yii\helpers\ArrayHelper;
 					]
 				]) ?>
 
-    <?= ""//createdBy ?>
-
-    <?= ""//modifiedBy ?>
-
-    <?= ""//deletedBy ?>
-
     <?= $form->field($model, 'code')->textInput(['maxlength' => 25]) ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-
-    <?= ""//created ?>
-
-    <?= ""//modified ?>
-
-    <?= ""//deleted ?>
 
     <?= $form->field($model, 'address')->textInput(['maxlength' => 255]) ?>
 

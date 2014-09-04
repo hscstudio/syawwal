@@ -13,7 +13,8 @@ use backend\models\ActivityRoom;
 use backend\models\Room;
 
 $this->title = 'Request Room for '.$trainingCurrent->name;
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => Url::to(['training/index'])];
+$this->params['breadcrumbs'][] = 'Room';
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -42,35 +43,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 					    echo Html::hiddenInput('tb_training_id', $trainingCurrent->id);
 					?>
-					<div class="col-md-2">
-					<?php
-						echo '<div class="form-group">';
-						echo $form->field($satkerModel, 'id')->label('Satker')->widget(Select2::classname(), [
-						    'data' => $satkerItem,
-						    'options' => [
-						    	'placeholder' => 'Choose a satker ...',
-						    	'class' => 'form-control',
-						    	'id' => 'satker'
-						    ],
-						    'pluginOptions' => [
-						        'allowClear' => true
-						    ],
-						]);
-						echo '</div>';
-					?>
-					</div>
 
 					<div class="col-md-2">
 					<?php
 						echo '<div class="form-group">';
-						echo $form->field($roomModel, 'id')->label('Room List')->widget(DepDrop::classname(), [
-						    'options'=>['id'=>'room'],
-						    'select2Options'=>['pluginOptions'=>['allowClear'=>true]],
-						    'pluginOptions'=>[
-						        'depends'=>['satker'],
-						        'placeholder'=>'Select...',
-						        'url'=>Url::to(['training-room/find'])
-						    ]
+						echo $form->field($roomModel, 'id')->label('Room List')->widget(Select2::classname(), [
+						    'data' => $roomList,
+						    'options' => ['placeholder' => 'Select a room ...'],
+						    'pluginOptions' => [
+						        'allowClear' => true
+						    ],
 						]);
 						echo '</div>';
 					?>
@@ -134,6 +116,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						echo '<div class="form-group">';
 						echo '<label class="hidden-sm hidden-xs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>';
 						echo Html::submitButton('<i class="fa fa-fw fa-play"></i>Request Room', ['class' => 'btn btn-primary']);
+						echo '</div>';
+					?>
+					</div>
+
+					<div class="col-md-2">
+					<?php
+						echo '<div class="form-group">';
+						echo '<label class="hidden-sm hidden-xs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>';
+						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), ['class' => 'btn btn-default']);
 						echo '</div>';
 					?>
 					</div>

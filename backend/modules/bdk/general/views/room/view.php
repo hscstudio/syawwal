@@ -35,7 +35,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'ref_satker_id',
 				'value' => $model->satker->name,
 			],
-            'ref_satker_id',
             'code',
             'name',
             'capacity',

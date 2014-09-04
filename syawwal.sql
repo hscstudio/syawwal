@@ -1152,14 +1152,6 @@ CREATE TABLE IF NOT EXISTS `tb_room` (
   `deletedBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
---
--- Dumping data for table `tb_room`
---
-
-INSERT INTO `tb_room` (`id`, `ref_satker_id`, `code`, `name`, `capacity`, `owner`, `computer`, `hostel`, `address`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 1, 'B1', 'B1', 10, 0, 0, 0, '', 1, '2014-09-01 11:26:28', 1, '2014-09-01 11:26:59', 1, NULL, NULL),
-(2, 1, 'F1', 'F1', 30, 0, 0, 0, '', 0, '2014-09-01 11:26:51', 1, '2014-09-01 11:26:51', 1, NULL, NULL),
-(3, 8, 'GH', 'Gedung H', 40, 0, 0, 0, '', 0, '2014-09-01 11:27:45', 1, '2014-09-01 11:28:06', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -3301,7 +3293,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 -- AUTO_INCREMENT for table `tb_room`
 --
 ALTER TABLE `tb_room`
-MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+MODIFY `id` int(3) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `tb_satker_pic`
 --
