@@ -143,6 +143,7 @@ class EmployeeController extends Controller
 					@mkdir($path, 0755, true);
 					@chmod($path, 0755);
 					$paths[0] = $path . $model->photo;
+					\hscstudio\heart\helpers\Heart::imageResize($files[0]->tempName, $files[0]->tempName,148,198,0);
 					if(isset($currentFiles[0])) @unlink($path . $currentFiles[0]);
 				}
 											
@@ -197,6 +198,7 @@ class EmployeeController extends Controller
 					}
 					$idx++;
 				}
+				\hscstudio\heart\helpers\Heart::imageResize($paths[0], $paths[0],148,198,0);
 				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
