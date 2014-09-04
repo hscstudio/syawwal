@@ -15,7 +15,7 @@ class Module extends \yii\base\Module
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			// Add here your items module
-			['icon'=>'fa fa-fw fa-dashboard', 'label' => 'Biodata', 'url' => ['/'.$this->uniqueId.'/eregistrasi/index']],
+			['icon'=>'fa fa-fw fa-child', 'label' => 'Biodata', 'url' => ['/'.$this->uniqueId.'/employee/index']],
 		];
 	}
 }
