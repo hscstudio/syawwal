@@ -44,22 +44,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'attribute' => 'start',
 					'vAlign'=>'middle',
+					'width'=>'100px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'value' => function ($data)
 					{
-						return date('d F Y', strtotime($data->start));
+						return date('d M Y', strtotime($data->start));
 					}
 				],
             
 				[
 					'attribute' => 'finish',
 					'vAlign'=>'middle',
+					'width'=>'100px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'value' => function ($data)
 					{
-						return date('d F Y', strtotime($data->finish));
+						return date('d M Y', strtotime($data->finish));
 					}
 				],
             
@@ -68,26 +70,30 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'attribute' => 'classCount',
 					'vAlign'=>'middle',
 					'hAlign' => 'center',
+					'label' => 'Class',
+					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Class Count', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Class', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'label' => 'Student Count',
+					'label' => 'Student',
 					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'studentCount',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
+					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Student Count', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'editableOptions'=>['header'=>'Student', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
 
 				[
 					'format' => 'raw',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
+					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'label' => 'Room',
@@ -160,10 +166,29 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 
 				[
+					'format' => 'html',
+					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'label' => 'Revision',
+					'width'=>'80px',
+					'value' => function ($data) {
+						$countRevision = \backend\models\TrainingHistory::find()
+									->where(['tb_training_id' => $data->id,])
+									->count()-1;
+						if($countRevision>0){
+							return Html::a($countRevision.'x', ['training-history/','tb_training_id'=>$data->id], ['class' => 'label label-danger']);
+						}
+						else{
+							return '<span class="label label-danger">0</span>';
+						}
+					}
+				],
+				[
 					'format' => 'raw',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
 					'label' => 'Status',
+					'width'=>'80px',
 					'value' => function ($data)
 					{
 						if ($data->status==1)
@@ -193,97 +218,80 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						return Html::tag('span', $icon, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
 						}
 				],
-				[
-					'format' => 'html',
-					'vAlign'=>'middle',
-					'hAlign'=>'center',
-					'label' => 'Revision',
-					'value' => function ($data) {
-						$countRevision = \backend\models\TrainingHistory::find()
-									->where(['tb_training_id' => $data->id,])
-									->count()-1;
-						if($countRevision>0){
-							return Html::a($countRevision.' x', ['training-history/','tb_training_id'=>$data->id], ['class' => 'label label-danger']);
-						}
-						else{
-							return '<span class="label label-danger">0</span>';
-						}
-					}
-				],
 
-            [
-            	'class' => 'kartik\grid\ActionColumn',
-				'buttons' => [
-					'view' => function ($url, $model) {
-						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
-						return Html::a($icon,$url,[
-							'class'=>'modal-heart',
-							'data-pjax'=>"0",
-							'source'=>'.table-responsive',
-							'title'=> 'See Detail',
-							'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->name
-						]);
-					},
-					'update' => function ($url, $model) {
-						$icon='<span class="glyphicon glyphicon-pencil"></span>';
-						return Html::a($icon,$url,[
-							'class'=>'modal-heart',
-							'data-pjax'=>"0",
-							'modal-title' => '<i class="fa fa-fw fa-pencil-square-o"></i> Update: '.$model->name
-						]);
-					},
-				],
-            ],
-        ],
-		'panel' => [
-			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training List</h3>',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], [
-					'class' => 'btn btn-success modal-heart',
-					'data-pjax' => '0',
-					'modal-title' => '<i class="fa fa-fw fa-stack-overflow"></i> Create New Training'
-				]). ' '.
-				'<div class="pull-right" style="margin-right:5px;">'.
-				Select2::widget([
-					'name' => 'year', 
-					'data' => $year_training,
-					'value' => $year,
-					'options' => [
-						'placeholder' => 'Year ...', 
-						'class'=>'form-control', 
-						'onchange'=>'
-							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
-								container: "#pjax-gridview", 
-								timeout: 1,
-							});
-						',	
+	            [
+	            	'class' => 'kartik\grid\ActionColumn',
+					'buttons' => [
+						'view' => function ($url, $model) {
+							$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+							return Html::a($icon,$url,[
+								'class'=>'modal-heart',
+								'data-pjax'=>"0",
+								'source'=>'.table-responsive',
+								'title'=> 'See Detail',
+								'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->name
+							]);
+						},
+						'update' => function ($url, $model) {
+							$icon='<span class="glyphicon glyphicon-pencil"></span>';
+							return Html::a($icon,$url,[
+								'class'=>'modal-heart',
+								'data-pjax'=>"0",
+								'modal-title' => '<i class="fa fa-fw fa-pencil-square-o"></i> Update: '.$model->name
+							]);
+						},
 					],
-				]).
-				'</div>'.
-				'<div class="pull-right" style="margin-right:5px;">'.
-				Select2::widget([
-					'name' => 'status', 
-					'data' => ['all'=>'All','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
-					'value' => $status,
-					'options' => [
-						'placeholder' => 'Status ...', 
-						'class'=>'form-control', 
-						'onchange'=>'
-							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
-								container: "#pjax-gridview", 
-								timeout: 1000,
-							});
-						',	
-					],
-				]).
-				'</div>',
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
-			'showFooter'=>false
-		],
-		'responsive'=>true,
-		'hover'=>true,
-    ]); ?>
+	            ],
+	        ],
+			'panel' => [
+				'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training List</h3>',
+				'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], [
+						'class' => 'btn btn-success modal-heart',
+						'data-pjax' => '0',
+						'modal-title' => '<i class="fa fa-fw fa-stack-overflow"></i> Create New Training'
+					]). ' '.
+					'<div class="pull-right" style="margin-right:5px;">'.
+					Select2::widget([
+						'name' => 'year', 
+						'data' => $year_training,
+						'value' => $year,
+						'options' => [
+							'placeholder' => 'Year ...', 
+							'class'=>'form-control', 
+							'onchange'=>'
+								$.pjax.reload({
+									url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
+									container: "#pjax-gridview", 
+									timeout: 1,
+								});
+							',	
+						],
+					]).
+					'</div>'.
+					'<div class="pull-right" style="margin-right:5px;">'.
+					Select2::widget([
+						'name' => 'status', 
+						'data' => ['all'=>'All','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
+						'value' => $status,
+						'options' => [
+							'placeholder' => 'Status ...', 
+							'class'=>'form-control', 
+							'onchange'=>'
+								$.pjax.reload({
+									url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
+									container: "#pjax-gridview", 
+									timeout: 1000,
+								});
+							',	
+						],
+					]).
+					'</div>',
+				'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+				'showFooter'=>false
+			],
+			'responsive'=>true,
+			'hover'=>true,
+	    ]); ?>
 
     <?php \yii\widgets\Pjax::end(); ?>
 

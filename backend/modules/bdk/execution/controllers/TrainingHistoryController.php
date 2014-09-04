@@ -36,7 +36,7 @@ class TrainingHistoryController extends Controller
     {
         $searchModel = new TrainingHistorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->getSort()->defaultOrder = ['created'=>SORT_DESC];
+        $dataProvider->getSort()->defaultOrder = ['revision'=>SORT_DESC];
 
         // Ngambil training name dari url
         if (Yii::$app->request->get('tb_training_id') != 0) {

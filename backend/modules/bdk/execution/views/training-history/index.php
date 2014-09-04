@@ -75,7 +75,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 				[
 					'format' => 'html',
-					'attribute' => 'created',
+					'attribute' => 'modified',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
