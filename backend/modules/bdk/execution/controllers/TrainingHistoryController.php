@@ -38,18 +38,21 @@ class TrainingHistoryController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->getSort()->defaultOrder = ['created'=>SORT_DESC];
 
-        // Ngambil training id dari url
+        // Ngambil training name dari url
         if (Yii::$app->request->get('tb_training_id') != 0) {
         	$trainingName = TrainingHistory::findOne(Yii::$app->request->get('tb_training_id'))->training->name;
+        	$trainingId = TrainingHistory::findOne(Yii::$app->request->get('tb_training_id'))->training->id;
         }
         else {
         	$trainingName = 'All';
+        	$trainingId = '';
         }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'trainingName' => $trainingName
+            'trainingName' => $trainingName,
+            'trainingId' => $trainingId
         ]);
     }
 

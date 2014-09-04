@@ -7,9 +7,6 @@ use backend\models\Training;
 use backend\models\Satker;
 use backend\models\Program;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\Training */
-
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;

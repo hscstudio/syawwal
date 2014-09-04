@@ -1,10 +1,13 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-$this->title = 'Training Histories of '.$trainingName;
+$this->title = $trainingName;
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => Url::to(['training/index'])];
+$this->params['breadcrumbs'][] = ['label' => 'History', 'url' => Url::to(['training-history/index', 'tb_training_id' => $trainingId])];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;

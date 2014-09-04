@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\detail\DetailView;
 use backend\models\Employee;
 use backend\models\Training;
@@ -8,8 +9,10 @@ use backend\models\Satker;
 use backend\models\Program;
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Training Histories', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => Url::to(['training/index'])];
+$this->params['breadcrumbs'][] = ['label' => 'History', 'url' => Url::to(['training-history/index', 'tb_training_id' => $model->tb_training_id])];
+$this->params['breadcrumbs'][] = ['label' => $model->name];
+$this->params['breadcrumbs'][] = 'Rev '.$model->revision;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
