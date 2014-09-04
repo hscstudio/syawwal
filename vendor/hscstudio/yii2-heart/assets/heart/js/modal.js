@@ -7,8 +7,8 @@ $('.modal-heart, .modal-refresh').on('click', function () {
 		$modal.find('.modal-title').text($link.attr('title'));
     }
     else {
-		$modal.find('.modal-title').html($link.attr('modal-title')); // Aneh, klo 2-2 var ini ada, yang menang malah yang modal-title
-																	 // harusnya title. Tar aja deh baikinnya. Yg penting jalan dulu
+		$modal.find('.modal-title').html($link.attr('modal-title')); // warning: klo attribut title dan modal-title ada 2-2 nya
+																	 // yang menang bakal yang title.
     }
 	$modal.find('.modal-body .content').html('Loading ...');
 	$modal.modal('show');
