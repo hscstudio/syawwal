@@ -80,7 +80,17 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
             [
             	'class' => 'kartik\grid\ActionColumn',
-            	'template' => '{view}'
+            	'template' => '{view}',
+            	'buttons' => [
+					'view' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+						return Html::a($icon,$url,[
+							'class'=>'modal-heart',
+							'data-pjax'=>"0",
+							'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->name
+						]);
+					},
+				],
             ],
         ],
 		'panel' => [
@@ -90,6 +100,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+
+	<?php
+		echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
+	?>
+
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

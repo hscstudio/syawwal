@@ -66,9 +66,19 @@ class TrainingHistoryController extends Controller
     				'revision' => $revision
     			])
     		->one();
-        return $this->render('view', [
-            'model' => $trainingHistory,
-        ]);
+
+    	if (Yii::$app->request->isAjax)
+		{
+	        return $this->renderAjax('view', [
+	            'model' => $trainingHistory,
+	        ]);
+		}
+		else
+		{
+	        return $this->render('view', [
+	            'model' => $trainingHistory,
+	        ]);
+		}
     }
 
 
