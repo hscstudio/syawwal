@@ -132,8 +132,8 @@ use kartik\widgets\DepDrop;
 				// row 4
 				echo	'<div class="row">';
 
-					echo '<div class="col-md-2">';
-						echo $form->field($model, 'hostel')->widget(\kartik\widgets\SwitchInput::classname(), [
+					echo '<div class="col-md-3">';
+						echo $form->field($model, 'hostel')->label('Hostel', ['class' => 'col-md-12'])->widget(\kartik\widgets\SwitchInput::classname(), [
 							'pluginOptions' => [
 								'onText' => 'On',
 								'offText' => 'Off',
@@ -141,34 +141,13 @@ use kartik\widgets\DepDrop;
 						]);
 					echo '</div>';
 
-					echo '<div class="col-md-2">';
-						echo $form->field($model, 'reguler')->widget(\kartik\widgets\SwitchInput::classname(), [
+					echo '<div class="col-md-3">';
+						echo $form->field($model, 'reguler')->label('Reguler', ['class' => 'col-md-12'])->widget(\kartik\widgets\SwitchInput::classname(), [
 							'pluginOptions' => [
 								'onText' => 'On',
 								'offText' => 'Off',
 							]
 						]);
-					echo '</div>';
-
-					echo '<div class="col-md-2">';
-						if ($model->isNewRecord)
-				    	{
-					    	echo $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-										'pluginOptions' => [
-											'onText' => 'On',
-											'offText' => 'Off',
-										]
-									]);
-				    	}
-				    	else
-				    	{
-					    	echo $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-										'pluginOptions' => [
-											'onText' => 'On',
-											'offText' => 'Off',
-										]
-									]);
-				    	}
 					echo '</div>';
 
 					echo '<div class="col-md-3">';

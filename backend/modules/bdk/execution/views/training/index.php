@@ -114,7 +114,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 											'status' => 3
 										])->count();
 						
-						$fOut = '<div class="col-md-3">
+						/*$fOut = '<div class="col-md-3">
 									<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting...">
 									'.$roomWaitingCount.'
 									</div>
@@ -134,8 +134,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 									'.$roomRejectedCount.'
 									</div>
 								</div>';
-
-						$fOut .= '<div class="col-md-12">
+*/
+						$fOut = '<div class="col-md-12">
 									<a class="label label-primary" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
 									'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
 									</a>
@@ -223,7 +223,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'status', 
-					'data' => ['all'=>'All','0'=>'Plan','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
+					'data' => ['all'=>'All','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
 					'value' => $status,
 					'options' => [
 						'placeholder' => 'Status ...', 
