@@ -206,14 +206,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'class'=>'modal-heart',
 							'data-pjax'=>"0",
 							'source'=>'.table-responsive',
-							'title'=> 'View detail of '.$model->name
+							'title'=> 'See Detail',
+							'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->name
 						]);
 					},
 					'update' => function ($url, $model) {
 						$icon='<span class="glyphicon glyphicon-pencil"></span>';
 						return Html::a($icon,$url,[
 							'class'=>'modal-heart',
-							'data-pjax'=>"0"
+							'data-pjax'=>"0",
+							'modal-title' => '<i class="fa fa-fw fa-pencil-square-o"></i> Update: '.$model->name
 						]);
 					},
 				],
@@ -224,7 +226,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], [
 					'class' => 'btn btn-success modal-heart',
 					'data-pjax' => '0',
-					'title' => '<i class="fa fa-fw fa-stackoverflow"></i> Create New Training'
+					'modal-title' => '<i class="fa fa-fw fa-stack-overflow"></i> Create New Training'
 				]). ' '.
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
@@ -273,6 +275,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 
 	<?php
+		// Fix how to render title
+		$fixModalTitle = '$(".modal-heart, .modal-refresh").on("click", function () {
+			var $modal = $("#modal-heart");
+			var $link = $(this);
+			$modal.find(".modal-title").html($link.attr("modal-title"));
+			return false;
+		});';
+		$this->registerJs($fixModalTitle);
 		echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
 	?>
 

@@ -3,7 +3,13 @@ $('.modal-heart, .modal-refresh').on('click', function () {
 	var $link = $(this);
 	var $source = $link.attr('source')
     $modal.find('.modal-refresh').attr('href', $link.attr('href'));
-	$modal.find('.modal-title').text($link.attr('title'));
+    if ($link.attr('title')) {
+		$modal.find('.modal-title').text($link.attr('title'));
+    }
+    else {
+		$modal.find('.modal-title').html($link.attr('modal-title')); // Aneh, klo 2-2 var ini ada, yang menang malah yang modal-title
+																	 // harusnya title. Tar aja deh baikinnya. Yg penting jalan dulu
+    }
 	$modal.find('.modal-body .content').html('Loading ...');
 	$modal.modal('show');
 	
