@@ -28,11 +28,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
             
 				[
-					'format' => 'html',
+					'format' => 'raw',
 					'attribute' => 'name',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data) {
+						return '<div data-toggle="tooltip" data-placement="top" title="'.$data->note.'">'.$data->name.'</div>';
+					}
 				],
             
 				[
@@ -41,6 +44,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data)
+					{
+						return date('d F Y', strtotime($data->start));
+					}
 				],
             
 				[
@@ -49,14 +56,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-				],
-            
-				[
-					'format' => 'html',
-					'attribute' => 'note',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data)
+					{
+						return date('d F Y', strtotime($data->finish));
+					}
 				],
             
 				[
