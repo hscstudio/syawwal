@@ -392,10 +392,20 @@ class TrainingController extends Controller
         }
 		else
 		{
-			return $this->render('update', [
-                'model' => $model,
-                'dataEs2' => $dataEs2
-            ]);
+			if (Yii::$app->request->isAjax)
+			{
+				return $this->renderAjax('update', [
+					'model' => $model,
+	                'dataEs2' => $dataEs2
+				]);
+			}
+			else
+			{
+				return $this->render('update', [
+	                'model' => $model,
+	                'dataEs2' => $dataEs2
+	            ]);
+			}
 		}
     }
 
