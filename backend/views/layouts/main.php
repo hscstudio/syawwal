@@ -20,15 +20,7 @@ AppAsset::register($this);
     <meta charset="<?= Yii::$app->charset ?>"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <?= Html::csrfMetaTags() ?>
-    <title>
-        <?php
-            if (isset($this->title) and ($this->title != null or $this->title != ''))
-            {
-                echo Html::encode($this->title).' - ';
-            }
-            echo Html::encode(Yii::$app->params['namaAplikasi']); 
-        ?>
-    </title>
+    <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
     <link rel="shortcut icon" href="<?php echo Yii::getAlias('@web');?>/favicon.ico"/>
 </head>

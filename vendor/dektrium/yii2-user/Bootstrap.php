@@ -27,7 +27,7 @@ class Bootstrap implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        if ($app->hasModule('user')) {
+		if ($app->hasModule('user')) {
             $identityClass = $app->getModule('user')->manager->userClass;
         } else {
             $app->setModule('user', [
