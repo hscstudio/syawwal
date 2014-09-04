@@ -187,11 +187,23 @@ class TrainingController extends Controller
 				 Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Unable create training');
 			}
             return $this->redirect('index');
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-                'dataEs2' => $dataEs2
-            ]);
+        } 
+        else 
+        {
+			if (Yii::$app->request->isAjax)
+			{
+				return $this->renderAjax('create', [
+					'model' => $model,
+	                'dataEs2' => $dataEs2
+				]);
+			}
+			else
+			{
+				return $this->render('create', [
+	                'model' => $model,
+	                'dataEs2' => $dataEs2
+	            ]);
+			}
         }
     }
 

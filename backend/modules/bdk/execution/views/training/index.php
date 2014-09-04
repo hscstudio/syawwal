@@ -221,7 +221,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         ],
 		'panel' => [
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training List</h3>',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']). ' '.
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], [
+					'class' => 'btn btn-success modal-heart',
+					'data-pjax' => '0',
+					'title' => '<i class="fa fa-fw fa-stackoverflow"></i> Create New Training'
+				]). ' '.
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'year', 
