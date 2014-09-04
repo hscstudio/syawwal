@@ -8,9 +8,7 @@ use kartik\widgets\Select2;
 use backend\models\ActivityRoom;
 use kartik\widgets\DepDrop;
 
-/* @var $searchModel backend\models\TrainingSearch */
-
-$this->title = 'Trainings';
+$this->title = 'Training';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -113,8 +111,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 											'activity_id' => $data->id, 
 											'status' => 3
 										])->count();
+
+						$fOut = '';
 						
-						/*$fOut = '<div class="col-md-3">
+						/* 
+						$fOut = '<div class="col-md-3">
 									<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting...">
 									'.$roomWaitingCount.'
 									</div>
@@ -134,12 +135,21 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 									'.$roomRejectedCount.'
 									</div>
 								</div>';
-*/
-						$fOut = '<div class="col-md-12">
-									<a class="label label-primary" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
-									'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
-									</a>
-								</div>';
+						*/
+						if ($roomCount != 0) {
+							$fOut .= '<div class="col-md-12">
+										<a class="label label-primary" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
+										'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
+										</a>
+									</div>';
+						}
+						else {
+							$fOut .= '<div class="col-md-12">
+										<a class="label label-default" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
+										'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
+										</a>
+									</div>';
+						}
 
 						return $fOut;
 					}

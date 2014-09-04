@@ -29,50 +29,51 @@ class TrainingHistoryController extends Controller
         ];
     }
 
-    /**
-     * Lists all TrainingHistory models.
-     * @return mixed
-     */
+
+
+
     public function actionIndex()
     {
         $searchModel = new TrainingHistorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->getSort()->defaultOrder = ['created'=>SORT_DESC];
 
+        // Ngambil training id dari url
+        if (Yii::$app->request->get('tb_training_id') != 0) {
+        	$trainingName = TrainingHistory::findOne(Yii::$app->request->get('tb_training_id'))->training->name;
+        }
+        else {
+        	$trainingName = 'All';
+        }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'trainingName' => $trainingName
         ]);
     }
 
-    /**
-     * Displays a single TrainingHistory model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
+
+
+
+
+
+    public function actionView($tb_training_id, $revision)
     {
+    	$trainingHistory = TrainingHistory::find()
+    		->where([
+    				'tb_training_id' => $tb_training_id,
+    				'revision' => $revision
+    			])
+    		->one();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $trainingHistory,
         ]);
     }
 
 
-    /**
-     * Finds the TrainingHistory model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return TrainingHistory the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = TrainingHistory::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
+
+
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([

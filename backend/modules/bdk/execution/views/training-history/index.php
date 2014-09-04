@@ -4,9 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $searchModel backend\models\TrainingHistorySearch */
-
-$this->title = 'Training Histories';
+$this->title = 'Training Histories of '.$trainingName;
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -24,7 +22,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'revision',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column']
@@ -33,7 +30,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'name',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -42,7 +38,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'start',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -51,7 +46,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'finish',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -60,7 +54,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'note',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -69,7 +62,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'studentCount',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -78,7 +70,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'created',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
