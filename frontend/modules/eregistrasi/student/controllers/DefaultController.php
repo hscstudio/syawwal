@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\modules\eregistrasi\controllers;
+namespace frontend\modules\eregistrasi\student\controllers;
 
 use yii\web\Controller;
 

@@ -12,12 +12,15 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
 	'modules' => [
-        'eregistrasi' => [
-            'class' => 'frontend\modules\eregistrasi\Module',
+        'eregistrasi-student' => [
+            'class' => '\frontend\modules\eregistrasi\student\Module',
         ],
-		'training-student' => [
-            'class' => 'frontend\modules\training\Module',
-        ],
+		'gridview' => [
+			'class' => '\kartik\grid\Module',
+		],
+		'datecontrol' =>  [
+			'class' => 'kartik\datecontrol\Module',		
+		],
 		'user'=>[
 			'class' => '\dektrium\user\Module',
 			'components' => [
@@ -38,29 +41,28 @@ return [
 		],
 		/*'heart' => [
             'class' => 'hscstudio\heart\Module',
-			'features'=>[
+            'features'=>[
 				'datecontrol'=>true,// use false for not use it
 				'gridview'=>true,// use false for not use it
-				'gii'=>false, // use false for not use it
+				'gii'=>true, // use false for not use it
 				'privilege'=>[
 					'allowActions' => [
 						/* DEFAULT */
 						/*'debug/*',
 						'site/*',
-						//'gii/*',
+						'gii/*',
 						'user/*',
 						'privilege/*',
 						'gridview/*',	// add or remove allowed actions to this list
 						'file/*',
-						'eregistrasi/*',
-							],
+						'eregistrasi-student/*',
+						],
 					'authManager' => [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
-						]
+					]
 				],
-				//'user'=>true,
-            ],
-		],*/
+				'user'=>true,
+            ]],	*/	
     ],
 	
     'components' => [
