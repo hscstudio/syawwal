@@ -29,10 +29,10 @@ class TrainingClassController extends Controller
         ];
     }
 
-    /**
-     * Lists all TrainingClass models.
-     * @return mixed
-     */
+
+
+
+
     public function actionIndex()
     {
         $searchModel = new TrainingClassSearch();

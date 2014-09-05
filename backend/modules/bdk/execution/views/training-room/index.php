@@ -66,6 +66,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						    'value' => date('d-M-Y H:i:s', strtotime($trainingCurrent->start)),
 						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
 						    'pluginOptions' => [
+						    	'startDate' => date('d-M-Y H:i:s', strtotime($trainingCurrent->start)),
 						        'autoclose'=>true,
 						        'format' => 'dd-M-yyyy H:i:s'
 						    ]
@@ -83,6 +84,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						    'value' => date('d-M-Y H:i:s', strtotime($trainingCurrent->finish)),
 						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
 						    'pluginOptions' => [
+						    	'endDate' => date('d-M-Y H:i:s', strtotime($trainingCurrent->finish) + (60*60*24) - 1),
 						        'autoclose'=>true,
 						        'format' => 'dd-M-yyyy H:i:s'
 						    ]
