@@ -32,12 +32,13 @@ AppAsset::register($this);
             ]);
             
             if (Yii::$app->user->isGuest) {
-				$menuItems[] = ['label' => 'Home', 'url' => ['/site/index']];
+				$menuItems[] = ['icon'=>'fa fa-home fa-fw','label' => 'Home', 'url' => ['/site/index']];
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
             } 
 			else {
-				$menuItemsLeft[] = ['label' => 'Home', 'url' => ['/site/index']];
-				$menuItemsLeft[] = ['label' => 'Diklat', 'url' => ['/eregistrasi/default/index']];
+				$menuItemsLeft[] = ['icon'=>'fa fa-home fa-fw','label' => 'Home', 'url' => ['/site/index']];
+				$menuItemsLeft[] = ['icon'=>'fa fa-user fa-fw','label' => 'Biodata', 'url' => ['/eregistrasi/default/index']];
+				$menuItemsLeft[] = ['icon'=>'fa fa-database fa-fw','label' => 'Diklat', 'url' => ['/training-student/default/index']];
 				
 			echo Nav::widget([
                     'options' => ['class' => 'navbar-nav'],

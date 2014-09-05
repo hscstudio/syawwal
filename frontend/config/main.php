@@ -15,6 +15,9 @@ return [
         'eregistrasi' => [
             'class' => 'frontend\modules\eregistrasi\Module',
         ],
+		'training-student' => [
+            'class' => 'frontend\modules\training\Module',
+        ],
 		'user'=>[
 			'class' => '\dektrium\user\Module',
 			'components' => [
