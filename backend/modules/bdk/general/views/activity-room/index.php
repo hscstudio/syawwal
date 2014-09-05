@@ -34,7 +34,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						var modals = $("#modal-heart");
 						var link = $(this);
 					    modals.find(".modal-refresh").attr("href", link.attr("href"));
-						modals.find(".modal-title").text(link.find(".fc-title").html());
+						modals.find(".modal-title").html("<i class=\"fa fa-fw fa-comment-o\"></i>Requesting a Room...");
 						modals.find(".modal-body .content").html("Loading ...");
 						modals.modal("show");
 						

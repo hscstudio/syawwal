@@ -29,7 +29,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				<div class="panel-body">
 					<div class="alert alert-info">
 						<p>
-							<i class="fa fa-fw fa-info-circle"></i>Use this tools below to select all room.
+							<i class="fa fa-fw fa-info-circle"></i>Use this tools below to select a room.
 							After that, just wait until General decide what to do with your request.
 						</p>
 					</div>
