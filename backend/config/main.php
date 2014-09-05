@@ -142,7 +142,7 @@ return [
 			],					
 			'confirmable' => false,
 			'confirmWithin' =>  86400, 
-			'allowUnconfirmedLogin' => true,
+			'allowUnconfirmedLogin' => false,
 			'rememberFor' => 1209600,
 			'recoverWithin' => 21600,
 			'admins' => ['admin'],
@@ -152,7 +152,11 @@ return [
     'components' => [
         'user' => [
             'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
+			'identityCookie' => [
+				  'name' => '_backendUser', // unique for frontend
+				  'path'=>'/syawwal/backend'  // correct path for the frontend app.
+			  ]
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

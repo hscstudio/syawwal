@@ -41,13 +41,21 @@ class TrainingRoomController extends Controller
     	{
             $satkerModel = Satker::find()->one();
 
-            if ( ! $roomModel = Room::find()->one())
+            // Ngecek ada room ga?
+            if ( ! $roomModel = Room::find()->where(['ref_satker_id' => Yii::$app->user->identity->employee->ref_satker_id])->one())
             {
-                Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i> No room! You should create room first!');
+                Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> No room! You should create room first!');
                 return $this->redirect(Url::to(['training/index'], true));
             }
 
             $trainingCurrent = Training::find()->where(['id' => Yii::$app->request->get('tb_training_id')])->one();
+
+            $roomList = ArrayHelper::map(Room::find()
+                ->select(['id', 'name'])
+                ->where(['ref_satker_id' => Yii::$app->user->identity->employee->ref_satker_id])
+                ->asArray()
+                ->all(),
+            'id', 'name');
 
             $activityRoomDP = new ActiveDataProvider([
                 'query' => ActivityRoom::find()->where(['activity_id' => Yii::$app->request->get('tb_training_id')]),
@@ -63,8 +71,7 @@ class TrainingRoomController extends Controller
 	        'id', 'name');
 
     		return $this->render('index', [
-    				'satkerItem' => $satkerItem,
-                    'satkerModel' => $satkerModel,
+                    'roomList' => $roomList,
                     'roomModel' => $roomModel,
                     'trainingCurrent' => $trainingCurrent,
                     'activityRoomDP' => $activityRoomDP
@@ -72,38 +79,11 @@ class TrainingRoomController extends Controller
     	}
         else
         {
-            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>  You need to choose training first to enter room management page');
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>  You need to choose training first to enter room management page');
             return $this->redirect(Url::to(['training/index'], true));
         }
     }
 
-    public function actionFind()
-    {
-        $out = [];
-        if (isset($_POST['depdrop_parents'])) {
-            $parents = $_POST['depdrop_parents'];
-            if ($parents != null) {
-                $satker_id = $parents[0];
-                
-                if ($satker_id == 0)
-                {
-                    $roomList = Room::find()->all();   
-                }
-                else
-                {
-                    $roomList = Room::find()->where(['ref_satker_id' => $satker_id])->all();
-                }
-                $out = [];
-
-                foreach ($roomList as $k ) {
-                    $out[] = ['id' => $k->id, 'name' => $k->name];
-                }
-                echo Json::encode(['output'=>$out, 'selected'=>'']);
-                return;
-            }
-        }
-        echo Json::encode(['output'=>'', 'selected'=>'']);
-    }
 
 
 
@@ -113,8 +93,8 @@ class TrainingRoomController extends Controller
         $activityRoom->type = 0;
         $activityRoom->activity_id = Yii::$app->request->post('tb_training_id');
         $activityRoom->tb_room_id = Yii::$app->request->post('Room')['id'];
-        $activityRoom->startTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('startDate').' '.Yii::$app->request->post('startTime')));
-        $activityRoom->finishTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('endDate').' '.Yii::$app->request->post('endTime')));
+        $activityRoom->startTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('startTime')));
+        $activityRoom->finishTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('finishTime')));
         $activityRoom->status = 0;
         $activityRoom->note = null;
 
@@ -125,7 +105,7 @@ class TrainingRoomController extends Controller
         }
         else
         {
-            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>Failed to save room request!');
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>Failed to save room request!');
             return $this->redirect(Url::to(['training/index'], true));
         }
     }
@@ -142,7 +122,7 @@ class TrainingRoomController extends Controller
         }
         else
         {
-            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>Failed to delete a room request!');
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>Failed to delete a room request!');
             return $this->redirect(Url::to(['training/index'], true));
         }
     }

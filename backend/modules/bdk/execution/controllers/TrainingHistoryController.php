@@ -29,50 +29,64 @@ class TrainingHistoryController extends Controller
         ];
     }
 
-    /**
-     * Lists all TrainingHistory models.
-     * @return mixed
-     */
+
+
+
     public function actionIndex()
     {
         $searchModel = new TrainingHistorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->getSort()->defaultOrder = ['created'=>SORT_DESC];
+        $dataProvider->getSort()->defaultOrder = ['revision'=>SORT_DESC];
+
+        // Ngambil training name dari url
+        if (Yii::$app->request->get('tb_training_id') != 0) {
+        	$trainingName = TrainingHistory::findOne(Yii::$app->request->get('tb_training_id'))->training->name;
+        	$trainingId = TrainingHistory::findOne(Yii::$app->request->get('tb_training_id'))->training->id;
+        }
+        else {
+        	$trainingName = 'All';
+        	$trainingId = '';
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single TrainingHistory model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+            'trainingName' => $trainingName,
+            'trainingId' => $trainingId
         ]);
     }
 
 
-    /**
-     * Finds the TrainingHistory model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return TrainingHistory the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
+
+
+
+
+    public function actionView($tb_training_id, $revision)
     {
-        if (($model = TrainingHistory::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+    	$trainingHistory = TrainingHistory::find()
+    		->where([
+    				'tb_training_id' => $tb_training_id,
+    				'revision' => $revision
+    			])
+    		->one();
+
+    	if (Yii::$app->request->isAjax)
+		{
+	        return $this->renderAjax('view', [
+	            'model' => $trainingHistory,
+	        ]);
+		}
+		else
+		{
+	        return $this->render('view', [
+	            'model' => $trainingHistory,
+	        ]);
+		}
     }
+
+
+
+
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([

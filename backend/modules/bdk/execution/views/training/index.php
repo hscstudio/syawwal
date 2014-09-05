@@ -8,9 +8,7 @@ use kartik\widgets\Select2;
 use backend\models\ActivityRoom;
 use kartik\widgets\DepDrop;
 
-/* @var $searchModel backend\models\TrainingSearch */
-
-$this->title = 'Trainings';
+$this->title = 'Training';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -20,7 +18,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="training-index">
 
 	<?php \yii\widgets\Pjax::begin([
-		'id'=>'pjax-training-gridview',
+		'id'=>'pjax-gridview',
 	]); ?>
 
     <?= GridView::widget([
@@ -30,220 +28,72 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             	['class' => 'kartik\grid\SerialColumn'],
                         
 				[
+					'class' => 'kartik\grid\EditableColumn',
 					'format' => 'raw',
 					'attribute' => 'name',
 					'vAlign'=>'middle',
+					'hAlign' => 'left',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data){
-						return '<div title="'.$data->note.'" data-toggle="tooltip" data-placement="top">'.$data->name.'</div>';
+					'editableOptions'=>['header'=>'Name', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]],
+					'value' => function ($data) {
+						return '<div data-toggle="tooltip" data-placement="top" title="'.$data->note.'">'.$data->name.'</div>';
 					}
 				],
             
 				[
 					'attribute' => 'start',
 					'vAlign'=>'middle',
+					'width'=>'100px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'value' => function ($data)
 					{
-						return date('d F Y', strtotime($data->start));
+						return date('d M Y', strtotime($data->start));
 					}
 				],
             
 				[
 					'attribute' => 'finish',
 					'vAlign'=>'middle',
+					'width'=>'100px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'value' => function ($data)
 					{
-						return date('d F Y', strtotime($data->finish));
+						return date('d M Y', strtotime($data->finish));
 					}
 				],
             
 				[
-					'label' => 'Class Count',
-					'format' => 'raw',
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'classCount',
 					'vAlign'=>'middle',
 					'hAlign' => 'center',
+					'label' => 'Class',
+					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data)
-					{
-						if ($data->classCount > 0)
-						{
-							$fOut = '<a class="badge alert-success" data-toggle="modal" data-target="#modalAddClass'.$data->id.'">';
-							$fOut .= $data->classCount;
-							$fOut .= ' | Edit <i class="fa fa-fw fa-pencil-square"></i>';
-							$fOut .= '</a>';
-							$fOut .= '<div class="modal fade" id="modalAddClass'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modalAddClass" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-class-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-pencil-square"></i>Edit Class Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'classCount', $data->classCount, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-						else
-						{
-							$fOut = '<a class="badge alert-danger" data-toggle="modal" data-target="#modalAddClass'.$data->id.'">
-										<i class="fa fa-fw fa-plus-square"></i>
-										Add Class Count
-									</a>';
-
-							$fOut .= '<div class="modal fade" id="modalAddClass'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modalAddClass" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-class-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-plus-square"></i>Add Class Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'classCount', null, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-					}
+					'editableOptions'=>['header'=>'Class', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
             
 				[
-					'label' => 'Student Count',
-					'format' => 'raw',
+					'label' => 'Student',
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'studentCount',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
+					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data)
-					{
-						if ($data->studentCount > 0)
-						{
-							$fOut = '<a class="badge alert-success" data-toggle="modal" data-target="#modelStudentCount'.$data->id.'">';
-							$fOut .= $data->studentCount;
-							$fOut .= ' | Edit <i class="fa fa-fw fa-pencil-square"></i>';
-							$fOut .= '</a>';
-							$fOut .= '<div class="modal fade" id="modelStudentCount'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modelStudentCount" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-student-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-pencil-square"></i>Edit Student Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'studentCount', $data->studentCount, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-						else
-						{
-							$fOut = '<a class="badge alert-danger" data-toggle="modal" data-target="#modelStudentCount'.$data->id.'">
-										<i class="fa fa-fw fa-plus-square"></i>
-										Add Student Count
-									</a>';
-
-							$fOut .= '<div class="modal fade" id="modelStudentCount'.$data->id.'" tabindex="-1" role="dialog" aria-labelledby="modelStudentCount" aria-hidden="true">
-									  <div class="modal-dialog modal-sm">
-									    <div class="modal-content">';
-
-							$fOut .= Html::beginForm(Url::to(['training/add-student-count']), 'post', [
-								'class' => 'form',
-								'role' => 'form'
-							]);
-
-							$fOut .= '    <div class="modal-header">
-									        <h4 class="modal-title"><i class="fa fa-fw fa-plus-square"></i>Add Student Count</h4>
-									      </div>
-									      <div class="modal-body">';
-
-							$fOut .= Html::input('text', 'studentCount', null, [
-									'class' => 'form-control'
-								]);
-
-							$fOut .= '     </div>';
-							$fOut .= '    <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-fw fa-times"></i>Cancel</button>';
-							$fOut .= Html::hiddenInput('id', $data->id);
-							$fOut .= '      <button type="submit" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Save</button>
-									      </div>
-									    </div>';
-							
-							$fOut .= Html::endForm();
-
-							$fOut .= '</div>
-									</div>';
-							return $fOut;
-						}
-					}
+					'editableOptions'=>['header'=>'Student', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
 
 				[
 					'format' => 'raw',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
+					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'label' => 'Room',
@@ -251,9 +101,65 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					{
 						$roomCount = ActivityRoom::find()->where(['type' => 0, 'activity_id' => $data->id])->count();
 
-						$fOut = '<a class="badge alert-info" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
-									'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
-								</a>';
+						$roomWaitingCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 0
+										])->count();
+						$roomProcessCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 1
+										])->count();
+						$roomApprovedCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 2
+										])->count();
+						$roomRejectedCount = ActivityRoom::find()->where([
+											'type' => 0, 
+											'activity_id' => $data->id, 
+											'status' => 3
+										])->count();
+
+						$fOut = '';
+						
+						/* 
+						$fOut = '<div class="col-md-3">
+									<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting...">
+									'.$roomWaitingCount.'
+									</div>
+								</div>';
+						$fOut .= '<div class="col-md-3">
+									<div class="label label-info" data-toggle="tooltip" data-placement="top" title="Process...">
+									'.$roomProcessCount.'
+									</div>
+								</div>';
+						$fOut .= '<div class="col-md-3">
+									<div class="label label-success" data-toggle="tooltip" data-placement="top" title="Approved!">
+									'.$roomApprovedCount.'
+									</div>
+								</div>';
+						$fOut .= '<div class="col-md-3">
+									<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!">
+									'.$roomRejectedCount.'
+									</div>
+								</div>';
+						*/
+						if ($roomCount != 0) {
+							$fOut .= '<div class="col-md-12">
+										<a class="label label-primary" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
+										'.$roomCount.' | Manage Room <i class="fa fa-fw fa-play"></i>
+										</a>
+									</div>';
+						}
+						else {
+							$fOut .= '<div class="col-md-12">
+										<a class="label label-default" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
+										'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
+										</a>
+									</div>';
+						}
 
 						return $fOut;
 					}
@@ -263,68 +169,144 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'format' => 'html',
 					'vAlign'=>'middle',
 					'hAlign'=>'center',
-					'label' => 'Status',
-					'value' => function ($data)
-					{
-						if ($data->approvedStatus === null)
-						{
-							return '<p class="label label-warning"><i class="fa fa-fw fa-square"></i> Waiting for approval</p>';
-						}
-						elseif ($data->approvedStatus === 0) {
-							return '<p class="label label-danger"><i class="fa fa-fw fa-minus-square"></i> Rejected</p>';
-						}
-						else
-						{
-							return '<p class="label label-success"><i class="fa fa-fw fa-check-square"></i> Approved</p>';
-						}
-					}
-				],
-				[
-					'format' => 'html',
-					'vAlign'=>'middle',
-					'hAlign'=>'center',
 					'label' => 'Revision',
+					'width'=>'80px',
 					'value' => function ($data) {
 						$countRevision = \backend\models\TrainingHistory::find()
 									->where(['tb_training_id' => $data->id,])
 									->count()-1;
 						if($countRevision>0){
-							return Html::a($countRevision.' x', ['training-history/','tb_training_id'=>$data->id], ['class' => 'label label-danger']);
+							return Html::a($countRevision.'x', ['training-history/','tb_training_id'=>$data->id], ['class' => 'label label-danger']);
 						}
 						else{
 							return '<span class="label label-danger">0</span>';
 						}
 					}
 				],
+				[
+					'format' => 'raw',
+					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'label' => 'Status',
+					'width'=>'80px',
+					'value' => function ($data)
+					{
+						if ($data->status==1)
+						{
+							$icon='<span class="fa fa-fw fa-check-square-o"></span>';
+							$label='label label-info';
+							$title='Ready';
+						}	
+						else if ($data->status==2)
+						{ 
+							$icon='<span class="fa fa-fw fa-refresh"></span>';
+							$label='label label-success';
+							$title='Execute';
+						}
+						else if ($data->status==3)
+						{
+							$icon='<span class="fa fa-fw fa-trash-o"></span>';
+							$label='label label-danger';
+							$title='Cancel';
+						}
+						else
+						{
+							$icon='<span class="fa fa-fw fa-fire"></span>';
+							$label='label label-warning';
+							$title='Plan';
+						}
+						return Html::tag('span', $icon, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+						}
+				],
 
-            ['class' => 'kartik\grid\ActionColumn'],
-        ],
-		'panel' => [
-			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training List</h3>',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']). ' '.
-				'<div class="pull-right" style="margin-right:5px;">'.
-				Select2::widget([
-					'name' => 'status', 
-					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'Show All'],
-					'value' => $status,
-					'options' => [
-						'placeholder' => 'Status ...', 
-						'class'=>'form-control', 
-						'onchange'=>'
-							$.pjax.reload({url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status="+$(this).val(), container: "#pjax-training-gridview", timeout: 1});
-						',	
-						'data-pjax' => true,
+	            [
+	            	'class' => 'kartik\grid\ActionColumn',
+					'buttons' => [
+						'view' => function ($url, $model) {
+							$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+							return Html::a($icon,$url,[
+								'class'=>'modal-heart',
+								'data-pjax'=>"0",
+								'source'=>'.table-responsive',
+								'title'=> 'See Detail',
+								'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->name
+							]);
+						},
+						'update' => function ($url, $model) {
+							$icon='<span class="glyphicon glyphicon-pencil"></span>';
+							return Html::a($icon,$url,[
+								'class'=>'modal-heart',
+								'data-pjax'=>"0",
+								'modal-title' => '<i class="fa fa-fw fa-pencil-square-o"></i> Update: '.$model->name
+							]);
+						},
 					],
-				]).
-				'</div>',
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
-			'showFooter'=>false
-		],
-		'responsive'=>true,
-		'hover'=>true,
-    ]); ?>
+	            ],
+	        ],
+			'panel' => [
+				'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training List</h3>',
+				'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], [
+						'class' => 'btn btn-success modal-heart',
+						'data-pjax' => '0',
+						'modal-title' => '<i class="fa fa-fw fa-stack-overflow"></i> Create New Training'
+					]). ' '.
+					'<div class="pull-right" style="margin-right:5px;">'.
+					Select2::widget([
+						'name' => 'year', 
+						'data' => $year_training,
+						'value' => $year,
+						'options' => [
+							'placeholder' => 'Year ...', 
+							'class'=>'form-control', 
+							'onchange'=>'
+								$.pjax.reload({
+									url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?status='.$status.'&year="+$(this).val(), 
+									container: "#pjax-gridview", 
+									timeout: 1,
+								});
+							',	
+						],
+					]).
+					'</div>'.
+					'<div class="pull-right" style="margin-right:5px;">'.
+					Select2::widget([
+						'name' => 'status', 
+						'data' => ['all'=>'All','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
+						'value' => $status,
+						'options' => [
+							'placeholder' => 'Status ...', 
+							'class'=>'form-control', 
+							'onchange'=>'
+								$.pjax.reload({
+									url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/training/index']).'?year='.$year.'&status="+$(this).val(), 
+									container: "#pjax-gridview", 
+									timeout: 1000,
+								});
+							',	
+						],
+					]).
+					'</div>',
+				'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+				'showFooter'=>false
+			],
+			'responsive'=>true,
+			'hover'=>true,
+	    ]); ?>
 
     <?php \yii\widgets\Pjax::end(); ?>
+
+
+	<?php
+		// Fix how to render title
+		$fixModalTitle = '$(".modal-heart, .modal-refresh").on("click", function () {
+			var $modal = $("#modal-heart");
+			var $link = $(this);
+			$modal.find(".modal-title").html($link.attr("modal-title"));
+			return false;
+		});';
+		$this->registerJs($fixModalTitle);
+		echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
+	?>
 
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);

@@ -66,13 +66,13 @@ class Modal extends Widget
 				echo Html::endTag('h4');
 			echo Html::endTag('div');
 			echo Html::beginTag('div', ['class'=>'modal-body']);
-				echo Html::beginTag('div', ['class'=>'content','style'=>'overflow:auto;']);
-		
+				echo Html::beginTag('div', ['class'=>'content','style'=>'overflow:auto;']);		
 				echo Html::endTag('div');
 			echo Html::endTag('div');
+			/* modal-footer tak hapus. Kayaknya ga pernah kepake. Biar tampilan modalnya bagus, ga ada garis bawah pengganggu
 			echo Html::beginTag('div', ['class'=>'modal-footer']);
 		
-			echo Html::endTag('div');
+			echo Html::endTag('div');*/
 		echo Html::endTag('div');
 		echo Html::endTag('div');
 		echo Html::endTag('div');

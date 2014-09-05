@@ -19,6 +19,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+		'../../vendor/hscstudio/yii2-heart/assets/heart/css/heart.css',
     ];
     public $js = [
     ];

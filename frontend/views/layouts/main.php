@@ -1,13 +1,11 @@
 <?php
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use frontend\widgets\Alert;
+use hscstudio\heart\widgets\Nav;
+use hscstudio\heart\widgets\NavBar;
 
-/* @var $this \yii\web\View */
-/* @var $content string */
 
 AppAsset::register($this);
 ?>
@@ -16,35 +14,47 @@ AppAsset::register($this);
 <html lang="<?= Yii::$app->language ?>">
 <head>
     <meta charset="<?= Yii::$app->charset ?>"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title>SIMBPPK</title>
     <?php $this->head() ?>
+    <link rel="shortcut icon" href="<?php echo Yii::getAlias('@web');?>/bppk.jpg"/>
 </head>
 <body>
     <?php $this->beginBody() ?>
     <div class="wrap">
         <?php
             NavBar::begin([
-                'brandLabel' => 'My Company',
+                'brandLabel' => '<i class="fa fa-th-large"></i> '.Yii::$app->params['namaAplikasi'],
                 'brandUrl' => Yii::$app->homeUrl,
-                'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
-                ],
+                'options' => ['class' => 'navbar-inverse navbar-fixed-top',],
+				'innerContainerOptions'=>['class' => 'container-fluid',],
             ]);
-            $menuItems = [
-                ['label' => 'Home', 'url' => ['/site/index']],
-                ['label' => 'About', 'url' => ['/site/about']],
-                ['label' => 'Contact', 'url' => ['/site/contact']],
-            ];
+            
             if (Yii::$app->user->isGuest) {
-                $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+				$menuItems[] = ['icon'=>'fa fa-home fa-fw','label' => 'Home', 'url' => ['/site/index']];
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-            } else {
-                $menuItems[] = [
-                    'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
-                    'url' => ['/site/logout'],
-                    'linkOptions' => ['data-method' => 'post']
+            } 
+			else {
+				//$menuItemsLeft[] = ['icon'=>'fa fa-home fa-fw','label' => 'Home', 'url' => ['/site/index']];
+				$menuItemsLeft[] = ['icon'=>'fa fa-book fa-fw','label' => 'Eregistrasi', 'url' => ['/eregistrasi-student/default/index']];
+				//$menuItemsLeft[] = ['icon'=>'fa fa-database fa-fw','label' => 'Diklat', 'url' => ['/eregistrasi/training/default/index']];
+				
+			echo Nav::widget([
+                    'options' => ['class' => 'navbar-nav'],
+                    'position'=>'left',
+                    'items' => $menuItemsLeft,
+                ]);
+				
+				$menuItems[] =  
+                    ['icon'=>'fa fa-user','label'=>'', 'url'=> '', 'items'=>[
+                        [
+                            'icon'=>'fa fa-power-off',
+                            'label' => 'Logout (' . Yii::$app->user->identity->nip . ')',
+                            'url' => ['/site/logout'],
+                            'linkOptions' => ['data-method' => 'post']
+                        ]
+                    ]                        
                 ];
             }
             echo Nav::widget([
@@ -53,23 +63,17 @@ AppAsset::register($this);
             ]);
             NavBar::end();
         ?>
-
-        <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
+        <div class="container-fluid">
         <?= $content ?>
         </div>
     </div>
-
+    
     <footer class="footer">
-        <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <div class="container-fluid">
+        <p class="pull-left">&copy; Badan Pendidikan dan Pelatihan Keuangan <?= date('Y') ?></p>
         <p class="pull-right"><?= Yii::powered() ?></p>
         </div>
     </footer>
-
     <?php $this->endBody() ?>
 </body>
 </html>

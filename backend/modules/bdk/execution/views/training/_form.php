@@ -20,7 +20,7 @@ use kartik\widgets\DepDrop;
 		
 		<div class="panel-heading">
 			<div class="pull-right">
-				<?= Html::a('<i class="fa fa-arrow-left"></i> Back to training',['index','status' => $model->status],['class'=>'btn btn-xs btn-default']) ?>
+				<?= Html::a('<i class="fa fa-fw fa-times-circle"></i> Cancel',['index','status' => $model->status],['class'=>'btn btn-xs btn-default']) ?>
 		    	<?php
 		    		if ($model->isNewRecord)
 		    		{
@@ -133,7 +133,7 @@ use kartik\widgets\DepDrop;
 				echo	'<div class="row">';
 
 					echo '<div class="col-md-2">';
-						echo $form->field($model, 'hostel')->widget(\kartik\widgets\SwitchInput::classname(), [
+						echo $form->field($model, 'hostel')->label('Hostel')->widget(\kartik\widgets\SwitchInput::classname(), [
 							'pluginOptions' => [
 								'onText' => 'On',
 								'offText' => 'Off',
@@ -142,7 +142,7 @@ use kartik\widgets\DepDrop;
 					echo '</div>';
 
 					echo '<div class="col-md-2">';
-						echo $form->field($model, 'reguler')->widget(\kartik\widgets\SwitchInput::classname(), [
+						echo $form->field($model, 'reguler')->label('Reguler')->widget(\kartik\widgets\SwitchInput::classname(), [
 							'pluginOptions' => [
 								'onText' => 'On',
 								'offText' => 'Off',
@@ -150,34 +150,13 @@ use kartik\widgets\DepDrop;
 						]);
 					echo '</div>';
 
-					echo '<div class="col-md-2">';
-						if ($model->isNewRecord)
-				    	{
-					    	echo $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-										'pluginOptions' => [
-											'onText' => 'On',
-											'offText' => 'Off',
-										]
-									]);
-				    	}
-				    	else
-				    	{
-					    	echo $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-										'pluginOptions' => [
-											'onText' => 'On',
-											'offText' => 'Off',
-										]
-									]);
-				    	}
-					echo '</div>';
-
-					echo '<div class="col-md-3">';
+					echo '<div class="col-md-4">';
 						echo $form->field($model, 'start')->widget(\kartik\datecontrol\DateControl::classname(), [
 							'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
 						]);
 					echo '</div>';
 
-					echo '<div class="col-md-3">';
+					echo '<div class="col-md-4">';
 						echo $form->field($model, 'finish')->widget(\kartik\datecontrol\DateControl::classname(), [
 							'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
 						]);

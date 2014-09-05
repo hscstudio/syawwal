@@ -1,12 +1,13 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $searchModel backend\models\TrainingHistorySearch */
-
-$this->title = 'Training Histories';
+$this->title = $trainingName;
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => Url::to(['training/index'])];
+$this->params['breadcrumbs'][] = ['label' => 'History', 'url' => Url::to(['training-history/index', 'tb_training_id' => $trainingId])];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -24,52 +25,49 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				[
 					'format' => 'html',
 					'attribute' => 'revision',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column']
 				],
             
 				[
-					'format' => 'html',
+					'format' => 'raw',
 					'attribute' => 'name',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data) {
+						return '<div data-toggle="tooltip" data-placement="top" title="'.$data->note.'">'.$data->name.'</div>';
+					}
 				],
             
 				[
 					'format' => 'html',
 					'attribute' => 'start',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data)
+					{
+						return date('d F Y', strtotime($data->start));
+					}
 				],
             
 				[
 					'format' => 'html',
 					'attribute' => 'finish',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-				],
-            
-				[
-					'format' => 'html',
-					'attribute' => 'note',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data)
+					{
+						return date('d F Y', strtotime($data->finish));
+					}
 				],
             
 				[
 					'format' => 'html',
 					'attribute' => 'studentCount',
-					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -77,8 +75,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 				[
 					'format' => 'html',
-					'attribute' => 'created',
-					//'pageSummary' => 'Page Total',
+					'attribute' => 'modified',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
@@ -86,7 +83,17 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
             [
             	'class' => 'kartik\grid\ActionColumn',
-            	'template' => '{view}'
+            	'template' => '{view}',
+            	'buttons' => [
+					'view' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+						return Html::a($icon,$url,[
+							'class'=>'modal-heart',
+							'data-pjax'=>"0",
+							'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->name
+						]);
+					},
+				],
             ],
         ],
 		'panel' => [
@@ -96,6 +103,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+
+	<?php
+		echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
+	?>
+
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

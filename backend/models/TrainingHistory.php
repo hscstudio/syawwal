@@ -138,4 +138,10 @@ class TrainingHistory extends \yii\db\ActiveRecord
 	public static function getRevision($id){
 		return self::find()->where(['tb_training_id' => $id,])->max('revision');
 	}
+
+
+    public function getTraining()
+    {
+        return $this->hasOne(Training::className(), ['id' => 'tb_training_id']);
+    }
 }

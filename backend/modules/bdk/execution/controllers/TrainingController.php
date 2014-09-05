@@ -4,7 +4,9 @@ namespace backend\modules\bdk\execution\controllers;
 
 use Yii;
 use backend\models\Training;
+use backend\models\ActivityRoom;
 use backend\models\TrainingUnitPlan;
+use backend\models\TrainingSubjectTrainerRecommendation;
 use backend\models\TrainingSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -37,12 +39,15 @@ class TrainingController extends Controller
         ];
     }
 
-    /**
-     * Lists all Training models.
-     * @return mixed
-     */
-    public function actionIndex($status = 1)
+
+
+
+
+    public function actionIndex($year='',$status='all')
     {
+    	if(empty($year)) $year = date('Y');
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+
         $searchModel = new TrainingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -52,33 +57,66 @@ class TrainingController extends Controller
         	->asArray()
         	->all(),
         'id', 'name');
-
-        $queryParams = Yii::$app->request->getQueryParams();
+	
 		if($status!='all'){
-			$queryParams['TrainingSearch']=[
-				'status'=>$status,
-			];
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
 		}
 		else{
-			$queryParams['TrainingSearch']=[
-			];
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
 		}
+
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
 		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_DESC,'finish'=>SORT_DESC];
+
+		// GET ALL TRAINING YEAR
+		$year_training = yii\helpers\ArrayHelper::map(Training::find()
+			->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['year'=>'DESC'])
+			->groupBy(['year'])
+			->currentSatker()
+			->active()
+			->asArray()
+			->all(), 'year', 'year');
+		$year_training['all']='All'	;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'year' => $year,
 			'status' => $status,
+			'year_training' => $year_training,
 			'dataEs2' => $dataEs2
         ]);
     }
 
-    /**
-     * Displays a single Training model.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
+
+
     public function actionView($id)
     {
         return $this->render('view', [
@@ -90,11 +128,7 @@ class TrainingController extends Controller
 
 
 
-    /**
-     * Creates a new Training model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+    
     public function actionCreate()
     {
         $model = new Training();
@@ -112,7 +146,13 @@ class TrainingController extends Controller
 
         	$model->tb_program_revision = (int)\backend\models\ProgramHistory::getRevision($model->tb_program_id);
 			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-			$model->status =0;
+			$model->status = 1;
+
+			// Ngecek logika tanggal
+			if ($model->start > $model->finish) {
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Start date should not be greater than end date!');
+				return $this->redirect('index');
+			}
 
 			// GENERATE TRAINING NUMBER
 			$year = date('Y',strtotime($model->start));
@@ -128,7 +168,7 @@ class TrainingController extends Controller
 			$model->number = $year.'-'.$program_owner.'-'.$training_owner.'-'.$program_number.'.'.$training_of_program_this_year;
 			
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', 'Data saved');
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Training created!');
 				// SAVE HISTORY OF TRAINING
 				$model2 = new \backend\models\TrainingHistory();
 				$model2->attributes = array_merge(
@@ -150,14 +190,26 @@ class TrainingController extends Controller
 			}
 			else
 			{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Unable create training');
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-                'dataEs2' => $dataEs2
-            ]);
+            return $this->redirect('index');
+        } 
+        else 
+        {
+			if (Yii::$app->request->isAjax)
+			{
+				return $this->renderAjax('create', [
+					'model' => $model,
+	                'dataEs2' => $dataEs2
+				]);
+			}
+			else
+			{
+				return $this->render('create', [
+	                'model' => $model,
+	                'dataEs2' => $dataEs2
+	            ]);
+			}
         }
     }
 
@@ -237,16 +289,16 @@ class TrainingController extends Controller
 
 			if ($training->save())
 			{
-				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>Class count has been added!');
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i>Class count has been added!');
 
 				return $this->redirect(['index']);
 			}
 
-			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>Failed to save to database!');
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>Failed to save to database!');
 			return $this->redirect(['index']);
 		}
 
-		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>The input should not be empty!');
+		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>The input should not be empty!');
 		return $this->redirect(['index']);
 	}
 
@@ -263,27 +315,24 @@ class TrainingController extends Controller
 
 			if ($training->save())
 			{
-				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>Student count has been added!');
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i>Student count has been added!');
 
 				return $this->redirect(['index']);
 			}
 
-			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>Failed to save to database!');
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>Failed to save to database!');
 			return $this->redirect(['index']);
 		}
 
-		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times"></i>The input should not be empty!');
+		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>The input should not be empty!');
 		return $this->redirect(['index']);
 	}
 
 
 
-    /**
-     * Updates an existing Training model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -305,6 +354,12 @@ class TrainingController extends Controller
 		}
 
         if ($model->load(Yii::$app->request->post())) {
+
+			// Ngecek logika tanggal
+			if ($model->start > $model->finish) {
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Start date should not be greater than end date!');
+				return $this->redirect('index');
+			}
             
 			if(Yii::$app->request->post('generate_number')==1){
 			// GENERATE TRAINING NUMBER				
@@ -323,13 +378,13 @@ class TrainingController extends Controller
 
             if($model->save()){
 
-				Yii::$app->session->setFlash('success', 'Data saved');
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Data saved');
 
 				// Klo neken tombol save as revision
 				if(Yii::$app->request->post('create_revision') !== null )
 				{
 					// CREATE NEW HISTORY
-					$revision = \backend\models\TrainingHistory::getRevision($model->id);				
+					$revision = \backend\models\TrainingHistory::getRevision($model->id);
 					$model2 = new \backend\models\TrainingHistory();
 					$model2->attributes = array_merge(
 					  $model->attributes,[
@@ -339,50 +394,67 @@ class TrainingController extends Controller
 					);				
 					$model2->save();
 					
-					Yii::$app->session->setFlash('success', 'Save as revision');	
+					Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Saved as revision');
 				}
 				else
 				{
 					$model2 = \backend\models\TrainingHistory::find()
 									->where(['tb_training_id' => $model->id,])
-									->orderBy(['revision'=>'DESC'])
+									->orderBy(['revision'=>SORT_DESC])
 									->one();
 					$model2->attributes = array_merge($model->attributes);				
 					$model2->save();
 				}
 				// done
 
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect('index');
 
             } else {
                 // error in saving model
-				Yii::$app->session->setFlash('error', 'There are some errors');
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Cannot save!');
             }            
         }
 		else
 		{
-			return $this->render('update', [
-                'model' => $model,
-                'dataEs2' => $dataEs2
-            ]);
+			if (Yii::$app->request->isAjax)
+			{
+				return $this->renderAjax('update', [
+					'model' => $model,
+	                'dataEs2' => $dataEs2
+				]);
+			}
+			else
+			{
+				return $this->render('update', [
+	                'model' => $model,
+	                'dataEs2' => $dataEs2
+	            ]);
+			}
 		}
     }
 
-    /**
-     * Deletes an existing Training model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
+
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
         // Ngapus training unit plan, all
         TrainingUnitPlan::deleteAll('tb_training_id = :tb_training_id', [':tb_training_id' => $id]);
         
         // Ngapus historynya juga, all
         TrainingHistory::deleteAll('tb_training_id = :tb_training_id', [':tb_training_id' => $id]);
+
+        // Ngapus semua activity room juga
+        ActivityRoom::deleteAll('activity_id = :id', [':id' => $id]);
+
+        // Ngapus semua training subjec trainer recommendation
+        TrainingSubjectTrainerRecommendation::deleteAll('tb_training_id = :id', [':id' => $id]);
+
+        // Baru ngapus trainingnya
+        $this->findModel($id)->delete();
+
+        Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Training has been successfully deleted!');
 
         return $this->redirect(['index']);
     }

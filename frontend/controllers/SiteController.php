@@ -2,7 +2,7 @@
 namespace frontend\controllers;
 
 use Yii;
-use common\models\LoginForm;
+use common\models\LoginFormStudent;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -20,7 +20,8 @@ class SiteController extends Controller
 {
     /**
      * @inheritdoc
-     */
+     */	 
+	 
     public function behaviors()
     {
         return [
@@ -75,15 +76,16 @@ class SiteController extends Controller
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
-        $model = new LoginForm();
+		
+        $model = new LoginFormStudent();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+			return $this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,
             ]);
         }
+		
     }
 
     public function actionLogout()
