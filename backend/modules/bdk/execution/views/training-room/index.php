@@ -175,7 +175,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 									}
 									if ($model->status == 3)
 									{
-										return '<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!"><i class="fa fa-fw fa-times"></i></div>';
+										return '<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!"><i class="fa fa-fw fa-times-circle"></i></div>';
 									}
 								}
 							],

@@ -100,7 +100,7 @@ class TrainingRoomController extends Controller
 
         if ($activityRoom->save())
         {
-            Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>A room request has been added');
+            Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i>A room request has been added');
             return $this->redirect(['index', 'tb_training_id' => $activityRoom->activity_id]);
         }
         else
@@ -117,7 +117,7 @@ class TrainingRoomController extends Controller
         $activityId = ActivityRoom::find()->select(['activity_id'])->where(['id' => $id])->one()->activity_id;
         if (ActivityRoom::find()->where(['id' => $id])->one()->delete())
         {
-            Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i>A room request has been deleted!');
+            Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i>A room request has been deleted!');
             return $this->redirect(['index', 'tb_training_id' => $activityId]);
         }
         else

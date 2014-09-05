@@ -98,16 +98,16 @@ class ActivityRoomController extends Controller
     		switch (Yii::$app->request->post('command'))
     		{
 	    		case 0:
-		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have revert a room request!');
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> You have revert a room request!');
 		    		break;
 	    		case 1:
-		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have allowed a room request to be processed!');
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> You have allowed a room request to be processed!');
 		    		break;
 	    		case 2:
-		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have approved a room request!');
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> You have approved a room request!');
 		    		break;
 	    		case 3:
-		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check"></i> You have rejected a room request!');
+		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> You have rejected a room request!');
 		    		break;
     		}
     		return $this->redirect('index');
