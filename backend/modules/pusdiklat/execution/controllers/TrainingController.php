@@ -5,6 +5,8 @@ namespace backend\modules\pusdiklat\execution\controllers;
 use Yii;
 use backend\models\Training;
 use backend\models\TrainingSearch;
+use backend\models\ActivityRoom;
+use backend\models\RoomSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,6 +26,8 @@ class TrainingController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+					'set' => ['post'],
+					'unset' => ['post'],
                 ],
             ],
         ];
@@ -103,29 +107,7 @@ class TrainingController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Training model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Training();
-
-        if ($model->load(Yii::$app->request->post())){
-			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
-			}
-			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
+    
 
     /**
      * Updates an existing Training model.
@@ -136,31 +118,36 @@ class TrainingController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $currentFiles=[];
-        
-        if ($model->load(Yii::$app->request->post())) {
-            $files=[];
+		if(in_array($model->status,[1,2])){
+			$currentFiles=[];
 			
-            if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
+			if ($model->load(Yii::$app->request->post())) {
+				$files=[];
+				
+				if($model->save()){
+					$idx=0;
+					foreach($files as $file){
+						if(isset($paths[$idx])){
+							$file->saveAs($paths[$idx]);
+						}
+						$idx++;
 					}
-					$idx++;
-				}
-				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                // error in saving model
-				Yii::$app->session->setFlash('error', 'There are some errors');
-            }            
-        }
+					Yii::$app->session->setFlash('success', 'Data saved');
+					return $this->redirect(['view', 'id' => $model->id]);
+				} else {
+					// error in saving model
+					Yii::$app->session->setFlash('error', 'There are some errors');
+				}            
+			}
+			else{
+				//return $this->render(['update', 'id' => $model->id]);
+				return $this->render('update', [
+					'model' => $model,
+				]);
+			}
+		}
 		else{
-			//return $this->render(['update', 'id' => $model->id]);
-			return $this->render('update', [
-                'model' => $model,
-            ]);
+			
 		}
     }
 
@@ -539,4 +526,110 @@ class TrainingController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	/**
+     * Lists all Room models.
+     * @return mixed
+     */
+    public function actionRoom($activity_id, $ref_satker_id=0)
+    {
+		$activity=$this->findModel($activity_id);
+		
+        $searchModel = new RoomSearch();
+		if($ref_satker_id===0) $ref_satker_id = (int)$activity->location;
+		if($ref_satker_id<0) $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		if($ref_satker_id=='all'){
+			$queryParams['RoomSearch']=[
+				'status'=>1,
+			];
+		}
+		else{
+			$queryParams['RoomSearch']=[
+				'ref_satker_id'=>$ref_satker_id,
+				'status'=>1,
+			];
+		}	
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        $dataProvider = $searchModel->search($queryParams);
+
+		// GET ALL TRAINING YEAR
+		$satkers['all']='All';
+		$satkers = yii\helpers\ArrayHelper::map(\backend\models\Satker::find()
+			//->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['eselon'=>'ASC',])
+			//->active()
+			->asArray()
+			->all(), 'id', 'name');
+		
+		if (Yii::$app->request->isAjax){
+			return $this->renderAjax('room', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'activity_id'=>$activity_id,
+				'activity'=>$activity,
+				'ref_satker_id'=>$ref_satker_id,
+				'satkers'=>$satkers,
+			]);
+		}
+		else{
+			return $this->render('room', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'activity_id'=>$activity_id,
+				'activity'=>$activity,
+				'ref_satker_id'=>$ref_satker_id,
+				'satkers'=>$satkers,
+			]);
+		}
+    }
+	
+	/**
+     * Creates a new Meeting model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionSet($activity_id,$tb_room_id,$status=1)
+    {
+        $model = new ActivityRoom();
+		$model->type = 0;
+		$Training = \backend\models\Training::findOne($activity_id);
+		$model->activity_id = (int)$activity_id;
+		$model->tb_room_id = (int)$tb_room_id;
+		$model->startTime = $Training->start;
+		$model->finishTime = $Training->finish;
+		$model->status = $status;
+		
+        if($model->save()) {
+			Yii::$app->session->setFlash('success', 'Data saved');
+		}
+		else{
+			 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+		}
+		if (Yii::$app->request->isAjax){	
+			return ('Room have set');
+		}
+		else{
+			return $this->redirect(['room', 'activity_id' => $activity_id]);
+		}
+    }
+	
+	 public function actionUnset($activity_id,$tb_room_id)
+    {
+        $model = ActivityRoom::find()->where(
+			'activity_id=:activity_id AND tb_room_id=:tb_room_id',[':activity_id'=>$activity_id,':tb_room_id'=>$tb_room_id])->one();
+		if($model->delete()) {
+			Yii::$app->session->setFlash('success', 'Data saved');
+		}
+		else{
+			 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+		}
+		if (Yii::$app->request->isAjax){	
+			return ('Room have unset');
+		}
+		else{
+			return $this->redirect(['room', 'activity_id' => $activity_id]);
+		}
+    }
+	
+
 }

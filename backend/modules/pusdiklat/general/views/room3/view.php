@@ -25,10 +25,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
-						]).' '.
-					 Html::a('<i class="fa fa-fw fa-trash-o"></i> BACK',['#'],
+						]).' ',
+					 /*Html::a('<i class="fa fa-fw fa-trash-o"></i> BACK',['#'],
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
-						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
+						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),*/
         'attributes' => [
             [
 				'attribute' => 'ref_satker_id',

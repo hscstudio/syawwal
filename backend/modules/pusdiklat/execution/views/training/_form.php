@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
@@ -22,136 +22,102 @@ use yii\helpers\ArrayHelper;
 		Training	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
-		'type' => ActiveForm::TYPE_HORIZONTAL,
+		//'type' => ActiveForm::TYPE_HORIZONTAL,
+		'enableAjaxValidation' => false,
+		'enableClientValidation' => false,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 	
-    <?= '' ?>
-
-			<?php
-			$data = ArrayHelper::map(\backend\models\Program::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'tb_program_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Program ...'],
-				'pluginOptions' => [
+	<div class='row'>
+		<div class='col-md-6'>
+		<div class='row'>
+			<div class='col-md-6'>
+			<?= $form->field($model, 'start')->widget(\kartik\datecontrol\DateControl::classname(), [
+						'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
+					]); ?>
+			</div>
+			<div class='col-md-6'>
+			<?= $form->field($model, 'finish')->widget(\kartik\datecontrol\DateControl::classname(), [
+						'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
+					]); ?>
+			</div>
+		</div>
+		
+		<?= $form->field($model, 'executionSK')->textInput(['maxlength' => 255]) ?>
+		
+		<?= $form->field($model, 'hostel')->widget(\kartik\widgets\SwitchInput::classname(), [
+						'pluginOptions' => [
+							'onText' => 'On',
+							'offText' => 'Off',
+						]
+					]) ?>
+		
+		<?php
+		if(empty($model->location))
+			$model->location = (int)Yii::$app->user->identity->employee->ref_satker_id;
+			
+		$data = ArrayHelper::map(\backend\models\Satker::find()
+			->where('status=1')
+			->asArray()
+			->all(), 'id', 'name');
+		echo $form->field($model, 'location')->widget(Select2::classname(), [
+			'data' => array_merge($data,['-1'=>'Other']),
+			'options' => ['placeholder' => 'Choose location ...'],
+			'pluginOptions' => [
 				'allowClear' => true
-				],
-			]); ?>
+			],
+		]); 
+		?>
+		
+		<?php
+		$data = [
+				'1'=>'READY',
+				'2'=>'EXECUTE',
+		];
+		echo $form->field($model, 'status')->widget(Select2::classname(), [
+			'data' => $data,
+			'options' => ['placeholder' => 'Choose Status ...'],
+			'pluginOptions' => [
+				'allowClear' => true,
+			],
+		]); ?>
+		</div>
+		<div class='col-md-6'>
+		
+		<?= $form->field($model, 'costPlan')->textInput() ?>
 
-    <?= '' ?>
+		<?= $form->field($model, 'costRealisation')->textInput() ?>		
 
-			<?php
-			$data = ArrayHelper::map(\backend\models\ProgramRevis::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'tb_program_revision')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose ProgramRevis ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
-			]); ?>
+		<?= $form->field($model, 'reguler')->widget(\kartik\widgets\SwitchInput::classname(), [
+						'pluginOptions' => [
+							'onText' => 'On',
+							'offText' => 'Off',
+						]
+					]) ?>
+					
+		<?= $form->field($model, 'sourceCost')->textInput(['maxlength' => 255]) ?>				
+					
+		<?= $form->field($model, 'stakeholder')->textInput(['maxlength' => 255]) ?>
 
-    <?= '' ?>
-
-			<?php
-			$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Satker ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
-			]); ?>
-
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'start')->widget(\kartik\datecontrol\DateControl::classname(), [
-					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
-				]); ?>
-
-    <?= $form->field($model, 'finish')->widget(\kartik\datecontrol\DateControl::classname(), [
-					'type' => \kartik\datecontrol\DateControl::FORMAT_DATE,
-				]); ?>
-
-    <?= $form->field($model, 'studentCount')->textInput() ?>
-
-    <?= $form->field($model, 'classCount')->textInput(['maxlength' => 3]) ?>
-
-    <?= $form->field($model, 'costPlan')->textInput() ?>
-
-    <?= $form->field($model, 'costRealisation')->textInput() ?>
-
-    <?= $form->field($model, 'hostel')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
-    <?= $form->field($model, 'reguler')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
-    <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
-    <?= ""//createdBy ?>
-
-    <?= ""//modifiedBy ?>
-
-    <?= ""//deletedBy ?>
-
-    <?= $form->field($model, 'approvedStatus')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
-
-    <?= $form->field($model, 'approvedStatusBy')->textInput() ?>
-
-    <?= ""//created ?>
-
-    <?= ""//modified ?>
-
-    <?= ""//deleted ?>
-
-    <?= $form->field($model, 'approvedStatusDate')->widget(\kartik\datecontrol\DateControl::classname(), [
-					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
-				]); ?>
-
-    <?= $form->field($model, 'number')->textInput(['maxlength' => 30]) ?>
-
-    <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'executionSK')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'resultSK')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'sourceCost')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'stakeholder')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'approvedStatusNote')->textInput(['maxlength' => 255]) ?>
-
-    <div class="form-group">
-		<label class="col-md-2 control-label"></label>
-		<div class="col-md-10">
-        <?= Html::submitButton(
+		
+		
+		
+		<?php
+		$initScript = '
+		//$("#meeting-location").select2().select2("val", '.$model->location.');
+		$("label").attr("style","display:block;");
+		$("#training-reguler").bootstrapSwitch("state", true, true);		
+		';
+		$this->registerJS($initScript);
+		?>
+		
+		<?= Html::submitButton(
 			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
 			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+			
 		</div>
-	</div>
-	
+	</div>	
     <?php ActiveForm::end(); ?>
 	</div>
 </div>

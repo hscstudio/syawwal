@@ -5,6 +5,7 @@ use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use kartik\widgets\Select2;
 use kartik\widgets\AlertBlock;
+use kartik\widgets\ActiveForm;
 
 /* @var $searchModel backend\models\RoomSearch */
 
@@ -30,6 +31,57 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		]); 
 	}
 	?>
+	
+	<?php 
+	$model = new \backend\models\ActivityRoom();
+	if(!isset($startTime)) $model->startTime=$activity->start;
+	$form = ActiveForm::begin([
+		'action' => ['room','activity_id'=>$activity_id,'ref_satker_id'=>$ref_satker_id],
+		'enableAjaxValidation' => false,
+		//'enableClientValidation' => true,
+		'beforeSubmit' => "function(form) {
+			if($(form).find('.has-error').length) {
+					return false;
+			}	
+			$.ajax({
+					url: form.attr('action'),
+					type: 'get',
+					data: form.serialize(),
+					success: function(data) {
+						/*$.pjax.reload({
+							url: '".\yii\helpers\Url::to(['index','activity_id'=>$activity_id])."', 
+							container: '#pjax-gridview', 
+							timeout: 3000,
+						});*/
+						$.growl(data, {	type: 'success'	});
+						//$('#modal-heart').modal('hide');
+					}
+			});					
+			return false;
+		}",
+	]); 
+	?>
+	<div class="row">
+	<div class="col-md-4">
+	<?php echo $model->startTime; ?>
+	<?= $form->field($model, 'startTime')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+				]); ?>
+	</div>			
+	<div class="col-md-4">
+	<?= $form->field($model, 'finishTime')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+				]); ?>
+	</div>			
+	<div class="col-md-4">
+	<label></label>
+	<?= Html::submitButton(
+			'<span class="fa fa-fw fa-search"></span> Search', 
+			['class' => 'btn btn-primary']) ?>
+	</div>			
+	</div>			
+	<?php ActiveForm::end(); ?>
+	
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -87,8 +139,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'label' => 'Availability',
 				'width'=>'80px',
 				'value' => function ($data) use ($activity) {
-					$start = $activity->startTime;
-					$finish = $activity->finishTime;
+					$start = $activity->start;
+					$finish = $activity->finish;
 					// ONLY CHECK AVAILABILITY
 					$activityRoom = \backend\models\ActivityRoom::find()
 								->where('
@@ -171,7 +223,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'ref_satker_id', 
-					'data' => $satkers,
+					'data' => array_merge($satkers,['all'=>'ALL']),
 					'value' => $ref_satker_id,
 					'options' => [
 						'width'=> '200px;',
@@ -222,7 +274,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			});
 			$("#modal-heart").on("hidden.bs.modal", function (e) {
 				$.pjax.reload({
-					url: "'.\yii\helpers\Url::to(['index','executor'=>$activity->executor]).'", 
+					url: "'.\yii\helpers\Url::to(['index']).'", 
 					container: "#pjax-gridview",
 					timeout: 1,
 				});

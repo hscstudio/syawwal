@@ -85,17 +85,17 @@ class Meeting3Controller extends Controller
 			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
 			$model->executor = 'GENERAL3'; // SUBBID ASSET
 			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
+				Yii::$app->session->setFlash('success', 'Data saved');
+				return $this->redirect(['view', 'id' => $model->id]);
 			}
 			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
+				Yii::$app->session->setFlash('error', 'Unable create there are some error');
+			}            
+        } 
+		
+		return $this->render('create', [
+			'model' => $model,
+		]);
     }
 
     /**
@@ -118,17 +118,13 @@ class Meeting3Controller extends Controller
             if($model->save()){
 				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                // error in saving model
-				Yii::$app->session->setFlash('error', 'There are some errors');
             }            
-        }
-		else{
-			//return $this->render(['update', 'id' => $model->id]);
-			return $this->render('update', [
-                'model' => $model,
-            ]);
-		}
+        }		
+		//return $this->render(['update', 'id' => $model->id]);
+		return $this->render('update', [
+			'model' => $model,
+		]);
+		
     }
 
     /**
@@ -484,4 +480,38 @@ class Meeting3Controller extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	 /**
+     * Lists all Room models.
+     * @return mixed
+     */
+    public function actionRoom($activity_id)
+    {
+        $searchModel = new \backend\models\ActivityRoomSearch();
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$queryParams['ActivityRoomSearch']=[
+			'activity_id'=>$activity_id,
+		];
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        $dataProvider = $searchModel->search($queryParams);
+		
+		$activity=\backend\models\Meeting::findOne($activity_id);
+		if (Yii::$app->request->isAjax){
+			return $this->renderAjax('room', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				//'activity_id'=>$activity_id,
+				'activity'=>$activity,
+			]);
+		}
+		else{
+			return $this->render('room', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				//'activity_id'=>$activity_id,
+				'activity'=>$activity,
+			]);
+		}
+        
+    }
 }

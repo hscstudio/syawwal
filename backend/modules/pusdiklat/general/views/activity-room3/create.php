@@ -7,7 +7,8 @@ use yii\helpers\Html;
 /* @var $model backend\models\ActivityRoom */
 
 $this->title = 'Create Activity Room';
-$this->params['breadcrumbs'][] = ['label' => 'Activity Rooms', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label'=>'Room','url'=>['room/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Activity Rooms', 'url' => ['index','tb_room_id'=>$tb_room_id]];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();

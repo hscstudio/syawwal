@@ -17,6 +17,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="training-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-gridview',
+	]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -94,18 +97,20 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'label' => 'Room',
 				'value' => function ($data)
 				{
-					$roomCount = ActivityRoom::find()->where(['type' => 0, 'activity_id' => $data->id])->count();
-					if ($roomCount > 0)
-					{
-						return '<div class="badge alert-success"> '.$roomCount.' </div>';
+					if($data->status==2){
+						$roomCount = ActivityRoom::find()->where(['type' => 0, 'activity_id' => $data->id])->count();
+						if($roomCount==0){ 
+							return Html::a('SET', ['room','activity_id'=>$data->id], ['class' => 'label label-warning','data-pjax'=>0]);
+						}		
+						else{
+							return Html::a($roomCount, ['room','activity_id'=>$data->id], ['class' => 'label label-primary','data-pjax'=>0]);
+						}
 					}
-					else
-					{
-						return '<div class="badge alert-danger"> 0 </div>';
+					else{
+						return "-";
 					}
 				}
-			],
-			
+			],			
 			[
 				'format' => 'raw',
 				'attribute' => 'status',
@@ -114,8 +119,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'80px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'value' => function ($data) use ($year){				
-					
+				'value' => function ($data) use ($year){					
 					if ($data->status==1){
 						$icon='<span class="glyphicon glyphicon-check"></span>';
 						$label='label label-info';
@@ -145,7 +149,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'buttons' => [
 					'update' => function ($url, $model) {
 								$icon='<span class="glyphicon glyphicon-pencil"></span>';
-								return ($model->status!=2)?'':Html::a($icon,$url,[
+								return ($model->status!=2 AND $model->status!=1)?'':Html::a($icon,$url,[
 									'data-pjax'=>"0",
 								]);
 							},
@@ -153,10 +157,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training', ['create'], ['class' => 'btn btn-success']),
+			'before'=>'-',
 			'after'=>'
 				<div class="row">
 				<div class="col-md-8">
@@ -176,6 +179,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	<?php echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']); ?>
+	<?php \yii\widgets\Pjax::end(); ?>
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

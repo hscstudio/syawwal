@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
+		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index','tb_room_id'=>$tb_room_id],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
@@ -27,21 +27,20 @@ use yii\helpers\ArrayHelper;
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 	
-    <?= $form->field($model, 'type')->textInput(['maxlength' => 3]) ?>
-
-    <?= $form->field($model, 'activity_id')->textInput() ?>
-
-    <?= '' ?>
-
-			<?php
-			$data = ArrayHelper::map(\backend\models\Room::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'tb_room_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Room ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
-			]); ?>
+	<?php
+	$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+	$data = ArrayHelper::map(\backend\models\Room::find()
+		->select(['id','name'])
+		->where('ref_satker_id=:ref_satker_id and status=1',[':ref_satker_id'=>$ref_satker_id])
+		->asArray()
+		->all(), 'id', 'name');
+	echo $form->field($model, 'tb_room_id')->widget(Select2::classname(), [
+		'data' => $data,
+		'options' => ['placeholder' => 'Choose Room ...'],
+		'pluginOptions' => [
+		'allowClear' => true
+		],
+	]); ?>
 
     <?= $form->field($model, 'startTime')->widget(\kartik\datecontrol\DateControl::classname(), [
 					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
@@ -51,22 +50,24 @@ use yii\helpers\ArrayHelper;
 					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
 				]); ?>
 
-    <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
+    <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
 
-    <?= ""//createdBy ?>
-
-    <?= ""//modifiedBy ?>
+    <?php
+	echo $form->field($model, 'status')->widget(Select2::classname(), [
+		'data' => ['1'=>'Process','2'=>'Approved','3'=>'Rejected'],
+		'options' => ['placeholder' => 'Choose status ...'],
+		'pluginOptions' => [
+		'allowClear' => true
+		],
+	]); ?>
 
     <?= ""//created ?>
 
+    <?= ""//createdBy ?>
+
     <?= ""//modified ?>
 
-    <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
+    <?= ""//modifiedBy ?>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

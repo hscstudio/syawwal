@@ -14,7 +14,14 @@ $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="meeting-view">
-
+	<?php
+	$activityRoom = \backend\models\ActivityRoom::find()
+					->where('activity_id=:activity_id',
+					[
+						':activity_id' => $model->id
+					]);	
+	?>					
+	
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
@@ -26,9 +33,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]).' '.
-					 Html::a('<i class="fa fa-fw fa-trash-o"></i> DELETE',['#'],
+					 (($activityRoom->count()==0)?Html::a('<i class="fa fa-fw fa-trash-o"></i> DELETE',['#'],
 						['class'=>'btn btn-xs btn-danger kv-btn-delete',
-						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']),
+						 'title'=>'Delete', 'data-method'=>'post', 'data-confirm'=>'Are you sure you want to delete this item?']):''),
         'attributes' => [
             'id',
             [

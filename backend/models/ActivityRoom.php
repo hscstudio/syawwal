@@ -71,7 +71,8 @@ class ActivityRoom extends \yii\db\ActiveRecord
             [['type', 'activity_id', 'tb_room_id', 'startTime', 'finishTime', 'status'], 'required'],
             [['type', 'activity_id', 'tb_room_id', 'status', 'createdBy', 'modifiedBy'], 'integer'],
             [['startTime', 'finishTime', 'created', 'modified', 'note'], 'safe'],
-            [['note'], 'string', 'max' => 255]
+            [['note'], 'string', 'max' => 255],
+			['finishTime','compare','compareAttribute'=>'startTime','operator'=>'>','message'=>'{attribute} must be greater than {compareValue}.'],
         ];
     }
 

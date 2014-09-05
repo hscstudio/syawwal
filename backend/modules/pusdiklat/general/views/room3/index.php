@@ -68,7 +68,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'100px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Hostel', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
 			[
 				'format' => 'raw',
@@ -78,12 +77,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'80px',
 				'value' => function ($data) {
 					$countWaiting = \backend\models\ActivityRoom::find()
-								->where(['tb_room_id' => $data->id,'status' => 0])
+								->where(['tb_room_id' => $data->id,'status' => 1])
 								->count();
 					if($data->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
-						return Html::a($countWaiting, ['activity-room/index','tb_room_id'=>$data->id], ['class' => 'label label-warning','data-pjax'=>0]).
+						return Html::a($countWaiting, ['activity-room3/index','tb_room_id'=>$data->id], ['class' => 'label label-warning','data-pjax'=>0]).
 							' '.
-							Html::a('<span class="fa fa-calendar"></span>',['activity-room/calendar','tb_room_id'=>$data->id],['data-pjax'=>"0",]);
+							Html::a('<span class="fa fa-calendar"></span>',['activity-room3/calendar','tb_room_id'=>$data->id],['data-pjax'=>"0",]);
 					}
 					else{
 						return '-';
@@ -95,6 +94,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'class' => 'kartik\grid\ActionColumn',
 				'template'=> '{view} {update} {delete}',
 				'buttons' => [
+					'view' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+						return Html::a($icon,$url,[
+							'data-pjax'=>"0",
+							'class'=>'modal-heart',
+							'source'=>'.table-responsive',
+							'title'=>$model->name,
+						]);
+					},
 					'update' => function ($url, $model) {
 								$icon='<span class="glyphicon glyphicon-pencil"></span>';
 								if($model->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
@@ -128,14 +136,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'status', 
-					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'All'],
+					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'-- All --'],
 					'value' => $status,
 					'options' => [
 						'placeholder' => 'Status ...', 
-						'class'=>'form-control', 
+						'class'=>'form-control input-medium', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/room/index']).'?ref_satker_id='.$ref_satker_id.'&status="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['index']).'?ref_satker_id='.$ref_satker_id.'&status="+$(this).val(), 
 								container: "#pjax-gridview", 
 								timeout: 1,
 							});
@@ -149,12 +157,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'data' => $satkers,
 					'value' => $ref_satker_id,
 					'options' => [
-						'width'=> '200px;',
+						'width'=> 'resolve',
 						'placeholder' => 'Satker ...', 
-						'class'=>'form-control', 
+						'class'=>'form-control ', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/room/index']).'?status='.$status.'&ref_satker_id="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['index']).'?status='.$status.'&ref_satker_id="+$(this).val(), 
 								container: "#pjax-gridview", 
 								timeout: 1,
 							});
@@ -168,6 +176,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	
+	<?= \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']); ?>
+	<?php 
+	$this->registerCss('.select2-container { width: 200px !important; }');
+	?>
 	<?php \yii\widgets\Pjax::end(); ?>
 	
 	<?php 	

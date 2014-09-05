@@ -27,7 +27,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             ['class' => 'kartik\grid\SerialColumn'],
 
 			[
-				'class' => 'kartik\grid\EditableColumn',
 				'attribute' => 'name',
 				'format'=>'raw',
 				'vAlign'=>'middle',
@@ -81,8 +80,75 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
+			[
+				'format' => 'raw',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'label' => 'Room',
+				'width'=>'100px',
+				'value' => function ($data) {
+					$activityRoom = \backend\models\ActivityRoom::find()
+								->where('activity_id=:activity_id',
+								[
+									':activity_id' => $data->id
+								]);		
+					if($activityRoom->count()==0){ 
+						return '<span class="label label-warning">Waiting</span>';
+					}		
+					else{
+						return Html::a('<span class="label label-primary">'.$activityRoom->count().'</span>',['room','activity_id'=>$data->id,],['class'=>'modal-heart','data-pjax'=>0,'source'=>'','title'=>'Room : '.$data->name]);
+					}
+				}
+			],
 
-            ['class' => 'kartik\grid\ActionColumn'],
+            [
+				'class' => 'kartik\grid\ActionColumn',
+				'buttons' => [
+					'view' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+						return Html::a($icon,$url,[
+							'data-pjax'=>"0",
+							'class'=>'modal-heart',
+							'source'=>'.table-responsive',
+							'title'=>$model->name,
+						]);
+					},
+					'update' => function ($url, $model) {
+								$activityRoom = \backend\models\ActivityRoom::find()
+											->where('activity_id=:activity_id',
+											[
+												':activity_id' => $model->id
+											]);		
+								if($activityRoom->count()==0){ 
+									$icon='<span class="glyphicon glyphicon-pencil"></span>';
+									return Html::a($icon,$url,[
+										'data-pjax'=>"0",
+									]);
+								}		
+								else{
+									return "";
+								}
+								
+							},
+					'delete' => function ($url, $model) {
+								$activityRoom = \backend\models\ActivityRoom::find()
+											->where('activity_id=:activity_id',
+											[
+												':activity_id' => $model->id
+											]);		
+								if($activityRoom->count()==0){ 
+									$icon='<span class="glyphicon glyphicon-trash"></span>';
+									return Html::a($icon,$url,[
+										'title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post",
+										'data-pjax'=>"0",
+									]);
+								}		
+								else{
+									return "";
+								}								
+							},
+				],			
+			],
         ],
 		'panel' => [
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Meeting</h3>',
@@ -113,6 +179,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	
+	<?php 
+	$this->registerCss('.select2-container { width: 200px !important; }');
+	?>
+	<?= \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']); ?>
 	<?php \yii\widgets\Pjax::end(); ?>
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);

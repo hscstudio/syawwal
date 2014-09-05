@@ -10,7 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ActivityRoom3Controller implements the CRUD actions for ActivityRoom model.
+ * ActivityRoomController implements the CRUD actions for ActivityRoom model.
  */
 class ActivityRoom3Controller extends Controller
 {
@@ -33,17 +33,30 @@ class ActivityRoom3Controller extends Controller
      * Lists all ActivityRoom models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($tb_room_id,$status='all')
     {
-        $searchModel = new ActivityRoomSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$searchModel = new ActivityRoomSearch();
+        $queryParams = Yii::$app->request->getQueryParams();
+		$params = [];
+		if($status=='all') $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,];
+		else $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,'status' => $status,];
+		$queryParams['ActivityRoomSearch']=$params;
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_DESC,'finishTime'=>SORT_DESC];
+		
+		$room = \backend\models\Room::findOne($tb_room_id);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'room' => $room,
+			'tb_room_id' => $tb_room_id,
+			'status' => $status,
         ]);
     }
-
+	
+	
     /**
      * Displays a single ActivityRoom model.
      * @param integer $id
@@ -51,9 +64,19 @@ class ActivityRoom3Controller extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = ActivityRoom::find()->where(['id'=>$id])->one();        
+		if (Yii::$app->request->isAjax){		
+			return $this->renderAjax('view', [
+				'model' => $model,
+				'tb_room_id' => $model->tb_room_id,
+			]);
+		}
+		else{
+			return $this->render('view', [
+				'model' => $model,
+				'tb_room_id' => $model->tb_room_id,
+			]);
+		}
     }
 
     /**
@@ -61,7 +84,7 @@ class ActivityRoom3Controller extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($tb_room_id)
     {
         $model = new ActivityRoom();
 
@@ -76,6 +99,7 @@ class ActivityRoom3Controller extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
+				'tb_room_id' => $tb_room_id,
             ]);
         }
     }
@@ -88,31 +112,40 @@ class ActivityRoom3Controller extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $currentFiles=[];
-        
+        $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$model = ActivityRoom::find()->where(['id'=>$id])->one();        
+		//CHECKING ACTIVITY ID OF CURRENT SATKER
+		if($model->type==0){
+			$training = \backend\models\Training::findOne($model->activity_id);
+			if($training->ref_satker_id!=$ref_satker_id){
+				Yii::$app->session->setFlash('error', 'You have not privileges to update this activity!');
+				return $this->redirect(['index','tb_room_id'=>$model->tb_room_id]);
+			}
+		}
+		
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-			
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
 				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', 'id' => $model->id]);
+				if (Yii::$app->request->isAjax){
+
+				}
+				else
+					return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 // error in saving model
 				Yii::$app->session->setFlash('error', 'There are some errors');
+				if (Yii::$app->request->isAjax){		
+				
+				}
+				else
+					return $this->redirect(['index','tb_room_id'=>$model->tb_room_id]);
             }            
         }
 		else{
 			//return $this->render(['update', 'id' => $model->id]);
 			return $this->render('update', [
                 'model' => $model,
+				'tb_room_id' => $model->tb_room_id,
             ]);
 		}
     }
@@ -123,13 +156,22 @@ class ActivityRoom3Controller extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    /*public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$model = ActivityRoom::find($id)->one();        
+		//CHECKING ACTIVITY ID OF CURRENT SATKER
+		if($model->type==0){
+			$training = \backend\models\Training::findOne($model->activity_id);
+			if($training->ref_satker_id!=$ref_satker_id){
+				Yii::$app->session->setFlash('error', 'You have not privileges to delete this activity!');
+				return $this->redirect(['index','tb_room_id'=>$model->tb_room_id]);
+			}
+		}
+		$model->delete();
         return $this->redirect(['index']);
     }
-
+	*/
     /**
      * Finds the ActivityRoom model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -139,7 +181,7 @@ class ActivityRoom3Controller extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = ActivityRoom::findOne($id)) !== null) {
+        if (($model = ActivityRoom::find($id)->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -363,95 +405,91 @@ class ActivityRoom3Controller extends Controller
         ]);	
     }
 	
-	public function actionImport(){
-		$dataProvider = new ActiveDataProvider([
-            'query' => ActivityRoom::find(),
-        ]);
+	/**
+     * Lists all ActivityRoom models.
+     * @return mixed
+     */
+    public function actionCalendar($tb_room_id,$status='all')
+    {
+        /*
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$searchModel = new ActivityRoomSearch();
+        $queryParams = Yii::$app->request->getQueryParams();
+		$params = [];
+		if($status=='all') $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,];
+		else $params = ['tb_room_id' => $tb_room_id,'ref_satker_id' => $ref_satker_id,'status' => $status,];
+		$queryParams['ActivityRoomSearch']=$params;
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_DESC,'finishTime'=>SORT_DESC];*/
 		
-		/* 
-		Please read guide of upload https://github.com/yiisoft/yii2/blob/master/docs/guide/input-file-upload.md
-		maybe I do mistake :)
-		*/		
-		if (!empty($_FILES)) {
-			$importFile = \yii\web\UploadedFile::getInstanceByName('importFile');
-			if(!empty($importFile)){
-				$fileTypes = ['xls','xlsx']; // File extensions allowed
-				//$ext = end((explode(".", $importFile->name)));
-				$ext=$importFile->extension;
-				if(in_array($ext,$fileTypes)){
-					$inputFileType = \PHPExcel_IOFactory::identify($importFile->tempName );
-					$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-					$objPHPExcel = $objReader->load($importFile->tempName );
-					$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
-					$baseRow = 2;
-					$inserted=0;
-					$read_status = false;
-					$err=[];
-					while(!empty($sheetData[$baseRow]['A'])){
-						$read_status = true;
-						$abjadX=array();
-						//$id=  $sheetData[$baseRow]['A'];
-						$type=  $sheetData[$baseRow]['B'];
-						$activity_id=  $sheetData[$baseRow]['C'];
-						$tb_room_id=  $sheetData[$baseRow]['D'];
-						$startTime=  $sheetData[$baseRow]['E'];
-						$finishTime=  $sheetData[$baseRow]['F'];
-						$note=  $sheetData[$baseRow]['G'];
-						$status=  $sheetData[$baseRow]['H'];
-						//$created=  $sheetData[$baseRow]['I'];
-						//$createdBy=  $sheetData[$baseRow]['J'];
-						//$modified=  $sheetData[$baseRow]['K'];
-						//$modifiedBy=  $sheetData[$baseRow]['L'];
-
-						$model2=new ActivityRoom;
-						//$model2->id=  $id;
-						$model2->type=  $type;
-						$model2->activity_id=  $activity_id;
-						$model2->tb_room_id=  $tb_room_id;
-						$model2->startTime=  $startTime;
-						$model2->finishTime=  $finishTime;
-						$model2->note=  $note;
-						$model2->status=  $status;
-						//$model2->created=  $created;
-						//$model2->createdBy=  $createdBy;
-						//$model2->modified=  $modified;
-						//$model2->modifiedBy=  $modifiedBy;
-
-						try{
-							if($model2->save()){
-								$inserted++;
-							}
-							else{
-								foreach ($model2->errors as $error){
-									$err[]=($baseRow-1).'. '.implode('|',$error);
-								}
-							}
-						}
-						catch (\yii\base\ErrorException $e){
-							Yii::$app->session->setFlash('error', "{$e->getMessage()}");
-							//$this->refresh();
-						} 
-						$baseRow++;
-					}	
-					Yii::$app->session->setFlash('success', ($inserted).' row inserted');
-					if(!empty($err)){
-						Yii::$app->session->setFlash('warning', 'There are error: <br>'.implode('<br>',$err));
-					}
-				}
-				else{
-					Yii::$app->session->setFlash('error', 'Filetype allowed only xls and xlsx');
-				}				
-			}
-			else{
-				Yii::$app->session->setFlash('error', 'File import empty!');
-			}
+		$room = \backend\models\Room::findOne($tb_room_id);
+        return $this->render('calendar', [
+			'room' => $room,
+			'tb_room_id' => $tb_room_id,
+			'status' => $status,
+        ]);
+    }
+	
+	public function actionEvents($tb_room_id,$status='all')
+	{
+		$start = Yii::$app->request->get('start');
+		$end = Yii::$app->request->get('end');
+        
+		$items = array();
+		if($status=='all'){
+			$model= \backend\models\ActivityRoom::find()
+					 ->where('(startTime >= :start and finishTime<= :end) and tb_room_id=:tb_room_id',
+						[':start' => $start,':end' => $end,':tb_room_id' => $tb_room_id])
+					 ->all();  
 		}
 		else{
-			Yii::$app->session->setFlash('error', 'File import empty!');
+			$model= \backend\models\ActivityRoom::find()
+					 ->where('startTime >= :start and finishTime<= :end and tb_room_id=:tb_room_id and status=:status',
+						[':start' => $start,':end' => $end,':tb_room_id' => $tb_room_id,':status' => $status])
+					 ->all();   
 		}
 		
-		return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);					
-	}
+		$title = 'Untitle';
+		$start = date('Y-m-d');
+		$end = date('Y-m-d');
+		$color = '';
+		$link = '';
+		foreach ($model as $value) {
+			
+			if($value->type==0){
+				$activity = \backend\models\Training::find()
+					 ->where('id >= :id ',[':id' => $value->activity_id])
+					 ->one();				
+			}
+			else{
+				$activity = \backend\models\Meeting::find()
+					 ->where('id >= :id ',[':id' => $value->activity_id])
+					 ->one();
+			}
+			
+			$title = $activity->name;
+			if($activity->ref_satker_id!=Yii::$app->user->identity->employee->ref_satker_id){
+				$title.=' ['.$activity->satker->shortname.'] ';
+			}
+			$title .= ' | '.\hscstudio\heart\helpers\Heart::twodate($value->startTime,$value->finishTime,1);
+			$start=date('Y-m-d H:i:s',strtotime($value->startTime));
+			$end=date('Y-m-d H:i:s', strtotime('+1 day', strtotime($value->finishTime)));
+			if($value->status==0) $color='#f0ad4e';
+			else if($value->status==1) $color='#5bc0de';
+			else if($value->status==2) $color='#5cb85c';
+			else if($value->status==3) $color='#d9534f';
+			$link = \yii\helpers\Url::to(['view','id'=>$value->id]);			
+			
+			$items[]=[
+				'title'=> $title,
+				'start'=> $start,
+				'end'=> $end,
+				'color'=> $color,
+				//'allDay'=>true,
+				'url'=>$link
+			];
+		}
+		echo \yii\helpers\Json::encode($items);
+    }
 }

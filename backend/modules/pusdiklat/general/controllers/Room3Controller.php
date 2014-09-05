@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * RoomController implements the CRUD actions for Room model.
  */
-class RoomController extends Controller
+class Room3Controller extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -66,13 +66,14 @@ class RoomController extends Controller
         $dataProvider = $searchModel->search($queryParams);
 
 		// GET ALL TRAINING YEAR
-		$satkers['all']='All';
+		
 		$satkers = yii\helpers\ArrayHelper::map(\backend\models\Satker::find()
 			//->select(['year'=>'YEAR(start)','start','finish'])
 			->orderBy(['eselon'=>'ASC',])
 			//->active()
 			->asArray()
 			->all(), 'id', 'name');
+		$satkers['all']='-- All --';
 		
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -90,8 +91,9 @@ class RoomController extends Controller
      */
     public function actionView($id)
     {
+		$model = Room::find()->where(['id'=>$id])->one();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
@@ -178,7 +180,7 @@ class RoomController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Room::find($id)->currentSatker()->one()) !== null) {
+        if (($model = Room::find()->where(['id'=>$id])->currentSatker()->one()) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

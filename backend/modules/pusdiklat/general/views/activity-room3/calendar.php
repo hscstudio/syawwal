@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $model backend\models\Room */
 
 $this->title = $room->name;
-$this->params['breadcrumbs'][] = ['label'=>'Room','url'=>['room/index']];
+$this->params['breadcrumbs'][] = ['label'=>'Room','url'=>['room3/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Activity Room', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $controller = $this->context;
@@ -18,19 +18,19 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="room-view">
 	
-	<?= Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Room', ['room/index'], ['class' => 'btn btn-warning']) ?>
+	<?= Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Room', ['room3/index'], ['class' => 'btn btn-warning']) ?>
 	<?= Html::a('<i class="fa fa-fw fa-repeat"></i> Index', ['index','tb_room_id'=>$tb_room_id], ['class' => 'btn btn-info']) ?>
 	<?= '<div class="pull-right" style="margin-right:5px;">'.
 		Select2::widget([
 			'name' => 'status', 
-			'data' => ['all'=>'All','0'=>'Waiting','1'=>'Approved','2'=>'Rejected'],
+			'data' => ['all'=>'All','0'=>'Waiting','1'=>'Process','2'=>'Approved','3'=>'Rejected'],
 			'value' => $status,
 			'options' => [
 				'placeholder' => 'Status ...', 
 				'class'=>'form-control', 
 				'onchange'=>'
 					$.pjax.reload({
-						url: "'.\yii\helpers\Url::to(['/'.$controller->module->uniqueId.'/activity-room/calendar']).'?tb_room_id='.$tb_room_id.'&status="+$(this).val(), 
+						url: "'.\yii\helpers\Url::to(['calendar']).'?tb_room_id='.$tb_room_id.'&status="+$(this).val(), 
 						container: "#pjax-gridview", 
 						timeout: 1000,
 					});
@@ -57,7 +57,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'eventClick'=> new yii\web\JsExpression('function(calEvent, jsEvent, view){
 				var $modal = $("#modal-heart");
 				var $link = $(this);
-				var $source = ".table-responsive";
+				var $source = "";//.table-responsive";
 				$modal.find(".modal-refresh").attr("href", $link.attr("href"));
 				$modal.find(".modal-title").text("View");
 				$modal.find(".modal-body .content").html("Loading ...");

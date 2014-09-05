@@ -56,8 +56,8 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 					// format settings for displaying each date attribute
 					'displaySettings' => [
 						\kartik\datecontrol\Module::FORMAT_DATE => 'd-M-Y',
-						\kartik\datecontrol\Module::FORMAT_TIME => 'H:i:s A',
-						\kartik\datecontrol\Module::FORMAT_DATETIME => 'd-M-Y H:i:s A',
+						\kartik\datecontrol\Module::FORMAT_TIME => 'H:i:s',
+						\kartik\datecontrol\Module::FORMAT_DATETIME => 'd-M-Y H:i:s',
 					],			 
 					// format settings for saving each date attribute
 					'saveSettings' => [
@@ -170,6 +170,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		$assets = $view->assetManager->publish('@hscstudio/heart/assets/heart');
 		$view->registerCssFile($assets[1].'/css/heart.css', ['yii\bootstrap\BootstrapAsset']);
 		$view->registerJsFile($assets[1].'/js/heart.js', ['yii\web\JqueryAsset']);
+		$view->registerJsFile($assets[1].'/js/bootstrap-growl.min.js', ['yii\web\JqueryAsset']);
 
 		\yii\base\Event::on('yii\web\Controller','beforeAction',function($event){
 			if($event->sender->uniqueId=='site'){

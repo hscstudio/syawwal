@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use kartik\widgets\Select2;
+use yii\bootstrap\Modal;
 
 /* @var $searchModel backend\models\MeetingSearch */
 
@@ -101,17 +102,41 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
-					return Html::a('SET', ['room','activity_id'=>$data->id], ['class' => 'label label-danger','data-pjax'=>0]);
+					$activityRoom = \backend\models\ActivityRoom::find()
+								->where('activity_id=:activity_id',
+								[
+									':activity_id' => $data->id
+								]);		
+					if($activityRoom->count()==0){ 
+						return Html::a('SET', ['room','activity_id'=>$data->id], ['class' => 'label label-warning modal-heart','data-pjax'=>0,'source'=>'']);
+					}		
+					else{
+						return Html::a($activityRoom->count(), ['room','activity_id'=>$data->id], ['class' => 'label label-primary modal-heart','data-pjax'=>0,'source'=>'']);
+					}
 				}
 			],
 
-            ['class' => 'kartik\grid\ActionColumn'],
+            [
+			'class' => 'kartik\grid\ActionColumn',
+			'template' => '{view} {update}',
+			'buttons'=>[
+					'view' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+						return Html::a($icon,$url,[
+							'data-pjax'=>"0",
+							'class'=>'modal-heart',
+							'source'=>'.table-responsive',
+							'title'=>$model->name,
+						]);
+					},
+				],
+			],
         ],
 		'panel' => [
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Meeting</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Meeting', ['create'], ['class' => 'btn btn-success']).
+			'before'=>
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'executor', 
@@ -129,19 +154,27 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							$.pjax.reload({
 								url: "'.\yii\helpers\Url::to(['index']).'?executor="+$(this).val(), 
 								container: "#pjax-gridview", 
-								timeout: 1000,
+								timeout: 1,
 							});
 						',	
 					],
 				]).
 				'</div>',
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','executor'=>$executor], ['class' => 'btn btn-info','data-pjax'=>0]),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	
+	
+	<?php echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']); ?>
+	<?php 
+	$this->registerCss('.select2-container { width: 200px !important; }');
+	?>
+	
 	<?php \yii\widgets\Pjax::end(); ?>
+	
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);
