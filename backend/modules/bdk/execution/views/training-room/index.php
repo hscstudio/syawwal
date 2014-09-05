@@ -7,14 +7,13 @@ use kartik\grid\GridView;
 use kartik\widgets\Select2;
 use kartik\widgets\DepDrop;
 use kartik\widgets\ActiveForm;
-use kartik\widgets\DatePicker;
-use kartik\widgets\TimePicker;
+use kartik\widgets\DateTimePicker;
 use backend\models\ActivityRoom;
 use backend\models\Room;
 
 $this->title = 'Request Room for '.$trainingCurrent->name;
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => Url::to(['training/index'])];
-$this->params['breadcrumbs'][] = 'Room';
+$this->params['breadcrumbs'][] = 'Room Request';
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -30,7 +29,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				<div class="panel-body">
 					<div class="alert alert-info">
 						<p>
-							<i class="fa fa-fw fa-info-circle"></i>Use this tools below to select room from all satker.
+							<i class="fa fa-fw fa-info-circle"></i>Use this tools below to select all room.
 							After that, just wait until General decide what to do with your request.
 						</p>
 					</div>
@@ -44,7 +43,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					    echo Html::hiddenInput('tb_training_id', $trainingCurrent->id);
 					?>
 
-					<div class="col-md-2">
+					<div class="col-md-3">
 					<?php
 						echo '<div class="form-group">';
 						echo $form->field($roomModel, 'id')->label('Room List')->widget(Select2::classname(), [
@@ -58,72 +57,47 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					?>
 					</div>
 
-					<div class="col-md-2">
+					<div class="col-md-3">
 					<?php
 						echo '<div class="form-group">';
-						echo '<label class="control-label">Date</label>';
-						echo DatePicker::widget([
-						    'name' => 'startDate',
-						    'value' => date('d-M-Y', strtotime($trainingCurrent->start)),
-						    'type' => DatePicker::TYPE_RANGE,
-						    'name2' => 'endDate',
-						    'value2' => date('d-M-Y', strtotime($trainingCurrent->finish)),
+						echo '<label class="control-label">Start Date</label>';
+						echo DateTimePicker::widget([
+						    'name' => 'startTime',
+						    'value' => date('d-M-Y H:i:s', strtotime($trainingCurrent->start)),
+						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
 						    'pluginOptions' => [
 						        'autoclose'=>true,
-						        'format' => 'dd-M-yyyy'
+						        'format' => 'dd-M-yyyy H:i:s'
 						    ]
 						]);
 						echo '</div>';
 					?>
 					</div>
 
-					<div class="col-md-2">
+					<div class="col-md-3">
 					<?php
 						echo '<div class="form-group">';
-						echo '<label class="control-label">Start Time</label>';
-						echo TimePicker::widget([
-						    'name' => 'startTime',
+						echo '<label class="control-label">Finish Date</label>';
+						echo DateTimePicker::widget([
+						    'name' => 'finishTime',
+						    'value' => date('d-M-Y H:i:s', strtotime($trainingCurrent->finish)),
+						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
 						    'pluginOptions' => [
-						        'showSeconds' => true,
-						        'showMeridian' => false,
-						        'minuteStep' => 1,
-						        'secondStep' => 5,
+						        'autoclose'=>true,
+						        'format' => 'dd-M-yyyy H:i:s'
 						    ]
 						]);
 						echo '</div>';
 					?>
 					</div>
 
-					<div class="col-md-2">
+					<div class="col-md-3">
 					<?php
-						echo '<div class="form-group">';
-						echo '<label class="control-label">End Time</label>';
-						echo TimePicker::widget([
-						    'name' => 'endTime',
-						    'pluginOptions' => [
-						        'showSeconds' => true,
-						        'showMeridian' => false,
-						        'minuteStep' => 1,
-						        'secondStep' => 5,
-						    ]
-						]);
-						echo '</div>';
-					?>
-					</div>
-
-					<div class="col-md-2">
-					<?php
-						echo '<div class="form-group">';
-						echo '<label class="hidden-sm hidden-xs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>';
-						echo Html::submitButton('<i class="fa fa-fw fa-play"></i>Request Room', ['class' => 'btn btn-primary']);
-						echo '</div>';
-					?>
-					</div>
-
-					<div class="col-md-2">
-					<?php
-						echo '<div class="form-group">';
-						echo '<label class="hidden-sm hidden-xs">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>';
+						echo '<div class="form-group" style="margin-bottom:0; margin-top:24px;">';
+						echo Html::submitButton('<i class="fa fa-fw fa-play"></i>Request Room', [
+								'class' => 'btn btn-primary',
+							]);
+						echo ' ';
 						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), ['class' => 'btn btn-default']);
 						echo '</div>';
 					?>
@@ -164,18 +138,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
 								'value' => function ($model){
-									return '<div class="">'.date('d M Y', strtotime($model->startTime)).'</div>';
-								}
-							],
-
-							[
-								'format' => 'raw',
-								'label' => 'Start Time',
-								'vAlign'=>'middle',
-								'headerOptions'=>['class'=>'kv-sticky-column'],
-								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($model){
-									return '<div class="">'.date('H:i:s', strtotime($model->startTime)).'</div>';
+									return '<div class="">'.date('D, d M Y (H:i:s)', strtotime($model->startTime)).'</div>';
 								}
 							],
 
@@ -186,18 +149,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
 								'value' => function ($model){
-									return '<div class="">'.date('d M Y', strtotime($model->finishTime)).'</div>';
-								}
-							],
-
-							[
-								'format' => 'raw',
-								'label' => 'End Time',
-								'vAlign'=>'middle',
-								'headerOptions'=>['class'=>'kv-sticky-column'],
-								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($model){
-									return '<div class="">'.date('H:i:s', strtotime($model->finishTime)).'</div>';
+									return '<div class="">'.date('D, d M Y (H:i:s)', strtotime($model->finishTime)).'</div>';
 								}
 							],
 
