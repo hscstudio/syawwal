@@ -9,7 +9,7 @@ use yii\helpers\Url;
 use hscstudio\heart\helpers\Heart;
 use kartik\detail\DetailView;
 
-$this->title = 'Activity Rooms';
+$this->title = 'Room Request Center';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
