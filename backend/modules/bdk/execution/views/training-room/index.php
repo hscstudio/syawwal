@@ -33,32 +33,32 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							After that, just wait until General decide what to do with your request.
 						</p>
 					</div>
+
+					<div class="col-md-4">
 					<?php
 						$form = ActiveForm::begin([
 					        'id' => 'order-room-form',
-					        'action' => Url::to(['training-room/save']),
-					        'type' => ActiveForm::TYPE_VERTICAL
+					        'action' => Url::to(['search']),
+					        'type' => ActiveForm::TYPE_VERTICAL,
+					        'enableAjaxValidation' => false,
+					        'enableClientValidation' => false,
+					        'options' => [
+						        'onsubmit' => "
+						        	event.preventDefault();
+									jQuery.ajax({
+										type: 'post',
+										url: jQuery(this).attr('action'),
+										data: jQuery(this).serialize(),
+										success: function (data) {
+											jQuery(\".roomQueryResult\").html(data);
+										},
+									});
+								"
+					        ]
 					    ]);
 
 					    echo Html::hiddenInput('tb_training_id', $trainingCurrent->id);
-					?>
-
-					<div class="col-md-3">
-					<?php
-						echo '<div class="form-group">';
-						echo $form->field($roomModel, 'id')->label('Room List')->widget(Select2::classname(), [
-						    'data' => $roomList,
-						    'options' => ['placeholder' => 'Select a room ...'],
-						    'pluginOptions' => [
-						        'allowClear' => true
-						    ],
-						]);
-						echo '</div>';
-					?>
-					</div>
-
-					<div class="col-md-3">
-					<?php
+						
 						echo '<div class="form-group">';
 						echo '<label class="control-label">Start Date</label>';
 						echo DateTimePicker::widget([
@@ -67,16 +67,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
 						    'pluginOptions' => [
 						    	'startDate' => date('d-M-Y H:i:s', strtotime($trainingCurrent->start)),
+						    	'endDate' => date('d-M-Y H:i:s', strtotime($trainingCurrent->finish) + (60*60*24) - 1),
 						        'autoclose'=>true,
-						        'format' => 'dd-M-yyyy H:i:s'
+						        'format' => 'dd-M-yyyy hh:ii:ss'
 						    ]
 						]);
 						echo '</div>';
-					?>
-					</div>
 
-					<div class="col-md-3">
-					<?php
 						echo '<div class="form-group">';
 						echo '<label class="control-label">Finish Date</label>';
 						echo DateTimePicker::widget([
@@ -84,32 +81,43 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						    'value' => date('d-M-Y H:i:s', strtotime($trainingCurrent->finish)),
 						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
 						    'pluginOptions' => [
+						    	'startDate' => date('d-M-Y H:i:s', strtotime($trainingCurrent->start)),
 						    	'endDate' => date('d-M-Y H:i:s', strtotime($trainingCurrent->finish) + (60*60*24) - 1),
 						        'autoclose'=>true,
-						        'format' => 'dd-M-yyyy H:i:s'
+						        'format' => 'dd-M-yyyy hh:ii:ss'
 						    ]
 						]);
 						echo '</div>';
-					?>
-					</div>
 
-					<div class="col-md-3">
-					<?php
 						echo '<div class="form-group" style="margin-bottom:0; margin-top:24px;">';
-						echo Html::submitButton('<i class="fa fa-fw fa-play"></i>Request Room', [
+						echo '<div class="btn-group">';
+						echo Html::submitButton('<i class="fa fa-fw fa-search"></i>Search', [
 								'class' => 'btn btn-primary',
 							]);
-						echo ' ';
-						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), ['class' => 'btn btn-default']);
+						echo Html::button('<i class="fa fa-fw fa-history"></i>Clear', [
+								'class' => 'btn btn-primary',
+								'onclick' => '
+									event.preventDefault();
+									$(".roomQueryResult").html("<div class=\"alert alert-warning\"><i class=\"fa fa-fw fa-exclamation-circle\"></i>Search room first in left panel</div>");'
+							]);
+						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), [
+								'class' => 'btn btn-default'
+							]);
 						echo '</div>';
-					?>
-					</div>
-
-					<?php 
+						echo '</div>';
 
 						ActiveForm::end();
 					?>
+					</div>
+
+					<div class="col-md-8">
+						<div class="roomQueryResult">
+							<div class="alert alert-warning"><i class="fa fa-fw fa-exclamation-circle"></i>Search room first in left panel</div>
+						</div>
+					</div>
+
 				</div>
+
 			</div>
 		</div>
 
