@@ -1,77 +1,109 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
+use yii\helpers\Url;
+use kartik\grid\GridView;
 
-/* @var $searchModel backend\models\TrainingClassSearch */
-
-$this->title = 'Training Classes';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Training Class of '.$currentTraining->name;
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => Url::to(['training/index'])];
+$this->params['breadcrumbs'][] = 'Class';
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
-?>
-<div class="training-class-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+// Mbikin trio button header before
+$buttonHeaderBefore = '<div class="btn-group">';
+$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class', [
+		'create', 
+		'trainingId' => $currentTraining->id
+	], [
+		'class' => 'btn btn-success modal-heart',
+		'data-pjax' => "0",
+		'modal-title' => '<i class="fa fa-fw fa-cubes"></i> Create New Class'
+	]);
+if ($classCount == 0) {
+	$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-gear fa-spin"></i> Auto Generate', [
+		'auto', 
+		'trainingId' => $currentTraining->id
+	], [
+		'class' => 'btn btn-danger'
+	]);
+}
+$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), [
+						'class' => 'btn btn-primary'
+					]);
+$buttonHeaderBefore .= '</div>';
+
+?>
+
+<div class="training-class-index">
+	
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-gridview',
+	]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
-
-            // 'id',
-            /*
-				[
-					'attribute' => 'tb_training_id',
-					'value' => function ($data) {
-						return $data->training->name;
-					}
-				],
-				*/
+	        ['class' => 'kartik\grid\SerialColumn'],
             
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'class',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Class', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			[
+				'class' => 'kartik\grid\EditableColumn',
+				'attribute' => 'class',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'editableOptions'=>['header'=>'Class', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			],
+        
+			[
+				'class' => '\kartik\grid\BooleanColumn',
+				'attribute' => 'status',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+			],
+        	[
+        		'class' => 'kartik\grid\ActionColumn',
+        		'buttons' => [
+					'view' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
+						return Html::a($icon,$url,[
+							'class'=>'modal-heart',
+							'data-pjax'=>"0",
+							'source'=>'.table-responsive',
+							'modal-title' => '<i class="fa fa-fw fa-eye"></i> Detail: '.$model->class
+						]);
+					},
+					'update' => function ($url, $model) {
+						$icon='<span class="glyphicon glyphicon-pencil"></span>';
+						return Html::a($icon,$url,[
+							'class'=>'modal-heart',
+							'data-pjax'=>"0",
+							'modal-title' => '<i class="fa fa-fw fa-pencil-square-o"></i> Editing: '.$model->class
+						]);
+					},
 				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'status',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Status', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            // 'created',
-            // 'createdBy',
-            // 'modified',
-            // 'modifiedBy',
-            // 'deleted',
-            // 'deletedBy',
-
-            ['class' => 'kartik\grid\ActionColumn'],
+        	],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training Class</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class', ['create'], ['class' => 'btn btn-success']),
+			'before'=> $buttonHeaderBefore,
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+
+    <?php \yii\widgets\Pjax::end(); ?>
+    <?php
+		echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
+	?>
+
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);

@@ -2,13 +2,10 @@
 
 use yii\helpers\Html;
 
-
-/* @var $this yii\web\View */
-/* @var $model backend\models\TrainingClass */
-
 $this->title = 'Create Training Class';
-$this->params['breadcrumbs'][] = ['label' => 'Training Classes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Training', 'url' => ['training/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Class', 'url' => ['index', 'trainingId' => $trainingId]];
+$this->params['breadcrumbs'][] = 'Create';
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
@@ -22,6 +19,7 @@ echo \kartik\widgets\AlertBlock::widget([
 
     <?= $this->render('_form', [
         'model' => $model,
+        'trainingId' => $trainingId
     ]) ?>
 
 </div>

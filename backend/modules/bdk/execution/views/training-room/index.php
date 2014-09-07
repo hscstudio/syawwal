@@ -25,8 +25,17 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	<div class="container-fluid" style="margin:15px;">
 
 		<div class="row">
+
 			<div class="panel panel-default">
+				<div class="panel-header">
+					<?php 
+						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), [
+							'class' => 'btn btn-primary btn-block'
+						]);
+					?>
+				</div>
 				<div class="panel-body">
+
 					<div class="alert alert-info">
 						<p>
 							<i class="fa fa-fw fa-info-circle"></i>Use this tools below to select a room.
@@ -99,9 +108,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'onclick' => '
 									event.preventDefault();
 									$(".roomQueryResult").html("<div class=\"alert alert-warning\"><i class=\"fa fa-fw fa-exclamation-circle\"></i>Search room first in left panel</div>");'
-							]);
-						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), [
-								'class' => 'btn btn-default'
 							]);
 						echo '</div>';
 						echo '</div>';

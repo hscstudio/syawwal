@@ -2,11 +2,12 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
+use kartik\grid\GridView;
 use kartik\widgets\Select2;
-use backend\models\ActivityRoom;
 use kartik\widgets\DepDrop;
+use backend\models\ActivityRoom;
+use backend\models\TrainingClass;
 
 $this->title = 'Training';
 $this->params['breadcrumbs'][] = $this->title;
@@ -73,8 +74,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'label' => 'Class',
 					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Class', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'contentOptions'=>[
+						'class'=>'kv-sticky-column',
+					],
+					'editableOptions'=>[
+						'header'=>'Class',
+						'size'=>'md',
+						'formOptions'=>['action'=>\yii\helpers\Url::to('editable')],
+					],
 				],
             
 				[
@@ -96,9 +103,32 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'label' => 'Room',
+					'label' => 'Manage Suite',
 					'value' => function ($data)
 					{
+						$fOut = '';
+
+						// Class management
+						$classCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
+
+						if ($classCount != 0) {
+							$fOut .= '<div class="col-md-12">
+										<a class="label label-primary" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+										'.$classCount.' | Manage Class <i class="fa fa-fw fa-play"></i>
+										</a>
+									</div>';
+						}
+						else {
+							$fOut .= '<div class="col-md-12">
+										<a class="label label-default" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+										'.$classCount.' | Add Class <i class="fa fa-fw fa-play"></i>
+										</a>
+									</div>';
+						}
+
+						// Class end
+
+						// Room management
 						$roomCount = ActivityRoom::find()->where(['type' => 0, 'activity_id' => $data->id])->count();
 
 						$roomWaitingCount = ActivityRoom::find()->where([
@@ -122,8 +152,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 											'status' => 3
 										])->count();
 
-						$fOut = '';
-						
 						/* 
 						$fOut = '<div class="col-md-3">
 									<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting...">
@@ -160,6 +188,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 										</a>
 									</div>';
 						}
+						// room management end
 
 						return $fOut;
 					}

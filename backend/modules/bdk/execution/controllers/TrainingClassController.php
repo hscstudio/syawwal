@@ -3,11 +3,13 @@
 namespace backend\modules\bdk\execution\controllers;
 
 use Yii;
+use backend\models\Training;
 use backend\models\TrainingClass;
 use backend\models\TrainingClassSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TrainingClassController implements the CRUD actions for TrainingClass model.
@@ -33,101 +35,187 @@ class TrainingClassController extends Controller
 
 
 
-    public function actionIndex()
+    public function actionIndex($trainingId)
     {
         $searchModel = new TrainingClassSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		
+		$queryParams['TrainingClassSearch']=[
+			'tb_training_id'=>$trainingId,
+		];
+
+		$queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+
+		// Klo classcount di training ada isinya
+		if (Training::findOne($trainingId)->classCount != null or Training::findOne($trainingId)->classCount != 0) {
+			// Ambil jumlah kelas yg ada
+			$classCount = TrainingClass::find()->where([
+				'tb_training_id' => $trainingId
+			])->count();
+		}
+		else {
+			// Klo ga ada, artinya ga boleh nampilin auto generate class, kita kasih nilai -1
+			$classCount = -1;
+		}
+
+		$currentTraining = Training::findOne($trainingId);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'currentTraining' => $currentTraining,
+            'classCount' => $classCount
         ]);
     }
 
-    /**
-     * Displays a single TrainingClass model.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+    public function actionAuto($trainingId) {
+    	// Cek ada classCount ga
+    	$cc = Training::find()->where(['id' => $trainingId])->one()->classCount;
+    	if ($cc == 0) {
+    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Class count should not empty!');
+    		return $this->redirect(['index', 'trainingId' => $trainingId]);
+    	}
+
+    	// Mbikin class berdasarkan classcount
+    	$sukses = 0;
+    	for ($i = 1; $i <= $cc; $i++) {
+    		$model = new TrainingClass;
+    		$model->tb_training_id = $trainingId;
+    		$model->class = $this->generateClass($i);
+    		$model->status = 1;
+    		$model->save();
+    		$sukses += 1;
+    	}
+
+    	Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> '.$sukses.' classes added!');
+    	return $this->redirect(['index', 'trainingId' => $trainingId]);
+    }
+
+
+
+
+    private function generateClass($noUrut) {
+    	// Cek, $noUrut diatas 26
+    	if ($noUrut > 26) {
+    		
+    		// Ngambil hasil bagi dibulatkan ketas
+    		$nilaiBagi = round($noUrut / 26, 0, PHP_ROUND_HALF_DOWN);
+
+    		// Ngambil hasil sisa pembagian
+    		$nilaiSisa = $noUrut % 26;
+
+    		// Yok bikin nama kelas
+    		// Jadi klo noUrutnya lebih dari 26, dia bakal ngulang dari abjad awal, kyk AA, AAA dst
+    		$out = '';
+    		for ($i = 0; $i < $nilaiBagi; $i++) {
+    			$out .= chr(65);
+    		}
+    		$out .= chr($nilaiSisa + 64);
+    		return $out;
+    	}
+    	else {
+    		return chr($noUrut + 64);
+    	}
+    }
+
+
+
+
+
     public function actionView($id)
     {
+    	$model = $this->findModel($id);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'trainingId' => $model->tb_training_id
         ]);
     }
 
-    /**
-     * Creates a new TrainingClass model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+    
+
+
+
     public function actionCreate()
     {
         $model = new TrainingClass();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Class added!');
 			}
 			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Unable to add class');
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            return $this->redirect(['index', 'trainingId' => $model->tb_training_id]);
+        } 
+        else {
+        	if (Yii::$app->request->isAjax)
+			{
+	            return $this->renderAjax('create', [
+	                'model' => $model,
+	                'trainingId' => Training::findOne(Yii::$app->request->get('trainingId'))->id
+	            ]);
+			}
+			else
+			{
+	            return $this->render('create', [
+	                'model' => $model,
+	                'trainingId' => Training::findOne(Yii::$app->request->get('trainingId'))->id
+	            ]);
+			}
         }
     }
 
-    /**
-     * Updates an existing TrainingClass model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $currentFiles=[];
         
         if ($model->load(Yii::$app->request->post())) {
-            $files=[];
 			
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
-				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', 'id' => $model->id]);
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Data saved');
+                return $this->redirect(['index', 'trainingId' => $model->tb_training_id]);
             } else {
-                // error in saving model
-				Yii::$app->session->setFlash('error', 'There are some errors');
+                Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Failed to save changes!');
+				return $this->redirect(['index', 'trainingId' => $model->tb_training_id]);
             }            
         }
-		else{
-			//return $this->render(['update', 'id' => $model->id]);
-			return $this->render('update', [
-                'model' => $model,
-            ]);
+		else {
+			if (Yii::$app->request->isAjax)
+			{
+	            return $this->renderAjax('update', [
+	                'model' => $model,
+	                'trainingId' => $model->tb_training_id
+	            ]);
+			}
+			else
+			{
+	            return $this->render('update', [
+	                'model' => $model,
+	                'trainingId' => $model->tb_training_id
+	            ]);
+			}
 		}
     }
 
-    /**
-     * Deletes an existing TrainingClass model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
+
+
     public function actionDelete($id)
     {
+    	$trainingId = TrainingClass::findOne($id)->tb_training_id;
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'trainingId' => $trainingId]);
     }
 
     /**
