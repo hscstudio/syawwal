@@ -4,6 +4,8 @@ namespace backend\modules\bdk\general\controllers;
 
 use Yii;
 use backend\models\Training;
+use backend\models\Room;
+use backend\models\RoomSearch;
 use backend\models\ActivityRoom;
 use backend\models\ActivityRoomSearch;
 use yii\web\Controller;
@@ -32,9 +34,43 @@ class ActivityRoomController extends Controller
     }
 
     
-    public function actionIndex()
+    public function actionIndex($roomId = 'all')
     {
-    	return $this->render('index');
+    	// roomId null ga boleh
+    	if (Yii::$app->request->get('roomId') === null) {
+    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Room id must be set!');
+    		return $this->redirect('list');
+    	}
+
+    	if ($roomId != 'all') {
+    		$roomSectionTitle = Room::findOne($roomId)->name;
+    	}
+    	else {
+    		$roomSectionTitle = 'All Room';
+    	}
+    	return $this->render('index', [
+    		'roomId' => $roomId,
+    		'roomSectionTitle' => $roomSectionTitle
+    		]);
+    }
+
+
+
+    public function actionList()
+    {
+    	$searchModel = new RoomSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		
+		$queryParams['RoomSearch']=[
+				'ref_satker_id' => Yii::$app->user->identity->employee->ref_satker_id,
+				'status' => 1,
+			];
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        
+        return $this->render('list', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
 
@@ -43,11 +79,26 @@ class ActivityRoomController extends Controller
 	{
 		$start = Yii::$app->request->get('start');
 		$end = Yii::$app->request->get('end');
+
+		// Klo roomId ga ada
+		if (Yii::$app->request->get('roomId') != 'all') {
+			// Ambil room id aja
+			$model= ActivityRoom::find()
+					->where('startTime >= :start and finishTime <= :end and tb_room_id = :romId',[
+						':start' => $start,
+						':end' => $end,
+						':romId' => Yii::$app->request->get('roomId'),
+					])
+					->all();
+		}
+		else {
+			// Ambil semua
+			$model= ActivityRoom::find()
+					->where('startTime >= :start and finishTime <= :end',[':start' => $start,':end' => $end])
+					->all();
+		}
         
 		$items = array();
-		$model= ActivityRoom::find()
-				->where('startTime >= :start and finishTime <= :end',[':start' => $start,':end' => $end])
-				->all();
 
 		foreach ($model as $value) {
 			
@@ -75,7 +126,7 @@ class ActivityRoomController extends Controller
 				'title'=> Training::find()->where(['id' => $value->activity_id])->one()->name.' | '
 							.Heart::twodate($value->startTime,$value->finishTime,1).' | ',
 				'start'=> date('Y-m-d H:i:s',strtotime($value->startTime)),
-				'end'=> date('Y-m-d H:i:s', strtotime('+1 day', strtotime($value->finishTime))),
+				'end'=> date('Y-m-d H:i:s', strtotime($value->finishTime)),
 				'color'=> $color,
 				'url' => Url::to(['view', 'id' => $value->id])
 			];
@@ -110,12 +161,12 @@ class ActivityRoomController extends Controller
 		    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> You have rejected a room request!');
 		    		break;
     		}
-    		return $this->redirect('index');
+    		return $this->redirect(['index', 'roomId' => $activityRoom->tb_room_id]);
     	}
     	else
     	{
     		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Failed to commit change!');
-    		return $this->redirect('index');
+    		return $this->redirect(['index', 'roomId' => $activityRoom->tb_room_id]);
     	}
     }
 

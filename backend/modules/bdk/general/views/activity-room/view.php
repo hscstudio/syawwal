@@ -100,7 +100,7 @@ $modifiedBy = Employee::findOne($modelActivityRoom->createdBy)->name;
 			'heading'=>'<i class="fa fa-fw fa-globe"></i> ',
 			'type'=>DetailView::TYPE_DEFAULT,
 		],
-		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back',['index'],
+		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back',['index', 'roomId' => $modelActivityRoom->tb_room_id],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]),
