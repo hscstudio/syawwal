@@ -79,7 +79,7 @@ class Meeting extends \yii\db\ActiveRecord
             [['startTime', 'finishTime', 'created', 'modified', 'deleted'], 'safe'],
             [['name', 'note', 'location'], 'string', 'max' => 255],
 			[['executor'], 'string', 'max' => 50],
-			['finishTime','compare','compareAttribute'=>'startTime','operator'=>'>','message'=>'{attribute} must be greater than {compareValue}.'],
+			//['finishTime','compare','compareAttribute'=>'startTime','operator'=>'>','message'=>'{attribute} must be greater than {compareValue}.'],
 			//\hscstudio\heart\helpers\DateTimeCompareValidator::className()
         ];
     }

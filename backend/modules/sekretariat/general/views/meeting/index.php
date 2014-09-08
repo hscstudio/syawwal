@@ -5,16 +5,16 @@ use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use kartik\widgets\Select2;
 
-/* @var $searchModel backend\models\RoomSearch */
+/* @var $searchModel backend\models\MeetingSearch */
 
-$this->title = 'Rooms';
+$this->title = 'Meetings';
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="room-index">
+<div class="meeting-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 	<?php \yii\widgets\Pjax::begin([
@@ -25,74 +25,84 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-			[
-				'attribute' => 'code',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],            
-			[
-				'attribute' => 'name',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
+
+				[
+					//'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'name',
+					'format'=>'raw',
+					'vAlign'=>'middle',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data){
+						return Html::tag('span', $data->name, ['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
+					},
+				],
             
-			[
-				//'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'capacity',
+				[
+				'attribute' => 'startTime',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'100px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Capacity', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-			],
-		
-			[
-				//'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'computer',
+				'value' => function ($data) {
+					return date('d M y H:i:s',strtotime($data->startTime));
+				}
+				],
+				[
+					'attribute' => 'finishTime',
+					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'width'=>'100px',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data) {
+						return date('d M y H:i:s',strtotime($data->finishTime));
+					}
+				],
+            
+				[
+				'attribute' => 'attendanceCount',
+				'label' => 'Peserta',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'100px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Computer', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-			],
-		
-			[
-				//'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'hostel',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'100px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
-			[
+
+				],
+				[
+					'attribute' => 'classCount',
+					'label'=>'Class',
+					'vAlign'=>'middle',
+					'hAlign'=>'center',
+					'width'=>'100px',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+				],
+				[
 				'format' => 'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'label' => 'Waiting',
-				'width'=>'80px',
+				'label' => 'Room',
+				'width'=>'100px',
 				'value' => function ($data) {
-					$countWaiting = \backend\models\ActivityRoom::find()
-								->where(['tb_room_id' => $data->id,'status' => 1])
-								->count();
-					if($data->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
-						return Html::a($countWaiting, ['activity-room/index','tb_room_id'=>$data->id], ['class' => 'label label-warning','data-pjax'=>0]).
-							' '.
-							Html::a('<span class="fa fa-calendar"></span>',['activity-room/calendar','tb_room_id'=>$data->id],['data-pjax'=>"0",]);
-					}
+					$activityRoom = \backend\models\ActivityRoom::find()
+								->where('activity_id=:activity_id',
+								[
+									':activity_id' => $data->id
+								]);		
+					if($activityRoom->count()==0){ 
+						return '<span class="label label-warning">Waiting</span>';
+					}		
 					else{
-						return '-';
+						return Html::a('<span class="label label-primary">'.$activityRoom->count().'</span>',['room','activity_id'=>$data->id,],['class'=>'modal-heart','data-pjax'=>0,'source'=>'','title'=>'Room : '.$data->name]);
 					}
 				}
 			],
 			
-            [
+			[
 				'class' => 'kartik\grid\ActionColumn',
-				'template'=> '{view} {update} {delete}',
 				'buttons' => [
 					'view' => function ($url, $model) {
 						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
@@ -104,67 +114,62 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						]);
 					},
 					'update' => function ($url, $model) {
-								$icon='<span class="glyphicon glyphicon-pencil"></span>';
-								if($model->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
-									return Html::a($icon,$url,['data-pjax'=>"0",]);
-								}
+								$activityRoom = \backend\models\ActivityRoom::find()
+											->where('activity_id=:activity_id',
+											[
+												':activity_id' => $model->id
+											]);		
+								if($activityRoom->count()==0){ 
+									$icon='<span class="glyphicon glyphicon-pencil"></span>';
+									return Html::a($icon,$url,[
+										'data-pjax'=>"0",
+									]);
+								}		
 								else{
-									return '';
-								}								
+									return "";
+								}
+								
 							},
 					'delete' => function ($url, $model) {
-								$icon='<span class="glyphicon glyphicon-trash"></span>';
-								if($model->ref_satker_id==Yii::$app->user->identity->employee->ref_satker_id){
+								$activityRoom = \backend\models\ActivityRoom::find()
+											->where('activity_id=:activity_id',
+											[
+												':activity_id' => $model->id
+											]);		
+								if($activityRoom->count()==0){ 
+									$icon='<span class="glyphicon glyphicon-trash"></span>';
 									return Html::a($icon,$url,[
 										'title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post",
 										'data-pjax'=>"0",
 									]);
-								}
+								}		
 								else{
-									return '';
-								}	
-								
+									return "";
+								}								
 							},
 				],			
 			],
+
+           // ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Room</h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Meeting</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Room', ['create'], ['class' => 'btn btn-success']).
-				'<div class="pull-right" style="margin-right:5px;">'.
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Meeting', ['create'], ['class' => 'btn btn-success']).
+			'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'status', 
-					'data' => ['1'=>'Published','0'=>'Unpublished','all'=>'-- All --'],
+					'data' => ['all'=>'All','0'=>'Drafted','1'=>'Published'],
 					'value' => $status,
 					'options' => [
 						'placeholder' => 'Status ...', 
-						'class'=>'form-control input-medium', 
+						'class'=>'form-control', 
 						'onchange'=>'
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['index']).'?ref_satker_id='.$ref_satker_id.'&status="+$(this).val(), 
+								url: "'.\yii\helpers\Url::to(['index']).'?status="+$(this).val(), 
 								container: "#pjax-gridview", 
-								timeout: 1,
-							});
-						',	
-					],
-				]).
-				'</div>'.
-				'<div class="pull-right" style="margin-right:5px;">'.
-				Select2::widget([
-					'name' => 'ref_satker_id', 
-					'data' => $satkers,
-					'value' => $ref_satker_id,
-					'options' => [
-						'width'=> 'resolve',
-						'placeholder' => 'Satker ...', 
-						'class'=>'form-control ', 
-						'onchange'=>'
-							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['index']).'?status='.$status.'&ref_satker_id="+$(this).val(), 
-								container: "#pjax-gridview", 
-								timeout: 1,
+								timeout: 1000,
 							});
 						',	
 					],
@@ -176,13 +181,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
-	
-	<?= \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']); ?>
-	<?php 
+    <?php 
 	$this->registerCss('.select2-container { width: 200px !important; }');
 	?>
-	<?php \yii\widgets\Pjax::end(); ?>
-	
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);
