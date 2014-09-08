@@ -3,10 +3,12 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
+use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\ActivityRoomSearch */
 
-$this->title = 'Activity Rooms';
+$this->title = 'Activity Rooms : '.$room->name;
+$this->params['breadcrumbs'][] = ['label'=>'Room','url'=>['room3/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -16,96 +18,131 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="activity-room-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+	<?php \yii\widgets\Pjax::begin([
+		'id'=>'pjax-gridview',
+	]); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
-
-            // 'id',
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'type',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'activity_id',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Activity_id', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            /*
-				[
-					'attribute' => 'tb_room_id',
-					'value' => function ($data) {
-						return $data->room->name;
+            ['class' => 'kartik\grid\SerialColumn'],            		
+			[
+				'attribute' => 'activity_id',
+				'format'=>'html',
+				'label'=>'Activity',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value'=>  function ($data){
+					$show='';
+					if($data->type==0){
+						$model = \backend\models\Training::findOne($data->activity_id);
+						$show = $model->name;
 					}
-				],
-				*/
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'startTime',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'StartTime', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'finishTime',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'FinishTime', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'note',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Note', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'status',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Status', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
+					else if($data->type==1){
+						$model = \backend\models\Meeting::findOne($data->activity_id);
+						$show = $model->name;
+						
+					}
+					if($model->ref_satker_id!=Yii::$app->user->identity->employee->ref_satker_id){
+						$show.='<br><span class="label label-default">'.$model->satker->name.'</span>';
+					}
+					return $show;					
+				}				
+			],		
+			[
+				'attribute' => 'startTime',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'175px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){	
+					return date('d-M-Y H:i:s',strtotime($data->startTime));
+				}
+			],
+		
+			[
+				'attribute' => 'finishTime',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'175px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){	
+					return date('d-M-Y H:i:s',strtotime($data->finishTime));
+				}
+			],
+		
+			[
+				'format' => 'raw',
+				'attribute' => 'status',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'80px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){									
+					if ($data->status==1){
+						$label='label label-info';
+						$title='Process';
+					}	
+					else if ($data->status==2){ 
+						$label='label label-success';
+						$title='Approved';
+					}
+					else if ($data->status==3){ 
+						$label='label label-danger';
+						$title='Rejected';
+					}
+					else {
+						$label='label label-warning';
+						$title='Waiting';
+					}
+					return Html::tag('span', $title, ['class'=>$label,'title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
+				}
+			],
 
-            ['class' => 'kartik\grid\ActionColumn'],
+            [
+				'class' => 'kartik\grid\ActionColumn',
+				'template'=>'{view} {update}',
+			],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Activity Room</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Activity Room', ['create'], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+			'before'=>
+				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Room', ['room3/index'], ['class' => 'btn btn-warning']).' '.
+				//Html::a('<i class="fa fa-fw fa-plus"></i> Create Activity Room', ['create'], ['class' => 'btn btn-success']).
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'status', 
+					'data' => ['all'=>'-- All --','0'=>'Waiting','1'=>'Process','2'=>'Approved','3'=>'Rejected'],
+					'value' => $status,
+					'options' => [
+						'placeholder' => 'Status ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['index']).'?tb_room_id='.$tb_room_id.'&status="+$(this).val(), 
+								container: "#pjax-gridview", 
+								timeout: 1000,
+							});
+						',	
+					],
+				]).
+				'</div>',
+			'after'=>
+			Html::a('<i class="fa fa-fw fa-calendar"></i> Calendar', ['calendar','tb_room_id'=>$tb_room_id], ['class' => 'btn btn-warning','data-pjax'=>0]).' '.
+			Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_room_id'=>$tb_room_id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,
 		'hover'=>true,
     ]); ?>
+	<?php \yii\widgets\Pjax::end(); ?>
+	<?php 
+	$this->registerCss('.select2-container { width: 200px !important; }');
+	?>
 	<?php 	
 	echo Html::beginTag('div', ['class'=>'row']);
 		echo Html::beginTag('div', ['class'=>'col-md-2']);
@@ -136,21 +173,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			echo Html::endTag('div');
 		echo Html::endTag('div');
 		
-		echo Html::beginTag('div', ['class'=>'col-md-8']);
-			$form = \yii\bootstrap\ActiveForm::begin([
-				'options'=>['enctype'=>'multipart/form-data'],
-				'action'=>['import'],
-			]);
-			echo \kartik\widgets\FileInput::widget([
-				'name' => 'importFile', 
-				//'options' => ['multiple' => true], 
-				'pluginOptions' => [
-					'previewFileType' => 'any',
-					'uploadLabel'=>"Import Excel",
-				]
-			]);
-			\yii\bootstrap\ActiveForm::end();
-		echo Html::endTag('div');
+
 		
 	echo Html::endTag('div');
 	?>

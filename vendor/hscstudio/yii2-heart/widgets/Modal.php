@@ -50,7 +50,7 @@ class Modal extends Widget
     public function init()
     {
         parent::init();		
-		echo Html::beginTag('div', ['class'=>'modal fade','id'=>$this->modalId]);
+		echo Html::beginTag('div', ['class'=>'modal fade','id'=>$this->modalId,'role'=>"dialog"]);
 		echo Html::beginTag('div', ['class'=>'modal-dialog '.$this->modalSize]);
 		echo Html::beginTag('div', ['class'=>'modal-content']);
 			echo Html::beginTag('div', ['class'=>'modal-header']);
@@ -66,8 +66,7 @@ class Modal extends Widget
 				echo Html::endTag('h4');
 			echo Html::endTag('div');
 			echo Html::beginTag('div', ['class'=>'modal-body']);
-				echo Html::beginTag('div', ['class'=>'content','style'=>'overflow:auto']);
-		
+				echo Html::beginTag('div', ['class'=>'content','style'=>'overflow:auto;']);		
 				echo Html::endTag('div');
 			echo Html::endTag('div');
 			/* modal-footer tak hapus. Kayaknya ga pernah kepake. Biar tampilan modalnya bagus, ga ada garis bawah pengganggu

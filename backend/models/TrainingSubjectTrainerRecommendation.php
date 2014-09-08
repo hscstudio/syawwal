@@ -107,7 +107,8 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ProgramSubject::className(), ['id' => 'tb_program_subject_id']);
     }
-	    /**
+	
+	/**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainer()
@@ -122,4 +123,9 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
    { 
        return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type_id']); 
    } 
+   
+	public function getTraining()
+    {
+        return $this->hasOne(Training::className(), ['id' => 'tb_training_id']);
+    }
 }

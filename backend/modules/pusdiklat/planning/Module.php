@@ -14,7 +14,7 @@ class Module extends \yii\base\Module
 	public function getMenuItems(){
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			['icon'=>'fa fa-fw fa-code-fork', 'label' => 'Program', 'url' => ['#'], 'items'=>[
+			['icon'=>'fa fa-fw fa-code-fork', 'label' => 'Program [75%]', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-list','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program/index'],'path'=>[
 					'program/','program-subject/','program-document/','program-history/','program-subject-document/','program-subject-history/'
 				]],
@@ -22,7 +22,7 @@ class Module extends \yii\base\Module
 				['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training Unit Plan', 'url' => ['/'.$this->uniqueId.'/training-unit-plan/index'],'path'=>[
 					'training-unit-plan/']],
 			]],
-			['icon'=>'fa fa-fw fa-university', 'label' => 'Kurikulum', 'url' => ['#'], 'items'=>[
+			['icon'=>'fa fa-fw fa-university', 'label' => 'Kurikulum [75%]', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-list','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program2/index'],'path'=>[
 					'program2/','program-subject2/','program-document2/','program-history2/','program-subject-document2/','program-subject-history2/'
 				]],
@@ -30,7 +30,7 @@ class Module extends \yii\base\Module
 					'training2/','training-history2/',
 				]],
 			]],
-			['icon'=>'fa fa-fw fa-users', 'label' => 'Tenaga Pengajar', 'url' => ['#'], 'items'=>[
+			['icon'=>'fa fa-fw fa-users', 'label' => 'Tenaga Pengajar [75%]', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-list','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program3/index'],'path'=>[
 					'program3/','program-subject3/','program-document3/','program-history3/','program-subject-document3/','program-subject-history3/'
 				]],

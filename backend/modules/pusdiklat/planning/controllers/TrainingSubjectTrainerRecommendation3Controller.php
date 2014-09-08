@@ -41,12 +41,14 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 		if($status!='all'){
 			$queryParams['TrainingSubjectTrainerRecommendationSearch']=[
 				'tb_program_subject_id'=>$tb_program_subject_id,
+				'tb_training_id'=>$tb_training_id,
 				'status'=>$status,
 			];
 		}
 		else{
 			$queryParams['TrainingSubjectTrainerRecommendationSearch']=[
-				'tb_program_subject_id'=>$tb_program_subject_id,					
+				'tb_program_subject_id'=>$tb_program_subject_id,	
+				'tb_training_id'=>$tb_training_id,				
 			];
 		}
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
@@ -80,7 +82,7 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
             'model' => $model,
 			'tb_program_id' => $tb_program_id,
 			'tb_program_subject_id' => $tb_program_subject_id,
-			'program_name' => $model->programSubject->program->name,
+			'training_name' => $model->training->name,
 			'program_subject_name' => $model->programSubject->name,
         ]);
     }
@@ -149,6 +151,7 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
             } else {
                 // error in saving model
 				Yii::$app->session->setFlash('error', 'There are some errors');
+				return $this->redirect(['view', 'id' => $id]);
             }            
         }
 		else{

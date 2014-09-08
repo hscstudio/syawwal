@@ -16,9 +16,9 @@ AppAsset::register($this);
     <meta charset="<?= Yii::$app->charset ?>"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
+    <title>SIMBPPK</title>
     <?php $this->head() ?>
-    <link rel="shortcut icon" href="<?php echo Yii::getAlias('@web');?>/favicon.ico"/>
+    <link rel="shortcut icon" href="<?php echo Yii::getAlias('@web');?>/bppk.jpg"/>
 </head>
 <body>
     <?php $this->beginBody() ?>
@@ -36,9 +36,9 @@ AppAsset::register($this);
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
             } 
 			else {
-				$menuItemsLeft[] = ['icon'=>'fa fa-home fa-fw','label' => 'Home', 'url' => ['/site/index']];
-				$menuItemsLeft[] = ['icon'=>'fa fa-user fa-fw','label' => 'Biodata', 'url' => ['/eregistrasi/default/index']];
-				$menuItemsLeft[] = ['icon'=>'fa fa-database fa-fw','label' => 'Diklat', 'url' => ['/training-student/default/index']];
+				//$menuItemsLeft[] = ['icon'=>'fa fa-home fa-fw','label' => 'Home', 'url' => ['/site/index']];
+				$menuItemsLeft[] = ['icon'=>'fa fa-book fa-fw','label' => 'Eregistrasi', 'url' => ['/eregistrasi-student/default/index']];
+				//$menuItemsLeft[] = ['icon'=>'fa fa-database fa-fw','label' => 'Diklat', 'url' => ['/eregistrasi/training/default/index']];
 				
 			echo Nav::widget([
                     'options' => ['class' => 'navbar-nav'],
@@ -64,10 +64,6 @@ AppAsset::register($this);
             NavBar::end();
         ?>
         <div class="container-fluid">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
         <?= $content ?>
         </div>
     </div>

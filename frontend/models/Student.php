@@ -66,6 +66,8 @@ class Student extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+	public $data_diklat;
+	
     public static function tableName()
     {
         return 'tb_student';

@@ -31,9 +31,12 @@ use yii\helpers\ArrayHelper;
 	<div class="col-md-6">
 	<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'hours')->textInput(['maxlength' => 3]) ?>
+    <?= $form->field($model, 'hours')->textInput(['maxlength' => 5]) ?>
 
-    <?= $form->field($model, 'sort')->textInput(['maxlength' => 3, 'value'=>'0']) ?>
+	<?php 
+	if($model->isNewRecord) $sort = 0; else $sort=$model->sort;
+	?>
+    <?= $form->field($model, 'sort')->textInput(['maxlength' => 3, 'value'=>$sort]) ?>
 	</div>
 	<div class="col-md-6">
 	<?php

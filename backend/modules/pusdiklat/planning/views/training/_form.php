@@ -66,7 +66,22 @@ use yii\helpers\ArrayHelper;
 				</div>
 			</div>
 			
-			<?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
+			<?php
+			if(empty($model->location))
+				$model->location = (int)Yii::$app->user->identity->employee->ref_satker_id;
+				
+			$data = ArrayHelper::map(\backend\models\Satker::find()
+				->where('status=1')
+				->asArray()
+				->all(), 'id', 'name');
+			echo $form->field($model, 'location')->widget(Select2::classname(), [
+				'data' => array_merge($data,['-1'=>'Other']),
+				'options' => ['placeholder' => 'Choose location ...'],
+				'pluginOptions' => [
+					'allowClear' => true
+				],
+			]); 
+			?>
 			
 			<?php if(!$model->isNewRecord){ ?>
 				<?= $form->field($model, 'number', [

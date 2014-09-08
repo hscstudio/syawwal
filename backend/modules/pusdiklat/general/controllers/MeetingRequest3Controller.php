@@ -4,6 +4,7 @@ namespace backend\modules\pusdiklat\general\controllers;
 
 use Yii;
 use backend\models\Meeting;
+use backend\models\ActivityRoom;
 use backend\models\MeetingSearch;
 use backend\models\RoomSearch;
 use yii\web\Controller;
@@ -15,8 +16,7 @@ use yii\filters\VerbFilter;
  */
 class MeetingRequest3Controller extends Controller
 {
-		public $layout = '@hscstudio/heart/views/layouts/column2';
-	 
+	public $layout = '@hscstudio/heart/views/layouts/column2';	 
  	
 	public function behaviors()
     {
@@ -25,6 +25,8 @@ class MeetingRequest3Controller extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
+					'set' => ['post'],
+					'unset' => ['post'],
                 ],
             ],
         ];
@@ -138,6 +140,8 @@ class MeetingRequest3Controller extends Controller
      * @param integer $id
      * @return mixed
      */
+	 
+	/* GENERAL CANNOT DELETE, ONLY EDIT 
     public function actionDelete($id)
     {
         $model=$this->findModel($id);
@@ -150,6 +154,7 @@ class MeetingRequest3Controller extends Controller
 		$model->delete();
         return $this->redirect(['index']);
     }
+	*/
 
     /**
      * Finds the Meeting model based on its primary key value.
@@ -492,8 +497,11 @@ class MeetingRequest3Controller extends Controller
      */
     public function actionRoom($activity_id, $ref_satker_id=0)
     {
+		$activity=$this->findModel($activity_id);
+		
         $searchModel = new RoomSearch();
-		if($ref_satker_id===0) $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		if($ref_satker_id===0) $ref_satker_id = (int)$activity->location;
+		if($ref_satker_id<0) $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
 		if($ref_satker_id=='all'){
 			$queryParams['RoomSearch']=[
 				'status'=>1,
@@ -516,14 +524,74 @@ class MeetingRequest3Controller extends Controller
 			//->active()
 			->asArray()
 			->all(), 'id', 'name');
-		$activity=$this->findModel($activity_id);
-        return $this->render('room', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-			'activity_id'=>$activity_id,
-			'activity'=>$activity,
-			'ref_satker_id'=>$ref_satker_id,
-			'satkers'=>$satkers,
-        ]);
+		
+		if (Yii::$app->request->isAjax){
+			return $this->renderAjax('room', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'activity_id'=>$activity_id,
+				'activity'=>$activity,
+				'ref_satker_id'=>$ref_satker_id,
+				'satkers'=>$satkers,
+			]);
+		}
+		else{
+			return $this->render('room', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'activity_id'=>$activity_id,
+				'activity'=>$activity,
+				'ref_satker_id'=>$ref_satker_id,
+				'satkers'=>$satkers,
+			]);
+		}
+    }
+	
+	/**
+     * Creates a new Meeting model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionSet($activity_id,$tb_room_id,$status=1)
+    {
+        $model = new ActivityRoom();
+		$model->type = 1;
+		$meeting = \backend\models\Meeting::findOne($activity_id);
+		$model->activity_id = (int)$activity_id;
+		$model->tb_room_id = (int)$tb_room_id;
+		$model->startTime = $meeting->startTime;
+		$model->finishTime = $meeting->finishTime;
+		$model->status = $status;
+		
+        if($model->save()) {
+			Yii::$app->session->setFlash('success', 'Data saved');
+		}
+		else{
+			 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+		}
+		if (Yii::$app->request->isAjax){	
+			return ('Room have set');
+		}
+		else{
+			return $this->redirect(['room', 'activity_id' => $activity_id]);
+		}
+    }
+	
+	 public function actionUnset($activity_id,$tb_room_id)
+    {
+        $model = ActivityRoom::find()->where(
+			'activity_id=:activity_id AND tb_room_id=:tb_room_id',[':activity_id'=>$activity_id,':tb_room_id'=>$tb_room_id])->one();
+		if($model->delete()) {
+			Yii::$app->session->setFlash('success', 'Data saved');
+		}
+		else{
+			 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+		}
+		if (Yii::$app->request->isAjax){	
+			return ('Room have unset');
+		}
+		else{
+			return $this->redirect(['room', 'activity_id' => $activity_id]);
+		}
     }
 }

@@ -40,8 +40,6 @@ use yii\helpers\ArrayHelper;
         <?= Html::submitButton(
 			$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
 			['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-
-	
     <?php ActiveForm::end(); ?>
 	</div>
 </div>

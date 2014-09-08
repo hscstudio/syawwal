@@ -99,7 +99,8 @@ class Training extends \yii\db\ActiveRecord
             [['tb_program_id', 'tb_program_revision', 'ref_satker_id', 'studentCount', 'classCount', 'costPlan', 'costRealisation', 'hostel', 'reguler', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'approvedStatus', 'approvedStatusBy'], 'integer'],
             [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
 			[['number'], 'string', 'max' => 30],
-            [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255]
+            [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255],
+			['finish',\hscstudio\heart\helpers\DateTimeCompareValidator::className(),'compareAttribute'=>'start','operator'=>'>','message'=>'{attribute} must be greater than {compareValue}.'],
         ];
     }
 

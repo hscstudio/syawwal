@@ -14,22 +14,19 @@ class Module extends \yii\base\Module
 	public function getMenuItems(){
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
-			['icon'=>'fa fa-fw fa-link', 'label' => 'Keuangan', 'url' => ['#'], 'items'=>[
+			['icon'=>'fa fa-fw fa-link', 'label' => 'Keuangan [0%]', 'url' => ['#'], 'items'=>[
 			]],
-			['icon'=>'fa fa-fw fa-link', 'label' => 'Kepegawaian', 'url' => ['#'], 'items'=>[
-				['icon'=>'fa fa-fw fa-stack-overflow', 'label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'],'path'=>[
-				'training/',
-				]],
+			['icon'=>'fa fa-fw fa-link', 'label' => 'Kepegawaian [0%]', 'url' => ['#'], 'items'=>[
 			]],
-			['icon'=>'fa fa-fw fa-link', 'label' => 'Aset', 'url' => ['#'], 'items'=>[
+			['icon'=>'fa fa-fw fa-link', 'label' => 'Aset [75%]', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-stack-overflow', 'label' => 'Meeting', 'url' => ['/'.$this->uniqueId.'/meeting3/index'],'path'=>[
 					'meeting3/',
 				]],
 				['icon'=>'fa fa-fw fa-stack-overflow', 'label' => 'Meeting Request', 'url' => ['/'.$this->uniqueId.'/meeting-request3/index'],'path'=>[
 					'meeting-request3/',
 				]],
-				['icon'=>'fa fa-fw fa-stack-overflow', 'label' => 'Room', 'url' => ['/'.$this->uniqueId.'/room/index'],'path'=>[
-					'room/',
+				['icon'=>'fa fa-fw fa-stack-overflow', 'label' => 'Room', 'url' => ['/'.$this->uniqueId.'/room3/index'],'path'=>[
+					'room3/',
 				]],
 			]],
 			/*

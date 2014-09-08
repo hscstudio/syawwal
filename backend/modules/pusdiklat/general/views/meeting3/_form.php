@@ -23,7 +23,9 @@ use yii\helpers\ArrayHelper;
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		//'type' => ActiveForm::TYPE_HORIZONTAL,
-		'options'=>['enctype'=>'multipart/form-data']
+		'options'=>[
+			'enctype'=>'multipart/form-data'
+		]
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 	<div class="row">
@@ -63,7 +65,30 @@ use yii\helpers\ArrayHelper;
 					]
 				]) ?>  
 
-    <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
+    <?php
+	
+	$data = ArrayHelper::map(\backend\models\Satker::find()
+		//->select(['id','name'])
+		->where('status=1')
+		->asArray()
+		->all(), 'id', 'name');
+	echo $form->field($model, 'location')->widget(Select2::classname(), [
+		'data' => array_merge($data,['-1'=>'Other']),
+		'options' => ['placeholder' => 'Choose satker ...'],
+		'pluginOptions' => [
+		'allowClear' => true
+		],
+	]); 
+	if($model->isNewRecord){
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		$initScript = '
+		$("#meeting-location").select2().select2("val", '.$ref_satker_id.');
+		$("label").attr("style","display:block;");
+		//$("#room-owner").bootstrapSwitch("state", true, true);		
+		';
+		$this->registerJS($initScript);
+	}	
+	?>
 	</div>
 	</div>
 	

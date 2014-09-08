@@ -95,17 +95,20 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'width'=>'75px',
 				'label' => 'Trainer',
 				'value' => function ($data) use ($tb_training_id) {
-					$countSubjectDoc = \backend\models\ProgramSubjectDocument::find()
-								->where(['tb_program_subject_id' => $data->id,])
-								->active()
+					$countSubjectTrainer = \backend\models\TrainingSubjectTrainerRecommendation::find()
+								->where([
+									'tb_program_subject_id' => $data->id,
+									'tb_training_id' => $tb_training_id,
+									'status'=>1,
+								])
 								->count();
-					if($countSubjectDoc>0){
-						return Html::a($countSubjectDoc, 
+					if($countSubjectTrainer>0){
+						return Html::a($countSubjectTrainer, 
 							['training-subject-trainer-recommendation3/index','tb_training_id'=>$tb_training_id,'tb_program_subject_id'=>$data->id], 
 							['class' => 'label label-primary','data-pjax' => '0']);
 					}
 					else{
-						return Html::a('+', ['training-subject-trainer-recommendation3/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'label label-primary','data-pjax' => '0']);
+						return Html::a('+', ['training-subject-trainer-recommendation3/index','tb_training_id'=>$tb_training_id,'tb_program_subject_id'=>$data->id], ['class' => 'label label-primary','data-pjax' => '0']);
 					}
 				}
 			],
