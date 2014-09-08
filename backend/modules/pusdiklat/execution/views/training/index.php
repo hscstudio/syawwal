@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use backend\models\ActivityRoom;
+use kartik\widgets\Select2;
 
 /* @var $searchModel backend\models\TrainingSearch */
 
@@ -78,20 +79,32 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
 			[
+				'format' => 'raw',
 				'class' => 'kartik\grid\DataColumn',
 				'attribute' => 'classCount',
 				'label'=> 'Class',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'width'=>'60px',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data)
+				{
+					$classCount = \backend\models\TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
+					if($data->status==2){						
+						return Html::a($data->classCount, ['/'.$this->context->module->uniqueId.'/training-class/index','tb_training_id'=>$data->id], ['title'=>$classCount,'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+					}
+					else{
+						return $data->classCount;
+					}
+				}
 			],
 			[
 				'format' => 'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
+				'width'=>'60px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'label' => 'Room',
@@ -103,7 +116,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							return Html::a('SET', ['room','activity_id'=>$data->id], ['class' => 'label label-warning','data-pjax'=>0]);
 						}		
 						else{
-							return Html::a($roomCount, ['room','activity_id'=>$data->id], ['class' => 'label label-primary','data-pjax'=>0]);
+							$rooms = ActivityRoom::find()->select(['status','total'=>'count(id)'])->where(['type' => 0, 'activity_id' => $data->id])->groupBy('status')->asArray()->all();
+							$title="";
+							$statuss=['WAITING','PROCESS','APPROVED','REJECTED'];
+							foreach($rooms as $room){
+								$title .= $statuss[$room['status']]." (".$room['total'].") ,";
+							}
+							return Html::a($roomCount, ['room','activity_id'=>$data->id], ['title'=>$title,'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
 						}
 					}
 					else{
@@ -116,7 +135,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'status',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'80px',
+				'width'=>'60px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) use ($year){					
@@ -159,7 +178,42 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		'panel' => [
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
-			'before'=>'-',
+			'before'=>'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'year', 
+					'data' => $year_training,
+					'value' => $year,
+					'options' => [
+						'placeholder' => 'Year ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['index']).'?status='.$status.'&year="+$(this).val(), 
+								container: "#pjax-gridview", 
+								timeout: 1,
+							});
+						',	
+					],
+				]).
+				'</div>'.
+				'<div class="pull-right" style="margin-right:5px;">'.
+				Select2::widget([
+					'name' => 'status', 
+					'data' => ['all'=>'All','0'=>'Plan','1'=>'Ready','2'=>'Execute','3'=>'Cancel'],
+					'value' => $status,
+					'options' => [
+						'placeholder' => 'Status ...', 
+						'class'=>'form-control', 
+						'onchange'=>'
+							$.pjax.reload({
+								url: "'.\yii\helpers\Url::to(['index']).'?year='.$year.'&status="+$(this).val(), 
+								container: "#pjax-gridview", 
+								timeout: 1000,
+							});
+						',	
+					],
+				]).
+				'</div>',
 			'after'=>'
 				<div class="row">
 				<div class="col-md-8">

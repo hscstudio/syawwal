@@ -3,22 +3,20 @@
 namespace backend\models;
 
 use Yii;
-														
+												
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
 /**
- * This is the model class for table "tb_training_subject_trainer_recommendation".
+ * This is the model class for table "tb_training_class_subject_trainer".
  *
 
  * @property integer $id
- * @property integer $tb_training_id
- * @property integer $tb_program_subject_id
+ * @property integer $tb_training_class_subject_id
  * @property integer $tb_trainer_id
- * @property integer $type
- * @property string $note
- * @property integer $sort
+ * @property integer $ref_trainer_type
+ * @property integer $cost
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
@@ -27,17 +25,20 @@ use yii\behaviors\BlameableBehavior;
  * @property string $deleted
  * @property integer $deletedBy
  *
- * @property ProgramSubject $tbProgramSubject
+ * @property TrainingClassSubject $tbTrainingClassSubject
  * @property Trainer $tbTrainer
+ * @property TrainerType $refTrainerType
+ * @property TrainingClassSubjectTrainerAttendance[] $trainingClassSubjectTrainerAttendances
+ * @property TrainingClassSubjectTrainerEvaluation[] $trainingClassSubjectTrainerEvaluations
  */
-class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
+class TrainingClassSubjectTrainer extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'tb_training_subject_trainer_recommendation';
+        return 'tb_training_class_subject_trainer';
     }
 	
     /**
@@ -71,10 +72,9 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_id', 'tb_program_subject_id', 'tb_trainer_id'], 'required'],
-            [['tb_training_id', 'tb_program_subject_id', 'tb_trainer_id', 'ref_trainer_type_id', 'sort', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['created', 'modified', 'deleted'], 'safe'],
-            [['note'], 'string', 'max' => 255]
+            [['tb_training_class_subject_id', 'tb_trainer_id', 'ref_trainer_type', 'cost'], 'required'],
+            [['tb_training_class_subject_id', 'tb_trainer_id', 'ref_trainer_type', 'cost', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['created', 'modified', 'deleted'], 'safe']
         ];
     }
 
@@ -85,12 +85,10 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tb_training_id' => 'Tb Training ID',
-            'tb_program_subject_id' => 'Tb Program Subject ID',
+            'tb_training_class_subject_id' => 'Tb Training Class Subject ID',
             'tb_trainer_id' => 'Tb Trainer ID',
-            'ref_trainer_type_id' => 'Subject Type',
-            'note' => 'Note',
-            'sort' => 'Sort',
+            'ref_trainer_type' => 'Ref Trainer Type',
+            'cost' => 'Cost',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
@@ -103,29 +101,36 @@ class TrainingSubjectTrainerRecommendation extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProgramSubject()
+    public function getTrainingClassSubject()
     {
-        return $this->hasOne(ProgramSubject::className(), ['id' => 'tb_program_subject_id']);
+        return $this->hasOne(TrainingClassSubject::className(), ['id' => 'tb_training_class_subject_id']);
     }
-	
-	/**
+	    /**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainer()
     {
         return $this->hasOne(Trainer::className(), ['id' => 'tb_trainer_id']);
     }
-	
-	/** 
-    * @return \yii\db\ActiveQuery 
-    */ 
-   public function getTrainerType() 
-   { 
-       return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type_id']); 
-   } 
-   
-	public function getTraining()
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainerType()
     {
-        return $this->hasOne(Training::className(), ['id' => 'tb_training_id']);
+        return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type']);
+    }
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingClassSubjectTrainerAttendances()
+    {
+        return $this->hasMany(TrainingClassSubjectTrainerAttendance::className(), ['tb_training_class_subject_trainer_id' => 'id']);
+    }
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingClassSubjectTrainerEvaluations()
+    {
+        return $this->hasMany(TrainingClassSubjectTrainerEvaluation::className(), ['tb_training_class_subject_trainer_id' => 'id']);
     }
 }

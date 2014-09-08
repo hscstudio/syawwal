@@ -6,20 +6,20 @@ use kartik\widgets\Select2;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\ProgramSubject */
+/* @var $model backend\models\TrainingClassSubject */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="program-subject-form">
+<div class="training-class-subject-form">
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index','tb_program_id'=>$tb_program_id],
+		<?= Html::a('<i class="fa fa-arrow-left"></i>',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
 						]) ?>
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
-		ProgramSubject	</div>
+		TrainingClassSubject	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
@@ -27,35 +27,29 @@ use yii\helpers\ArrayHelper;
 	]); ?>
 	<?= $form->errorSummary($model) ?>
 	
-	<div class="row">
-	<div class="col-md-6">
-	<?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
+    <?= '' ?>
 
-    <?= $form->field($model, 'hours')->textInput(['maxlength' => 5]) ?>
+			<?php
+			$data = ArrayHelper::map(\backend\models\TrainingClass::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'tb_training_class_id')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => ['placeholder' => 'Choose TrainingClass ...'],
+				'pluginOptions' => [
+				'allowClear' => true
+				],
+			]); ?>
 
-	<?php 
-	if($model->isNewRecord) $sort = 0; else $sort=$model->sort;
-	?>
-    <?= $form->field($model, 'sort')->textInput(['maxlength' => 3, 'value'=>$sort]) ?>
-	</div>
-	<div class="col-md-6">
-	<?php
-	$data = ArrayHelper::map(\backend\models\SubjectType::find()->select(['id','name'])->orderBy('id')->asArray()->all(), 'id', 'name');
-	echo $form->field($model, 'ref_subject_type_id')->widget(Select2::classname(), [
-		'data' => $data,
-		'options' => ['placeholder' => 'Choose Type ...'],
-		'pluginOptions' => [
-		'allowClear' => true
-		],
-	]);
-	?>
-	
-    <?= $form->field($model, 'test')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				]) ?>
+    <?= '' ?>
+
+			<?php
+			$data = ArrayHelper::map(\backend\models\ProgramSubject::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'tb_program_subject_id')->widget(Select2::classname(), [
+				'data' => $data,
+				'options' => ['placeholder' => 'Choose ProgramSubject ...'],
+				'pluginOptions' => [
+				'allowClear' => true
+				],
+			]); ?>
 
     <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
@@ -63,6 +57,18 @@ use yii\helpers\ArrayHelper;
 						'offText' => 'Off',
 					]
 				]) ?>
+
+    <?= ""//createdBy ?>
+
+    <?= ""//modifiedBy ?>
+
+    <?= ""//deletedBy ?>
+
+    <?= ""//created ?>
+
+    <?= ""//modified ?>
+
+    <?= ""//deleted ?>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

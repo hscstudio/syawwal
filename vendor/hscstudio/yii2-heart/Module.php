@@ -64,17 +64,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 						\kartik\datecontrol\Module::FORMAT_DATE => 'Y-m-d', // U if saves as unix timestamp
 						\kartik\datecontrol\Module::FORMAT_TIME => 'H:i:s',
 						\kartik\datecontrol\Module::FORMAT_DATETIME => 'Y-m-d H:i:s',
-					],			 
-					// automatically use kartik\widgets for each of the above formats
-					'autoWidget' => true,			 
-					// default settings for each widget from kartik\widgets used when autoWidget is true
-					'autoWidgetSettings' => [
-						\kartik\datecontrol\Module::FORMAT_DATE => [
-							'type'=>2, 'pluginOptions'=>['autoClose'=>true]
-						],
-						\kartik\datecontrol\Module::FORMAT_DATETIME => [], // setup if needed
-						\kartik\datecontrol\Module::FORMAT_TIME => [], // setup if needed
-					],
+					],					
 				]
 			]);
 		}
@@ -170,7 +160,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		$assets = $view->assetManager->publish('@hscstudio/heart/assets/heart');
 		$view->registerCssFile($assets[1].'/css/heart.css', ['yii\bootstrap\BootstrapAsset']);
 		$view->registerJsFile($assets[1].'/js/heart.js', ['yii\web\JqueryAsset']);
-		$view->registerJsFile($assets[1].'/js/bootstrap-growl.min.js', ['yii\web\JqueryAsset']);
+		//$view->registerJsFile($assets[1].'/js/bootstrap-growl.min.js', ['yii\web\JqueryAsset']);
 
 		\yii\base\Event::on('yii\web\Controller','beforeAction',function($event){
 			if($event->sender->uniqueId=='site'){

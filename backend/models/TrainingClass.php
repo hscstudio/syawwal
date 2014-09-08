@@ -3,38 +3,38 @@
 namespace backend\models;
 
 use Yii;
-												
+										
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
 
 /**
- * This is the model class for table "tb_activity_room".
+ * This is the model class for table "tb_training_class".
  *
 
  * @property integer $id
- * @property integer $type
- * @property integer $activity_id
- * @property integer $tb_room_id
- * @property string $startTime
- * @property string $finishTime
- * @property string $note
+ * @property integer $tb_training_id
+ * @property string $class
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
  * @property string $modified
  * @property integer $modifiedBy
+ * @property string $deleted
+ * @property integer $deletedBy
  *
- * @property Room $tbRoom
+ * @property Training $tbTraining
+ * @property TrainingClassSubject[] $trainingClassSubjects
+ * @property TrainingSchedule[] $trainingSchedules
  */
-class ActivityRoom extends \yii\db\ActiveRecord
+class TrainingClass extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'tb_activity_room';
+        return 'tb_training_class';
     }
 	
     /**
@@ -68,11 +68,10 @@ class ActivityRoom extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'activity_id', 'tb_room_id', 'startTime', 'finishTime', 'status'], 'required'],
-            [['type', 'activity_id', 'tb_room_id', 'status', 'createdBy', 'modifiedBy'], 'integer'],
-            [['startTime', 'finishTime', 'created', 'modified', 'note'], 'safe'],
-            [['note'], 'string', 'max' => 255],
-			['finishTime',\hscstudio\heart\helpers\DateTimeCompareValidator::className(),'compareAttribute'=>'startTime','operator'=>'>','message'=>'{attribute} must be greater than {compareValue}.'],
+            [['tb_training_id', 'class'], 'required'],
+            [['tb_training_id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['created', 'modified', 'deleted'], 'safe'],
+            [['class'], 'string', 'max' => 5]
         ];
     }
 
@@ -83,30 +82,36 @@ class ActivityRoom extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'type' => 'Type',
-            'activity_id' => 'Activity ID',
-            'tb_room_id' => 'Tb Room ID',
-            'startTime' => 'Start Time',
-            'finishTime' => 'Finish Time',
-            'note' => 'Note',
+            'tb_training_id' => 'Tb Training ID',
+            'class' => 'Class',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
             'modified' => 'Modified',
             'modifiedBy' => 'Modified By',
+            'deleted' => 'Deleted',
+            'deletedBy' => 'Deleted By',
         ];
     }
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRoom()
-    {
-        return $this->hasOne(Room::className(), ['id' => 'tb_room_id']);
-    }
-
-
     public function getTraining()
     {
-        return $this->hasOne(Training::classname(), ['id' => 'activity_id']);
+        return $this->hasOne(Training::className(), ['id' => 'tb_training_id']);
+    }
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingClassSubjects()
+    {
+        return $this->hasMany(TrainingClassSubject::className(), ['tb_training_class_id' => 'id']);
+    }
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingSchedules()
+    {
+        return $this->hasMany(TrainingSchedule::className(), ['tb_training_class_id' => 'id']);
     }
 }

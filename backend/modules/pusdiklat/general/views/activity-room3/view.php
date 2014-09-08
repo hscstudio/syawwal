@@ -102,21 +102,21 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'enableClientValidation' => true,
 			'beforeSubmit' => "function(form) {
 				if($(form).find('.has-error').length) {
-						return false;
+					return false;
 				}					
 				$.ajax({
-						url: form.attr('action'),
-						type: 'post',
-						data: form.serialize(),
-						success: function(data) {
-							$.pjax.reload({
-								url: '".\yii\helpers\Url::to(['calendar','tb_room_id'=>$tb_room_id])."', 
-								container: '#pjax-gridview', 
-								timeout: 3000,
-							});
-							$.growl(data, {	type: 'success'	});
-							$('#modal-heart').modal('hide');
-						}
+					url: form.attr('action'),
+					type: 'post',
+					data: form.serialize(),
+					success: function(data) {
+						$.pjax.reload({
+							url: '".\yii\helpers\Url::to(['calendar','tb_room_id'=>$tb_room_id])."', 
+							container: '#pjax-gridview', 
+							timeout: 3000,
+						});
+						$.growl(data, {	type: 'success'	});
+						$('#modal-heart').modal('hide');
+					}
 				});					
 				return false;
 			}",

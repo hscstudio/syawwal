@@ -100,7 +100,7 @@ class Training extends \yii\db\ActiveRecord
             [['start', 'finish', 'created', 'modified', 'deleted', 'approvedStatusDate'], 'safe'],
 			[['number'], 'string', 'max' => 30],
             [['name', 'note', 'executionSK', 'resultSK', 'sourceCost', 'stakeholder', 'location', 'approvedStatusNote'], 'string', 'max' => 255],
-			['finish','compare','compareAttribute'=>'start','operator'=>'>','message'=>'{attribute} must be greater than {compareValue}.'],
+			['finish',\hscstudio\heart\helpers\DateTimeCompareValidator::className(),'compareAttribute'=>'start','operator'=>'>','message'=>'{attribute} must be greater than {compareValue}.'],
         ];
     }
 

@@ -126,31 +126,24 @@ class ProgramSubject2Controller extends Controller
      */
     public function actionUpdate($id,$tb_program_id)
     {
-        $model = $this->findModel($id);
-        $currentFiles=[];
-        
-        if ($model->load(Yii::$app->request->post())) {
-            $files=[];
-			
+        $model = $this->findModel($id);        
+        if ($model->load(Yii::$app->request->post())) {			
             if($model->save()){
-				$idx=0;
-                foreach($files as $file){
-					if(isset($paths[$idx])){
-						$file->saveAs($paths[$idx]);
-					}
-					$idx++;
-				}
 				Yii::$app->session->setFlash('success', 'Data saved');
 				
 				// SAVE HISTORY OF PROGRAM SUBJECT
 				$model2 = \backend\models\ProgramSubjectHistory::find()
 								->where([
-									'tb_program_subject_id'=>$model->id,
+									'tb_program_subject_id'=>$id,
 									'tb_program_id'=>$tb_program_id,
+									'revision'=>\backend\models\ProgramHistory::getRevision($tb_program_id),	
 								])
-								->orderBy(['revision'=>'DESC'])
-								->one();
-				$model2->attributes = array_merge($model->attributes);				
+								->one();	
+				$model2->attributes = array_merge(
+				  $model->attributes,[							
+				  ]
+				);	
+				// die($tb_program_id);
 				$model2->save();
 				
                 return $this->redirect(['view', 'id' => $model->id, 'tb_program_id' => $tb_program_id]);

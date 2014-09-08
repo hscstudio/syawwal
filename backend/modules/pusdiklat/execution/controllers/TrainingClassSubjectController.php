@@ -1,18 +1,18 @@
 <?php
 
-namespace backend\modules\pusdiklat\planning\controllers;
+namespace backend\modules\pusdiklat\execution\controllers;
 
 use Yii;
-use backend\models\TrainingSubjectTrainerRecommendation;
-use backend\models\TrainingSubjectTrainerRecommendationSearch;
+use backend\models\TrainingClassSubject;
+use backend\models\TrainingClassSubjectSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TrainingSubjectTrainerRecommendation3Controller implements the CRUD actions for TrainingSubjectTrainerRecommendation model.
+ * TrainingClassSubjectController implements the CRUD actions for TrainingClassSubject model.
  */
-class TrainingSubjectTrainerRecommendation3Controller extends Controller
+class TrainingClassSubjectController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,102 +30,87 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
     }
 
     /**
-     * Lists all TrainingSubjectTrainerRecommendation models.
+     * Lists all TrainingClassSubject models.
      * @return mixed
      */
-    public function actionIndex($tb_training_id,$tb_program_subject_id,$status=1)
+    public function actionIndex($tb_training_class_id)
     {
-        
-		$searchModel = new TrainingSubjectTrainerRecommendationSearch();
-        $queryParams = Yii::$app->request->getQueryParams();			
-		if($status!='all'){
-			$queryParams['TrainingSubjectTrainerRecommendationSearch']=[
-				'tb_program_subject_id'=>$tb_program_subject_id,
-				'tb_training_id'=>$tb_training_id,
-				'status'=>$status,
-			];
-		}
-		else{
-			$queryParams['TrainingSubjectTrainerRecommendationSearch']=[
-				'tb_program_subject_id'=>$tb_program_subject_id,	
-				'tb_training_id'=>$tb_training_id,				
-			];
-		}
+        $searchModel = new TrainingClassSubjectSearch();
+		$queryParams['TrainingClassSubjectSearch']=[				
+			'tb_training_class_id'=>$tb_training_class_id,
+		];
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-		$dataProvider = $searchModel->search($queryParams);
-	
-        $model1 = \backend\models\Training::find($tb_training_id)->one();
-		$model2 = \backend\models\ProgramSubject::findOne($tb_program_subject_id);
-		
-		return $this->render('index', [
-			'searchModel' => $searchModel,
-			'dataProvider' => $dataProvider,
-			'tb_training_id' => $tb_training_id,
-			'tb_program_subject_id' => $tb_program_subject_id,
-			'status' => $status,
-			'training_name' => $model1->name,
-			'program_subject_name' => $model2->name,
-		]);
+		$dataProvider = $searchModel->search($queryParams); 
+		$trainingClass=\backend\models\TrainingClass::findOne($tb_training_class_id);
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+			'trainingClass' => $trainingClass, 
+        ]);
     }
 
     /**
-     * Displays a single TrainingSubjectTrainerRecommendation model.
+     * Displays a single TrainingClassSubject model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-		$model = $this->findModel($id);
-        $tb_program_id = $model->programSubject->tb_program_id;
-		$tb_program_subject_id = $model->tb_program_subject_id;
-		return $this->render('view', [
-            'model' => $model,
-			'tb_program_id' => $tb_program_id,
-			'tb_program_subject_id' => $tb_program_subject_id,
-			'training_name' => $model->training->name,
-			'program_subject_name' => $model->programSubject->name,
+        return $this->render('view', [
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new TrainingSubjectTrainerRecommendation model.
+     * Creates a new TrainingClassSubject model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($tb_training_id,$tb_program_subject_id)
+    public function actionCreate($tb_training_class_id)
     {
-        $model = new TrainingSubjectTrainerRecommendation();
-
-        if ($model->load(Yii::$app->request->post())){
-			$model->tb_training_id = (int) $tb_training_id;
-			$model->tb_program_subject_id = (int) $tb_program_subject_id;
-			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
-				 return $this->redirect(['view', 'id' => $model->id]);
+        $trainingClass=\backend\models\TrainingClass::findOne($tb_training_class_id);
+		$program = $trainingClass->training->tb_program_id;
+		$program_revision = $trainingClass->training->tb_program_revision;
+		$programSubjects=\backend\models\ProgramSubjectHistory::find()
+			->where(['tb_program_id'=>$program,'revision'=>$program_revision])
+			->all();
+		$created=0;
+		$failed=0;
+		foreach($programSubjects as $programSubject){
+			$subjectCount=TrainingClassSubject::find()
+				->where([
+					'tb_training_class_id' => $tb_training_class_id,
+					'tb_program_subject_id'=>$programSubject->tb_program_subject_id,
+				])->count();
+			if($subjectCount==0){
+				$model = new TrainingClassSubject();
+				$model->tb_training_class_id=$tb_training_class_id;
+				$model->tb_program_subject_id=$programSubject->tb_program_subject_id;
+				$model->status=1;
+				if($model->save()){
+					$created++;
+				}
+				else{
+					$failed++;
+				}
 			}
-			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
-				 return $this->redirect([
-					'index',
-					'tb_training_id' => $tb_training_id,
-					'tb_program_subject_id' => $tb_program_subject_id,
-				]);
-			}
-        } else {	
-			$model1 = \backend\models\Training::find($tb_training_id)->one();
-			$model2 = \backend\models\ProgramSubject::findOne($tb_program_subject_id);
-            return $this->render('create', [
-                'model' => $model,
-				'tb_training_id' => $tb_training_id,
-				'tb_program_subject_id' => $tb_program_subject_id,
-				'training_name' => $model1->name,
-				'program_subject_name' => $model2->name,
-            ]);
-        }
+		}
+		
+		if($failed>0){
+			Yii::$app->session->setFlash('warning', $created.' class subject created but '.$failed.' class failed');
+		}
+		else if($created==0){
+			Yii::$app->session->setFlash('warning', 'No class subject created');
+		}
+		else{
+			Yii::$app->session->setFlash('success', $created.' class subject created, awesome :)');
+		}
+		
+		return $this->redirect(['index', 'tb_training_class_id' => $tb_training_class_id]);
     }
 
     /**
-     * Updates an existing TrainingSubjectTrainerRecommendation model.
+     * Updates an existing TrainingClassSubject model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -151,7 +136,6 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
             } else {
                 // error in saving model
 				Yii::$app->session->setFlash('error', 'There are some errors');
-				return $this->redirect(['view', 'id' => $id]);
             }            
         }
 		else{
@@ -163,7 +147,7 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
     }
 
     /**
-     * Deletes an existing TrainingSubjectTrainerRecommendation model.
+     * Deletes an existing TrainingClassSubject model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -176,15 +160,15 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
     }
 
     /**
-     * Finds the TrainingSubjectTrainerRecommendation model based on its primary key value.
+     * Finds the TrainingClassSubject model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return TrainingSubjectTrainerRecommendation the loaded model
+     * @return TrainingClassSubject the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = TrainingSubjectTrainerRecommendation::findOne($id)) !== null) {
+        if (($model = TrainingClassSubject::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -192,15 +176,15 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new TrainingSubjectTrainerRecommendation; // your model can be loaded here
+		$model = new TrainingClassSubject; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['TrainingSubjectTrainerRecommendation'][$_POST['editableIndex']]);
-				$value=$_POST['TrainingSubjectTrainerRecommendation'][$_POST['editableIndex']][$name];
+				$name=key($_POST['TrainingClassSubject'][$_POST['editableIndex']]);
+				$value=$_POST['TrainingClassSubject'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -220,7 +204,7 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingSubjectTrainerRecommendation::find(),
+            'query' => TrainingClassSubject::find(),
         ]);
 		
 		try {
@@ -234,20 +218,20 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "TrainingSubjectTrainerRecommendation";
+			$OpenTBS->VarRef['modelName']= "TrainingClassSubject";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_training_id';			
+			$data1[]['col1'] = 'tb_training_class_id';			
 			$data1[]['col2'] = 'tb_program_subject_id';			
-			$data1[]['col3'] = 'tb_trainer_id';			
+			$data1[]['col3'] = 'status';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $trainingsubjecttrainerrecommendation){
+			foreach($dataProvider->getModels() as $trainingclasssubject){
 				$data2[] = [
-					'col0'=>$trainingsubjecttrainerrecommendation->id,
-					'col1'=>$trainingsubjecttrainerrecommendation->tb_training_id,
-					'col2'=>$trainingsubjecttrainerrecommendation->tb_program_subject_id,
-					'col3'=>$trainingsubjecttrainerrecommendation->tb_trainer_id,
+					'col0'=>$trainingclasssubject->id,
+					'col1'=>$trainingclasssubject->tb_training_class_id,
+					'col2'=>$trainingclasssubject->tb_program_subject_id,
+					'col3'=>$trainingclasssubject->status,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -266,7 +250,7 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingSubjectTrainerRecommendation::find(),
+            'query' => TrainingClassSubject::find(),
         ]);
 		
 		try {
@@ -281,13 +265,13 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingSubjectTrainerRecommendation');
+								->setCellValue('A1', 'Tabel TrainingClassSubject');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingsubjecttrainerrecommendation){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingsubjecttrainerrecommendation->id)
-													  ->setCellValue('B'.$idx, $trainingsubjecttrainerrecommendation->tb_training_id)
-													  ->setCellValue('C'.$idx, $trainingsubjecttrainerrecommendation->tb_program_subject_id)
-													  ->setCellValue('D'.$idx, $trainingsubjecttrainerrecommendation->tb_trainer_id);
+					foreach($dataProvider->getModels() as $trainingclasssubject){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclasssubject->id)
+													  ->setCellValue('B'.$idx, $trainingclasssubject->tb_training_class_id)
+													  ->setCellValue('C'.$idx, $trainingclasssubject->tb_program_subject_id)
+													  ->setCellValue('D'.$idx, $trainingclasssubject->status);
 						$idx++;
 					}		
 					
@@ -312,13 +296,13 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingSubjectTrainerRecommendation');
+								->setCellValue('A1', 'Tabel TrainingClassSubject');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingsubjecttrainerrecommendation){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingsubjecttrainerrecommendation->id)
-													  ->setCellValue('B'.$idx, $trainingsubjecttrainerrecommendation->tb_training_id)
-													  ->setCellValue('C'.$idx, $trainingsubjecttrainerrecommendation->tb_program_subject_id)
-													  ->setCellValue('D'.$idx, $trainingsubjecttrainerrecommendation->tb_trainer_id);
+					foreach($dataProvider->getModels() as $trainingclasssubject){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclasssubject->id)
+													  ->setCellValue('B'.$idx, $trainingclasssubject->tb_training_class_id)
+													  ->setCellValue('C'.$idx, $trainingclasssubject->tb_program_subject_id)
+													  ->setCellValue('D'.$idx, $trainingclasssubject->status);
 						$idx++;
 					}		
 									
@@ -360,13 +344,13 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel TrainingSubjectTrainerRecommendation');
+									->setCellValue('A1', 'Tabel TrainingClassSubject');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $trainingsubjecttrainerrecommendation){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingsubjecttrainerrecommendation->id)
-														  ->setCellValue('B'.$idx, $trainingsubjecttrainerrecommendation->tb_training_id)
-														  ->setCellValue('C'.$idx, $trainingsubjecttrainerrecommendation->tb_program_subject_id)
-														  ->setCellValue('D'.$idx, $trainingsubjecttrainerrecommendation->tb_trainer_id);
+						foreach($dataProvider->getModels() as $trainingclasssubject){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclasssubject->id)
+														  ->setCellValue('B'.$idx, $trainingclasssubject->tb_training_class_id)
+														  ->setCellValue('C'.$idx, $trainingclasssubject->tb_program_subject_id)
+														  ->setCellValue('D'.$idx, $trainingclasssubject->status);
 							$idx++;
 						}		
 						
@@ -410,7 +394,7 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingSubjectTrainerRecommendation::find(),
+            'query' => TrainingClassSubject::find(),
         ]);
 		
 		/* 
@@ -436,28 +420,20 @@ class TrainingSubjectTrainerRecommendation3Controller extends Controller
 						$read_status = true;
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
-						$tb_training_id=  $sheetData[$baseRow]['B'];
+						$tb_training_class_id=  $sheetData[$baseRow]['B'];
 						$tb_program_subject_id=  $sheetData[$baseRow]['C'];
-						$tb_trainer_id=  $sheetData[$baseRow]['D'];
-						$type=  $sheetData[$baseRow]['E'];
-						$note=  $sheetData[$baseRow]['F'];
-						$sort=  $sheetData[$baseRow]['G'];
-						$status=  $sheetData[$baseRow]['H'];
-						//$created=  $sheetData[$baseRow]['I'];
-						//$createdBy=  $sheetData[$baseRow]['J'];
-						//$modified=  $sheetData[$baseRow]['K'];
-						//$modifiedBy=  $sheetData[$baseRow]['L'];
-						//$deleted=  $sheetData[$baseRow]['M'];
-						//$deletedBy=  $sheetData[$baseRow]['N'];
+						$status=  $sheetData[$baseRow]['D'];
+						//$created=  $sheetData[$baseRow]['E'];
+						//$createdBy=  $sheetData[$baseRow]['F'];
+						//$modified=  $sheetData[$baseRow]['G'];
+						//$modifiedBy=  $sheetData[$baseRow]['H'];
+						//$deleted=  $sheetData[$baseRow]['I'];
+						//$deletedBy=  $sheetData[$baseRow]['J'];
 
-						$model2=new TrainingSubjectTrainerRecommendation;
+						$model2=new TrainingClassSubject;
 						//$model2->id=  $id;
-						$model2->tb_training_id=  $tb_training_id;
+						$model2->tb_training_class_id=  $tb_training_class_id;
 						$model2->tb_program_subject_id=  $tb_program_subject_id;
-						$model2->tb_trainer_id=  $tb_trainer_id;
-						$model2->type=  $type;
-						$model2->note=  $note;
-						$model2->sort=  $sort;
 						$model2->status=  $status;
 						//$model2->created=  $created;
 						//$model2->createdBy=  $createdBy;

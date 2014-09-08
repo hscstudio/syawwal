@@ -108,7 +108,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							['class' => 'label label-primary','data-pjax' => '0']);
 					}
 					else{
-						return Html::a('+', ['training-subject-trainer-recommendation3/index','tb_program_id'=>$data->tb_program_id,'tb_program_subject_id'=>$data->id], ['class' => 'label label-primary','data-pjax' => '0']);
+						return Html::a('+', ['training-subject-trainer-recommendation3/index','tb_training_id'=>$tb_training_id,'tb_program_subject_id'=>$data->id], ['class' => 'label label-primary','data-pjax' => '0']);
 					}
 				}
 			],
