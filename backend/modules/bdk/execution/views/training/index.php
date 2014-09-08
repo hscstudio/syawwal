@@ -67,33 +67,78 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'classCount',
 					'vAlign'=>'middle',
 					'hAlign' => 'center',
 					'label' => 'Class',
 					'width'=>'80px',
+					'format' => 'raw',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>[
 						'class'=>'kv-sticky-column',
 					],
-					'editableOptions'=>[
-						'header'=>'Class',
-						'size'=>'md',
-						'formOptions'=>['action'=>\yii\helpers\Url::to('editable')],
-					],
+					'value' => function ($data)
+					{
+						$fOut = '<div class="btn-group">';
+
+						$fOut .= '<a class="btn btn-default btn-xs" href="" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Rencana jumlah kelas">'.$data->classCount.'</a>';
+
+						$classCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
+
+						if ($classCount != 0) {
+							$fOut .= '<a class="btn btn-info btn-xs" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+										'.$classCount.'
+										</a>';
+						}
+						else {
+							$fOut .= '<a class="btn btn-info btn-xs" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+										<i class="fa fa-fw fa-plus-circle"></i>
+										</a>';
+						}
+						$fOut .= '</div>';
+
+						return $fOut;
+					}
 				],
             
 				[
 					'label' => 'Student',
-					'class' => 'kartik\grid\EditableColumn',
 					'attribute' => 'studentCount',
 					'vAlign'=>'middle',
+					'format' => 'raw',
 					'hAlign'=>'center',
 					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Student', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data)
+					{
+						$fOut = '<div class="btn-group">';
+
+						if ($data->studentCount == null) {
+							$fOut .= '<a class="btn btn-default btn-xs" href="" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Rencana jumlah peserta">0</a>';
+						}
+						else {
+							$fOut .= '<a class="btn btn-default btn-xs" href="" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Rencana jumlah peserta">'.$data->studentCount.'</a>';
+						}
+
+						// masih belum final, tar aja
+
+						$studentCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
+
+						if ($studentCount != 0) {
+							$fOut .= '<a class="btn btn-info btn-xs" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+										'.$studentCount.'
+										</a>';
+						}
+						else {
+							$fOut .= '<a class="btn btn-info btn-xs" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+										<i class="fa fa-fw fa-plus-circle"></i>
+										</a>';
+						}
+						$fOut .= '</div>';
+
+						return $fOut;
+					}
 				],
 
 				[
@@ -103,30 +148,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'width'=>'80px',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'label' => 'Manage Suite',
+					'label' => 'Room',
 					'value' => function ($data)
 					{
 						$fOut = '';
-
-						// Class management
-						$classCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
-
-						if ($classCount != 0) {
-							$fOut .= '<div class="col-md-12">
-										<a class="label label-primary" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
-										'.$classCount.' | Manage Class <i class="fa fa-fw fa-play"></i>
-										</a>
-									</div>';
-						}
-						else {
-							$fOut .= '<div class="col-md-12">
-										<a class="label label-default" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
-										'.$classCount.' | Add Class <i class="fa fa-fw fa-play"></i>
-										</a>
-									</div>';
-						}
-
-						// Class end
 
 						// Room management
 						$roomCount = ActivityRoom::find()->where(['type' => 0, 'activity_id' => $data->id])->count();
@@ -174,21 +199,19 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 									</div>
 								</div>';
 						*/
+
+						// room management end
+
+						$fOut .= '<div class="btn-group">';
+
 						if ($roomCount != 0) {
-							$fOut .= '<div class="col-md-12">
-										<a class="label label-primary" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
-										'.$roomCount.' | Manage Room <i class="fa fa-fw fa-play"></i>
-										</a>
-									</div>';
+							$fOut .= '<a class="label label-info" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Waiting ('.$roomWaitingCount.'), Approved ('.$roomApprovedCount.'), Rejected ('.$roomRejectedCount.')" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
 						}
 						else {
-							$fOut .= '<div class="col-md-12">
-										<a class="label label-default" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">
-										'.$roomCount.' | Add Room <i class="fa fa-fw fa-play"></i>
-										</a>
-									</div>';
+							$fOut .= '<a class="label label-default" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
 						}
-						// room management end
+
+						$fOut .= '</div>';
 
 						return $fOut;
 					}
