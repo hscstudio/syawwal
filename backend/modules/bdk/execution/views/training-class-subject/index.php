@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
+use backend\models\ProgramSubjectHistory;
+use backend\models\SubjectType;
 
 $this->title = 'Subject : Class '.$trainingClass->class;
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training/index'])];
@@ -27,14 +29,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data) {
 					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
-					$programSubjects=\backend\models\ProgramSubjectHistory::find()
+					$programSubjects = ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
-							'revision'=>$program_revision,'status'=>1
+							'tb_program_id' => $program,
+							'revision' => $program_revision,
+							'status' => 1
 						])
 						->one();
-					$subjectType=backend\models\SubjectType::find()
-						->where(['id'=>$programSubjects->ref_subject_type_id])
+					$subjectType = SubjectType::find()
+						->where(['id' => $programSubjects->ref_subject_type_id])
 						->one();
 					return $subjectType->name;
 				}
@@ -45,10 +48,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data) {
 					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
-					$programSubjects=\backend\models\ProgramSubjectHistory::find()
+					$programSubjects = ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
-							'revision'=>$program_revision,'status'=>1
+							'tb_program_id'=>$program,
+							'revision'=>$program_revision,
+							'status'=>1
 						])
 						->one();
 					return $programSubjects->name;
@@ -60,10 +64,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data) {
 					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
-					$programSubjects=\backend\models\ProgramSubjectHistory::find()
+					$programSubjects=ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
-							'revision'=>$program_revision,'status'=>1
+							'tb_program_id'=>$program,
+							'revision'=>$program_revision,
+							'status'=>1
 						])
 						->one();
 					return $programSubjects->hours;
@@ -75,10 +80,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data) {
 					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
-					$programSubjects=\backend\models\ProgramSubjectHistory::find()
+					$programSubjects=ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
-							'revision'=>$program_revision,'status'=>1
+							'tb_program_id'=>$program,
+							'revision'=>$program_revision,
+							'status'=>1
 						])
 						->one();
 					return ($programSubjects->test==1)?'Yes':'No';
@@ -90,10 +96,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data) {
 					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
-					$programSubjects=\backend\models\ProgramSubjectHistory::find()
+					$programSubjects=ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
-							'revision'=>$program_revision,'status'=>1
+							'tb_program_id'=>$program,
+							'revision'=>$program_revision,
+							'status'=>1
 						])
 						->one();
 					return $programSubjects->sort;

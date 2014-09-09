@@ -6,6 +6,8 @@ use Yii;
 use backend\models\Training;
 use backend\models\TrainingClass;
 use backend\models\TrainingClassSearch;
+use backend\models\TrainingClassSubject;
+use backend\models\ProgramSubjectHistory;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -79,15 +81,39 @@ class TrainingClassController extends Controller
     		return $this->redirect(['index', 'trainingId' => $trainingId]);
     	}
 
-    	// Mbikin class berdasarkan classcount
     	$sukses = 0;
     	for ($i = 1; $i <= $cc; $i++) {
-    		$model = new TrainingClass;
-    		$model->tb_training_id = $trainingId;
-    		$model->class = $this->generateClass($i);
-    		$model->status = 1;
-    		$model->save();
+    		// Mbikin class berdasarkan classcount
+    		$modelTrainingClass = new TrainingClass;
+    		$modelTrainingClass->tb_training_id = $trainingId;
+    		$modelTrainingClass->class = $this->generateClass($i);
+    		$modelTrainingClass->status = 1;
+    		$modelTrainingClass->save();
     		$sukses += 1;
+    		// dah
+
+    		// Impor subject dari program ke training
+	        $program = $modelTrainingClass->training->tb_program_id;
+	        $program_revision = $modelTrainingClass->training->tb_program_revision;
+	        $programSubjects = ProgramSubjectHistory::find()
+	            ->where(['tb_program_id' => $program,'revision' => $program_revision])
+	            ->all();
+	        foreach($programSubjects as $programSubject){
+	            $subjectCount = TrainingClassSubject::find()
+	                ->where([
+	                    'tb_training_class_id' => $modelTrainingClass->id,
+	                    'tb_program_subject_id'=>$programSubject->tb_program_subject_id,
+	                ])->count();
+	            if($subjectCount == 0){
+	                $modelTrainingClassSubject = new TrainingClassSubject;
+	                $modelTrainingClassSubject->tb_training_class_id = $modelTrainingClass->id;
+	                $modelTrainingClassSubject->tb_program_subject_id = $programSubject->tb_program_subject_id;
+	                $modelTrainingClassSubject->status = 1;
+	                $modelTrainingClassSubject->save();
+	            }
+	        }
+	        // dah
+
     	}
 
     	Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> '.$sukses.' classes added!');
