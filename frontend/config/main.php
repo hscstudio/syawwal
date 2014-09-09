@@ -9,7 +9,7 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log','heart'],
     'controllerNamespace' => 'frontend\controllers',
 	'modules' => [
         'eregistrasi-student' => [
@@ -39,19 +39,19 @@ return [
 			//'admins' => ['admin'],
 			'cost' => 13,	
 		],
-		/*'heart' => [
+		'heart' => [
             'class' => 'hscstudio\heart\Module',
             'features'=>[
 				'datecontrol'=>true,// use false for not use it
 				'gridview'=>true,// use false for not use it
-				'gii'=>true, // use false for not use it
+				//'gii'=>false, // use false for not use it
 				'privilege'=>[
 					'allowActions' => [
 						/* DEFAULT */
-						/*'debug/*',
+						'debug/*',
 						'site/*',
-						'gii/*',
-						'user/*',
+						//'gii/*',
+						//'user/*',
 						'privilege/*',
 						'gridview/*',	// add or remove allowed actions to this list
 						'file/*',
@@ -62,7 +62,7 @@ return [
 					]
 				],
 				'user'=>true,
-            ]],	*/	
+            ]],		
     ],
 	
     'components' => [
@@ -86,6 +86,10 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+		'urlManager' => [
+			'enablePrettyUrl' => true,
+			'showScriptName' => false,
+		],
     ],
     'params' => $params,
 ];

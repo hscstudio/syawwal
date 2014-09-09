@@ -106,13 +106,13 @@ $StaUnit2 = \backend\models\StaUnit::find()->select('id,name')->where(['id' =>$m
             //'createdBy',
 			[
 				'attribute' => 'createdBy',
-				'value' => \backend\models\User::findOne($model->createdBy)->username,
+				'value' => $model->createdBy,
 			],
             'modified',
             //'modifiedBy',
 			[
 				'attribute' => 'modifiedBy',
-				'value' => \backend\models\User::findOne($model->modifiedBy)->username,
+				'value' => $model->modifiedBy,
 			],
             'deleted',
             'deletedBy',
