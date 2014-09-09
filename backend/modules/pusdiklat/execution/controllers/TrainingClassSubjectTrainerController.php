@@ -67,21 +67,35 @@ class TrainingClassSubjectTrainerController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($tb_training_class_subject_id)
     {
         $model = new TrainingClassSubjectTrainer();
-
+		$trainingClassSubject=\backend\models\TrainingClassSubject::findOne($tb_training_class_subject_id);
         if ($model->load(Yii::$app->request->post())){
+			//die($model->tb_trainer_id);
+			$model->tb_training_class_subject_id =$tb_training_class_subject_id;
+			$recommendation = \backend\models\TrainingSubjectTrainerRecommendation::findOne($model->tb_trainer_id);
+			$model->tb_trainer_id = $recommendation->tb_trainer_id;
+			$model->ref_trainer_type_id = $recommendation->ref_trainer_type_id;
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
 			}
 			else{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+				 return $this->render('create', [
+					'model' => $model,
+					'trainingClassSubject' => $trainingClassSubject,
+				]);
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect([
+				'view', 
+				'id' => $model->id,
+				'trainingClassSubject' => $trainingClassSubject,
+			]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+				'trainingClassSubject' => $trainingClassSubject,
             ]);
         }
     }

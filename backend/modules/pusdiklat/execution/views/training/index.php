@@ -92,8 +92,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data)
 				{
 					$classCount = \backend\models\TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
-					if($data->status==2){						
-						return Html::a($data->classCount, ['/'.$this->context->module->uniqueId.'/training-class/index','tb_training_id'=>$data->id], ['title'=>$classCount,'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+					if($data->status==2){	
+						if($classCount>$data->classCount){
+							return Html::a($data->classCount, ['/'.$this->context->module->uniqueId.'/training-class/create','tb_training_id'=>$data->id], ['title'=>$classCount,'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+						}
+						else{
+							return Html::a($data->classCount, ['/'.$this->context->module->uniqueId.'/training-class/index','tb_training_id'=>$data->id], ['title'=>$classCount,'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+						}
 					}
 					else{
 						return $data->classCount;

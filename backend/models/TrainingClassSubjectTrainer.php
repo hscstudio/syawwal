@@ -15,7 +15,7 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $id
  * @property integer $tb_training_class_subject_id
  * @property integer $tb_trainer_id
- * @property integer $ref_trainer_type
+ * @property integer $ref_trainer_type_id
  * @property integer $cost
  * @property integer $status
  * @property string $created
@@ -72,8 +72,8 @@ class TrainingClassSubjectTrainer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_class_subject_id', 'tb_trainer_id', 'ref_trainer_type', 'cost'], 'required'],
-            [['tb_training_class_subject_id', 'tb_trainer_id', 'ref_trainer_type', 'cost', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_training_class_subject_id', 'tb_trainer_id', 'ref_trainer_type_id', 'cost'], 'required'],
+            [['tb_training_class_subject_id', 'tb_trainer_id', 'ref_trainer_type_id', 'cost', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['created', 'modified', 'deleted'], 'safe']
         ];
     }
@@ -87,7 +87,7 @@ class TrainingClassSubjectTrainer extends \yii\db\ActiveRecord
             'id' => 'ID',
             'tb_training_class_subject_id' => 'Tb Training Class Subject ID',
             'tb_trainer_id' => 'Tb Trainer ID',
-            'ref_trainer_type' => 'Ref Trainer Type',
+            'ref_trainer_type_id' => 'Ref Trainer Type',
             'cost' => 'Cost',
             'status' => 'Status',
             'created' => 'Created',
@@ -117,7 +117,7 @@ class TrainingClassSubjectTrainer extends \yii\db\ActiveRecord
      */
     public function getTrainerType()
     {
-        return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type']);
+        return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type_id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery
