@@ -42,12 +42,28 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'value' => function ($data)
 				{
 					$classSubjectCount = \backend\models\TrainingClassSubject::find()->where(['tb_training_class_id' => $data->id])->count();
-					return Html::a($classSubjectCount, 
-						['/'.$this->context->module->uniqueId.'/training-class-subject/index',
-						'tb_training_class_id'=>$data->id], 
-						['title'=>$classSubjectCount,
-						'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",
-						'data-placement'=>"top"]);
+					$SubjectCount = \backend\models\ProgramSubjectHistory::find()->where([
+						'tb_program_id' => $data->training->tb_program_id,
+						'revision'=> $data->training->tb_program_revision,
+						'status'=>1,
+					])->count();
+					
+					if($SubjectCount>$classSubjectCount){
+						return Html::a($classSubjectCount, 
+							['/'.$this->context->module->uniqueId.'/training-class-subject/create',
+							'tb_training_class_id'=>$data->id], 
+							['title'=>$classSubjectCount,
+							'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",
+							'data-placement'=>"top"]);
+					}
+					else{
+						return Html::a($classSubjectCount, 
+							['/'.$this->context->module->uniqueId.'/training-class-subject/index',
+							'tb_training_class_id'=>$data->id], 
+							['title'=>$classSubjectCount,
+							'class' => 'label label-default','data-pjax'=>0,'data-toggle'=>"tooltip",
+							'data-placement'=>"top"]);
+					}
 				}
 			],
 			[
@@ -59,14 +75,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model){
-					$studentCount = \backend\models\TrainingClassStudent::find()
-						->where([
-							'tb_training_class_id'=>$model->id,
-							'status'=>1
-						])->count();
-					return Html::a($studentCount,
-						\yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class-student/index']),
-						[]);
+					return Html::a('SET',
+						\yii\helpers\Url::to(['schedule','tb_training_class_id'=>$model->id]),
+						['class'=>'label label-default']);
 				}
 			],
 			[

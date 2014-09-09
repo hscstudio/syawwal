@@ -16,7 +16,7 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $tb_training_id
  * @property integer $tb_program_subject_id
  * @property integer $tb_trainer_id
- * @property integer $type
+ * @property integer $ref_trainer_type_id
  * @property string $note
  * @property integer $sort
  * @property integer $status
