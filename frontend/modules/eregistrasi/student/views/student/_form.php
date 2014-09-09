@@ -13,13 +13,11 @@ use yii\helpers\ArrayHelper;
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		<?= Html::a('<i class="fa fa-arrow-left"></i> BACK',['index'],
-						['class'=>'btn btn-xs btn-primary',
-						 'title'=>'Back to Index',
-						]) ?>
+		<i class="fa fa-fw fa-globe"></i> 
+		Student
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
-		Student	</div>
+		Please Fill This Form Correctly !</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_VERTICAL,
@@ -45,7 +43,7 @@ use yii\helpers\ArrayHelper;
   <?= $form->field($model, 'nip')->textInput(['maxlength' => 18]) ?>
   </div>
   <div class="col-md-4">
-  <?= $form->field($model, 'password_hash')->textInput(['maxlength' => 60]) ?>
+  <?= $form->field($model, 'password')->textInput(['maxlength' => 60,'placeholder'=>'Biarkan Kosong Jika Tidak Ingin Di Ubah...']) ?>
   </div>
 </div>	
 <div class="row">
@@ -110,6 +108,14 @@ use yii\helpers\ArrayHelper;
   </div>
 </div>
 <div class="row">
+  <div class="col-md-6">
+  <?= $form->field($model, 'satker')->dropDownList([ 2 => '2', 3 => '3', 4 => '4', ], ['prompt' => '']) ?>
+  </div>
+  <div class="col-md-6">
+  <?= $form->field($model, 'blood')->textInput(['maxlength' => 10]) ?>
+  </div>
+</div>
+<div class="row">
   <div class="col-md-4">
   <?= '' ?>
 
@@ -134,8 +140,6 @@ use yii\helpers\ArrayHelper;
   </div>
 </div>	
 <div class="row">
-  <div class="col-md-8">
-  	<div class="row">
       <div class="col-md-4">
       <?= $form->field($model, 'gender')->widget(\kartik\widgets\SwitchInput::classname(), [
                         'pluginOptions' => [
@@ -161,11 +165,6 @@ use yii\helpers\ArrayHelper;
                     ]) ?>
     
       </div>
-    </div>  
-  </div>
-  <div class="col-md-4">
-  <?= $form->field($model, 'blood')->textInput(['maxlength' => 10]) ?>
-  </div>
 </div>
 <div class="row">
   <div class="col-md-4">
@@ -218,6 +217,9 @@ use yii\helpers\ArrayHelper;
   <?= $form->field($model, 'photo')->widget(\kartik\widgets\FileInput::classname(), [
 					'pluginOptions' => [
 						'previewFileType' => 'any',
+						'initialPreview'=>[							
+							Html::img(\yii\helpers\Url::to(['/file/download','file'=>'student/'.$model->id.'/'.$model->photo]), ['class'=>'file-preview-image', 'alt'=>$model->photo, 'title'=>$model->photo]),
+							],
 						'showUpload' => false,
 						]
 					]); ?>
@@ -225,9 +227,7 @@ use yii\helpers\ArrayHelper;
   <div class="col-md-6">
   <?= $form->field($model, 'officeFax')->textInput(['maxlength' => 50]) ?>
   </div>
-</div>
-    
-    <?= $form->field($model, 'satker')->dropDownList([ 2 => '2', 3 => '3', 4 => '4', ], ['prompt' => '']) ?>
+</div>   
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

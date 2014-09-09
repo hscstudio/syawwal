@@ -67,6 +67,7 @@ class Student extends \yii\db\ActiveRecord
      * @inheritdoc
      */
 	public $data_diklat;
+	public $password;
 	
     public static function tableName()
     {
@@ -105,8 +106,8 @@ class Student extends \yii\db\ActiveRecord
     {
         return [
             [['ref_religion_id', 'ref_graduate_id', 'ref_rank_class_id', 'ref_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['name', 'password_hash', 'auth_key'], 'required'],
-            [['birthDay', 'tmtSKPangkat', 'created', 'modified', 'deleted'], 'safe'],
+            [['name', 'password_hash'], 'required'],
+            [['birthDay', 'tmtSKPangkat','password', 'created', 'modified', 'deleted'], 'safe'],
             [['satker'], 'string'],
             [['name', 'nickName', 'born', 'phone', 'officePhone', 'officeFax'], 'string', 'max' => 50],
             [['frontTitle', 'backTitle'], 'string', 'max' => 20],
@@ -126,19 +127,19 @@ class Student extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'ref_religion_id' => 'Ref Religion ID',
-            'ref_graduate_id' => 'Ref Graduate ID',
-            'ref_rank_class_id' => 'Ref Rank Class ID',
-            'ref_unit_id' => 'Ref Unit ID',
-            'name' => 'Name',
+            'ref_religion_id' => 'Agama',
+            'ref_graduate_id' => 'Pendidikan',
+            'ref_rank_class_id' => 'Pangkat / Golongan',
+            'ref_unit_id' => 'Nama Unit',
+            'name' => 'Nama Pegawai',
             'nickName' => 'Nick Name',
             'frontTitle' => 'Front Title',
             'backTitle' => 'Back Title',
             'nip' => 'Nip',
             'password_hash' => 'Password Hash',
             'auth_key' => 'Auth Key',
-            'born' => 'Born',
-            'birthDay' => 'Birth Day',
+            'born' => 'Tempat Lahir',
+            'birthDay' => 'Tanggal Lahir',
             'gender' => 'Gender',
             'phone' => 'Phone',
             'email' => 'Email',
@@ -146,8 +147,8 @@ class Student extends \yii\db\ActiveRecord
             'married' => 'Married',
             'photo' => 'Photo',
             'blood' => 'Blood',
-            'position' => 'Position',
-            'education' => 'Education',
+            'position' => 'Jabatan',
+            'education' => 'Nama Sekolah / Universitas',
             'eselon2' => 'Eselon2',
             'eselon3' => 'Eselon3',
             'eselon4' => 'Eselon4',

@@ -7,7 +7,7 @@ use yii\bootstrap\Dropdown;
 /* @var $searchModel frontend\models\TrainingClassStudentSearch */
 
 $this->title = 'Training Class Students';
-$this->params['breadcrumbs'][] = ['label'=>'Student','url'=>['student/index']];
+//$this->params['breadcrumbs'][] = ['label'=>'Student','url'=>['training-class-student/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;

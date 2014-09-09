@@ -1,8 +1,6 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-$this->title = 'Login';
-//$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row" style="margin-top:15px;">
     <div class="col-md-4 col-md-offset-4">

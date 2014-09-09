@@ -34,13 +34,15 @@ class StudentController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new StudentSearch();
+        /*$searchModel = new StudentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
+        ]);*/
+		return $this->redirect(['update', 'id' => Yii::$app->user->identity->id]);
+		
     }
 
     /**
@@ -62,7 +64,7 @@ class StudentController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Student();
+       /* $model = new Student();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -76,7 +78,8 @@ class StudentController extends Controller
             return $this->render('create', [
                 'model' => $model,
             ]);
-        }
+        }*/
+		return $this->redirect(['update', 'id' => Yii::$app->user->identity->id]);
     }
 
     /**
@@ -88,6 +91,7 @@ class StudentController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		//$model->password='';
         $currentFiles=[];
                 $currentFiles[0]=$model->photo;
                     
@@ -109,9 +113,15 @@ class StudentController extends Controller
 					@mkdir($path, 0755, true);
 					@chmod($path, 0755);
 					$paths[0] = $path . $model->photo;
+					\hscstudio\heart\helpers\Heart::imageResize($files[0]->tempName, $files[0]->tempName,148,198,0);
 					if(isset($currentFiles[0])) @unlink($path . $currentFiles[0]);
 				}
-						
+			if(!empty($model->password))
+			{$model->password_hash = Yii::$app->security->generatePasswordHash($model->password);}
+			else {$model->password_hash = $model->password_hash;}
+			$model->auth_key = $model->auth_key;
+			
+			//print_r($model->password.' = '.$model->password_hash);exit();		
             if($model->save()){
 				$idx=0;
                 foreach($files as $file){
@@ -120,6 +130,7 @@ class StudentController extends Controller
 					}
 					$idx++;
 				}
+				\hscstudio\heart\helpers\Heart::imageResize($paths[0], $paths[0],148,198,0);
 				Yii::$app->session->setFlash('success', 'Data saved');
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
@@ -143,9 +154,10 @@ class StudentController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        /*$this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index']);*/
+		return $this->redirect(['update', 'id' => Yii::$app->user->identity->id]);
     }
 
     /**
