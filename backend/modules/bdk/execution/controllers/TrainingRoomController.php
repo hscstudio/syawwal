@@ -89,7 +89,7 @@ class TrainingRoomController extends Controller
         $activityRoom->tb_room_id = Yii::$app->request->post('tb_room_id');
         $activityRoom->startTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('startTime')));
         $activityRoom->finishTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('finishTime')));
-        $activityRoom->status = 0;
+        $activityRoom->status = 1; // Pas bikin pertama kali, statusnya langsung request/process
         $activityRoom->note = null;
 
         if ($activityRoom->save())

@@ -81,17 +81,36 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					{
 						$fOut = '<div class="btn-group">';
 
-						$fOut .= '<a class="btn btn-default btn-xs" href="" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Rencana jumlah kelas">'.$data->classCount.'</a>';
+						if ($data->classCount == null) {
+							$fOut .= Html::a(0, null, [
+								'class' => 'btn btn-default btn-xs',
+								'data-container' => "body",
+								'data-toggle' => "tooltip",
+								'data-placement' => "top",
+								'data-original-title' => "Rencana jumlah kelas",
+								'data-pjax' => "0"
+							]);
+						}
+						else {
+							$fOut .= Html::a($data->classCount, null, [
+								'class' => 'btn btn-default btn-xs',
+								'data-container' => "body",
+								'data-toggle' => "tooltip",
+								'data-placement' => "top",
+								'data-original-title' => "Rencana jumlah kelas",
+								'data-pjax' => "0"
+							]);
+						}
 
 						$classCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
 
 						if ($classCount != 0) {
-							$fOut .= '<a class="btn btn-info btn-xs" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
 										'.$classCount.'
 										</a>';
 						}
 						else {
-							$fOut .= '<a class="btn btn-info btn-xs" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
 										<i class="fa fa-fw fa-plus-circle"></i>
 										</a>';
 						}
@@ -115,10 +134,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						$fOut = '<div class="btn-group">';
 
 						if ($data->studentCount == null) {
-							$fOut .= '<a class="btn btn-default btn-xs" href="" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Rencana jumlah peserta">0</a>';
+							$fOut .= Html::a(0, null, [
+								'class' => 'btn btn-default btn-xs',
+								'data-container' => "body",
+								'data-toggle' => "tooltip",
+								'data-placement' => "top",
+								'data-original-title' => "Rencana jumlah peserta",
+								'data-pjax' => "0"
+							]);
 						}
 						else {
-							$fOut .= '<a class="btn btn-default btn-xs" href="" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Rencana jumlah peserta">'.$data->studentCount.'</a>';
+							$fOut .= Html::a($data->studentCount, null, [
+								'class' => 'btn btn-default btn-xs',
+								'data-container' => "body",
+								'data-toggle' => "tooltip",
+								'data-placement' => "top",
+								'data-original-title' => "Rencana jumlah peserta",
+								'data-pjax' => "0"
+							]);
 						}
 
 						// masih belum final, tar aja
@@ -126,12 +159,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						$studentCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
 
 						if ($studentCount != 0) {
-							$fOut .= '<a class="btn btn-info btn-xs" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
 										'.$studentCount.'
 										</a>';
 						}
 						else {
-							$fOut .= '<a class="btn btn-info btn-xs" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
 										<i class="fa fa-fw fa-plus-circle"></i>
 										</a>';
 						}
@@ -205,10 +238,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						$fOut .= '<div class="btn-group">';
 
 						if ($roomCount != 0) {
-							$fOut .= '<a class="label label-info" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Waiting ('.$roomWaitingCount.'), Approved ('.$roomApprovedCount.'), Rejected ('.$roomRejectedCount.')" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
+							$fOut .= '<a class="label label-info" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Requested ('.$roomProcessCount.'), Approved ('.$roomApprovedCount.'), Rejected ('.$roomRejectedCount.')" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
 						}
 						else {
-							$fOut .= '<a class="label label-default" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
+							$fOut .= '<a class="label label-default" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="No room requested. Click to enter" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
 						}
 
 						$fOut .= '</div>';
@@ -349,14 +382,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 
 	<?php
-		// Fix how to render title
-		$fixModalTitle = '$(".modal-heart, .modal-refresh").on("click", function () {
-			var $modal = $("#modal-heart");
-			var $link = $(this);
-			$modal.find(".modal-title").html($link.attr("modal-title"));
-			return false;
-		});';
-		$this->registerJs($fixModalTitle);
 		echo \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'modal-lg']);
 	?>
 

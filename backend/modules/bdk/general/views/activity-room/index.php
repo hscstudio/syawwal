@@ -18,8 +18,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 
 <div class="row">
-	<div class="col-md-1 col-md-offset-11">
-		<a class="btn btn-primary" href="<?php echo Url::to(['activity-room/list']); ?>"><i class="fa fa-fw fa-sign-out"></i> Done</a>
+	<div class="col-md-12">
+		<a class="btn btn-primary" href="<?php echo Url::to(['activity-room/list']); ?>"><i class="fa fa-fw fa-arrow-left"></i> Done</a>
 	</div>
 </div>
 

@@ -70,7 +70,7 @@ $modifiedBy = Employee::findOne($modelActivityRoom->createdBy)->name;
             echo '<div class="col-md-4"><center>';
             echo Html::beginForm(Url::to(['approve']), 'post', ['class' => 'form', 'role' => 'form']);
             echo Html::hiddenInput('actId', $modelActivityRoom->id, ['class' => 'actId']);
-            echo Html::hiddenInput('command', 0);
+            echo Html::hiddenInput('command', 1);
             echo Html::submitButton('<i class="fa fa-fw fa-history"></i>Revert', ['class' => 'btn btn-default']);
             echo Html::endForm();
             echo '</center></div>';

@@ -50,7 +50,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
 					'value' => function ($data) {
-						$countRoom = $data->getActivityRooms()->andWhere(['status' => 0])->count();
+						$countRoom = $data->getActivityRooms()->andWhere(['status' => 1])->count();
 						if ($countRoom > 0) {
 							return '
 							<div class="btn-group">

@@ -66,6 +66,7 @@ class ActivityRoomController extends Controller
 				'status' => 1,
 			];
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
         
         return $this->render('list', [
             'searchModel' => $searchModel,

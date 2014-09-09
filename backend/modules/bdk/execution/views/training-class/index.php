@@ -15,14 +15,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 // Mbikin trio button header before
 $buttonHeaderBefore = '<div class="btn-group">';
-$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class', [
-		'create', 
-		'trainingId' => $currentTraining->id
-	], [
-		'class' => 'btn btn-success modal-heart',
-		'data-pjax' => "0",
-		'modal-title' => '<i class="fa fa-fw fa-cubes"></i> Create New Class'
-	]);
+$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-arrow-circle-left"></i>Done', Url::to(['training/index']), [
+						'class' => 'btn btn-primary',
+						'data-pjax' => "0"
+					]);
 if ($classCount == 0) {
 	$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-gear fa-spin"></i> Auto Generate', [
 		'auto', 
@@ -31,9 +27,14 @@ if ($classCount == 0) {
 		'class' => 'btn btn-danger'
 	]);
 }
-$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), [
-						'class' => 'btn btn-primary'
-					]);
+$buttonHeaderBefore .= Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class', [
+		'create', 
+		'trainingId' => $currentTraining->id
+	], [
+		'class' => 'btn btn-success modal-heart',
+		'data-pjax' => "0",
+		'modal-title' => '<i class="fa fa-fw fa-cubes"></i> Create New Class'
+	]);
 $buttonHeaderBefore .= '</div>';
 
 ?>
@@ -60,12 +61,29 @@ $buttonHeaderBefore .= '</div>';
 			],
         
 			[
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'label' => 'Subject',
+				'width' => '80px',
+				'format' => 'raw',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function($data) {
+					return Html::a($data->getTrainingClassSubjects()->count(), Url::to(['training-class-subject/index', 'tb_training_class_id' => $data->id]), [
+							'class' => 'label label-default',
+							'data-pjax' => "0"
+						]);
+				}
+			],
+
+			[
 				'class' => '\kartik\grid\BooleanColumn',
 				'attribute' => 'status',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
+
         	[
         		'class' => 'kartik\grid\ActionColumn',
         		'buttons' => [

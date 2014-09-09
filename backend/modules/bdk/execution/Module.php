@@ -18,7 +18,8 @@ class Module extends \yii\base\Module
 					'training/', 
 					'training-history/', 
 					'training-room/',
-					'training-class/'
+					'training-class/',
+					'training-class-subject/',
 				]
 			],
 			['icon'=>'fa fa-fw fa-bar-chart-o','label' => 'Training Unit Plan', 'url' => ['/'.$this->uniqueId.'/training-unit-plan/index'], 'path' => 'training-unit-plan/'],
