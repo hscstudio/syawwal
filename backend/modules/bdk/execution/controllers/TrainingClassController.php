@@ -168,8 +168,31 @@ class TrainingClassController extends Controller
     {
         $model = new TrainingClass();
 
-        if ($model->load(Yii::$app->request->post())){
+        if ($model->load(Yii::$app->request->post())) {
 			if($model->save()) {
+				
+				// Impor subject dari program ke training
+		        $program = $model->training->tb_program_id;
+		        $program_revision = $model->training->tb_program_revision;
+		        $programSubjects = ProgramSubjectHistory::find()
+		            ->where(['tb_program_id' => $program,'revision' => $program_revision])
+		            ->all();
+		        foreach($programSubjects as $programSubject){
+		            $subjectCount = TrainingClassSubject::find()
+		                ->where([
+		                    'tb_training_class_id' => $model->id,
+		                    'tb_program_subject_id'=>$programSubject->tb_program_subject_id,
+		                ])->count();
+		            if($subjectCount == 0){
+		                $modelTrainingClassSubject = new TrainingClassSubject;
+		                $modelTrainingClassSubject->tb_training_class_id = $model->id;
+		                $modelTrainingClassSubject->tb_program_subject_id = $programSubject->tb_program_subject_id;
+		                $modelTrainingClassSubject->status = 1;
+		                $modelTrainingClassSubject->save();
+		            }
+		        }
+		        // dah
+
 				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Class added!');
 			}
 			else{

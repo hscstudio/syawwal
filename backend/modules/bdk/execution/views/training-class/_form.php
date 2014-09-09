@@ -28,10 +28,10 @@ use kartik\widgets\SwitchInput;
 
 			<?php
 				if ($model->isNewRecord) {
-					$form->field($model, 'tb_training_id')->hiddenInput(['value' => $trainingId]);
+					echo $form->field($model, 'tb_training_id')->hiddenInput(['value' => $trainingId]);
 				}
 				else {
-					$form->field($model, 'tb_training_id')->hiddenInput();
+					echo $form->field($model, 'tb_training_id')->hiddenInput();
 				}
 				
 			?>
