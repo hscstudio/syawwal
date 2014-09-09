@@ -8,6 +8,7 @@ use kartik\widgets\Select2;
 use kartik\widgets\DepDrop;
 use backend\models\ActivityRoom;
 use backend\models\TrainingClass;
+use backend\models\TrainingClassStudent;
 
 $this->title = 'Training';
 $this->params['breadcrumbs'][] = $this->title;
@@ -156,15 +157,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 						// masih belum final, tar aja
 
-						$studentCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
+						$studentCount = TrainingClassStudent::find()->where(['tb_training_class_id' => $data->id])->count();
 
 						if ($studentCount != 0) {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-student/index', 'trainingId' => $data->id]).'">
 										'.$studentCount.'
 										</a>';
 						}
 						else {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-student/index', 'trainingId' => $data->id]).'">
 										<i class="fa fa-fw fa-plus-circle"></i>
 										</a>';
 						}
