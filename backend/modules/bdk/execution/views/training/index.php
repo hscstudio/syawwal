@@ -7,6 +7,7 @@ use kartik\grid\GridView;
 use kartik\widgets\Select2;
 use kartik\widgets\DepDrop;
 use backend\models\ActivityRoom;
+use backend\models\Training;
 use backend\models\TrainingClass;
 use backend\models\TrainingClassStudent;
 
@@ -81,42 +82,47 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'value' => function ($data)
 					{
 						$fOut = '<div class="btn-group">';
+						
+						if ($data->status == 2) {
 
-						if ($data->classCount == null) {
-							$fOut .= Html::a(0, Url::to(['training/class-count', 'tb_training_id' => $data->id]), [
-								'class' => 'btn btn-default btn-xs modal-heart',
+							$classCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
+
+							if (Training::findOne($data->id)->classCount > 0) {
+
+								if ($classCount != 0) {
+									$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+												'.$classCount.'
+												</a>';
+								}
+								else {
+									$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
+												<i class="fa fa-fw fa-plus-circle"></i>
+												</a>';
+								}
+
+							}
+							else {
+								$fOut .= Html::a('<i class="fa fa-fw fa-question-circle"></i>', null, [
+									'class' => 'btn btn-default btn-xs',
+									'data-container' => "body",
+									'data-toggle' => "tooltip",
+									'data-placement' => "top",
+									'data-original-title' => "Isilah class count terlebih dahulu",
+									'data-pjax' => "0",
+								]);	
+							}
+						}
+						else {
+							$fOut .= Html::a('<i class="fa fa-fw fa-question-circle"></i>', null, [
+								'class' => 'btn btn-default btn-xs',
 								'data-container' => "body",
 								'data-toggle' => "tooltip",
 								'data-placement' => "top",
-								'data-original-title' => "Rencana jumlah kelas",
+								'data-original-title' => "Kelas hanya dapat diinput ketika diklat telah disetujui pusdiklat",
 								'data-pjax' => "0",
-								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Class Count'
 							]);
 						}
-						else {
-							$fOut .= Html::a($data->classCount, Url::to(['training/class-count', 'tb_training_id' => $data->id]), [
-								'class' => 'btn btn-default btn-xs modal-heart',
-								'data-container' => "body",
-								'data-toggle' => "tooltip",
-								'data-placement' => "top",
-								'data-original-title' => "Rencana jumlah kelas",
-								'data-pjax' => "0",
-								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Class Count'
-							]);
-						}
-
-						$classCount = TrainingClass::find()->where(['tb_training_id' => $data->id])->count();
-
-						if ($classCount != 0) {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
-										'.$classCount.'
-										</a>';
-						}
-						else {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-container="body" data-toggle="tooltip" data-placement="top" data-original-title="Kelas yang telah dibuat" href="'.Url::to(['training-class/index', 'trainingId' => $data->id]).'">
-										<i class="fa fa-fw fa-plus-circle"></i>
-										</a>';
-						}
+						
 						$fOut .= '</div>';
 
 						return $fOut;
@@ -136,43 +142,46 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					{
 						$fOut = '<div class="btn-group">';
 
-						if ($data->studentCount == null) {
-							$fOut .= Html::a(0, Url::to(['training/student-count', 'tb_training_id' => $data->id]), [
-								'class' => 'btn btn-default btn-xs modal-heart',
+						if ($data->status == 2) {
+						
+							// masih belum final, tar aja
+
+							$studentCount = TrainingClassStudent::find()->where(['tb_training_class_id' => $data->id])->count();
+							if (Training::findOne($data->id)->studentCount > 0) {
+
+								if ($studentCount != 0) {
+									$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training/student-count', 'trainingId' => $data->id]).'">
+												'.$studentCount.'
+												</a>';
+								}
+								else {
+									$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training/student-count', 'trainingId' => $data->id]).'">
+												<i class="fa fa-fw fa-plus-circle"></i>
+												</a>';
+								}
+							}
+							else {
+								$fOut .= Html::a('<i class="fa fa-fw fa-question-circle"></i>', null, [
+									'class' => 'btn btn-default btn-xs',
+									'data-container' => "body",
+									'data-toggle' => "tooltip",
+									'data-placement' => "top",
+									'data-original-title' => "Isilah student count terlebih dahulu",
+									'data-pjax' => "0",
+								]);	
+							}
+						}
+						else {
+							$fOut .= Html::a('<i class="fa fa-fw fa-question-circle"></i>', null, [
+								'class' => 'btn btn-default btn-xs',
 								'data-container' => "body",
 								'data-toggle' => "tooltip",
 								'data-placement' => "top",
-								'data-original-title' => "Rencana jumlah peserta",
+								'data-original-title' => "Peserta hanya bisa diinput ketika diklat telah disetujui pusdiklat",
 								'data-pjax' => "0",
-								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Student Count'
 							]);
 						}
-						else {
-							$fOut .= Html::a($data->studentCount, Url::to(['training/student-count', 'tb_training_id' => $data->id]), [
-								'class' => 'btn btn-default btn-xs modal-heart',
-								'data-container' => "body",
-								'data-toggle' => "tooltip",
-								'data-placement' => "top",
-								'data-original-title' => "Rencana jumlah peserta",
-								'data-pjax' => "0",
-								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Student Count'
-							]);
-						}
-
-						// masih belum final, tar aja
-
-						$studentCount = TrainingClassStudent::find()->where(['tb_training_class_id' => $data->id])->count();
-
-						if ($studentCount != 0) {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training/student-count', 'trainingId' => $data->id]).'">
-										'.$studentCount.'
-										</a>';
-						}
-						else {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training/student-count', 'trainingId' => $data->id]).'">
-										<i class="fa fa-fw fa-plus-circle"></i>
-										</a>';
-						}
+						
 						$fOut .= '</div>';
 
 						return $fOut;
