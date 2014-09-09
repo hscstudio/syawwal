@@ -83,23 +83,25 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						$fOut = '<div class="btn-group">';
 
 						if ($data->classCount == null) {
-							$fOut .= Html::a(0, null, [
-								'class' => 'btn btn-default btn-xs',
+							$fOut .= Html::a(0, Url::to(['training/class-count', 'tb_training_id' => $data->id]), [
+								'class' => 'btn btn-default btn-xs modal-heart',
 								'data-container' => "body",
 								'data-toggle' => "tooltip",
 								'data-placement' => "top",
 								'data-original-title' => "Rencana jumlah kelas",
-								'data-pjax' => "0"
+								'data-pjax' => "0",
+								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Class Count'
 							]);
 						}
 						else {
-							$fOut .= Html::a($data->classCount, null, [
-								'class' => 'btn btn-default btn-xs',
+							$fOut .= Html::a($data->classCount, Url::to(['training/class-count', 'tb_training_id' => $data->id]), [
+								'class' => 'btn btn-default btn-xs modal-heart',
 								'data-container' => "body",
 								'data-toggle' => "tooltip",
 								'data-placement' => "top",
 								'data-original-title' => "Rencana jumlah kelas",
-								'data-pjax' => "0"
+								'data-pjax' => "0",
+								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Class Count'
 							]);
 						}
 
@@ -135,23 +137,25 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						$fOut = '<div class="btn-group">';
 
 						if ($data->studentCount == null) {
-							$fOut .= Html::a(0, null, [
-								'class' => 'btn btn-default btn-xs',
+							$fOut .= Html::a(0, Url::to(['training/student-count', 'tb_training_id' => $data->id]), [
+								'class' => 'btn btn-default btn-xs modal-heart',
 								'data-container' => "body",
 								'data-toggle' => "tooltip",
 								'data-placement' => "top",
 								'data-original-title' => "Rencana jumlah peserta",
-								'data-pjax' => "0"
+								'data-pjax' => "0",
+								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Student Count'
 							]);
 						}
 						else {
-							$fOut .= Html::a($data->studentCount, null, [
-								'class' => 'btn btn-default btn-xs',
+							$fOut .= Html::a($data->studentCount, Url::to(['training/student-count', 'tb_training_id' => $data->id]), [
+								'class' => 'btn btn-default btn-xs modal-heart',
 								'data-container' => "body",
 								'data-toggle' => "tooltip",
 								'data-placement' => "top",
 								'data-original-title' => "Rencana jumlah peserta",
-								'data-pjax' => "0"
+								'data-pjax' => "0",
+								'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i>Edit Student Count'
 							]);
 						}
 
@@ -160,12 +164,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						$studentCount = TrainingClassStudent::find()->where(['tb_training_class_id' => $data->id])->count();
 
 						if ($studentCount != 0) {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-student/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training/student-count', 'trainingId' => $data->id]).'">
 										'.$studentCount.'
 										</a>';
 						}
 						else {
-							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training-student/index', 'trainingId' => $data->id]).'">
+							$fOut .= '<a class="btn btn-info btn-xs" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Peserta yang telah diinput" href="'.Url::to(['training/student-count', 'trainingId' => $data->id]).'">
 										<i class="fa fa-fw fa-plus-circle"></i>
 										</a>';
 						}

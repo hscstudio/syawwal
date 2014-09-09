@@ -459,6 +459,52 @@ class TrainingController extends Controller
         return $this->redirect(['index']);
     }
 
+
+
+
+    public function actionClassCount($tb_training_id) {
+    	$modelTraining = $this->findModel($tb_training_id);
+    	// Klo ga ajax, artinya ngesave
+    	if (!Yii::$app->request->isAjax) {
+    		// Tapi cek dulu ada data ga
+    		if ($modelTraining->load(Yii::$app->request->post())) {
+    			$modelTraining->save();
+	    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Class count change saved');
+	        	return $this->redirect(['index']);
+    		}
+    		else {
+	    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Unable to save class count change!');
+	        	return $this->redirect(['index']);
+    		}
+    	}
+    	return $this->renderAjax('class', [
+    			'modelTraining' => $modelTraining
+    		]);
+    }
+
+
+
+
+
+    public function actionStudentCount($tb_training_id) {
+    	$modelTraining = $this->findModel($tb_training_id);
+    	// Klo ga ajax, artinya ngesave
+    	if (!Yii::$app->request->isAjax) {
+    		// Tapi cek dulu ada data ga
+    		if ($modelTraining->load(Yii::$app->request->post())) {
+    			$modelTraining->save();
+	    		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Student count change saved');
+	        	return $this->redirect(['index']);
+    		}
+    		else {
+	    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Unable to save student count change!');
+	        	return $this->redirect(['index']);
+    		}
+    	}
+    	return $this->renderAjax('student', [
+    			'modelTraining' => $modelTraining
+    		]);
+    }
     /**
      * Finds the Training model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
