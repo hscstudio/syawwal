@@ -32,6 +32,9 @@ class ActivityRoom extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+	public $activity_name;
+	public $room_name;
+	
     public static function tableName()
     {
         return 'tb_activity_room';

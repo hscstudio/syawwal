@@ -6,10 +6,10 @@ use kartik\widgets\Select2;
 use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\TrainingClassStudent */
+/* @var $model backend\models\Meeting */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<div class="training-class-student-form">
+<div class="meeting-form">
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
@@ -19,46 +19,43 @@ use yii\helpers\ArrayHelper;
 						]) ?>
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
-		TrainingClassStudent	</div>
+		Meeting	</div>
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_HORIZONTAL,
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
+	
     <?= '' ?>
 
 			<?php
-			$data = ArrayHelper::map(\backend\models\TrainingClass::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'tb_training_class_id')->widget(Select2::classname(), [
+			$data = ArrayHelper::map(\backend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+			echo $form->field($model, 'ref_satker_id')->widget(Select2::classname(), [
 				'data' => $data,
-				'options' => ['placeholder' => 'Choose TrainingClass ...'],
+				'options' => ['placeholder' => 'Choose Satker ...'],
 				'pluginOptions' => [
 				'allowClear' => true
 				],
 			]); ?>
 
-    <?= '' ?>
+    <?= $form->field($model, 'executor')->textInput(['maxlength' => 50]) ?>
 
-			<?php
-			$data = ArrayHelper::map(\backend\models\Student::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
-			echo $form->field($model, 'tb_student_id')->widget(Select2::classname(), [
-				'data' => $data,
-				'options' => ['placeholder' => 'Choose Student ...'],
-				'pluginOptions' => [
-				'allowClear' => true
-				],
-			]); ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
-    <?= $form->field($model, 'number')->textInput(['maxlength' => 255]) ?>
+    <?= $form->field($model, 'startTime')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+				]); ?>
 
-    <?= $form->field($model, 'presence')->textInput(['maxlength' => 5]) ?>
+    <?= $form->field($model, 'finishTime')->widget(\kartik\datecontrol\DateControl::classname(), [
+					'type' => \kartik\datecontrol\DateControl::FORMAT_DATETIME,
+				]); ?>
 
-    <?= $form->field($model, 'pretest')->textInput(['maxlength' => 5]) ?>
+    <?= $form->field($model, 'attendanceCount')->textInput() ?>
 
-    <?= $form->field($model, 'posttest')->textInput(['maxlength' => 5]) ?>
+    <?= $form->field($model, 'classCount')->textInput(['maxlength' => 3]) ?>
 
-    <?= $form->field($model, 'headClass')->widget(\kartik\widgets\SwitchInput::classname(), [
+    <?= $form->field($model, 'hostel')->widget(\kartik\widgets\SwitchInput::classname(), [
 					'pluginOptions' => [
 						'onText' => 'On',
 						'offText' => 'Off',
@@ -78,15 +75,15 @@ use yii\helpers\ArrayHelper;
 
     <?= ""//deletedBy ?>
 
-    <?= $form->field($model, 'activity')->textInput(['maxlength' => 5]) ?>
-
-    <?= $form->field($model, 'test')->textInput(['maxlength' => 5]) ?>
-
     <?= ""//created ?>
 
     <?= ""//modified ?>
 
     <?= ""//deleted ?>
+
+    <?= $form->field($model, 'note')->textInput(['maxlength' => 255]) ?>
+
+    <?= $form->field($model, 'location')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">
 		<label class="col-md-2 control-label"></label>

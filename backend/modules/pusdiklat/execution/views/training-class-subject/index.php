@@ -28,78 +28,79 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'label'=>'Type',
 				'hAlign'=>'center',
 				'value' => function ($data) {
-					/*$program = $data->trainingClass->training->tb_program_id;
+					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=\backend\models\ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
+							'tb_program_subject_id'=>$data->tb_program_subject_id,'tb_program_id'=>$program,
 							'revision'=>$program_revision,'status'=>1
 						])
 						->one();
 					$subjectType=backend\models\SubjectType::find()
 						->where(['id'=>$programSubjects->ref_subject_type_id])
 						->one();
-					return $subjectType->name;*/
+					return $subjectType->name;
 				}
 			],
 			[
 				'attribute' => 'tb_program_subject_id',
 				'label'=>'Program Subject',
 				'value' => function ($data) {
-					/*$program = $data->trainingClass->training->tb_program_id;
+					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=\backend\models\ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
+							'tb_program_subject_id'=>$data->tb_program_subject_id,
+							'tb_program_id'=>$program,
 							'revision'=>$program_revision,'status'=>1
 						])
 						->one();
-					return $programSubjects->name;*/
+					return $programSubjects->name;
 				}
 			],
 			[
 				'label'=>'JP',
 				'hAlign'=>'center',
 				'value' => function ($data) {
-					/*$program = $data->trainingClass->training->tb_program_id;
+					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=\backend\models\ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
+							'tb_program_subject_id'=>$data->tb_program_subject_id,'tb_program_id'=>$program,
 							'revision'=>$program_revision,'status'=>1
 						])
 						->one();
-					return $programSubjects->hours;*/
+					return $programSubjects->hours;
 				}
 			],
             [
 				'label'=>'Test',
 				'hAlign'=>'center',
 				'value' => function ($data) {
-					/*$program = $data->trainingClass->training->tb_program_id;
+					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=\backend\models\ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
+							'tb_program_subject_id'=>$data->tb_program_subject_id,'tb_program_id'=>$program,
 							'revision'=>$program_revision,'status'=>1
 						])
 						->one();
-					return ($programSubjects->test==1)?'Yes':'No';*/
+					return ($programSubjects->test==1)?'Yes':'No';
 				}
 			],
 			[
 				'label'=>'Sort',
 				'hAlign'=>'center',
 				'value' => function ($data) {
-					/*$program = $data->trainingClass->training->tb_program_id;
+					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=\backend\models\ProgramSubjectHistory::find()
 						->where([
-							'tb_program_subject_id'=>$data->id,'tb_program_id'=>$program,
+							'tb_program_subject_id'=>$data->tb_program_subject_id,'tb_program_id'=>$program,
 							'revision'=>$program_revision,'status'=>1
 						])
 						->one();
-					return $programSubjects->sort;*/
+					return $programSubjects->sort;
 				}
 			],
 			[

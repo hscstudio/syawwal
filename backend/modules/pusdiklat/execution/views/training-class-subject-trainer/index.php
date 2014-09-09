@@ -5,8 +5,15 @@ use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
 /* @var $searchModel backend\models\TrainingClassSubjectTrainerSearch */
-
-$this->title = 'Training Class Subject Trainers';
+$program = $trainingClassSubject->trainingClass->training->tb_program_id;
+$program_revision = $trainingClassSubject->trainingClass->training->tb_program_revision;
+$programSubjects=\backend\models\ProgramSubjectHistory::find()
+	->where([
+		'tb_program_subject_id'=>$trainingClassSubject->tb_program_subject_id,'tb_program_id'=>$program,
+		'revision'=>$program_revision,'status'=>1
+	])
+	->one();
+$this->title = 'Subject : '.$programSubjects->name;
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training/index'])];
 $this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words($trainingClassSubject->trainingClass->training->name), 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class/index','tb_training_id'=>$trainingClassSubject->trainingClass->tb_training_id])];
 $this->params['breadcrumbs'][] = ['label' => \yii\helpers\Inflector::camel2words($trainingClassSubject->trainingClass->class), 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class-subject/index','tb_training_class_id'=>$trainingClassSubject->trainingClass->id])];
@@ -25,69 +32,47 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-
-            // 'id',
-            /*
-				[
-					'attribute' => 'tb_training_class_subject_id',
-					'value' => function ($data) {
-						return $data->trainingClassSubject->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'tb_trainer_id',
-					'value' => function ($data) {
-						return $data->trainer->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'ref_trainer_type',
-					'value' => function ($data) {
-						return $data->trainerT->name;
-					}
-				],
-				*/
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'cost',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Cost', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'status',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Status', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-				],
-            // 'created',
-            // 'createdBy',
-            // 'modified',
-            // 'modifiedBy',
-            // 'deleted',
-            // 'deletedBy',
-
+			[
+				'attribute' => 'tb_trainer_id',
+				'value' => function ($data) {
+					return $data->trainer->name;
+				}
+			],
+            [
+				'attribute' => 'ref_trainer_type_id',
+				'value' => function ($data) {
+					return $data->trainerType->name;
+				}
+			],            
+			[
+				'class' => 'kartik\grid\EditableColumn',
+				'attribute' => 'cost',
+				'vAlign'=>'middle',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'editableOptions'=>['header'=>'Cost', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+			],		
+			[
+				'format' => 'raw',
+				'attribute' => 'status',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'80px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data){
+					$icon = ($data->status==1)?'<span class="glyphicon glyphicon-ok"></span>':'<span class="glyphicon glyphicon-remove"></span>';
+					return $icon;						
+				}
+			],
             ['class' => 'kartik\grid\ActionColumn'],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training Class Subject Trainer</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
 			'before'=>
 				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Training Class Subject', \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class-subject/index','tb_training_class_id'=>$trainingClassSubject->tb_training_class_id]), ['class' => 'btn btn-warning']).' '.
-				Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class Subject Trainer', ['create'], ['class' => 'btn btn-success']),
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
+				Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class Subject Trainer', ['create','tb_training_class_subject_id'=>$trainingClassSubject->id], ['class' => 'btn btn-success']),
+			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_training_class_subject_id'=>$trainingClassSubject->id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
 		'responsive'=>true,

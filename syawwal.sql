@@ -2,10 +2,11 @@
 -- version 4.2.7.1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Sep 08, 2014 at 02:50 PM
--- Server version: 5.5.38-MariaDB
--- PHP Version: 5.5.16
+
+-- Host: 127.0.0.1
+-- Generation Time: Sep 09, 2014 at 11:56 AM
+-- Server version: 5.6.16
+-- PHP Version: 5.5.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -763,8 +764,20 @@ CREATE TABLE IF NOT EXISTS `tb_activity_room` (
   `created` datetime DEFAULT NULL,
   `createdBy` int(11) DEFAULT NULL,
   `modified` datetime DEFAULT NULL,
-  `modifiedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `modifiedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tb_room_id` (`tb_room_id`),
+  KEY `tb_training_id` (`activity_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `tb_activity_room`
+--
+
+INSERT INTO `tb_activity_room` (`id`, `type`, `activity_id`, `tb_room_id`, `startTime`, `finishTime`, `note`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`) VALUES
+(3, 0, 9, 1, '2014-08-27 08:00:00', '2014-08-28 17:00:00', NULL, 2, '2014-09-06 10:05:32', 1, '2014-09-06 10:05:32', 1),
+(5, 0, 8, 2, '2014-08-19 08:00:00', '2014-08-27 17:00:00', NULL, 2, '2014-09-08 09:43:29', 1, '2014-09-08 09:43:29', 1),
+(6, 0, 8, 4, '2014-08-19 08:00:00', '2014-08-27 17:00:00', NULL, 2, '2014-09-08 09:45:09', 1, '2014-09-08 09:45:09', 1);
 
 -- --------------------------------------------------------
 
@@ -1090,7 +1103,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
   `tb_program_id` int(11) NOT NULL,
   `ref_subject_type_id` int(3) NOT NULL COMMENT '1: MP;2: CERAMAH;3:OJT;4:MFD;',
   `name` varchar(255) NOT NULL,
-  `hours` decimal(3,2) NOT NULL COMMENT 'KAP, GBPP, SILABI',
+  `hours` decimal(5,2) NOT NULL COMMENT 'KAP, GBPP, SILABI',
   `sort` int(3) NOT NULL,
   `test` tinyint(1) NOT NULL DEFAULT '0',
   `status` int(1) NOT NULL DEFAULT '1',
@@ -1099,15 +1112,19 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_program_subject_tb_program1` (`tb_program_id`),
+  KEY `ref_subject_type_id` (`ref_subject_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `tb_program_subject`
 --
 
 INSERT INTO `tb_program_subject` (`id`, `tb_program_id`, `ref_subject_type_id`, `name`, `hours`, `sort`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 4, 0, 'PHP', '9.99', 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-29 16:56:24', 1, NULL, NULL);
+(1, 4, 0, 'PHP', '30.00', 1, 1, 1, '2014-08-20 13:20:57', 1, '2014-09-08 06:03:32', 1, NULL, NULL),
+(2, 4, 0, 'MYSQL', '10.00', 2, 1, 1, '2014-09-08 04:06:58', 1, '2014-09-08 06:04:55', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1153,7 +1170,7 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject_history` (
   `revision` int(11) NOT NULL,
   `ref_subject_type_id` int(3) NOT NULL COMMENT '1: MP;2: CERAMAH;3:OJT;4:MFD;',
   `name` varchar(255) NOT NULL,
-  `hours` decimal(3,2) NOT NULL COMMENT 'KAP, GBPP, SILABI',
+  `hours` decimal(5,2) NOT NULL COMMENT 'KAP, GBPP, SILABI',
   `sort` int(3) NOT NULL,
   `test` tinyint(1) NOT NULL DEFAULT '0',
   `status` int(1) NOT NULL DEFAULT '1',
@@ -1170,9 +1187,10 @@ CREATE TABLE IF NOT EXISTS `tb_program_subject_history` (
 --
 
 INSERT INTO `tb_program_subject_history` (`tb_program_subject_id`, `tb_program_id`, `revision`, `ref_subject_type_id`, `name`, `hours`, `sort`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 4, 0, 0, 'PHP', '9.99', 0, 0, 1, '2014-08-20 13:20:57', 1, '2014-08-29 16:56:24', 1, NULL, NULL),
+(1, 4, 0, 0, 'PHP', '30.00', 1, 1, 1, '2014-08-20 13:20:57', 1, '2014-09-08 06:02:14', 1, NULL, NULL),
 (1, 4, 1, 0, 'PHP', '9.99', 0, 0, 1, '2014-08-20 16:00:27', 1, '2014-08-20 16:00:27', 1, NULL, NULL),
-(1, 4, 2, 0, 'PHP', '9.99', 0, 0, 1, '2014-09-03 11:17:33', 1, '2014-09-03 11:17:33', 1, NULL, NULL);
+(1, 4, 2, 0, 'PHP', '30.00', 1, 1, 1, '2014-08-20 13:20:57', 1, '2014-09-08 06:03:32', 1, NULL, NULL),
+(2, 4, 2, 0, 'MYSQL', '10.00', 2, 1, 1, '2014-09-08 04:06:58', 1, '2014-09-08 06:04:55', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1365,8 +1383,26 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
   `approvedStatus` tinyint(1) DEFAULT NULL,
   `approvedStatusNote` varchar(255) DEFAULT NULL,
   `approvedStatusDate` datetime DEFAULT NULL,
-  `approvedStatusBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `approvedStatusBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_tb_program1` (`tb_program_id`),
+  KEY `fk_tb_training_ref_satker1` (`ref_satker_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+
+--
+-- Dumping data for table `tb_training`
+--
+
+INSERT INTO `tb_training` (`id`, `tb_program_id`, `tb_program_revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
+(7, 4, 1, 3, '2014-03-00-2.2.1.3.1', 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-04', '2014-08-29', 'Halo', 50, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, '', '', 0, '2014-08-25 10:59:34', 1, '2014-09-01 14:00:47', 1, NULL, NULL, 1, '', NULL, NULL),
+(8, 4, 2, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', NULL, 1, '', NULL, NULL, NULL, '', 0, 1, '', '3', 2, '2014-08-25 11:37:50', 1, '2014-09-05 15:18:35', 1, NULL, NULL, 0, '', NULL, NULL),
+(9, 4, 1, 3, '2014-03-00-.4', 'PRANATA KOMPUTER AHLI AKT I', '2014-08-27', '2014-08-28', '', NULL, 3, '', NULL, NULL, NULL, '', 0, 1, '', '3', 0, '2014-08-25 11:40:53', 1, '2014-09-08 10:58:16', 1, NULL, NULL, 0, '', NULL, NULL),
+(10, 4, 1, 3, '2014-03-00-2.2.1.0.4', 'KOM', '2014-08-27', '2014-08-27', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 3, '2014-08-25 11:41:37', 1, '2014-08-25 11:41:37', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(11, 5, 0, 3, '2014-03-00-1.0.0.0.2', 'Diklat Prajabatan Golongan III Angk. II', '2014-08-12', '2014-08-27', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 0, '2014-08-27 16:28:48', 1, '2014-08-27 16:28:48', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(12, 4, 1, 3, '2014-03-00-2.2.1.3.5', 'PRANATA KOMPUTER AHLI ', '2014-10-01', '2014-10-10', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 'BKF', 'Pusdiklat Keuangan Umum', 0, '2014-09-01 12:12:00', 1, '2014-09-01 12:12:00', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(13, 4, 1, 3, '2014-03-00-2.2.1.3.6', 'PRANATA KOMPUTER AHLI ', '2014-10-20', '2014-10-24', '', 20, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 'Sekretariat Jenderal', 'Hotel Aryaduta Semanggi', 0, '2014-09-01 13:56:47', 1, '2014-09-01 13:56:47', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(14, 5, 0, 3, '2014-03-00-1.0.0.0.5', 'Diklat Prajabatan Golongan III angkatan 1', '2014-09-15', '2014-09-26', 'diklat badan pendidikan dan pelatihankeuangan....', 100, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 'Kementerian Keuangan', 'Hotel Aryaduta Semanggi', 0, '2014-09-01 13:58:44', 1, '2014-09-01 15:04:02', 1, NULL, NULL, 1, '', NULL, NULL),
+(15, 4, 2, 3, '2014-03-00-.4', 'PRANATA KOMPUTER AHLI MUDA', '2014-09-01', '2014-09-30', '', 1000, 30, '', NULL, NULL, NULL, '', 0, 1, '', '3', 2, '2014-09-08 09:54:42', 1, '2014-09-08 09:59:07', 1, NULL, NULL, 0, '', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1384,8 +1420,51 @@ CREATE TABLE IF NOT EXISTS `tb_training_class` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=39 ;
+
+--
+-- Dumping data for table `tb_training_class`
+--
+
+INSERT INTO `tb_training_class` (`id`, `tb_training_id`, `class`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(2, 7, 'A', 1, '2014-09-08 03:45:52', 1, '2014-09-08 03:45:52', 1, NULL, NULL),
+(3, 8, 'A', 1, '2014-09-08 04:22:30', 1, '2014-09-08 04:22:30', 1, NULL, NULL),
+(5, 15, 'B', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(6, 15, 'C', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(7, 15, 'D', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(8, 15, 'E', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(9, 15, 'F', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(10, 15, 'G', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(11, 15, 'H', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(12, 15, 'I', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(13, 15, 'J', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(14, 15, 'K', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(15, 15, 'L', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(16, 15, 'M', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(17, 15, 'N', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(18, 15, 'O', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(19, 15, 'P', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(20, 15, 'Q', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
+(21, 15, 'R', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(22, 15, 'S', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(23, 15, 'T', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(24, 15, 'U', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(25, 15, 'V', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(26, 15, 'W', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(27, 15, 'X', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(28, 15, 'Y', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(29, 15, 'Z', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(30, 15, 'AA', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(31, 15, 'AB', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(32, 15, 'AC', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(33, 15, 'AD', 1, '2014-09-08 09:59:29', 1, '2014-09-08 09:59:29', 1, NULL, NULL),
+(34, 15, 'AD', 1, '2014-09-08 10:14:29', 1, '2014-09-08 10:14:29', 1, NULL, NULL),
+(36, 9, 'B', 1, '2014-09-08 10:58:23', 1, '2014-09-08 10:58:23', 1, NULL, NULL),
+(37, 9, 'C', 1, '2014-09-08 10:58:23', 1, '2014-09-08 10:58:23', 1, NULL, NULL),
+(38, 9, 'C', 1, '2014-09-08 10:59:00', 1, '2014-09-08 10:59:00', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1479,8 +1558,19 @@ CREATE TABLE IF NOT EXISTS `tb_training_class_subject` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_class_id`),
+  KEY `fk_tb_training_assignment_tb_trainer1` (`tb_program_subject_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `tb_training_class_subject`
+--
+
+INSERT INTO `tb_training_class_subject` (`id`, `tb_training_class_id`, `tb_program_subject_id`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 3, 1, 1, '2014-09-08 05:21:00', 1, '2014-09-08 05:21:00', 1, NULL, NULL),
+(2, 3, 2, 1, '2014-09-08 05:21:01', 1, '2014-09-08 05:21:01', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1513,7 +1603,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_class_subject_trainer` (
 `id` int(11) NOT NULL,
   `tb_training_class_subject_id` int(11) NOT NULL,
   `tb_trainer_id` int(11) NOT NULL,
-  `ref_trainer_type` int(3) NOT NULL COMMENT '1:pengajar;2:penceramah;3:asisten',
+  `ref_trainer_type_id` int(3) NOT NULL COMMENT '1:pengajar;2:penceramah;3:asisten',
   `cost` int(11) NOT NULL COMMENT 'honor perjamlat',
   `status` int(1) NOT NULL DEFAULT '1',
   `created` datetime DEFAULT NULL,
@@ -1521,8 +1611,20 @@ CREATE TABLE IF NOT EXISTS `tb_training_class_subject_trainer` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_class_subject_id`),
+  KEY `fk_tb_training_assignment_tb_trainer1` (`tb_trainer_id`),
+  KEY `type` (`ref_trainer_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `tb_training_class_subject_trainer`
+--
+
+INSERT INTO `tb_training_class_subject_trainer` (`id`, `tb_training_class_subject_id`, `tb_trainer_id`, `ref_trainer_type_id`, `cost`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 1, 1, 0, 1000000, 1, '2014-09-08 14:51:10', 1, '2014-09-08 15:23:00', 1, NULL, NULL),
+(2, 1, 3, 2, 1000000, 1, '2014-09-08 16:52:10', 1, '2014-09-08 16:52:10', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1654,6 +1756,24 @@ CREATE TABLE IF NOT EXISTS `tb_training_history` (
   `approvedStatusBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `tb_training_history`
+--
+
+INSERT INTO `tb_training_history` (`tb_training_id`, `tb_program_id`, `tb_program_revision`, `revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
+(7, 4, 1, 0, 3, '2014-03-00-2.2.1.3.1', 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-04', '2014-08-29', 'Halo', 50, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, '', '', 0, '2014-08-25 10:59:34', 1, '2014-09-01 14:00:47', 1, NULL, NULL, 1, '', NULL, NULL),
+(7, 4, 1, 1, 3, '2014-03-00-2.2.1.0.1', 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-04', '2014-08-29', 'Halo', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 0, '2014-08-25 11:44:05', 1, '2014-08-25 11:44:05', 1, NULL, NULL, 0, '', NULL, NULL),
+(8, 4, 1, 0, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, '', NULL, NULL),
+(8, 4, 1, 1, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, '', NULL, NULL),
+(9, 4, 1, 0, 3, '2014-03-00-.4', 'PRANATA KOMPUTER AHLI AKT I', '2014-08-27', '2014-08-28', '', NULL, 3, '', NULL, NULL, NULL, '', 0, 1, '', '3', NULL, '2014-08-25 11:40:53', 1, '2014-09-08 10:58:16', 1, NULL, NULL, 0, '', NULL, NULL),
+(10, 4, 1, 0, 3, '2014-03-00-2.2.1.0.4', 'KOM', '2014-08-27', '2014-08-27', '', 50, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '', '', 3, '2014-08-25 10:59:34', 1, '2014-08-25 11:43:48', 1, NULL, NULL, 0, NULL, NULL, NULL),
+(11, 5, 0, 0, 3, '2014-03-00-1.0.0.0.2', 'Diklat Prajabatan Golongan III Angk. II', '2014-08-12', '2014-08-27', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 0, '2014-08-27 16:28:48', 1, '2014-08-27 16:28:48', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(12, 4, 1, 0, 3, '2014-03-00-2.2.1.3.5', 'PRANATA KOMPUTER AHLI ', '2014-10-01', '2014-10-10', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 'BKF', 'Pusdiklat Keuangan Umum', 0, '2014-09-01 12:12:00', 1, '2014-09-01 12:12:00', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(13, 4, 1, 0, 3, '2014-03-00-2.2.1.3.6', 'PRANATA KOMPUTER AHLI ', '2014-10-20', '2014-10-24', '', 20, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, 'Sekretariat Jenderal', 'Hotel Aryaduta Semanggi', 0, '2014-09-01 13:56:47', 1, '2014-09-01 13:56:47', 1, NULL, NULL, NULL, NULL, NULL, NULL),
+(14, 5, 0, 0, 3, '2014-03-00-1.0.0.0.5', 'Diklat Prajabatan Golongan III angkatan 1', '2014-09-15', '2014-09-26', 'diklat badan pendidikan dan pelatihankeuangan....', 100, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 'Kementerian Keuangan', 'Hotel Aryaduta Semanggi', 0, '2014-09-01 13:58:44', 1, '2014-09-01 15:04:02', 1, NULL, NULL, 1, '', NULL, NULL),
+(14, 5, 0, 1, 3, '2014-03-00-1.0.0.0.5', 'Diklat Prajabatan Golongan III ', '2014-09-15', '2014-09-26', '', 100, 4, NULL, NULL, NULL, NULL, NULL, 1, 1, 'Kementerian Keuangan', 'Hotel Aryaduta Semanggi', 0, '2014-09-01 14:01:32', 1, '2014-09-01 14:01:32', 1, NULL, NULL, 1, '', NULL, NULL),
+(15, 4, 2, 0, 3, '2014-03-00-.4', 'PRANATA KOMPUTER AHLI MUDA', '2014-09-01', '2014-09-30', '', 1000, 30, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '3', 1, '2014-09-08 09:54:42', 1, '2014-09-08 09:58:21', 1, NULL, NULL, 0, '', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -1687,7 +1807,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
   `tb_activity_room_id` int(11) NOT NULL,
   `activity` varchar(255) DEFAULT NULL COMMENT 'Honor untuk PIC/JP',
   `pic` varchar(100) DEFAULT NULL COMMENT '0-25',
-  `hours` decimal(3,2) DEFAULT NULL COMMENT '1JP = 45menit',
+  `hours` decimal(5,2) DEFAULT NULL COMMENT '1JP = 45menit',
   `startTime` datetime DEFAULT NULL,
   `finishTime` datetime DEFAULT NULL,
   `session` int(3) NOT NULL,
@@ -1697,8 +1817,22 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_schedule_tb_room1` (`tb_activity_room_id`),
+  KEY `tb_activity_room_id` (`tb_activity_room_id`),
+  KEY `tb_training_class_subject_assignment_id` (`tb_training_class_subject_id`),
+  KEY `tb_training_class_id` (`tb_training_class_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `tb_training_schedule`
+--
+
+INSERT INTO `tb_training_schedule` (`id`, `tb_training_class_id`, `tb_training_class_subject_id`, `tb_activity_room_id`, `activity`, `pic`, `hours`, `startTime`, `finishTime`, `session`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, 3, 1, 0, '', '', '1.00', '2014-08-19 08:00:00', '2014-08-19 08:45:00', 1, 1, '2014-09-09 16:33:05', 1, '2014-09-09 16:33:05', 1, NULL, NULL),
+(2, 3, 1, 0, '', '', '2.00', '2014-08-19 08:45:00', '2014-08-19 10:15:00', 1, 1, '2014-09-09 16:33:16', 1, '2014-09-09 16:33:16', 1, NULL, NULL),
+(3, 3, -1, 0, 'Coffe Break', '-', '0.00', '2014-08-20 08:00:00', '2014-08-20 08:15:00', 1, 1, '2014-09-09 16:34:15', 1, '2014-09-09 16:34:15', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1720,8 +1854,29 @@ CREATE TABLE IF NOT EXISTS `tb_training_subject_trainer_recommendation` (
   `modified` datetime DEFAULT NULL,
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_tb_training_subject_trainer_recommendation_tb_training_sub1` (`tb_program_subject_id`),
+  KEY `fk_tb_training_subject_trainer_recommendation_tb_trainer1` (`tb_trainer_id`),
+  KEY `tb_training_id` (`tb_training_id`),
+  KEY `ref_trainer_type_id` (`ref_trainer_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+
+--
+-- Dumping data for table `tb_training_subject_trainer_recommendation`
+--
+
+INSERT INTO `tb_training_subject_trainer_recommendation` (`id`, `tb_training_id`, `tb_program_subject_id`, `tb_trainer_id`, `ref_trainer_type_id`, `note`, `sort`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(3, 7, 1, 1, 0, '', NULL, 1, NULL, NULL, '2014-09-08 06:37:40', 1, NULL, NULL),
+(4, 7, 1, 2, 1, '', NULL, 0, '2014-08-31 08:09:37', 1, '2014-08-31 08:09:37', 1, NULL, NULL),
+(5, 7, 1, 2, 1, 'ddd', 1, 1, '2014-08-31 08:11:26', 1, '2014-08-31 08:11:26', 1, NULL, NULL),
+(6, 8, 2, 3, 0, '', 1, 1, '2014-09-08 06:12:04', 1, '2014-09-08 06:33:19', 1, NULL, NULL),
+(7, 8, 2, 2, 0, '', 1, 1, '2014-09-08 06:39:58', 1, '2014-09-08 06:39:58', 1, NULL, NULL),
+(8, 8, 1, 1, 0, '', 1, 1, '2014-09-08 06:40:34', 1, '2014-09-08 06:40:34', 1, NULL, NULL),
+(9, 8, 1, 2, 1, '', 2, 1, '2014-09-08 06:41:01', 1, '2014-09-08 16:59:13', 1, NULL, NULL),
+(10, 15, 1, 1, 0, '', 1, 1, '2014-09-08 09:56:42', 1, '2014-09-08 09:56:42', 1, NULL, NULL),
+(11, 15, 2, 3, 0, '', 1, 1, '2014-09-08 09:57:27', 1, '2014-09-08 09:57:27', 1, NULL, NULL),
+(12, 8, 1, 3, 2, '', NULL, 1, '2014-09-08 16:51:29', 1, '2014-09-08 16:51:29', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1741,6 +1896,20 @@ CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tb_training_unit_plan`
+--
+
+INSERT INTO `tb_training_unit_plan` (`tb_training_id`, `ref_unit_id`, `spread`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(7, 3, '10|5|0|0|7|5|0|0|5|4|0|0|0', 1, NULL, NULL, '2014-09-01 15:11:01', 1, NULL, NULL),
+(9, NULL, '10|0|0|0|0|0|0|0|0|0|0|0|0', 1, '2014-08-27 15:03:05', 1, '2014-08-27 15:03:14', 1, NULL, NULL),
+(10, NULL, '10|0|0|0|0|0|0|0|0|0|0|10|0', 1, '2014-08-27 15:05:44', 1, '2014-08-27 15:06:02', 1, NULL, NULL),
+(11, NULL, '0|0|0|0|0|0|0|0|0|0|0|0|0', 0, '2014-08-27 16:28:48', 1, '2014-08-29 16:37:27', 1, NULL, NULL),
+(12, NULL, NULL, 0, '2014-09-01 12:12:00', 1, '2014-09-01 12:12:00', 1, NULL, NULL),
+(13, NULL, NULL, 0, '2014-09-01 13:56:47', 1, '2014-09-01 13:56:47', 1, NULL, NULL),
+(14, NULL, NULL, 0, '2014-09-01 13:58:44', 1, '2014-09-01 13:58:44', 1, NULL, NULL),
+(15, NULL, NULL, 0, '2014-09-08 09:54:42', 1, '2014-09-08 09:54:42', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1774,7 +1943,7 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 --
 
 INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmation_token`, `confirmation_sent_at`, `confirmed_at`, `unconfirmed_email`, `recovery_token`, `recovery_sent_at`, `blocked_at`, `role`, `registered_from`, `logged_in_from`, `logged_in_at`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1410160885, 1405728264, 1410160885),
+(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1410144136, 1405728264, 1410144136),
 (2, 'psdm', '', '$2y$13$ge.61GlxXqBN3xVzgEXRwO7x7uyCJLPkd42EITP60K15u4xCjfYbi', 'G9߉', NULL, NULL, 1409816772, NULL, NULL, NULL, NULL, NULL, NULL, 170755228, 1409816881, 1409816773, 1409816881);
 
 -- --------------------------------------------------------
@@ -3603,14 +3772,14 @@ ADD CONSTRAINT `fk_tb_training_tb_program1` FOREIGN KEY (`tb_program_id`) REFERE
 -- Constraints for table `tb_training_class`
 --
 ALTER TABLE `tb_training_class`
-ADD CONSTRAINT `tb_training_class_ibfk_1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tb_training_class_ibfk_1` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_class_student`
 --
 ALTER TABLE `tb_training_class_student`
-ADD CONSTRAINT `tb_training_class_student_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class_subject` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `tb_training_class_student_ibfk_2` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tb_training_class_student_ibfk_2` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_training_class_student_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class_subject` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_class_student_attendance`
@@ -3631,16 +3800,16 @@ ADD CONSTRAINT `fk_tb_training_certificate_tb_training1` FOREIGN KEY (`tb_traini
 -- Constraints for table `tb_training_class_subject`
 --
 ALTER TABLE `tb_training_class_subject`
-ADD CONSTRAINT `tb_training_class_subject_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `tb_training_class_subject_ibfk_2` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_program_subject` (`id`);
+  ADD CONSTRAINT `tb_training_class_subject_ibfk_2` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_program_subject` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_training_class_subject_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_class_subject_trainer`
 --
 ALTER TABLE `tb_training_class_subject_trainer`
-ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_1` FOREIGN KEY (`tb_training_class_subject_id`) REFERENCES `tb_training_class_subject` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_2` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`),
-ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_3` FOREIGN KEY (`ref_trainer_type`) REFERENCES `ref_trainer_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_1` FOREIGN KEY (`tb_training_class_subject_id`) REFERENCES `tb_training_class_subject` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_2` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`),
+  ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_3` FOREIGN KEY (`ref_trainer_type_id`) REFERENCES `ref_trainer_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tb_training_class_subject_trainer_attendance`

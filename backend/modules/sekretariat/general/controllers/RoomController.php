@@ -33,14 +33,54 @@ class RoomController extends Controller
      * Lists all Room models.
      * @return mixed
      */
-    public function actionIndex()
+       public function actionIndex($status=1,$ref_satker_id=0)
     {
         $searchModel = new RoomSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		if($ref_satker_id===0)
+			$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+			
+		if($status=='all'){
+			if($ref_satker_id=='all'){
+				$queryParams['RoomSearch']=[];
+			}
+			else{
+				$queryParams['RoomSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+		}
+		else{
+			if($ref_satker_id=='all'){
+				$queryParams['RoomSearch']=[
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['RoomSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        $dataProvider = $searchModel->search($queryParams);
 
+		// GET ALL TRAINING YEAR
+		
+		$satkers = yii\helpers\ArrayHelper::map(\backend\models\Satker::find()
+			//->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['eselon'=>'ASC',])
+			//->active()
+			->asArray()
+			->all(), 'id', 'name');
+		$satkers['all']='-- All --';
+		
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'status' => $status,
+			'ref_satker_id'=>$ref_satker_id,
+			'satkers'=>$satkers,
         ]);
     }
 
@@ -64,8 +104,9 @@ class RoomController extends Controller
     public function actionCreate()
     {
         $model = new Room();
-
+	
         if ($model->load(Yii::$app->request->post())){
+			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
 			}
