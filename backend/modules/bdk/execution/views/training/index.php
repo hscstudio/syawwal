@@ -251,11 +251,35 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 						$fOut .= '<div class="btn-group">';
 
-						if ($roomCount != 0) {
-							$fOut .= '<a class="label label-info" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="Requested ('.$roomProcessCount.'), Approved ('.$roomApprovedCount.'), Rejected ('.$roomRejectedCount.')" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
+						if ($data->status == 2) {
+
+							if ($roomCount != 0) {
+								$fOut .= '<a class="btn btn-info btn-xs" 
+												data-pjax="0" 
+												data-toggle="tooltip" 
+												data-container="body" 
+												data-placement="top" 
+												data-original-title="Requested ('.$roomProcessCount.'), Approved ('.$roomApprovedCount.'), Rejected ('.$roomRejectedCount.')" 
+												href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
+							}
+							else {
+								$fOut .= '<a class="btn btn-info btn-xs"
+											data-pjax="0" 
+											data-toggle="tooltip" 
+											data-container="body" 
+											data-placement="top" 
+											data-original-title="No room requested. Click to enter" 
+											href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'"><i class="fa fa-fw fa-plus-circle"></i></a>';
+							}
 						}
 						else {
-							$fOut .= '<a class="label label-default" data-pjax="0" data-toggle="tooltip" data-container="body" data-placement="top" data-original-title="No room requested. Click to enter" href="'.Url::to(['training-room/index', 'tb_training_id' => $data->id]).'">'.$roomCount.'</a>';
+							$fOut .= '<a class="btn btn-default btn-xs"
+											data-pjax="0" 
+											data-toggle="tooltip" 
+											data-container="body" 
+											data-placement="top" 
+											data-original-title="Permintaan ruangan hanya bisa dilakukan ketika diklat telah disetujui oleh pusdiklat">
+											<i class="fa fa-fw fa-question-circle"></i></a>';
 						}
 
 						$fOut .= '</div>';

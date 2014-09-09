@@ -144,7 +144,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			'before'=> '<div class="btn-group">'.
 				Html::a('<i class="fa fa-fw fa-arrow-circle-left"></i> Back', Url::to(['/'.$this->context->module->uniqueId.'/training-class/index','trainingId'=>$trainingClass->tb_training_id]), ['class' => 'btn btn-primary']).' '.
-				Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class Subject', ['create','tb_training_class_id'=>$trainingClass->id], ['class' => 'btn btn-success'])
+				Html::a('<i class="fa fa-fw fa-gear fa-spin"></i> Auto Generate Training Class Subject', ['create','tb_training_class_id'=>$trainingClass->id], ['class' => 'btn btn-danger'])
 				.'</div>',
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index','tb_training_class_id'=>$trainingClass->id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
