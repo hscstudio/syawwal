@@ -40,8 +40,8 @@ class TrainingClassSubjectController extends Controller
     public function actionIndex($tb_training_class_id)
     {
         $searchModel = new TrainingClassSubjectSearch();
-        $queryParams['TrainingClassSubjectSearch']=[                
-            'tb_training_class_id'=>$tb_training_class_id,
+        $queryParams['TrainingClassSubjectSearch'] = [
+            'tb_training_class_id' => $tb_training_class_id,
         ];
         $queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
         $dataProvider = $searchModel->search($queryParams); 

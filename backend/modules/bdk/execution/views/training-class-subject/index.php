@@ -31,6 +31,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects = ProgramSubjectHistory::find()
 						->where([
+							'tb_program_subject_id' => $data->tb_program_subject_id,
 							'tb_program_id' => $program,
 							'revision' => $program_revision,
 							'status' => 1
@@ -50,9 +51,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects = ProgramSubjectHistory::find()
 						->where([
-							'tb_program_id'=>$program,
-							'revision'=>$program_revision,
-							'status'=>1
+							'tb_program_subject_id' => $data->tb_program_subject_id,
+							'tb_program_id' => $program,
+							'revision' => $program_revision,
+							'status' => 1
 						])
 						->one();
 					return $programSubjects->name;
@@ -66,6 +68,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=ProgramSubjectHistory::find()
 						->where([
+							'tb_program_subject_id' => $data->tb_program_subject_id,
 							'tb_program_id'=>$program,
 							'revision'=>$program_revision,
 							'status'=>1
@@ -82,6 +85,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=ProgramSubjectHistory::find()
 						->where([
+							'tb_program_subject_id' => $data->tb_program_subject_id,
 							'tb_program_id'=>$program,
 							'revision'=>$program_revision,
 							'status'=>1
@@ -98,6 +102,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
 					$programSubjects=ProgramSubjectHistory::find()
 						->where([
+							'tb_program_subject_id' => $data->tb_program_subject_id,
 							'tb_program_id'=>$program,
 							'revision'=>$program_revision,
 							'status'=>1
