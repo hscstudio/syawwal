@@ -26,7 +26,6 @@ use yii\helpers\ArrayHelper;
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>
-	
     <?= '' ?>
 
 			<?php
