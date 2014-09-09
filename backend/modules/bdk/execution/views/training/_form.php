@@ -1,14 +1,12 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use kartik\widgets\ActiveForm;
 use kartik\widgets\Select2;
-use yii\helpers\ArrayHelper;
 use kartik\widgets\DepDrop;
+use backend\models\Program;
 
-/* @var $this yii\web\View */
-/* @var $model backend\models\Training */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 <div class="training-form">
 
@@ -76,7 +74,7 @@ use kartik\widgets\DepDrop;
 					echo '</div>';
 
 					echo '<div class="col-md-6">';
-							$data = ArrayHelper::map(\backend\models\Program::find()
+							$data = ArrayHelper::map(Program::find()
 								->select(['id','name'])
 								->where(['status' => 1])
 								->asArray()
@@ -91,6 +89,11 @@ use kartik\widgets\DepDrop;
 								'pluginOptions' => [
 									'allowClear' => true
 								],
+								'pluginEvents' => [
+								    'change' => 'function() {
+								    	$("#training-name").val($("#training-tb_program_id").find(":selected").text());
+								    }',
+								]
 							]);
 					echo '</div>';
 
