@@ -224,7 +224,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 												return '';
 											},
 									'delete' => function ($url, $model) {
-												if ($model->status == 0)
+												if ($model->status == 0 or $model->status == 1)
 												{
 													$icon='<i class="fa fa-fw fa-trash-o"></i>';
 													return Html::a($icon,$url,[
