@@ -6,8 +6,6 @@ use yii\bootstrap\Dropdown;
 use kartik\widgets\Select2;
 use yii\bootstrap\Modal;
 
-/* @var $searchModel backend\models\MeetingSearch */
-
 $this->title = 'Meetings';
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -17,7 +15,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="meeting-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 	<?php \yii\widgets\Pjax::begin([
 		'id'=>'pjax-gridview',
 	]); ?>
@@ -93,7 +90,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 			
 			[
-				//'attribute' => 'classCount',
 				'format'=>'raw',
 				'label'=>'Room',
 				'vAlign'=>'middle',
@@ -133,18 +129,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Meeting</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
 			'before'=>
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'executor', 
 					'data' => ['all'=>'ALL BIDANG',
-								'GENERAL1'=>'GENERAL1','GENERAL2'=>'GENERAL2','GENERAL3'=>'GENERAL3',
-								'PLANNING1'=>'PLANNING1','PLANNING2'=>'PLANNING2','PLANNING3'=>'PLANNING3',
-								'EXECUTION1'=>'EXECUTION1','EXECUTION2'=>'EXECUTION2',
-								'EVALUATION1'=>'EVALUATION1','EVALUATION2'=>'EVALUATION2','EVALUATION3'=>'EVALUATION3',
+								'GENERAL'=>'GENERAL',
+								'EXECUTION'=>'EXECUTION',
+								'EVALUATION'=>'EVALUATION',
 							],
 					'value' => $executor,
 					'options' => [

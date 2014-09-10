@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
 /**
  * Meeting3Controller implements the CRUD actions for Meeting model.
  */
-class MeetingRequest3Controller extends Controller
+class MeetingRequestController extends Controller
 {
 	public $layout = '@hscstudio/heart/views/layouts/column2';	 
  	

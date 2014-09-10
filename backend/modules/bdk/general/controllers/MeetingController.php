@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * Meeting3Controller implements the CRUD actions for Meeting model.
  */
-class Meeting3Controller extends Controller
+class MeetingController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
