@@ -65,8 +65,10 @@ class TrainingRoomController extends Controller
 	        	->all(),
 	        'id', 'name');
 
+            $modelRoomKosong = new Room();
+
     		return $this->render('index', [
-                    'roomModel' => $roomModel,
+                    'modelRoomKosong' => $modelRoomKosong,
                     'trainingCurrent' => $trainingCurrent,
                     'activityRoomDP' => $activityRoomDP
     			]);
@@ -130,21 +132,66 @@ class TrainingRoomController extends Controller
             Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Forbidden');
             return $this->redirect(['index', 'tb_training_id' => Yii::$app->request->post('tb_training_id')]);
         }
-        // Semua room
-        $roomList = Room::find()->where(['ref_satker_id' => Yii::$app->user->identity->employee->ref_satker_id])->all();
+
+        // Ngambil data
+        $modelRoomKosong = Yii::$app->request->post('Room');
+
+        // Nyari room
+        $where[] = 'ref_satker_id ='.Yii::$app->user->identity->employee->ref_satker_id;
+        if ($modelRoomKosong['hostel'] != null) {
+            $where[] = 'hostel ='.$modelRoomKosong['hostel'];
+        }
+        if ($modelRoomKosong['computer'] != null) {
+            $where[] = 'computer ='.$modelRoomKosong['computer'];
+        }
+        if ($modelRoomKosong['capacity'] != 0) {
+            $where[] = 'capacity >='.$modelRoomKosong['capacity'];
+        }
+        $where = implode(' AND ',$where);
+        $roomList = Room::find()->where($where)->all();
 
         // Mbikin table
         $result = '<table class="table table-bordered table-hover table-striped">';
-        $result .= '<thead><tr><th>List Room Available</th><th>Action</th></tr></thead><tbody>';
+        $result .= '<thead>
+                        <tr>
+                            <th>List Room Available</th>
+                            <th>Capacity</th>
+                            <th>Hostel</th>
+                            <th>Computer</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
         foreach ($roomList as $k) {
             $result .= '<tr>';
+            
             $result .= '<td>'.$k->name.' ';
             if ($this->isCollide($k->id, Yii::$app->request->post('startTime'), Yii::$app->request->post('finishTime'))) {
                 $result .= $this->getCollideDate($k->id, Yii::$app->request->post('startTime'), Yii::$app->request->post('finishTime'));
             }
             $result .= '</td>';
-            $result .= '<td style="width:80px">';
 
+            $result .= '<td style="width:80px">'.$k->capacity.'</td>';
+            
+            $result .= '<td style="width:80px">';
+            if ($k->hostel == 1) {
+                $result .= '<i class="fa fa-fw fa-check text-success"></i>';
+            }
+            else {
+                $result .= '<i class="fa fa-fw fa-times text-danger"></i>';
+            }
+            $result .= '</td>';
+
+            $result .= '<td style="width:80px">';
+            if ($k->computer == 1) {
+                $result .= '<i class="fa fa-fw fa-check text-success"></i>';
+            }
+            else {
+                $result .= '<i class="fa fa-fw fa-times text-danger"></i>';
+            }
+            $result .= '</td>';
+
+            $result .= '<td style="width:80px">';
             $result .= Html::beginForm(
                             Url::to(['training-room/save']),
                             'post', [
@@ -167,6 +214,7 @@ class TrainingRoomController extends Controller
             }
             $result .= Html::endForm();
             $result .=  '</td>';
+
             $result .= '</tr>';
         }
         $result .= '</tbody></table>';

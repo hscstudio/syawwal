@@ -8,6 +8,7 @@ use kartik\widgets\Select2;
 use kartik\widgets\DepDrop;
 use kartik\widgets\ActiveForm;
 use kartik\widgets\DateTimePicker;
+use kartik\checkbox\CheckboxX;
 use backend\models\ActivityRoom;
 use backend\models\Room;
 
@@ -26,22 +27,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 		<div class="row">
 
-			<div class="panel panel-default">
-				<div class="panel-header">
-					<?php 
-						echo Html::a('<i class="fa fa-fw fa-sign-out"></i>Done', Url::to(['training/index']), [
-							'class' => 'btn btn-primary btn-block'
-						]);
-					?>
+			<div class="panel panel-default" id="room-finder">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<i class="fa fa-fw fa-search"></i> Find Available Room
+					</h3>
 				</div>
 				<div class="panel-body">
-
-					<div class="alert alert-info">
-						<p>
-							<i class="fa fa-fw fa-info-circle"></i>Use this tools below to select a room.
-							After that, just wait until General decide what to do with your request.
-						</p>
-					</div>
 
 					<div class="col-md-4">
 					<?php
@@ -98,17 +90,37 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						]);
 						echo '</div>';
 
+						echo '<div class="row">';
+						echo '<div class="col-md-4">';
+						echo $form->field($modelRoomKosong, 'capacity')->textInput([
+								'class' => 'form-control'
+							]);
+						echo '</div>';
+
+						echo '<div class="col-md-4">';
+						echo $form->field($modelRoomKosong, 'hostel')->widget(CheckboxX::classname(), [
+							'pluginOptions'=>['threeState'=>true,'size'=>'sm','inline'=>false, ],
+							'options'=>[
+								//'value'=>1
+							],
+						]); 
+						echo '</div>';
+						echo '<div class="col-md-4">';
+						echo $form->field($modelRoomKosong, 'computer')->widget(CheckboxX::classname(), [
+							'pluginOptions'=>['threeState'=>true,'size'=>'sm','inline'=>false, ],
+							'options'=>[
+								//'value'=>1
+							],
+						]);
+						echo '</div>';
+						echo '</div>';
+
 						echo '<div class="form-group" style="margin-bottom:0; margin-top:24px;">';
 						echo '<div class="btn-group">';
 						echo Html::submitButton('<i class="fa fa-fw fa-search"></i>Search', [
 								'class' => 'btn btn-primary',
 							]);
-						echo Html::button('<i class="fa fa-fw fa-history"></i>Clear', [
-								'class' => 'btn btn-primary',
-								'onclick' => '
-									event.preventDefault();
-									$(".roomQueryResult").html("<div class=\"alert alert-warning\"><i class=\"fa fa-fw fa-exclamation-circle\"></i>Search room first in left panel</div>");'
-							]);
+						
 						echo '</div>';
 						echo '</div>';
 
@@ -129,6 +141,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
 		<div class="row">
 			<div class="panel panel-default">
+				<div class="panel panel-heading">
+					<h3 class="panel-title">
+						<i class="fa fa-fw fa-list"></i>
+						List of Requested Room
+					</h3>
+				</div>
 				<div class="panel-body">
 					<?php
 						$gridColumns = [
@@ -242,8 +260,37 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						    		return ['class' => 'danger'];
 						    	}
 						    },
-						    'striped' => false
+						    'panel' => [
+								'heading'=>	'<div class="btn-group">'.
+									Html::a('<i class="fa fa-fw fa-arrow-circle-left"></i>Done ', Url::to(['training/index']), ['class' => 'btn btn-primary']).
+									Html::a('<i class="fa fa-fw fa-ticket"></i> Request Room', null, [
+											'class' => 'btn btn-success',
+											'id' => 'room-finder-button'
+										]).
+									'</div>',
+								'showFooter'=>false
+							],
+						    'striped' => false,
+							'responsive'=>true,
 						]);
+						// dah
+
+						// all js disni
+						$this->registerJs('
+								$("#room-finder").slideToggle("slow");
+
+								$("#room-finder-button").click(function() {
+
+									if ( $("#room-finder-button").hasClass("active") ) {
+										$("#room-finder-button").removeClass("active");
+										$("#room-finder").slideToggle("slow");
+									}
+									else {
+										$("#room-finder-button").addClass("active");
+										$("#room-finder").slideToggle("slow");
+									}
+								});
+							');
 					?>
 				</div>
 			</div>
