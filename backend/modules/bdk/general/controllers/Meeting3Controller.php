@@ -29,10 +29,9 @@ class Meeting3Controller extends Controller
         ];
     }
 
-    /**
-     * Lists all Meeting models.
-     * @return mixed
-     */
+
+
+
     public function actionIndex($status='all')
     {
         $searchModel = new MeetingSearch();
@@ -73,11 +72,10 @@ class Meeting3Controller extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Meeting model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+
+
+
+
     public function actionCreate()
     {
         $model = new Meeting();
@@ -85,25 +83,34 @@ class Meeting3Controller extends Controller
 			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
 			$model->executor = 'GENERAL3'; // SUBBID ASSET
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', 'Data saved');
-				return $this->redirect(['view', 'id' => $model->id]);
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Meeting created!');
+				return $this->redirect(['index']);
 			}
 			else{
-				Yii::$app->session->setFlash('error', 'Unable create there are some error');
-			}            
-        } 
-		
-		return $this->render('create', [
-			'model' => $model,
-		]);
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Cannot create meeting!');
+				return $this->redirect(['index']);
+			}
+        }
+
+    	if (Yii::$app->request->isAjax)
+		{
+			return $this->renderAjax('create', [
+				'model' => $model,
+			]);
+		}
+		else {
+			return $this->render('create', [
+				'model' => $model,
+			]);
+		}
+
     }
 
-    /**
-     * Updates an existing Meeting model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
+
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);       
@@ -114,16 +121,26 @@ class Meeting3Controller extends Controller
 			return $this->redirect(['index']);
 		}
         if ($model->load(Yii::$app->request->post())) {
-            	
-            if($model->save()){
-				Yii::$app->session->setFlash('success', 'Data saved');
-                return $this->redirect(['view', 'id' => $model->id]);
-            }            
+            if($model->save()) {
+				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Changes saved');
+				return $this->redirect(['index']);
+			}
+			else{
+				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Cannot save changes!');
+				return $this->redirect(['index']);
+			}
         }		
-		//return $this->render(['update', 'id' => $model->id]);
-		return $this->render('update', [
-			'model' => $model,
-		]);
+		
+		if (Yii::$app->request->isAjax) {
+			return $this->renderAjax('update', [
+				'model' => $model,
+			]);
+		}
+		else {
+			return $this->render('update', [
+				'model' => $model,
+			]);
+		}
 		
     }
 

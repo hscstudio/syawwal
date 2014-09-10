@@ -5,8 +5,6 @@ use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 use kartik\widgets\Select2;
 
-/* @var $searchModel backend\models\MeetingSearch */
-
 $this->title = 'Meetings';
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -16,7 +14,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="meeting-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 	<?php \yii\widgets\Pjax::begin([
 		'id'=>'pjax-gridview',
 	]); ?>
@@ -123,6 +120,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 									$icon='<span class="glyphicon glyphicon-pencil"></span>';
 									return Html::a($icon,$url,[
 										'data-pjax'=>"0",
+										'class' => 'modal-heart',
+										'modal-title' => '<i class="fa fa-fw fa-pencil-square"></i> Edit Meeting'
 									]);
 								}		
 								else{
@@ -151,10 +150,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Meeting</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			//'type'=>'primary',
-			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Meeting', ['create'], ['class' => 'btn btn-success']).
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Meeting', ['create'], [
+					'class' => 'btn btn-success modal-heart',
+					'data-pjax' => '0',
+					'modal-title' => '<i class="fa fa-fw fa-plus-circle"></i> Create New Meeting'
+				]).
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'status', 
