@@ -43,7 +43,8 @@ class Modal extends Widget
      */
 
 	public $modalId = 'modal-heart';
-	public $modalSize = ''; //modal-lg, $modal-sm
+	public $modalSize = ''; //modal-lg, modal-sm
+	public $registerAsset = true;
     /**
      * Initializes the widget.
      */
@@ -76,7 +77,7 @@ class Modal extends Widget
 		echo Html::endTag('div');
 		echo Html::endTag('div');
 		echo Html::endTag('div');
-		ModalAsset::register($this->getView());
+		if($this->registerAsset) ModalAsset::register($this->getView());
     }
 
     /**

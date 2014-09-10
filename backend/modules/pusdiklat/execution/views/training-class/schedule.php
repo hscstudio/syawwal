@@ -13,7 +13,8 @@ use kartik\checkbox\CheckboxX;
 /* @var $searchModel backend\models\RoomSearch */
 
 $this->title = 'Schedule : Class '.$trainingClass->class;
-$this->params['breadcrumbs'][] = ['label' => 'Training', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training/index'])];
+$this->params['breadcrumbs'][] = ['label' => 'Training Classes', 'url' => ['index','tb_training_id'=>$trainingClass->tb_training_id]];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -50,24 +51,18 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					type: 'post',
 					data: $(this).serialize(),
 					success: function(data) {
-						datas = data.split('|');						
+						var datas = data.split('|');						
 						if(datas[1]==1){
 							//SUCCESS
 							$.pjax.reload({
 								url: '".\yii\helpers\Url::to(['schedule',
-									'tb_training_class_id'=>$trainingClass->id,
-									'start'=>$start,
-								])."',
+									'tb_training_class_id'=>$trainingClass->id])."&start='+datas[3],
 								container: '#pjax-gridview-schedule', 
 								timeout: 3000,
-							});
+							});				
 							
-							
-							
-							$('#trainingscheduleextsearch-starttime').val(datas[3])
-							$('#trainingscheduleextsearch-starttime-disp').val(datas[3])
-							
-							
+							$('#trainingscheduleextsearch-starttime').val(datas[4])
+							$('#trainingscheduleextsearch-starttime-disp').val(datas[4])
 						}
 						else{
 							alert(datas[2]);
@@ -230,16 +225,16 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 			'pluginOptions' => [
 				'allowClear' => true,
-				'minimumInputLength' => 0,
-				/*'ajax' => [
-					'url' => $url,
-					'dataType' => 'json',
-					'data' => new yii\web\JsExpression('function(term,page) { return {search:term}; }'),
-					'results' => new yii\web\JsExpression('function(data,page) { return {results:data.results}; }'),
-				],
-				'initSelection' => new yii\web\JsExpression($initScript)*/
 			],
 		])->label(false); ?>
+		<?php 
+		if(isset($_GET['s2I'])){
+			$this->registerJs('
+				$("#trainingscheduleextsearch-tb_training_class_subject_id").select2().select2("val", '.$_GET['s2I'].');
+			');
+		}
+		?>
+		
 		<?php \yii\widgets\Pjax::end(); ?>
 		</td>
 		<td>
@@ -252,7 +247,40 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		</td>
 	</tr>
 	<tr>
-		<td></td>
+		<td>
+		<?php
+		$activityRoom = \backend\models\ActivityRoom::find()
+			->where([
+				'type'=>0,
+				'activity_id'=>$trainingClass->tb_training_id,
+				'status'=>2
+			])
+			->all();
+		$dataRoom=[];	
+		$firstAR = '';
+		foreach ($activityRoom as $ar){
+			$dataRoom[$ar->id] = $ar->room->name;
+			if(empty($firstAR)){
+				$firstAR = $ar->id;
+			}
+		}
+		echo $form->field($model, 'tb_activity_room_id')->widget(Select2::classname(), [
+			'data' => $dataRoom,
+			'options' => [
+				'placeholder' => 'Choose Activity Room ...',
+				'onchange'=>'
+				',
+			],
+			'pluginOptions' => [
+				'allowClear' => true,
+			],
+		])->label(false); 
+		$this->registerCss('#s2id_trainingscheduleextsearch-tb_activity_room_id { width: 275px !important; }');
+		$this->registerJs('
+				$("#trainingscheduleextsearch-tb_activity_room_id").select2().select2("val", '.$firstAR.');
+			');
+		?>
+		</td>
 		<td>
 		<div id="other-activity">
 			<?= $form->field($model, 'activity')->textInput(['placeholder' => 'Other Activity',])->label(false) ?>			
@@ -267,17 +295,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	</div>
 	</div>
 	
-	
-	<div class="clearfix" id="available-room"></div>
-	
-	
-	
-	<?php 
-	$this->registerCss('.sselect2-container { width: 200px !important; }');
-	$this->registerJs('
-			//$("#form-available-room").submit();
-	');
-	?>
 	
 	<?php \yii\widgets\Pjax::begin([
 		'id'=>'pjax-gridview-schedule',
@@ -305,7 +322,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'label' => 'Datetime',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'250px',
+				'width'=>'200px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'format'=>'raw',
@@ -370,6 +387,8 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			[
 				'label' => 'Hours',
 				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'50px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'format'=>'raw',
@@ -385,34 +404,127 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			[
 				'label' => 'PIC/Narasumber',
 				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'150px;',
+				'width'=>'200px;',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'format'=>'raw',
 				'value'=>function($model){
 					if($model->tb_training_class_subject_id>0){
 						// FIND PENGAJAR pada tb_training_schedule_trainer (id, tb_training_schedule_id, tb_trainer_id, status);
+						$content = Html::a('<i class="fa fa-plus"></i> Add',['trainer','id'=>$model->id],[
+							'class' => 'label label-success modal-heart',
+							'data-pjax'=>0,
+							'title'=>'Click to add trainer!',
+							'data-toggle'=>"tooltip",
+							'data-placement'=>"top",
+						]);
+						
+						$trainingScheduleTrainer = \backend\models\trainingScheduleTrainer::find()
+							->where([
+								'tb_training_schedule_id'=>$model->id,
+								'status'=>1,
+							])
+							->orderBy('ref_trainer_type_id ASC')
+							->all();
+						$ref_trainer_type_id= "-1";	
+						$idx = 1;
+						foreach($trainingScheduleTrainer as $trainer){
+							if($ref_trainer_type_id!=$trainer->ref_trainer_type_id){
+								$content .="<hr style='margin:2px 0'>";
+								$content .="<strong>".$trainer->trainerType->name."</strong>";
+								$content .="<hr style='margin:2px 0'>";
+								$ref_trainer_type_id=$trainer->ref_trainer_type_id;
+								$idx=1;
+							}
+							
+							$content .="<div>";
+							$content .="<span  class='label label-default' data-toggle='tooltip' title='".$trainer->trainer->organization." - ".$trainer->trainer->phone."'>".$idx++.". ".$trainer->trainer->name."</span> ";
+							$content .=Html::a('<span class="glyphicon glyphicon-trash"></span>', 
+							[
+							'delete-trainer',
+							'id'=>$model->id,
+							'tb_trainer_id'=>$trainer->tb_trainer_id,
+							], 
+							[
+							'class' => 'label label-danger link-post',
+							'data-pjax'=>0,
+							'title'=>'click to delete it!',
+							//'data-confirm'=>'Are sure delete it!',
+							'data-toggle'=>"tooltip",
+							'data-placement'=>"top",
+							]);	
+							$content .="</div>";							
+						}
 					}
 					else{
-						return $model->pic;
+						$content = $model->pic;
+					}
+					
+					
+					return $content;
+				}
+			],
+			[
+				'label' => 'R',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'10px;',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'format'=>'raw',
+				'value'=>function($model){
+					if($model->tb_activity_room_id>0){
+						$ar = \backend\models\ActivityRoom::findOne($model->tb_activity_room_id);
+						$room = $ar->room->name;
+						$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+						if($ar->room->ref_satker_id!=$ref_satker_id){
+							$room .= ' ['.$ar->room->satker->name.'] ';
+						} 
+						return Html::a($ar->id,['room','id'=>$model->id],[
+							'class' => 'label label-warning modal-heart',
+							'data-pjax'=>0,
+							'title'=>$room,
+							'data-toggle'=>"tooltip",
+							'data-placement'=>"top",
+						]);
+					}
+					else{
+						return Html::a('-',['room','id'=>$model->id],[
+							'class' => 'label label-warning modal-heart',
+							'data-pjax'=>0,
+							'title'=>'Click to set room!',
+							'data-toggle'=>"tooltip",
+							'data-placement'=>"top",
+						]);
 					}
 				}
 			],
 			[
-				'label' => 'Session',
+				'label' => 'S',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'80px;',
+				'width'=>'10px;',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'format'=>'raw',
 				'value'=>function($model){
 					if($model->tb_training_class_subject_id>0){
-						return $model->session;
+						return Html::a($model->session,['session','id'=>$model->id],[
+							'class' => 'label label-primary modal-heart',
+							'data-pjax'=>0,
+							'title'=>'Click to set session!',
+							'data-toggle'=>"tooltip",
+							'data-placement'=>"top",
+						]);
 					}
 					else{
-						return '';
+						return Html::a('-',['session','id'=>$model->id],[
+							'class' => 'label label-primary modal-heart',
+							'data-pjax'=>0,
+							'title'=>'Click to set session!',
+							'data-toggle'=>"tooltip",
+							'data-placement'=>"top",
+						]);
 					}
 				}
 			],
@@ -449,89 +561,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					}
 				}
 			],
-			/*
-			[
-				'label' => 'Room',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'format'=>'raw',
-				'value'=>function($model){
-					$room = $model->room->name;
-					$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-					if($model->room->ref_satker_id!=$ref_satker_id){
-						$room .= '<br><span class="badge">'.$model->room->satker->name.'</span>';
-					} 
-					return $room;
-				}
-			],
-			[
-				'format' => 'raw',
-				'attribute' => 'status',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'80px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'value' => function ($data){									
-					if ($data->status==1){
-						$label='label label-info';
-						$title='Process';
-					}	
-					else if ($data->status==2){ 
-						$label='label label-success';
-						$title='Approved';
-					}
-					else if ($data->status==3){ 
-						$label='label label-danger';
-						$title='Rejected';
-					}
-					else {
-						$label='label label-warning';
-						$title='Waiting';
-					}
-					return Html::tag('span', $title, ['class'=>$label,'title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
-				}
-			],
-			[
-				'format' => 'raw',
-				'label' => 'Action',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'80px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'value' => function ($model) use ($activity){
-					$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-					$delete = false;
-					if($model->room->ref_satker_id==$ref_satker_id){
-						if($model->status==1) $delete=true;
-					}
-					else{
-						if($model->status==0) $delete=true;
-					}
-					
-					if($delete){
-						return Html::a('<span class="fa fa-times"></span>', 
-							[
-							'unset',
-							'activity_id'=>$activity->id,
-							'tb_room_id'=>$model->room->id,
-							], 
-							[
-							'class' => 'label label-danger link-post-2','data-pjax'=>0,
-							'title'=>'click to set it!',
-							'data-toggle'=>"tooltip",
-							'data-placement'=>"top",
-							]);
-					}
-				}
-			],
-			*/
+			
         ],
 		'panel' => [
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Schedule</h3>',
-			//'type'=>'primary',
 			'before'=>
 				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Training Class', ['index','tb_training_id'=>$trainingClass->tb_training_id], ['class' => 'btn btn-warning']).' '.
 				Html::a('<i class="fa fa-fw fa-plus"></i> Add Activity', '#', ['class' => 'btn btn-success','onclick'=>"$('#booking-schedule').slideToggle('slow');return false;",'pjax'=>0]).' '.
@@ -585,16 +618,18 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	<?php
 	$this->registerJs('
 			if($("#trainingscheduleextsearch-tb_training_class_subject_id").val()>0){
+				var select2Index = $("#trainingscheduleextsearch-tb_training_class_subject_id").val();
 				$.pjax.reload({
 					url: "'.\yii\helpers\Url::to(['schedule',
 						'tb_training_class_id'=>$trainingClass->id,
 						'start'=>$start,
-					]).'",
+					]).'&s2I="+select2Index,
 					container: "#pjax-select-activity", 
 					timeout: 3000,
 				});
 				$("#trainingscheduleextsearch-hours").val(0)
 			}
+		
 			$( "a.link-post" ).click(function() {	
 				if(!confirm("Are you sure delete it??")) return false;	
 				$.ajax({
@@ -602,15 +637,15 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					type: "post",
 					//data: $("#form-available-room").serialize(),
 					success: function(data) {
-						datas = data.split("|");	
+						var datas = data.split("|");	
 						if(datas[1]==0){
 							alert(datas[2]);
 						}
 						else{
-							$("#trainingscheduleextsearch-starttime").val(datas[3]);
-							$("#trainingscheduleextsearch-starttime-disp").val(datas[3]);
+							$("#trainingscheduleextsearch-starttime").val(datas[4]);
+							$("#trainingscheduleextsearch-starttime-disp").val(datas[4]);
 							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['schedule','tb_training_class_id'=>$trainingClass->id]).'",
+								url: "'.\yii\helpers\Url::to(['schedule','tb_training_class_id'=>$trainingClass->id]).'&start="+datas[3],
 								container: "#pjax-gridview-schedule", 
 								timeout: 3000,
 							});					
@@ -622,6 +657,58 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				});	
 				return false;
 			});
+			
+			$.ajax({
+				url: "'.yii\helpers\Url::to(['get-max-time','tb_training_class_id'=>$trainingClass->id,'start'=>$start]).'",
+				type: "post",
+				//data: $("#form-available-room").serialize(),
+				success: function(data) {
+					//var datas = data.split("|");	
+					$("#trainingscheduleextsearch-starttime").val(data);
+					$("#trainingscheduleextsearch-starttime-disp").val(data);
+				},
+				error:  function( jqXHR, textStatus, errorThrown ) {
+					alert(jqXHR.responseText);
+				}
+			});	
+			
+			$(".modal-heart").on("click", function () {
+				var $modal = $("#modal-heart");
+				var $link = $(this);
+				var $source = $link.attr("source")
+				$modal.find(".modal-refresh").attr("href", $link.attr("href"));
+				if ($link.attr("title")) {
+					$modal.find(".modal-title").text($link.attr("title"));
+				}
+				else {
+					$modal.find(".modal-title").html($link.attr("modal-title")); // warning: klo attribut title dan modal-title ada 2-2 nya
+																				 // yang menang bakal yang title.
+				}
+				$modal.find(".modal-body .content").html("Loading ...");
+				$modal.modal("show");
+				
+				$.ajax({
+					type: "POST",
+					cache: false,
+					url: $link.prop("href"),
+					data: $(".form-heart form").serializeArray(),
+					success: function (data) {		
+						if ($source) 
+							result = $(data).find($source);
+						else
+							result = data;
+						$modal.find(".modal-body .content").html(result);
+						$modal.find(".modal-body .content").css("max-height", ($(window).height() - 200) + "px");
+					},
+					error: function (XMLHttpRequest, textStatus, errorThrown) {
+						$modal.find(".modal-body .content").html("<div class=\"error\">" + XMLHttpRequest.responseText + "</div>");
+					}
+				});
+				return false;
+			});
+			
+			$("[data-toggle=\'tooltip\']").tooltip();
+
 	');
 	?>
 	<?php \yii\widgets\Pjax::end(); ?>
@@ -669,5 +756,5 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		$("#trainingscheduleextsearch-hours").prop("disabled",false);
 	'); 			
 	?>
-
+	<?= \hscstudio\heart\widgets\Modal::widget(['modalSize'=>'','registerAsset'=>false]) ?>
 </div>

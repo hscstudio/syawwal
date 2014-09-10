@@ -7,7 +7,7 @@ use yii\bootstrap\Dropdown;
 /* @var $searchModel backend\models\TrainingClassSearch */
 
 $this->title = 'Classes : '.\yii\helpers\Inflector::camel2words($training->name);
-$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training/index'])];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
