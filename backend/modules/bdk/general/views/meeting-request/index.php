@@ -130,7 +130,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         ],
 		'panel' => [
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
-			'before'=>
+			'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Meeting', ['meeting/create'], [
+					'class' => 'btn btn-success modal-heart',
+					'data-pjax' => '0',
+					'modal-title' => '<i class="fa fa-fw fa-plus-circle"></i> Create New Meeting'
+				]).
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'executor', 

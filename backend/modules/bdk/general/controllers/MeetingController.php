@@ -39,13 +39,13 @@ class MeetingController extends Controller
 		if($status=='all'){
 			$queryParams['MeetingSearch']=[
 				'ref_satker_id'=>$ref_satker_id,
-				'executor'=>'GENERAL3',
+				'executor'=>'GENERAL',
 			];
 		}
 		else{
 			$queryParams['MeetingSearch']=[
 				'ref_satker_id'=>$ref_satker_id,
-				'executor'=>'GENERAL3',
+				'executor'=>'GENERAL',
 				'status'=>$status,
 			];
 		}
@@ -81,14 +81,14 @@ class MeetingController extends Controller
         $model = new Meeting();
         if ($model->load(Yii::$app->request->post())){
 			$model->ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-			$model->executor = 'GENERAL3'; // SUBBID ASSET
+			$model->executor = 'GENERAL'; // SUBBID ASSET
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Meeting created!');
-				return $this->redirect(['index']);
+				return $this->redirect(['meeting-request/index']);
 			}
 			else{
 				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Cannot create meeting!');
-				return $this->redirect(['index']);
+				return $this->redirect(['meeting-request/index']);
 			}
         }
 
@@ -117,7 +117,7 @@ class MeetingController extends Controller
 		if($model->ref_satker_id!=(int)Yii::$app->user->identity->employee->ref_satker_id){
 			return $this->redirect(['index']);
 		}
-		if($model->executor != 'GENERAL3'){
+		if($model->executor != 'GENERAL'){
 			return $this->redirect(['index']);
 		}
         if ($model->load(Yii::$app->request->post())) {
@@ -156,7 +156,7 @@ class MeetingController extends Controller
 		if($model->ref_satker_id!=(int)Yii::$app->user->identity->employee->ref_satker_id){
 			return $this->redirect(['index']);
 		}
-		if($model->executor != 'GENERAL3'){
+		if($model->executor != 'GENERAL'){
 			return $this->redirect(['index']);
 		}
 		$model->delete();
