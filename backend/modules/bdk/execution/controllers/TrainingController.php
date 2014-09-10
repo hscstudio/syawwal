@@ -12,10 +12,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\models\Satker;
-use yii\helpers\ArrayHelper;
 use backend\models\Program;
 use backend\models\ProgramHistory;
 use backend\models\TrainingHistory;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
 /**
@@ -24,7 +24,7 @@ use yii\helpers\Json;
 class TrainingController extends Controller
 {
 
-	public $layout = '@hscstudio/heart/views/layouts/column2';
+	public $layout = '@backend/assets/layouts/column2';
 	 
  	
 	public function behaviors()
