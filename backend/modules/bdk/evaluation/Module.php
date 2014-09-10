@@ -13,7 +13,8 @@ class Module extends \yii\base\Module
 	
 	public function getMenuItems(){
 		return [
-			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],			
+			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
+			['icon'=>'fa fa-fw fa-briefcase', 'label' => 'Meeting', 'url' => ['/'.$this->uniqueId.'/meeting/index'],'path'=>['meeting/',]],
 		];
 	}
 }
