@@ -77,7 +77,7 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_class_id', 'tb_student_id', 'number', 'presence', 'pretest', 'posttest'], 'required'],
+            [['tb_training_class_id', 'tb_student_id'], 'required'],
             [['tb_training_class_id', 'tb_student_id', 'headClass', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['activity', 'presence', 'pretest', 'posttest', 'test'], 'number'],
             [['created', 'modified', 'deleted'], 'safe'],

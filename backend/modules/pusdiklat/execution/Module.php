@@ -16,7 +16,9 @@ class Module extends \yii\base\Module
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			['icon'=>'fa fa-fw fa-link', 'label' => 'Execution I [15%]', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-stack-overflow', 'label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'],'path'=>[
-					'training/','training-class/','training-class-subject/','training-class-subject-trainer/',
+					'training/','training-class/',
+					'training-class-subject/','training-class-subject-trainer/',
+					'training-class-student/',
 				]],
 			]],
 		];

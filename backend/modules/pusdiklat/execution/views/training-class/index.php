@@ -95,8 +95,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'status'=>1
 						])->count();
 					return Html::a($studentCount,
-						\yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class-student/index']),
-						[]);
+						\yii\helpers\Url::to([
+							'/'.$this->context->module->uniqueId.'/training-class-student/index',
+							'tb_training_id'=>$model->tb_training_id,
+							'tb_training_class_id'=>$model->id,
+						]),
+						[
+							'class'=>'label label-default',
+						]);
 				}
 			],
 			[
