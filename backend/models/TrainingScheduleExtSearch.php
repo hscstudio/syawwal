@@ -12,7 +12,8 @@ class TrainingScheduleExtSearch  extends Model // extends TrainingSchedule
 {
     public  $hours, $minutes, $tb_training_class_subject_id, 
 			$startDate, $startTime,
-			$activity, $pic, $scheduleDate;
+			$activity, $pic, $scheduleDate,
+			$tb_activity_room_id;
 	/**
      * @inheritdoc
      */
@@ -23,7 +24,7 @@ class TrainingScheduleExtSearch  extends Model // extends TrainingSchedule
             //[['startTime', 'finishTime', 'created', 'modified', 'deleted'], 'safe'],
             //
 			[['hours'], 'number'],
-			[['tb_training_class_subject_id','minutes'], 'integer'],
+			[['tb_training_class_subject_id','minutes','tb_activity_room_id'], 'integer'],
 			[['activity', 'pic', 'startTime', 'startDate', 'scheduleDate'], 'safe'],
         ];
     }
@@ -39,6 +40,7 @@ class TrainingScheduleExtSearch  extends Model // extends TrainingSchedule
             'startTime' => 'Start Time',
             'startDate' => 'Start Date',
 			'scheduleDate' => 'Schedule Date',
+			'tb_activity_room_id'=> 'Activity Room',
         ];
     }
 }

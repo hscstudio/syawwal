@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 09, 2014 at 11:56 AM
+-- Generation Time: Sep 10, 2014 at 06:09 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.9
 
@@ -1941,16 +1941,55 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
   KEY `tb_activity_room_id` (`tb_activity_room_id`),
   KEY `tb_training_class_subject_assignment_id` (`tb_training_class_subject_id`),
   KEY `tb_training_class_id` (`tb_training_class_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
 
 --
 -- Dumping data for table `tb_training_schedule`
 --
 
 INSERT INTO `tb_training_schedule` (`id`, `tb_training_class_id`, `tb_training_class_subject_id`, `tb_activity_room_id`, `activity`, `pic`, `hours`, `startTime`, `finishTime`, `session`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 3, 1, 0, '', '', '1.00', '2014-08-19 08:00:00', '2014-08-19 08:45:00', 1, 1, '2014-09-09 16:33:05', 1, '2014-09-09 16:33:05', 1, NULL, NULL),
-(2, 3, 1, 0, '', '', '2.00', '2014-08-19 08:45:00', '2014-08-19 10:15:00', 1, 1, '2014-09-09 16:33:16', 1, '2014-09-09 16:33:16', 1, NULL, NULL),
-(3, 3, -1, 0, 'Coffe Break', '-', '0.00', '2014-08-20 08:00:00', '2014-08-20 08:15:00', 1, 1, '2014-09-09 16:34:15', 1, '2014-09-09 16:34:15', 1, NULL, NULL);
+(21, 3, -3, 5, 'Pembukaan', 'Kapusdiklat', '0.00', '2014-08-19 08:00:00', '2014-08-19 08:30:00', 1, 1, '2014-09-10 06:00:23', 1, '2014-09-10 06:00:23', 1, NULL, NULL),
+(22, 3, 1, 5, '', '', '2.00', '2014-08-19 08:30:00', '2014-08-19 10:00:00', 1, 1, '2014-09-10 06:04:24', 1, '2014-09-10 06:54:06', 1, NULL, NULL),
+(23, 3, 1, 6, '', '', '1.00', '2014-08-20 10:00:00', '2014-08-20 10:45:00', 6, 1, '2014-09-10 06:55:07', 1, '2014-09-10 07:13:18', 1, NULL, NULL),
+(24, 3, 2, 5, '', '', '1.00', '2014-08-19 10:00:00', '2014-08-19 10:45:00', 1, 1, '2014-09-10 08:13:32', 1, '2014-09-10 08:13:32', 1, NULL, NULL),
+(25, 3, 2, 5, '', '', '1.00', '2014-08-19 10:45:00', '2014-08-19 11:30:00', 1, 1, '2014-09-10 08:13:50', 1, '2014-09-10 08:13:50', 1, NULL, NULL),
+(26, 3, -3, 5, 'Ceramah', 'Kapus', '0.00', '2014-08-20 07:00:00', '2014-08-20 07:30:00', 1, 1, '2014-09-10 11:08:53', 1, '2014-09-10 11:08:53', 1, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_training_schedule_trainer`
+--
+
+CREATE TABLE IF NOT EXISTS `tb_training_schedule_trainer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tb_training_schedule_id` int(11) NOT NULL,
+  `tb_trainer_id` int(11) NOT NULL,
+  `ref_trainer_type_id` int(11) NOT NULL,
+  `cost` int(11) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created` datetime DEFAULT NULL,
+  `createdBy` int(11) DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `modifiedBy` int(11) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `deletedBy` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tb_training_schedule_id` (`tb_training_schedule_id`,`tb_trainer_id`),
+  KEY `fk_tb_training_schedule_tb_room1` (`ref_trainer_type_id`),
+  KEY `tb_activity_room_id` (`ref_trainer_type_id`),
+  KEY `tb_training_class_subject_assignment_id` (`tb_trainer_id`),
+  KEY `tb_training_class_id` (`tb_training_schedule_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+
+--
+-- Dumping data for table `tb_training_schedule_trainer`
+--
+
+INSERT INTO `tb_training_schedule_trainer` (`id`, `tb_training_schedule_id`, `tb_trainer_id`, `ref_trainer_type_id`, `cost`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(8, 25, 2, 0, NULL, 1, '2014-09-10 08:13:58', 1, '2014-09-10 08:13:58', 1, NULL, NULL),
+(11, 22, 3, 2, NULL, 1, '2014-09-10 09:24:40', 1, '2014-09-10 09:24:40', 1, NULL, NULL),
+(13, 22, 1, 0, NULL, 1, '2014-09-10 11:03:40', 1, '2014-09-10 11:03:40', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -3477,6 +3516,14 @@ ALTER TABLE `tb_training_pic`
 --
 ALTER TABLE `tb_training_schedule`
   ADD CONSTRAINT `tb_training_schedule_ibfk_3` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tb_training_schedule_trainer`
+--
+ALTER TABLE `tb_training_schedule_trainer`
+  ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_3` FOREIGN KEY (`ref_trainer_type_id`) REFERENCES `ref_trainer_type` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_1` FOREIGN KEY (`tb_training_schedule_id`) REFERENCES `tb_training_schedule` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_2` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_subject_trainer_recommendation`
