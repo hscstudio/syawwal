@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Dropdown;
 use yii\bootstrap\Modal;
 use kartik\grid\GridView;
@@ -126,15 +127,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						]);
 					},
 					'delete' => function ($url, $model) {
-						$activityRoom = Meeting::find()
-									->where('executor = :executor',
-									[
-										':executor' => 'GENERAL'
-									])
-									->count();
-						if($activityRoom != 0){ 
+						if($model->executor == 'GENERAL'){ 
 							$icon='<span class="glyphicon glyphicon-trash"></span>';
-							return Html::a($icon,$url,[
+							return Html::a($icon, Url::to(['meeting/delete', 'id' => $model->id]),[
 								'title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post",
 								'data-pjax'=>"0",
 							]);

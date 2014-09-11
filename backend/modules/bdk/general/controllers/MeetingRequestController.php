@@ -41,7 +41,7 @@ class MeetingRequestController extends Controller
         $searchModel = new MeetingSearch();
 		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
 		if($executor=='all'){
-			$queryParams['MeetingSearch']=[
+			$queryParams['MeetingSearch']= [
 				'ref_satker_id'=>$ref_satker_id,
 				'status'=>1,
 			];

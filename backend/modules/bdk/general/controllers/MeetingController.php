@@ -123,11 +123,11 @@ class MeetingController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             if($model->save()) {
 				Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Changes saved');
-				return $this->redirect(['index']);
+				return $this->redirect(['meeting-request/index']);
 			}
 			else{
 				Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Cannot save changes!');
-				return $this->redirect(['index']);
+				return $this->redirect(['meeting-request/index']);
 			}
         }		
 		
@@ -144,23 +144,27 @@ class MeetingController extends Controller
 		
     }
 
-    /**
-     * Deletes an existing Meeting model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
+
+
+
+
     public function actionDelete($id)
     {
         $model=$this->findModel($id);
+
 		if($model->ref_satker_id!=(int)Yii::$app->user->identity->employee->ref_satker_id){
-			return $this->redirect(['index']);
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> You are not allowed to delete meeting that is not your own!');
+			return $this->redirect(['meeting-request/index']);
 		}
 		if($model->executor != 'GENERAL'){
-			return $this->redirect(['index']);
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>You are not allowed to delete meeting that is not your own!');
+			return $this->redirect(['meeting-request/index']);
 		}
+
 		$model->delete();
-        return $this->redirect(['index']);
+
+		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Meeting deleted!');
+		return $this->redirect(['meeting-request/index']);
     }
 
     /**
