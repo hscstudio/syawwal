@@ -8,6 +8,8 @@ use frontend\models\StudentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
+//use hscstudio\heart\libraries\tcpdf\tcpdf;
 
 /**
  * StudentController implements the CRUD actions for Student model.
@@ -34,11 +36,11 @@ class StudentController extends Controller
      */
     public function actionIndex()
     {
-        /*$searchModel = new StudentSearch();
+       /* $searchModel = new StudentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            //'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);*/
 		return $this->redirect(['update', 'id' => Yii::$app->user->identity->id]);
@@ -50,9 +52,10 @@ class StudentController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView()
     {
-        return $this->render('view', [
+        $id = Yii::$app->user->identity->id;
+		return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -88,9 +91,10 @@ class StudentController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id);
+        $id = Yii::$app->user->identity->id;
+		$model = $this->findModel($id);
 		//$model->password='';
         $currentFiles=[];
                 $currentFiles[0]=$model->photo;
@@ -393,153 +397,50 @@ class StudentController extends Controller
         ]);	
     }
 	
-	public function actionImport(){
+	public function actionPrint($filetype='docx') {
 		$dataProvider = new ActiveDataProvider([
-            'query' => Student::find(),
+            'query' => Student::find()->where(['id'=>Yii::$app->user->identity->id]),
         ]);
 		
-		/* 
-		Please read guide of upload https://github.com/yiisoft/yii2/blob/master/docs/guide/input-file-upload.md
-		maybe I do mistake :)
-		*/		
-		if (!empty($_FILES)) {
-			$importFile = \yii\web\UploadedFile::getInstanceByName('importFile');
-			if(!empty($importFile)){
-				$fileTypes = ['xls','xlsx']; // File extensions allowed
-				//$ext = end((explode(".", $importFile->name)));
-				$ext=$importFile->extension;
-				if(in_array($ext,$fileTypes)){
-					$inputFileType = \PHPExcel_IOFactory::identify($importFile->tempName );
-					$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-					$objPHPExcel = $objReader->load($importFile->tempName );
-					$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
-					$baseRow = 2;
-					$inserted=0;
-					$read_status = false;
-					$err=[];
-					while(!empty($sheetData[$baseRow]['A'])){
-						$read_status = true;
-						$abjadX=array();
-						//$id=  $sheetData[$baseRow]['A'];
-						$ref_religion_id=  $sheetData[$baseRow]['B'];
-						$ref_graduate_id=  $sheetData[$baseRow]['C'];
-						$ref_rank_class_id=  $sheetData[$baseRow]['D'];
-						$ref_unit_id=  $sheetData[$baseRow]['E'];
-						$name=  $sheetData[$baseRow]['F'];
-						$nickName=  $sheetData[$baseRow]['G'];
-						$frontTitle=  $sheetData[$baseRow]['H'];
-						$backTitle=  $sheetData[$baseRow]['I'];
-						$nip=  $sheetData[$baseRow]['J'];
-						$password_hash=  $sheetData[$baseRow]['K'];
-						$auth_key=  $sheetData[$baseRow]['L'];
-						$born=  $sheetData[$baseRow]['M'];
-						$birthDay=  $sheetData[$baseRow]['N'];
-						$gender=  $sheetData[$baseRow]['O'];
-						$phone=  $sheetData[$baseRow]['P'];
-						$email=  $sheetData[$baseRow]['Q'];
-						$address=  $sheetData[$baseRow]['R'];
-						$married=  $sheetData[$baseRow]['S'];
-						$photo=  $sheetData[$baseRow]['T'];
-						$blood=  $sheetData[$baseRow]['U'];
-						$position=  $sheetData[$baseRow]['V'];
-						$education=  $sheetData[$baseRow]['W'];
-						$eselon2=  $sheetData[$baseRow]['X'];
-						$eselon3=  $sheetData[$baseRow]['Y'];
-						$eselon4=  $sheetData[$baseRow]['Z'];
-						$satker=  $sheetData[$baseRow]['AA'];
-						$officePhone=  $sheetData[$baseRow]['AB'];
-						$officeFax=  $sheetData[$baseRow]['AC'];
-						$officeEmail=  $sheetData[$baseRow]['AD'];
-						$officeAddress=  $sheetData[$baseRow]['AE'];
-						$noSKPangkat=  $sheetData[$baseRow]['AF'];
-						$tmtSKPangkat=  $sheetData[$baseRow]['AG'];
-						$fileSKPangkat=  $sheetData[$baseRow]['AH'];
-						$status=  $sheetData[$baseRow]['AI'];
-						//$created=  $sheetData[$baseRow]['AJ'];
-						//$createdBy=  $sheetData[$baseRow]['AK'];
-						//$modified=  $sheetData[$baseRow]['AL'];
-						//$modifiedBy=  $sheetData[$baseRow]['AM'];
-						//$deleted=  $sheetData[$baseRow]['AN'];
-						//$deletedBy=  $sheetData[$baseRow]['AO'];
-
-						$model2=new Student;
-						//$model2->id=  $id;
-						$model2->ref_religion_id=  $ref_religion_id;
-						$model2->ref_graduate_id=  $ref_graduate_id;
-						$model2->ref_rank_class_id=  $ref_rank_class_id;
-						$model2->ref_unit_id=  $ref_unit_id;
-						$model2->name=  $name;
-						$model2->nickName=  $nickName;
-						$model2->frontTitle=  $frontTitle;
-						$model2->backTitle=  $backTitle;
-						$model2->nip=  $nip;
-						$model2->password_hash=  $password_hash;
-						$model2->auth_key=  $auth_key;
-						$model2->born=  $born;
-						$model2->birthDay=  $birthDay;
-						$model2->gender=  $gender;
-						$model2->phone=  $phone;
-						$model2->email=  $email;
-						$model2->address=  $address;
-						$model2->married=  $married;
-						$model2->photo=  $photo;
-						$model2->blood=  $blood;
-						$model2->position=  $position;
-						$model2->education=  $education;
-						$model2->eselon2=  $eselon2;
-						$model2->eselon3=  $eselon3;
-						$model2->eselon4=  $eselon4;
-						$model2->satker=  $satker;
-						$model2->officePhone=  $officePhone;
-						$model2->officeFax=  $officeFax;
-						$model2->officeEmail=  $officeEmail;
-						$model2->officeAddress=  $officeAddress;
-						$model2->noSKPangkat=  $noSKPangkat;
-						$model2->tmtSKPangkat=  $tmtSKPangkat;
-						$model2->fileSKPangkat=  $fileSKPangkat;
-						$model2->status=  $status;
-						//$model2->created=  $created;
-						//$model2->createdBy=  $createdBy;
-						//$model2->modified=  $modified;
-						//$model2->modifiedBy=  $modifiedBy;
-						//$model2->deleted=  $deleted;
-						//$model2->deletedBy=  $deletedBy;
-
-						try{
-							if($model2->save()){
-								$inserted++;
-							}
-							else{
-								foreach ($model2->errors as $error){
-									$err[]=($baseRow-1).'. '.implode('|',$error);
-								}
-							}
-						}
-						catch (\yii\base\ErrorException $e){
-							Yii::$app->session->setFlash('error', "{$e->getMessage()}");
-							//$this->refresh();
-						} 
-						$baseRow++;
-					}	
-					Yii::$app->session->setFlash('success', ($inserted).' row inserted');
-					if(!empty($err)){
-						Yii::$app->session->setFlash('warning', 'There are error: <br>'.implode('<br>',$err));
-					}
-				}
-				else{
-					Yii::$app->session->setFlash('error', 'Filetype allowed only xls and xlsx');
-				}				
+		try {
+			$templates=[
+				'docx'=>'ms-word.docx',
+				'odt'=>'open-document.odt',
+				'xlsx'=>'ms-excel.xlsx'
+			];
+			// Initalize the TBS instance
+			$OpenTBS = new \hscstudio\heart\extensions\OpenTBS; // new instance of TBS
+			// Change with Your template kaka
+			$template = Yii::getAlias('@backend').'/../files/template_ereg/print_ereg.docx';
+			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
+			$OpenTBS->VarRef['modelName']= "Student";
+			$data1[]['col0'] = date('M Y');								
+	
+			$OpenTBS->MergeBlock('a', $data1);			
+			$data2 = [];
+			foreach($dataProvider->getModels() as $student){
+				$data2[] = [
+					'col0'=>strtoupper($student->name),
+					'col1'=>$student->nip,
+					'col2'=>strtoupper($student->born),
+					'col3'=>strtoupper($student->birthDay),
+					'col4'=>'KEMENTERIAN KEUANGAN',
+					'col5'=>strtoupper(\frontend\models\Unit::findOne($student->ref_unit_id)->name),
+					'col6'=>strtoupper(\frontend\models\RankClass::findOne($student->ref_rank_class_id)->name),
+					'col7'=>strtoupper($student->position),
+					'col8'=>$student->status=0?'BARU':'MENGULANG',
+				];
 			}
-			else{
-				Yii::$app->session->setFlash('error', 'File import empty!');
-			}
-		}
-		else{
-			Yii::$app->session->setFlash('error', 'File import empty!');
-		}
+			$OpenTBS->MergeBlock('b', $data2);
+			// Output the result as a file on the server. You can change output file
+			$OpenTBS->Show(OPENTBS_DOWNLOAD, 'result.'.$filetype); // Also merges all [onshow] automatic fields.			
+			exit;
+		} catch (\yii\base\ErrorException $e) {
+			 Yii::$app->session->setFlash('error', 'Unable export there are some error');
+		}	
 		
-		return $this->render('index', [
+        /*return $this->render('index', [
             'dataProvider' => $dataProvider,
-        ]);					
-	}
+        ]);		*/
+    }
 }

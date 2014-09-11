@@ -66,6 +66,7 @@ return [
     ],
 	
     'components' => [
+		
         'user' => [
             'identityClass' => 'common\models\Student',
             'enableAutoLogin' => false,
