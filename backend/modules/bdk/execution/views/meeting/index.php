@@ -97,7 +97,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						return '<span class="label label-warning">Waiting</span>';
 					}		
 					else{
-						return Html::a('<span class="label label-primary">'.$activityRoom->count().'</span>',['room','activity_id'=>$data->id,],['class'=>'modal-heart','data-pjax'=>0,'source'=>'','title'=>'Room : '.$data->name]);
+						return Html::a('<span class="btn btn-info btn-xs"><strong>'.$activityRoom->count().'</strong></span>',['room','activity_id'=>$data->id,],['class'=>'modal-heart','data-pjax'=>0,'source'=>'','title'=>'Room : '.$data->name]);
 					}
 				}
 			],

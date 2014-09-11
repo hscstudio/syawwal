@@ -160,24 +160,30 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							],
 
 							[
-								'format' => 'raw',
-								'label' => 'Start Date',
+								'label' => 'Datetime',
 								'vAlign'=>'middle',
+								'hAlign'=>'center',
+								'width'=>'250px',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($model){
-									return '<div class="">'.date('D, d M Y (H:i:s)', strtotime($model->startTime)).'</div>';
-								}
-							],
-
-							[
-								'format' => 'raw',
-								'label' => 'End Date',
-								'vAlign'=>'middle',
-								'headerOptions'=>['class'=>'kv-sticky-column'],
-								'contentOptions'=>['class'=>'kv-sticky-column'],
-								'value' => function ($model){
-									return '<div class="">'.date('D, d M Y (H:i:s)', strtotime($model->finishTime)).'</div>';
+								'format'=>'raw',
+								'value'=>function($model){
+									$start = date('D, d M Y H:i',strtotime($model->startTime));
+									$finish = date('D, d M Y H:i',strtotime($model->finishTime));
+									$startDate = date('D, d M Y',strtotime($model->startTime));
+									$finishDate = date('D, d M Y',strtotime($model->finishTime));
+									$startTime = date('H:i',strtotime($model->startTime));
+									$finishTime = date('H:i',strtotime($model->finishTime));
+									
+									if($start==$finish){
+										return $start;
+									}
+									else if($startDate==$finishDate){
+										return '<span class="label label-info">'.$startDate .'</span> <span class="label label-default">' .$startTime. ' s.d ' . $finishTime.'</span>';
+									}
+									else{
+										return '<span class="label label-info">'.$start .'</span>&nbsp;<span class="label label-default"> s.d </span>&nbsp;<span class="label label-info">'.$finish.'</span>';
+									}
 								}
 							],
 
@@ -232,7 +238,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						echo GridView::widget([
 						    'dataProvider'=> $activityRoomDP,
 						    'columns' => $gridColumns,
-						    'rowOptions' => function($model)
+						    /*'rowOptions' => function($model)
 						    {
 						    	if ($model->status == 0)
 						    	{
@@ -253,7 +259,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						    	{
 						    		return ['class' => 'danger'];
 						    	}
-						    },
+						    },*/
 						    'panel' => [
 								'heading'=>	'<div class="btn-group">'.
 									Html::a('<i class="fa fa-fw fa-arrow-circle-left"></i>Done ', Url::to(['index']), ['class' => 'btn btn-primary']).
