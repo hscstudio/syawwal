@@ -5,6 +5,8 @@ namespace backend\modules\bdk\execution\controllers;
 use Yii;
 use backend\models\Training;
 use backend\models\TrainingClass;
+use backend\models\TrainingClassStudent;
+use backend\models\TrainingSchedule;
 use backend\models\TrainingClassSearch;
 use backend\models\TrainingClassSubject;
 use backend\models\ProgramSubjectHistory;
@@ -261,10 +263,24 @@ class TrainingClassController extends Controller
 
     public function actionDelete($id)
     {
-    	$trainingId = TrainingClass::findOne($id)->tb_training_id;
-        $this->findModel($id)->delete();
+    	$trainingClass = TrainingClass::findOne($id);
 
-        return $this->redirect(['index', 'trainingId' => $trainingId]);
+    	// Ngapus subject dulu, semua
+    	TrainingClassSubject::deleteAll('tb_training_class_id = :tb_training_class_id', [':tb_training_class_id' => $id]);
+    	// dah
+
+    	// Ngapus schedulenya juga
+    	TrainingSchedule::deleteAll('tb_training_class_id = :tb_training_class_id', [':tb_training_class_id' => $id]);
+    	// dah
+
+    	// Ngapus student juga
+    	TrainingClassStudent::deleteAll('tb_training_class_id = :tb_training_class_id', [':tb_training_class_id' => $id]);
+    	// dah
+
+    	// Baru ngapus class
+        $this->findModel($id)->delete();
+        Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Class deleted!');
+        return $this->redirect(['index', 'trainingId' => $trainingClass->tb_training_id]);
     }
 
     /**
