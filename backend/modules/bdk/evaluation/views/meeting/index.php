@@ -34,27 +34,29 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					return Html::tag('span', $data->name, ['title'=>$data->note,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
 				},
 			],
-		
+
 			[
 				'attribute' => 'startTime',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'format' => 'raw',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
-					return date('d M y H:i:s',strtotime($data->startTime));
+					return '<span class="label label-info">'.date('D, d M Y',strtotime($data->startTime)).'</span> 
+							<span class="label label-default">'.date('H:i:s',strtotime($data->startTime)).'</span>';
 				}
 			],
 			[
 				'attribute' => 'finishTime',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'format' => 'raw',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
-					return date('d M y H:i:s',strtotime($data->finishTime));
+					return '<span class="label label-info">'.date('D, d M Y',strtotime($data->finishTime)).'</span> 
+							<span class="label label-default">'.date('H:i:s',strtotime($data->finishTime)).'</span>';
 				}
 			],
             

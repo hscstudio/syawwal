@@ -43,7 +43,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'executor',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'width'=>'80px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
@@ -52,22 +52,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'startTime',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'format' => 'raw',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
-					return date('d M y H:i:s',strtotime($data->startTime));
+					return '<span class="label label-info">'.date('D, d M Y',strtotime($data->startTime)).'</span> 
+							<span class="label label-default">'.date('H:i:s',strtotime($data->startTime)).'</span>';
 				}
 			],
 			[
 				'attribute' => 'finishTime',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'format' => 'raw',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
-					return date('d M y H:i:s',strtotime($data->finishTime));
+					return '<span class="label label-info">'.date('D, d M Y',strtotime($data->finishTime)).'</span> 
+							<span class="label label-default">'.date('H:i:s',strtotime($data->finishTime)).'</span>';
 				}
 			],
             
@@ -76,7 +78,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'label' => 'Peserta',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'width'=>'80px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 
@@ -86,7 +88,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'label'=>'Class',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'width'=>'80px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 			],
@@ -96,7 +98,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'label'=>'Room',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'width'=>'80px',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($data) {
