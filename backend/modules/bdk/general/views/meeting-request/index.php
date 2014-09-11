@@ -1,10 +1,11 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
-use kartik\widgets\Select2;
 use yii\bootstrap\Modal;
+use kartik\grid\GridView;
+use kartik\widgets\Select2;
+use backend\models\Meeting;
 
 $this->title = 'Meetings';
 $this->params['breadcrumbs'][] = $this->title;
@@ -114,7 +115,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 
             [
 			'class' => 'kartik\grid\ActionColumn',
-			'template' => '{view} {update}',
 			'buttons'=>[
 					'view' => function ($url, $model) {
 						$icon='<span class="glyphicon glyphicon-eye-open"></span>';
@@ -124,6 +124,24 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'source'=>'.table-responsive',
 							'title'=>$model->name,
 						]);
+					},
+					'delete' => function ($url, $model) {
+						$activityRoom = Meeting::find()
+									->where('executor = :executor',
+									[
+										':executor' => 'GENERAL'
+									])
+									->count();
+						if($activityRoom != 0){ 
+							$icon='<span class="glyphicon glyphicon-trash"></span>';
+							return Html::a($icon,$url,[
+								'title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post",
+								'data-pjax'=>"0",
+							]);
+						}		
+						else{
+							return "";
+						}								
 					},
 				],
 			],

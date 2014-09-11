@@ -15,7 +15,7 @@ use backend\models\Satker;
 		
 		<div class="panel-heading">
 			<div class="pull-right">
-			<?= Html::a('<i class="fa fa-arrow-left"></i> Back',['index'],
+			<?= Html::a('<i class="fa fa-arrow-left"></i> Back',['meeting-request/index'],
 							['class'=>'btn btn-xs btn-primary',
 							 'title'=>'Back to Index',
 							 'data-pjax' => '0'
