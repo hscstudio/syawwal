@@ -3,6 +3,7 @@
 namespace backend\modules\bdk\general\controllers;
 
 use Yii;
+use backend\models\Meeting;
 use backend\models\Training;
 use backend\models\Room;
 use backend\models\RoomSearch;
@@ -123,9 +124,20 @@ class ActivityRoomController extends Controller
 				$color = '#d9534f'; // rejected
 			}
 
+			if ($value->type == 0) {
+				$title = Training::find()->where(['id' => $value->activity_id])->one()->name.' | '
+							.Heart::twodate($value->startTime,$value->finishTime,1).' | ';
+			}
+			else if ($value->type == 1) {
+				$title = Meeting::find()->where(['id' => $value->activity_id])->one()->name.' | '
+							.Heart::twodate($value->startTime,$value->finishTime,1).' | ';
+			}
+			else {
+				$title = '<span class="label label default">Type invalid</span>';
+			}
+
 			$items[]=[
-				'title'=> Training::find()->where(['id' => $value->activity_id])->one()->name.' | '
-							.Heart::twodate($value->startTime,$value->finishTime,1).' | ',
+				'title'=> $title,
 				'start'=> date('Y-m-d H:i:s',strtotime($value->startTime)),
 				'end'=> date('Y-m-d H:i:s', strtotime($value->finishTime)),
 				'color'=> $color,

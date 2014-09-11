@@ -31,7 +31,7 @@ if ($modelActivityRoom->type == 0) {
     $activityName = $modelActivityRoom->training->name;
 }
 if ($modelActivityRoom->type == 1) {
-    $activityName = 'Meeting will be added soon';
+    $activityName = $modelActivityRoom->meeting->name;
 }
 
 // Ngeformat status
