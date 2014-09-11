@@ -1,270 +1,295 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
+use yii\helpers\Url;
 use yii\bootstrap\Dropdown;
+use kartik\grid\GridView;
 use kartik\widgets\Select2;
-use kartik\widgets\AlertBlock;
+use kartik\widgets\DepDrop;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\DateTimePicker;
+use kartik\checkbox\CheckboxX;
+use backend\models\ActivityRoom;
+use backend\models\Room;
 
-/* @var $searchModel backend\models\RoomSearch */
-
-$this->title = $activity->name;
-$this->params['breadcrumbs'][] = ['label' => 'Meetings', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Request Room for '.$meetingCurrent->name;
+$this->params['breadcrumbs'][] = ['label' => 'Meetings', 'url' => Url::to(['index'])];
+$this->params['breadcrumbs'][] = 'Room Request';
 
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="room-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-	<?php \yii\widgets\Pjax::begin([
-		'id'=>'pjax-gridview-room',
-	]); ?>
-	<?php 
-	if (Yii::$app->request->isAjax){	
-		echo AlertBlock::widget([
-			'useSessionFlash' => true,
-			'type' => AlertBlock::TYPE_ALERT
-		]); 
-	}
-	?>
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'kartik\grid\SerialColumn'],
-			[
-				'attribute' => 'code',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],            
-			[
-				'attribute' => 'name',
-				'vAlign'=>'middle',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-			],
-            
-			[
-				//'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'capacity',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'100px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Capacity', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-			],
-		
-			[
-				//'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'computer',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'100px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Computer', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-			],
-		
-			[
-				//'class' => 'kartik\grid\EditableColumn',
-				'attribute' => 'hostel',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'width'=>'100px',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				//'editableOptions'=>['header'=>'Hostel', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
-			],
-			[
-				'format' => 'raw',
-				'vAlign'=>'middle',
-				'hAlign'=>'center',
-				'label' => 'Availability',
-				'width'=>'80px',
-				'value' => function ($data) use ($activity) {
-					$start = $activity->startTime;
-					$finish = $activity->finishTime;
-					// ONLY CHECK AVAILABILITY
-					$activityRoom = \backend\models\ActivityRoom::find()
-								->where('
-									tb_room_id = :tb_room_id 
-									AND
-									((startTime between :start AND :finish)
-										OR (finishTime between :start AND :finish))
-									AND 
-									status = :status
-								',
-								[
-									':tb_room_id' => $data->id,
-									':start' => $start,
-									':finish' => $finish,
-									':status' => 2,
-								]);
-					// Available			
-					if($activityRoom->count()==0){ 
-						$activityRoom2 = \backend\models\ActivityRoom::find()
-								->where('
-									tb_room_id = :tb_room_id 
-									AND
-									activity_id = :activity_id
-								',
-								[
-									':tb_room_id' => $data->id,
-									':activity_id' => $activity->id,
-								]);
-						if($activityRoom2->count()==0){ 		
-							$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-							if($data->ref_satker_id==$ref_satker_id){
-								return 
-									Html::a('<span class="fa fa-check"></span>', ['set','activity_id'=>$activity->id,'tb_room_id'=>$data->id,'status'=>2], ['class' => 'label label-success link-post','data-pjax'=>0,'title'=>'click to approve it!','data-toggle'=>"tooltip",'data-placement'=>"top",]).' '.
-									Html::a('<span class="fa fa-times"></span>', ['set','activity_id'=>$activity->id,'tb_room_id'=>$data->id,'status'=>3], ['class' => 'label label-danger link-post','data-pjax'=>0,'title'=>'click to rejected it!','data-toggle'=>"tooltip",'data-placement'=>"top",]);;
-							}
-							else{
-								return 
-									Html::a('<span class="fa fa-square-o"></span>', ['set','activity_id'=>$activity->id,'tb_room_id'=>$data->id], ['class' => 'label label-info link-post','data-pjax'=>0,'title'=>'click to set it!','data-toggle'=>"tooltip",'data-placement'=>"top",]);
-							}	
-						}
-						else{
-							$modelActivityRoom2 = $activityRoom2->one();
-							$status = $modelActivityRoom2->status;
-							$text_status = "<span class='label label-warning'>Waiting</span>";
-							if($status==1) $text_status = "<span class='label label-info'>Process</span>".Html::a('<span class="fa fa-times"></span>', ['unset','activity_id'=>$activity->id,'tb_room_id'=>$data->id], ['class' => 'label label-danger link-post','data-pjax'=>0]);
-							else if($status==2) $text_status = "<span class='label label-success'>Approved</span>";
-							else if($status==3) $text_status = "<span class='label label-danger'>Rejected</span>";
-							return $text_status;								
-						}
-					}
-					else{
-						$modelActivityRoom = $activityRoom->all();
-						$same = 0;
-						$status = 0;
-						foreach($modelActivityRoom as $mAR){
-							if($mAR->activity_id==$activity->id){
-								$same=1;
-								$status = $mAR->status;
-								break;
-							}
-						}
-						if($same==1){
-							$text_status = "<span class='label label-warning'>Waiting</span>";
-							if($status==1) $text_status = "<span class='label label-info'>Process</span>".Html::a('<span class="fa fa-times"></span>', ['unset','activity_id'=>$activity->id,'tb_room_id'=>$data->id], ['class' => 'label label-danger link-post','data-pjax'=>0]);
-							else if($status==2) $text_status = "<span class='label label-success'>Approved</span>";
-							else if($status==3) $text_status = "<span class='label label-danger'>Rejected</span>";
-							return $text_status;								
-						}
-						else{
-							return "-";
-						}
-					}
-				}
-			],
-        ],
-		'panel' => [
-			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Set Room</h3>',
-			//'type'=>'primary',
-			'before'=>
-				'<div class="pull-right" style="margin-right:5px;">'.
-				Select2::widget([
-					'name' => 'ref_satker_id', 
-					'data' => $satkers,
-					'value' => $ref_satker_id,
-					'options' => [
-						'width'=> '200px;',
-						'placeholder' => 'Satker ...', 
-						'class'=>'form-control', 
-						'id'=>'select2-ref_satker_id',
-						'onchange'=>'
-							$.pjax.reload({
-								url: "'.\yii\helpers\Url::to(['room','activity_id'=>$activity_id]).'&ref_satker_id="+$(this).val(), 
-								container: "#pjax-gridview-room", 
-								timeout: 1000,
-							});
-						',	
-					],
-				]).
-				'</div>',
-			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['room','activity_id'=>$activity_id,'ref_satker_id'=>$ref_satker_id], ['class' => 'btn btn-info']),
-			'showFooter'=>false
-		],
-		'responsive'=>true,
-		'hover'=>true,
-    ]); ?>
-	<?php 
-	$this->registerCss('.select2-container { width: 200px !important; }');
-	if (Yii::$app->request->isAjax){
-		$this->registerJs('
-			//$("#select2-ref_satker_id").select2().select2("val", '.($activity->location-1).');
-			$("a.link-post").on("click", function () {
-				var $link = $(this);
-				$.ajax({
-					type: "POST",
-					cache: false,
-					url: $link.prop("href"),
-					//data: $link.serializeArray(),
-					success: function (data) {		
-						$.pjax.reload({
-							url: "'.\yii\helpers\Url::to(['room','activity_id'=>$activity_id,'ref_satker_id'=>$ref_satker_id]).'", 
-							container: "#pjax-gridview-room",
-							timeout: 1000,
-						});
-						$.growl(data, {	type: "success"	});
-					},
-					error: function (XMLHttpRequest, textStatus, errorThrown) {
-						alert(XMLHttpRequest.responseText);
-					}
-				});
-				return false;
-			});
-			$("#modal-heart").on("hidden.bs.modal", function (e) {
-				$.pjax.reload({
-					url: "'.\yii\helpers\Url::to(['index','executor'=>$activity->executor]).'", 
-					container: "#pjax-gridview",
-					timeout: 1,
-				});
-			});
-		');
-	}
-	?>
-	<?php \yii\widgets\Pjax::end(); ?>
-	<?php 
-	if (Yii::$app->request->isAjax){	
-	
-	}
-	else{
-		echo Html::beginTag('div', ['class'=>'row']);
-			echo Html::beginTag('div', ['class'=>'col-md-2']);
-				echo Html::beginTag('div', ['class'=>'dropdown']);
-					echo Html::button('PHPExcel <span class="caret"></span></button>', 
-						['type'=>'button', 'class'=>'btn btn-default', 'data-toggle'=>'dropdown']);
-					echo Dropdown::widget([
-						'items' => [
-							['label' => 'EXport XLSX', 'url' => ['php-excel?filetype=xlsx&template=yes']],
-							['label' => 'EXport XLS', 'url' => ['php-excel?filetype=xls&template=yes']],
-							['label' => 'Export PDF', 'url' => ['php-excel?filetype=pdf&template=no']],
-						],
-					]); 
-				echo Html::endTag('div');
-			echo Html::endTag('div');	
-			echo Html::beginTag('div', ['class'=>'col-md-2']);
-				echo Html::beginTag('div', ['class'=>'dropdown']);
-					echo Html::button('OpenTBS <span class="caret"></span></button>', 
-						['type'=>'button', 'class'=>'btn btn-default', 'data-toggle'=>'dropdown']);
-					echo Dropdown::widget([
-						'items' => [
-							['label' => 'EXport DOCX', 'url' => ['open-tbs?filetype=docx']],
-							['label' => 'EXport ODT', 'url' => ['open-tbs?filetype=odt']],
-							['label' => 'EXport XLSX', 'url' => ['open-tbs?filetype=xlsx']],
-						],
-					]); 
-				echo Html::endTag('div');
-			echo Html::endTag('div');	
-		echo Html::endTag('div');
-	}
-	?>
+<div class="training-room-index">
+
+	<div class="container-fluid" style="margin:15px;">
+
+		<div class="row">
+
+			<div class="panel panel-default" id="room-finder">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<i class="fa fa-fw fa-search"></i> Find Available Room
+					</h3>
+				</div>
+				<div class="panel-body">
+
+					<div class="col-md-4">
+					<?php
+						$form = ActiveForm::begin([
+					        'id' => 'order-room-form',
+					        'action' => Url::to(['room-search']),
+					        'type' => ActiveForm::TYPE_VERTICAL,
+					        'enableAjaxValidation' => false,
+					        'enableClientValidation' => false,
+					        'options' => [
+						        'onsubmit' => "
+						        	event.preventDefault();
+									jQuery.ajax({
+										type: 'post',
+										url: jQuery(this).attr('action'),
+										data: jQuery(this).serialize(),
+										success: function (data) {
+											jQuery(\".roomQueryResult\").html(data);
+										},
+									});
+								"
+					        ]
+					    ]);
+
+					    echo Html::hiddenInput('activity_id', $meetingCurrent->id);
+						
+						echo '<div class="form-group">';
+						echo '<label class="control-label">Start Date</label>';
+						echo DateTimePicker::widget([
+						    'name' => 'startTime',
+						    'value' => date('d-M-Y H:i:s', strtotime($meetingCurrent->startTime)),
+						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
+						    'pluginOptions' => [
+						    	'startDate' => date('d-M-Y H:i:s', strtotime($meetingCurrent->startTime)),
+						    	'endDate' => date('d-M-Y H:i:s', strtotime($meetingCurrent->finishTime) + (60*60*24) - 1),
+						        'autoclose'=>true,
+						        'format' => 'dd-M-yyyy hh:ii:ss'
+						    ]
+						]);
+						echo '</div>';
+
+						echo '<div class="form-group">';
+						echo '<label class="control-label">Finish Date</label>';
+						echo DateTimePicker::widget([
+						    'name' => 'finishTime',
+						    'value' => date('d-M-Y H:i:s', strtotime($meetingCurrent->finishTime)),
+						    'type' => DateTimePicker::TYPE_COMPONENT_APPEND,
+						    'pluginOptions' => [
+						    	'startDate' => date('d-M-Y H:i:s', strtotime($meetingCurrent->startTime)),
+						    	'endDate' => date('d-M-Y H:i:s', strtotime($meetingCurrent->finishTime) + (60*60*24) - 1),
+						        'autoclose'=>true,
+						        'format' => 'dd-M-yyyy hh:ii:ss'
+						    ]
+						]);
+						echo '</div>';
+
+						echo '<div class="row">';
+						echo '<div class="col-md-4">';
+						echo $form->field($modelRoomKosong, 'capacity')->textInput([
+								'class' => 'form-control'
+							]);
+						echo '</div>';
+
+						echo '<div class="col-md-4">';
+						echo $form->field($modelRoomKosong, 'hostel')->widget(CheckboxX::classname(), [
+							'pluginOptions'=>['threeState'=>true,'size'=>'sm','inline'=>false, ],
+						]); 
+						echo '</div>';
+						echo '<div class="col-md-4">';
+						echo $form->field($modelRoomKosong, 'computer')->widget(CheckboxX::classname(), [
+							'pluginOptions'=>['threeState'=>true,'size'=>'sm','inline'=>false, ],
+						]);
+						echo '</div>';
+						echo '</div>';
+
+						echo '<div class="form-group" style="margin-bottom:0; margin-top:24px;">';
+						echo '<div class="btn-group">';
+						echo Html::submitButton('<i class="fa fa-fw fa-search"></i>Search', [
+								'class' => 'btn btn-primary',
+							]);
+						
+						echo '</div>';
+						echo '</div>';
+
+						ActiveForm::end();
+					?>
+					</div>
+
+					<div class="col-md-8">
+						<div class="roomQueryResult">
+							<div class="alert alert-warning"><i class="fa fa-fw fa-exclamation-circle"></i>Search room first in left panel</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="panel panel-default">
+				<div class="panel panel-heading">
+					<h3 class="panel-title">
+						<i class="fa fa-fw fa-list"></i>
+						List of Requested Room
+					</h3>
+				</div>
+				<div class="panel-body">
+					<?php
+						$gridColumns = [
+							[
+								'class' => 'kartik\grid\SerialColumn',
+							],
+							[
+								'format' => 'raw',
+								'label' => 'Room Name',
+								'vAlign'=>'middle',
+								'headerOptions'=>['class'=>'kv-sticky-column'],
+								'contentOptions'=>['class'=>'kv-sticky-column'],
+								'value' => function ($model){
+									$room = Room::find()->where(['id' => $model->tb_room_id])->one();
+									return '<div class="">'.$room->name.'</div>';
+								}
+							],
+
+							[
+								'format' => 'raw',
+								'label' => 'Start Date',
+								'vAlign'=>'middle',
+								'headerOptions'=>['class'=>'kv-sticky-column'],
+								'contentOptions'=>['class'=>'kv-sticky-column'],
+								'value' => function ($model){
+									return '<div class="">'.date('D, d M Y (H:i:s)', strtotime($model->startTime)).'</div>';
+								}
+							],
+
+							[
+								'format' => 'raw',
+								'label' => 'End Date',
+								'vAlign'=>'middle',
+								'headerOptions'=>['class'=>'kv-sticky-column'],
+								'contentOptions'=>['class'=>'kv-sticky-column'],
+								'value' => function ($model){
+									return '<div class="">'.date('D, d M Y (H:i:s)', strtotime($model->finishTime)).'</div>';
+								}
+							],
+
+							[
+								'format' => 'raw',
+								'label' => 'Status',
+								'vAlign'=>'middle',
+								'hAlign' => 'center',
+								'headerOptions'=>['class'=>'kv-sticky-column'],
+								'contentOptions'=>['class'=>'kv-sticky-column'],
+								'value' => function ($model){
+									if ($model->status == 0)
+									{
+										return '<div class="label label-warning" data-toggle="tooltip" data-placement="top" title="Waiting for approval..."><i class="fa fa-fw fa-spinner fa-spin"></i></div>';
+									}
+									if ($model->status == 1)
+									{
+										return '<div class="label label-info" data-toggle="tooltip" data-placement="top" title="Processing..."><i class="fa fa-fw fa-play"></i></div>';
+									}
+									if ($model->status == 2)
+									{
+										return '<div class="label label-success" data-toggle="tooltip" data-placement="top" title="Approved!"><i class="fa fa-fw fa-check"></i></div>';
+									}
+									if ($model->status == 3)
+									{
+										return '<div class="label label-danger" data-toggle="tooltip" data-placement="top" title="Rejected!"><i class="fa fa-fw fa-times-circle"></i></div>';
+									}
+								}
+							],
+
+				            [
+								'class' => 'kartik\grid\ActionColumn',
+								'buttons' => [
+									'view' => function ($url, $model) {
+												return '';
+											},
+									'update' => function ($url, $model) {
+												return '';
+											},
+									'delete' => function ($url, $model) {
+												if ($model->status == 0 or $model->status == 1)
+												{
+													$icon='<i class="fa fa-fw fa-trash-o"></i>';
+													return Html::a($icon,Url::to(['room-delete', 'id' => $model->id]),[
+													'title'=>"Delete",'data-confirm'=>"Are you sure to delete this item?",'data-method'=>"post",
+													]);
+												}
+											},
+								],			
+							],
+						];
+						echo GridView::widget([
+						    'dataProvider'=> $activityRoomDP,
+						    'columns' => $gridColumns,
+						    'rowOptions' => function($model)
+						    {
+						    	if ($model->status == 0)
+						    	{
+						    		return ['class' => 'warning'];
+						    	}
+
+						    	if ($model->status == 1)
+						    	{
+						    		return ['class' => 'info'];
+						    	}
+						    	
+						    	if ($model->status == 2)
+						    	{
+						    		return ['class' => 'success'];
+						    	}
+						    	
+						    	if ($model->status == 3)
+						    	{
+						    		return ['class' => 'danger'];
+						    	}
+						    },
+						    'panel' => [
+								'heading'=>	'<div class="btn-group">'.
+									Html::a('<i class="fa fa-fw fa-arrow-circle-left"></i>Done ', Url::to(['index']), ['class' => 'btn btn-primary']).
+									Html::a('<i class="fa fa-fw fa-ticket"></i> Find Room', null, [
+											'class' => 'btn btn-success',
+											'id' => 'room-finder-button'
+										]).
+									'</div>',
+								'showFooter'=>false
+							],
+						    'striped' => false,
+							'responsive'=>true,
+						]);
+						// dah
+
+						// all js disni
+						$this->registerJs('
+								$("#room-finder").slideToggle("slow");
+
+								$("#room-finder-button").click(function() {
+
+									if ( $("#room-finder-button").hasClass("active") ) {
+										$("#room-finder-button").removeClass("active");
+										$("#room-finder").slideToggle("slow");
+									}
+									else {
+										$("#room-finder-button").addClass("active");
+										$("#room-finder").slideToggle("slow");
+									}
+								});
+							');
+					?>
+				</div>
+			</div>
+		</div>
+
+	</div>
 
 </div>

@@ -108,10 +108,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 									':activity_id' => $data->id
 								]);		
 					if($activityRoom->count()==0){ 
-						return Html::a('<i class="fa fa-fw fa-plus-circle"></i>', ['room','activity_id'=>$data->id], ['class' => 'btn btn-default btn-xs modal-heart','data-pjax'=>0,'source'=>'']);
+						return Html::a('<i class="fa fa-fw fa-plus-circle"></i>', ['room','activity_id'=>$data->id], ['class' => 'btn btn-default btn-xs','source'=>'']);
 					}		
 					else{
-						return Html::a('<strong>'.$activityRoom->count().'</strong>', ['room','activity_id'=>$data->id], ['class' => 'btn btn-info btn-xs modal-heart','data-pjax'=>0,'source'=>'']);
+						return Html::a('<strong>'.$activityRoom->count().'</strong>', ['room','activity_id'=>$data->id], ['class' => 'btn btn-info btn-xs','source'=>'']);
 					}
 				}
 			],

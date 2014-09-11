@@ -6,10 +6,16 @@ use Yii;
 use backend\models\Meeting;
 use backend\models\ActivityRoom;
 use backend\models\MeetingSearch;
+use backend\models\Room;
 use backend\models\RoomSearch;
+use backend\models\Satker;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Meeting3Controller implements the CRUD actions for Meeting model.
@@ -491,61 +497,288 @@ class MeetingRequestController extends Controller
         ]);					
 	}
 	
-	 /**
-     * Lists all Room models.
-     * @return mixed
-     */
-    public function actionRoom($activity_id, $ref_satker_id=0)
-    {
-		$activity=$this->findModel($activity_id);
-		
-        $searchModel = new RoomSearch();
-		if($ref_satker_id===0) $ref_satker_id = (int)$activity->location;
-		if($ref_satker_id<0) $ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
-		if($ref_satker_id=='all'){
-			$queryParams['RoomSearch']=[
-				'status'=>1,
-			];
-		}
-		else{
-			$queryParams['RoomSearch']=[
-				'ref_satker_id'=>$ref_satker_id,
-				'status'=>1,
-			];
-		}	
-		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-        $dataProvider = $searchModel->search($queryParams);
 
-		// GET ALL TRAINING YEAR
-		$satkers['all']='All';
-		$satkers = yii\helpers\ArrayHelper::map(\backend\models\Satker::find()
-			//->select(['year'=>'YEAR(start)','start','finish'])
-			->orderBy(['eselon'=>'ASC',])
-			//->active()
-			->asArray()
-			->all(), 'id', 'name');
-		
-		if (Yii::$app->request->isAjax){
-			return $this->renderAjax('room', [
-				'searchModel' => $searchModel,
-				'dataProvider' => $dataProvider,
-				'activity_id'=>$activity_id,
-				'activity'=>$activity,
-				'ref_satker_id'=>$ref_satker_id,
-				'satkers'=>$satkers,
-			]);
-		}
-		else{
-			return $this->render('room', [
-				'searchModel' => $searchModel,
-				'dataProvider' => $dataProvider,
-				'activity_id'=>$activity_id,
-				'activity'=>$activity,
-				'ref_satker_id'=>$ref_satker_id,
-				'satkers'=>$satkers,
-			]);
-		}
+
+
+
+
+    public function actionRoom()
+    {
+    	if (Yii::$app->request->get('activity_id') != null)
+    	{
+            $satkerModel = Satker::find()->one();
+
+            // Ngecek ada room ga?
+            if ( ! $roomModel = Room::find()->where(['ref_satker_id' => Yii::$app->user->identity->employee->ref_satker_id])->one())
+            {
+                Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> No room! You should create room first!');
+                return $this->redirect(Url::to(['index']));
+            }
+
+            $meetingCurrent = Meeting::find()->where(['id' => Yii::$app->request->get('activity_id')])->one();
+
+            $activityRoomDP = new ActiveDataProvider([
+                'query' => ActivityRoom::find()->where(['activity_id' => Yii::$app->request->get('activity_id')]),
+                'pagination' => [
+                    'pageSize' => 10
+                ]
+            ]);
+
+	        $satkerItem = ArrayHelper::map(Satker::find()
+	        	->select(['id','name'])
+	        	->asArray()
+	        	->all(),
+	        'id', 'name');
+
+            $modelRoomKosong = new Room();
+
+    		return $this->render('room', [
+                    'modelRoomKosong' => $modelRoomKosong,
+                    'meetingCurrent' => $meetingCurrent,
+                    'activityRoomDP' => $activityRoomDP
+    			]);
+    	}
+        else
+        {
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>  You need to choose meeting first to enter room request page');
+            return $this->redirect(Url::to(['index']));
+        }
     }
+
+
+
+
+    public function actionRoomSearch()
+    {
+        // Cuma request ajax yg bisa panggil fungsi ini
+        if ( ! Yii::$app->request->isAjax) {
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Forbidden');
+            return $this->redirect(['index', 'activity_id' => Yii::$app->request->post('activity_id')]);
+        }
+
+        // Ngambil data
+        $modelRoomKosong = Yii::$app->request->post('Room');
+
+        // Nyari room
+        $where[] = 'ref_satker_id ='.Yii::$app->user->identity->employee->ref_satker_id;
+        if ($modelRoomKosong['hostel'] != null) {
+            $where[] = 'hostel ='.$modelRoomKosong['hostel'];
+        }
+        if ($modelRoomKosong['computer'] != null) {
+            $where[] = 'computer ='.$modelRoomKosong['computer'];
+        }
+        if ($modelRoomKosong['capacity'] != 0) {
+            $where[] = 'capacity >='.$modelRoomKosong['capacity'];
+        }
+        $where = implode(' AND ',$where);
+        $roomList = Room::find()->where($where)->all();
+
+        // Mbikin table
+        $result = '<table class="table table-bordered table-hover table-striped">';
+        $result .= '<thead>
+                        <tr>
+                            <th>List Room Available</th>
+                            <th>Capacity</th>
+                            <th>Hostel</th>
+                            <th>Computer</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+        foreach ($roomList as $k) {
+            $result .= '<tr>';
+            
+            $result .= '<td>'.$k->name.' ';
+            if ($this->isCollide($k->id, Yii::$app->request->post('startTime'), Yii::$app->request->post('finishTime'))) {
+                $result .= $this->getCollideDate($k->id, Yii::$app->request->post('startTime'), Yii::$app->request->post('finishTime'));
+            }
+            $result .= '</td>';
+
+            $result .= '<td style="width:80px">'.$k->capacity.'</td>';
+            
+            $result .= '<td style="width:80px">';
+            if ($k->hostel == 1) {
+                $result .= '<i class="fa fa-fw fa-check text-success"></i>';
+            }
+            else {
+                $result .= '<i class="fa fa-fw fa-times text-danger"></i>';
+            }
+            $result .= '</td>';
+
+            $result .= '<td style="width:80px">';
+            if ($k->computer == 1) {
+                $result .= '<i class="fa fa-fw fa-check text-success"></i>';
+            }
+            else {
+                $result .= '<i class="fa fa-fw fa-times text-danger"></i>';
+            }
+            $result .= '</td>';
+
+            $result .= '<td style="width:80px">';
+            $result .= Html::beginForm(
+                            Url::to(['room-save']),
+                            'post', [
+                                'id' => 'order-room-form',
+                            ]
+                        );
+            $result .= Html::hiddenInput('activity_id', Yii::$app->request->post('activity_id'));
+            $result .= Html::hiddenInput('tb_room_id', $k->id);
+            $result .= Html::hiddenInput('startTime', date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('startTime'))));
+            $result .= Html::hiddenInput('finishTime', date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('finishTime'))));
+            if ($this->isCollide($k->id, Yii::$app->request->post('startTime'), Yii::$app->request->post('finishTime'))) {
+                $result .= '<div class="label label-danger"><i class="fa fa-fw fa-times-circle"></i>
+                    Used
+                </div>';
+            }
+            else {
+                $result .= Html::submitButton('<i class="fa fa-fw fa-play"></i>Request', [
+                                    'class' => 'btn btn-primary btn-xs',
+                                ]);
+            }
+            $result .= Html::endForm();
+            $result .=  '</td>';
+
+            $result .= '</tr>';
+        }
+        $result .= '</tbody></table>';
+
+        echo $result;
+    }
+
+
+
+
+
+    public function actionRoomSave()
+    {
+        $activityRoom = new ActivityRoom;
+        $activityRoom->type = 1;
+        $activityRoom->activity_id = Yii::$app->request->post('activity_id');
+        $activityRoom->tb_room_id = Yii::$app->request->post('tb_room_id');
+        $activityRoom->startTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('startTime')));
+        $activityRoom->finishTime = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('finishTime')));
+        $activityRoom->status = 1; // Pas bikin pertama kali, statusnya langsung request/process
+        $activityRoom->note = null;
+
+        if ($activityRoom->save())
+        {
+            Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i>A room request has been added');
+            return $this->redirect(['room', 'activity_id' => $activityRoom->activity_id]);
+        }
+        else
+        {
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>Failed to save room request!');
+            return $this->redirect(Url::to(['room']));
+        }
+    }
+
+
+
+
+    public function actionRoomDelete($id)
+    {
+        $activityId = ActivityRoom::find()->select(['activity_id'])->where(['id' => $id])->one()->activity_id;
+        if (ActivityRoom::find()->where(['id' => $id])->one()->delete())
+        {
+            Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i>A room request has been deleted!');
+            return $this->redirect(['room', 'activity_id' => $activityId]);
+        }
+        else
+        {
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i>Failed to delete a room request!');
+            return $this->redirect(Url::to(['room'], true));
+        }
+    }
+
+
+
+
+
+
+    private function isCollide($roomId, $startTime, $finishTime) {
+        // Semua argumen ga boleh null
+        if ($roomId == null or $startTime == null or $finishTime == null) {
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> isCollide arguments is not valid');
+            return $this->redirect(Url::to(['training/index']));
+        }
+
+        // Reformat argumen
+        $startTime = date('d M Y H:i:s', strtotime($startTime));
+        $finishTime = date('d M Y H:i:s', strtotime($finishTime));
+
+        // Ambil activity room
+        $actRoom = ActivityRoom::find()->where(['tb_room_id' => $roomId])->all(); 
+
+        // Cek
+        if ($actRoom) {
+            foreach ($actRoom as $k) {
+                // Klo startTime masuk range time di argumen
+                if (date('d M Y H:i:s', strtotime($k->startTime)) >= $startTime and date('d M Y H:i:s', strtotime($k->startTime)) <= $finishTime) {
+                    // Artinya collide, lempar dah
+                    return true;
+                }
+                // Klo finishTime masuk range time di argumen
+                if (date('d M Y H:i:s', strtotime($k->finishTime)) >= $startTime and date('d M Y H:i:s', strtotime($k->finishTime)) <= $finishTime) {
+                    // Artinya collide, lempar dah
+                    return true;
+                }
+            }
+            // Ga ada 1 pun activity yang tanggalnya collide
+            return false;
+        }
+        else {
+            // activity room ga ada
+            return false;
+        }
+
+    }
+
+
+
+
+    private function getCollideDate($roomId, $startTime, $finishTime) {
+        // Semua argumen ga boleh null
+        if ($roomId == null or $startTime == null or $finishTime == null) {
+            Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> isCollide arguments is not valid');
+            return $this->redirect(Url::to(['training/index']));
+        }
+
+        // Reformat argumen
+        $startTime = date('d M Y H:i:s', strtotime($startTime));
+        $finishTime = date('d M Y H:i:s', strtotime($finishTime));
+
+        // Ambil activity room
+        $actRoom = ActivityRoom::find()->where(['tb_room_id' => $roomId])->all(); 
+
+        // Cek
+        $fOut = '';
+        if ($actRoom) {
+            foreach ($actRoom as $k) {
+                $fOut .= '<span class="label label-default">';
+                // Klo startTime masuk range time di argumen
+                if (date('d M Y H:i:s', strtotime($k->startTime)) >= $startTime and date('d M Y H:i:s', strtotime($k->startTime)) <= $finishTime) {
+                    $fOut .= date('D, d M Y H:i:s', strtotime($k->startTime)). ' to ';
+                }
+                // Klo finishTime masuk range time di argumen
+                if (date('d M Y H:i:s', strtotime($k->finishTime)) >= $startTime and date('d M Y H:i:s', strtotime($k->finishTime)) <= $finishTime) {
+                    // Artinya collide, lempar dah
+                    $fOut .= date('D, d M Y H:i:s', strtotime($k->finishTime));
+                }
+                $fOut .= '</span> ';
+            }
+            return $fOut;
+        }
+        else {
+            return '';
+        }
+
+    }
+
+
+
+
+
+
 	
 	/**
      * Creates a new Meeting model.
