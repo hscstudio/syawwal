@@ -1,0 +1,61 @@
+<?php
+
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\Select2;
+use kartik\widgets\SwitchInput;
+
+?>
+<div class="training-class-form">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="pull-right">
+				<?= Html::a('<i class="fa fa-arrow-left"></i> Back',['index', 'trainingId' => $trainingId],
+								['class'=>'btn btn-xs btn-primary',
+								 'title'=>'Back to Index',
+								]) ?>
+			</div>
+			<i class="fa fa-fw fa-globe"></i> 
+			TrainingClass	
+		</div>
+		<div class="panel-body">
+		    <?php $form = ActiveForm::begin([
+				'type' => ActiveForm::TYPE_HORIZONTAL,
+				'options'=>['enctype'=>'multipart/form-data']
+			]); ?>
+			<?= $form->errorSummary($model) ?>
+
+			<?php
+				if ($model->isNewRecord) {
+					echo $form->field($model, 'tb_training_id')->hiddenInput(['value' => $trainingId]);
+				}
+				else {
+					echo $form->field($model, 'tb_training_id')->hiddenInput();
+				}
+				
+			?>
+
+    		<?= $form->field($model, 'class')->textInput(['maxlength' => 5]) ?>
+
+			<?= $form->field($model, 'status')->widget(SwitchInput::classname(), [
+				'pluginOptions' => [
+					'onText' => 'On',
+					'offText' => 'Off',
+				]
+			]) ?>
+
+		    <div class="form-group">
+				<label class="col-md-2 control-label"></label>
+				<div class="col-md-10">
+		        <?= Html::submitButton(
+					$model->isNewRecord ? '<span class="fa fa-fw fa-save"></span> '.'Create' : '<span class="fa fa-fw fa-save"></span> '.'Update', 
+					['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+				</div>
+			</div>
+			
+		    <?php ActiveForm::end(); ?>
+		    
+		</div>
+	</div>
+</div>

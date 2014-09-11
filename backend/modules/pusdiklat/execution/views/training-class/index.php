@@ -7,7 +7,7 @@ use yii\bootstrap\Dropdown;
 /* @var $searchModel backend\models\TrainingClassSearch */
 
 $this->title = 'Classes : '.\yii\helpers\Inflector::camel2words($training->name);
-$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training/index'])];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -95,8 +95,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'status'=>1
 						])->count();
 					return Html::a($studentCount,
-						\yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class-student/index']),
-						[]);
+						\yii\helpers\Url::to([
+							'/'.$this->context->module->uniqueId.'/training-class-student/index',
+							'tb_training_id'=>$model->tb_training_id,
+							'tb_training_class_id'=>$model->id,
+						]),
+						[
+							'class'=>'label label-default',
+						]);
 				}
 			],
 			[

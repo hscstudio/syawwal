@@ -506,7 +506,7 @@ class TrainingClassController extends Controller
 		];		
 		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
         $dataProvider = $searchModel->search($queryParams);
-		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_DESC,'finishTime'=>SORT_ASC];
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_ASC,'finishTime'=>SORT_ASC];
 
 		// GET ALL TRAINING YEAR
 		/*
@@ -538,6 +538,34 @@ class TrainingClassController extends Controller
 		}
     }
 	
+	public function actionGetMaxTime($tb_training_class_id,$start=""){
+		$start = date('Y-m-d',strtotime($start)); 
+		$finish =  date('Y-m-d',(strtotime($start)+ 60*60*24));
+		$trainingSchedule = \backend\models\TrainingSchedule::find()
+				->where('
+					(
+						startTime >= :start AND 
+						finishTime <= :finish
+					)
+					AND 
+					tb_training_class_id = :tb_training_class_id
+					AND
+					status = :status
+				',
+				[
+					':start' => $start,
+					':finish' => $finish,
+					':tb_training_class_id' => $tb_training_class_id,
+					':status' => 1,
+				])
+				->orderBy('finishTime DESC')
+				->one();
+		if($trainingSchedule!=null)
+			return date('H:i',strtotime($trainingSchedule->finishTime));		
+		else
+			return '08:00';		
+	}
+	
 	public function actionAddActivity($tb_training_class_id) 
     { 		
 		if (Yii::$app->request->isAjax){
@@ -545,6 +573,7 @@ class TrainingClassController extends Controller
 			$post = Yii::$app->request->post('TrainingScheduleExtSearch');
 			$start = date('Y-m-d H:i',strtotime($post['startDate'].' '.$post['startTime'])); 
 			$tb_training_class_subject_id = $post['tb_training_class_subject_id'];
+			$tb_activity_room_id =  $post['tb_activity_room_id'];
 			$activity = "";
 			$pic = "";
 			$hours = 0;
@@ -581,27 +610,52 @@ class TrainingClassController extends Controller
 			}
 			$tb_training_class_subject_id=(int)$tb_training_class_subject_id;
 			$finish = date('Y-m-d H:i',strtotime($start)+($minutes*60));
-			
-			// PREPARING SAVE
-			$model = new \backend\models\TrainingSchedule(); 
-			$model->tb_training_class_id=$tb_training_class_id;
-			$model->tb_training_class_subject_id = $tb_training_class_subject_id;
-			$model->tb_activity_room_id = 0;		
-			$model->activity = $activity;
-			$model->pic = $pic;
-			$model->hours = $hours;
-			$model->startTime = $start;
-			$model->finishTime = $finish;
-			$model->session = 1;
-			$model->status = 1;
-			
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', 'Activity have Added');
-				die('|1|Activity have Added|'.date('H:i',strtotime($finish)));
+			$tb_activity_room_id=(int)$tb_activity_room_id;
+			// CHECKING CONSTRAIN TIME
+			$startSearch = $start + 60; // [08:00 - 09:00, 09:00 - 10:00] not excact between :)
+			$finishSearch = $finish - 60;
+			$trainingSchedule = \backend\models\TrainingSchedule::find()
+				->where('
+					((startTime between :start AND :finish)
+						OR (finishTime between :start AND :finish))
+					AND 
+					tb_training_class_id = :tb_training_class_id
+					AND
+					status = :status
+				',
+				[
+					':start' => $startSearch,
+					':finish' => $finishSearch,
+					':tb_training_class_id' => $tb_training_class_id,
+					':status' => 1,
+				]);
 				
+			// IS NOT CONSTRAIN			
+			if($trainingSchedule->count()==0){ 
+				// PREPARING SAVE
+				$model = new \backend\models\TrainingSchedule(); 
+				$model->tb_training_class_id=$tb_training_class_id;
+				$model->tb_training_class_subject_id = $tb_training_class_subject_id;
+				$model->tb_activity_room_id = $tb_activity_room_id;		
+				$model->activity = $activity;
+				$model->pic = $pic;
+				$model->hours = $hours;
+				$model->startTime = $start;
+				$model->finishTime = $finish;
+				$model->session = 1;
+				$model->status = 1;
+			
+				if($model->save()) {
+					Yii::$app->session->setFlash('success', 'Activity have Added');
+					die('|1|Activity have Added|'.date('Y-m-d',strtotime($start)).'|'.date('H:i',strtotime($finish)));
+					
+				}
+				else{
+					die('|0|There are some error');
+				}
 			}
 			else{
-				die('|0|There are some error');
+				die('|0|Constrain time, please change time!');
 			}
 		}
 		else{
@@ -627,7 +681,7 @@ class TrainingClassController extends Controller
 			$start = $trainingSchedule->startTime;
 			if($trainingSchedule->delete()) {
 				Yii::$app->session->setFlash('success', 'Delete activity success');
-				die('|1|Activity have deleted|'.date('H:i',strtotime($start)));
+				die('|1|Activity have deleted|'.date('Y-m-d',strtotime($start)).'|'.date('H:i',strtotime($start)));
 			}
 			else{
 				die('|0|There are some error');
@@ -640,68 +694,123 @@ class TrainingClassController extends Controller
 		
     }
 	
-	public function actionActivityLists($tb_training_class_id)
-    {		
-		header('Content-type: application/json');
-		$trainingClassSubject = \backend\models\TrainingClassSubject::find()
-			->where(['tb_training_class_id'=>$tb_training_class_id,'status'=>1])
-			->all();
-		$data=[];
-		foreach($trainingClassSubject as $tcs){
-			//$tcs['tb_training_class_subject_id']
-			$tb_program_subject_id = $tcs->tb_program_subject_id;
-			$tb_program_id = $tcs->trainingClass->training->tb_program_id;
-			$tb_program_revision = $tcs->trainingClass->training->tb_program_revision;
-			$programSubjectHistory = \backend\models\ProgramSubjectHistory::find()
-			->where([
-				'tb_program_subject_id'=>$tb_program_subject_id,
-				'tb_program_id'=>$tb_program_id,
-				'revision'=>$tb_program_revision,
-				'status'=>1
-			])
-			->one();
-			if(null!=$programSubjectHistory){
-				$ts = \backend\models\TrainingSchedule::find()
-					->select(['used_hours'=>'sum(hours)'])
-					->where(['tb_training_class_subject_id'=>$tcs->id,'status'=>1])
-					->groupBy('tb_training_class_subject_id')
-					->asArray()
-					->one();
-				$available_hours = $programSubjectHistory->hours - $ts['used_hours'];
-				if($available_hours>0){
-					$name = $programSubjectHistory->subjectType->name.' '.$programSubjectHistory->name.' '.$available_hours.' JP';
-					$data[$tcs->id]=$name;
-				}
-				else{
+	public function actionSession($id)
+    {
+        if (Yii::$app->request->isAjax){
+			$model = \backend\models\TrainingSchedule::findOne($id);
+			if ($model->load(Yii::$app->request->post())) {				
+				if($model->save()) {
+					Yii::$app->session->setFlash('success', 'Session have set');
+					die('|1|Session have set|'.date('Y-m-d',strtotime($model->startTime)).'|'.date('H:i',strtotime($model->finishTime)));
 					
 				}
+				else{
+					die('|0|There are some error');
+				}
+			}
+			else{
+				return $this->renderAjax('session', [
+					'model' => $model,
+				]);
 			}
 		}
-		
-		$data[-1] = 'Coffe Break';
-		$data[-2] = 'Ishoma';
-		$data[-3] = 'Others';
-		
-		//$out = ['more' => false];
-		$out['results'] = ($data);
-		
-		/*if (!is_null($search)) {
-			$query = new Query;
-			$query->select('id, name AS text')
-				->from('city')
-				->where('name LIKE "%' . $search .'%"')
-				->limit(20);
-			$command = $query->createCommand();
-			$data = $command->queryAll();
-			$out['results'] = array_values($data);
-		}
-		elseif ($id > 0) {
-			$out['results'] = ['id' => $id, 'text' => City::find($id)->name];
-		}
-		else {
-			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
-		}
-		*/
-		echo \yii\helpers\Json::encode($out);
     }
+	
+	public function actionRoom($id)
+    {
+        if (Yii::$app->request->isAjax){
+			$model = \backend\models\TrainingSchedule::findOne($id);
+			if ($model->load(Yii::$app->request->post())) {				
+				if($model->save()) {
+					Yii::$app->session->setFlash('success', 'Room have set');
+					die('|1|Room have set|'.date('Y-m-d',strtotime($model->startTime)).'|'.date('H:i',strtotime($model->finishTime)));
+					
+				}
+				else{
+					die('|0|There are some error');
+				}
+			}
+			else{
+				return $this->renderAjax('room', [
+					'model' => $model,
+				]);
+			}
+		}
+    }
+	
+	public function actionTrainer($id)
+    {
+        if (Yii::$app->request->isAjax){
+			$model = new \backend\models\TrainingScheduleTrainer();
+			$trainingSchedule = \backend\models\TrainingSchedule::findOne($id);
+			if ($model->load(Yii::$app->request->post())) {
+				$tb_trainer_id_array = Yii::$app->request->post('tb_trainer_id_array');
+				
+				$insert=0;
+				foreach($tb_trainer_id_array as $tb_trainer_id=>$on){
+					$model2 = new \backend\models\TrainingScheduleTrainer();
+					$model2->tb_training_schedule_id = $id;
+					$trainingSubjectTrainerRecommendation=\backend\models\TrainingSubjectTrainerRecommendation::find()
+					->where([
+						'tb_training_id'=>$trainingSchedule->trainingClassSubject->trainingClass->tb_training_id,
+						'tb_program_subject_id'=>$trainingSchedule->trainingClassSubject->tb_program_subject_id,
+						'tb_trainer_id'=>$tb_trainer_id,
+						'status'=>1,
+					])
+					->one();
+					$model2->ref_trainer_type_id=$trainingSubjectTrainerRecommendation->ref_trainer_type_id;
+					$model2->tb_trainer_id = $tb_trainer_id;
+					$model2->status = 1;
+					if($model2->save()) {
+						$insert++;
+					}
+					else{
+						die('|0|There are some error'.print_r($model2->errors));
+					}
+				}
+				
+				if($insert>0) {
+					Yii::$app->session->setFlash('success', 'Trainer have added');
+					die('|1|Trainer have added|'.date('Y-m-d',strtotime($trainingSchedule->startTime)).'|'.date('H:i',strtotime($trainingSchedule->finishTime)));
+				}
+				else{
+					die('|0|No trainer added');
+				}
+			}
+			else{				
+				return $this->renderAjax('trainer', [
+					'model' => $model,
+					'trainingSchedule' => $trainingSchedule,
+				]);
+			}
+		}
+    }
+	
+	public function actionDeleteTrainer($id,$tb_trainer_id)
+    {
+        if (Yii::$app->request->isAjax){
+			$model = \backend\models\TrainingScheduleTrainer::find()
+				->where([
+					'tb_training_schedule_id' => $id,
+					'tb_trainer_id' => $tb_trainer_id,
+				])
+				->one();
+			if ($model!=null) {				
+				if($model->delete()) {
+					Yii::$app->session->setFlash('success', 'Trainer have deleted');
+					$trainingSchedule = \backend\models\TrainingSchedule::findOne($id);
+					die('|1|Trainer have added|'.date('Y-m-d',strtotime($trainingSchedule->startTime)).'|'.date('H:i',strtotime($trainingSchedule->finishTime)));
+					
+				}
+				else{
+					die('|0|There are some error'.print_r($model->errors));
+				}
+			}
+			else{
+				die('|0|There are some error'.print_r($model->errors));
+			}
+		}
+    }
+	
+	
 }

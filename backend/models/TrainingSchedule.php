@@ -114,4 +114,9 @@ class TrainingSchedule extends \yii\db\ActiveRecord
     {
         return $this->hasOne(TrainingClass::className(), ['id' => 'tb_training_class_id']);
     }
+	
+	public function getTrainingClassSubject()
+    {
+        return $this->hasOne(TrainingClassSubject::className(), ['id' => 'tb_training_class_subject_id']);
+    }
 }

@@ -3,6 +3,7 @@
 namespace backend\modules\bdk\general\controllers;
 
 use Yii;
+use backend\models\ActivityRoom;
 use backend\models\Room;
 use backend\models\RoomSearch;
 use yii\web\Controller;
@@ -150,9 +151,17 @@ class RoomController extends Controller
 
     public function actionDelete($id)
     {
+    	// Ngecek ada request yang make room ini ga
+    	if (ActivityRoom::find()->where(['tb_room_id' => $id])->one())
+    	{
+    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Forbidden to delete room, because an activity is using it.
+    			You can make room "seem" like deleted by turn the published status to <strong>off</strong>.
+    			If you really want to delete it completely, you should delete all request room in all activity, even the expired one!');
+    		return $this->redirect(['index']);
+    	}
         $this->findModel($id)->delete();
 
-        Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-times-circle"></i> Room has been deleted!');
+        Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Room has been deleted!');
 
         return $this->redirect(['index']);
     }

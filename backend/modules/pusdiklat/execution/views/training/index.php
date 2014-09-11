@@ -71,12 +71,35 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'class' => 'kartik\grid\DataColumn',
 				'attribute' => 'studentCount',
 				'label'=> 'Student',
+				'format'=>'raw',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
-				'width'=>'100px',
+				'width'=>'60px',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data)
+				{
+					$studentCount = \backend\models\TrainingClassStudent::find()
+						->where([
+							'tb_training_class_id' => \backend\models\TrainingClass::find()
+								->select('id')
+								->where([
+									'tb_training_id'=>$data->id,
+									'status'=>1
+								]),
+							'status' => 1
+						])->count();
+					if($data->status==2){	
+						return Html::a($data->studentCount, 
+							['/'.$this->context->module->uniqueId.'/training-class-student/index','tb_training_id'=>$data->id], 
+							['title'=>$studentCount,'class' => 'label label-default','data-pjax'=>0,
+							'data-toggle'=>"tooltip",'data-placement'=>"top"]);
+					}
+					else{
+						return (int)$data->studentCount;
+					}
+				}
 			],
 			[
 				'format' => 'raw',

@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
 		</div>
 		<i class="fa fa-fw fa-globe"></i> 
 		Room	</div>
-	<div style="margin:10px">
+	<div class="panel-body">
 
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_VERTICAL,

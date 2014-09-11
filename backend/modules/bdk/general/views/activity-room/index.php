@@ -9,7 +9,7 @@ use yii\helpers\Url;
 use hscstudio\heart\helpers\Heart;
 use kartik\detail\DetailView;
 
-$this->title = 'Activity Rooms';
+$this->title = 'Room Request Center for '.$roomSectionTitle;
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -17,7 +17,13 @@ $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 
-<div class="activity-room-index">
+<div class="row">
+	<div class="col-md-12">
+		<a class="btn btn-primary" href="<?php echo Url::to(['activity-room/list']); ?>"><i class="fa fa-fw fa-arrow-left"></i> Done</a>
+	</div>
+</div>
+
+<div class="activity-room-index" style="margin-top:10px;">
 	<?php
 		echo FullCalendar::widget([
 			'options'=>[
@@ -28,13 +34,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'right'=>'month,agendaWeek,agendaDay',
 				],			
 				'eventLimit'=>true,
-				'events'=> Url::to(['events']),
+				'events'=> Url::to(['events', 'roomId' => $roomId]),
 				'eventClick' => new JsExpression('
 					function(calEvent, jsEvent, view) {
 						var modals = $("#modal-heart");
 						var link = $(this);
 					    modals.find(".modal-refresh").attr("href", link.attr("href"));
-						modals.find(".modal-title").text(link.find(".fc-title").html());
+						modals.find(".modal-title").html("<i class=\"fa fa-fw fa-comment-o\"></i>Requesting a Room...");
 						modals.find(".modal-body .content").html("Loading ...");
 						modals.modal("show");
 						

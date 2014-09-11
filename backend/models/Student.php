@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-																																						
+																																									
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
@@ -22,6 +22,8 @@ use yii\behaviors\BlameableBehavior;
  * @property string $frontTitle
  * @property string $backTitle
  * @property string $nip
+ * @property string $password_hash
+ * @property string $auth_key
  * @property string $born
  * @property string $birthDay
  * @property integer $gender
@@ -36,6 +38,7 @@ use yii\behaviors\BlameableBehavior;
  * @property string $eselon2
  * @property string $eselon3
  * @property string $eselon4
+ * @property string $satker
  * @property string $officePhone
  * @property string $officeFax
  * @property string $officeEmail
@@ -55,11 +58,8 @@ use yii\behaviors\BlameableBehavior;
  * @property RankClass $refRankClass
  * @property Religion $refReligion
  * @property Unit $refUnit
- * @property TrainingCertificate[] $trainingCertificates
  * @property TrainingClassStudent[] $trainingClassStudents
- * @property TrainingStudent[] $trainingStudents
- * @property TrainingStudentAttendance[] $trainingStudentAttendances
- * @property TrainingTrainerEvaluation[] $trainingTrainerEvaluations
+ * @property TrainingClassSubjectTrainerEvaluation[] $trainingClassSubjectTrainerEvaluations
  */
 class Student extends \yii\db\ActiveRecord
 {
@@ -105,9 +105,12 @@ class Student extends \yii\db\ActiveRecord
             [['ref_religion_id', 'ref_graduate_id', 'ref_rank_class_id', 'ref_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['name'], 'required'],
             [['birthDay', 'tmtSKPangkat', 'created', 'modified', 'deleted'], 'safe'],
+            [['satker'], 'string'],
             [['name', 'nickName', 'born', 'phone', 'officePhone', 'officeFax'], 'string', 'max' => 50],
             [['frontTitle', 'backTitle'], 'string', 'max' => 20],
             [['nip'], 'string', 'max' => 18],
+            [['password_hash'], 'string', 'max' => 60],
+            [['auth_key'], 'string', 'max' => 32],
             [['email', 'eselon2', 'eselon3', 'eselon4', 'officeEmail'], 'string', 'max' => 100],
             [['address', 'photo', 'position', 'education', 'officeAddress', 'noSKPangkat', 'fileSKPangkat'], 'string', 'max' => 255],
             [['blood'], 'string', 'max' => 10]
@@ -130,6 +133,8 @@ class Student extends \yii\db\ActiveRecord
             'frontTitle' => 'Front Title',
             'backTitle' => 'Back Title',
             'nip' => 'Nip',
+            'password_hash' => 'Password Hash',
+            'auth_key' => 'Auth Key',
             'born' => 'Born',
             'birthDay' => 'Birth Day',
             'gender' => 'Gender',
@@ -144,6 +149,7 @@ class Student extends \yii\db\ActiveRecord
             'eselon2' => 'Eselon2',
             'eselon3' => 'Eselon3',
             'eselon4' => 'Eselon4',
+            'satker' => 'Satker',
             'officePhone' => 'Office Phone',
             'officeFax' => 'Office Fax',
             'officeEmail' => 'Office Email',
@@ -191,13 +197,6 @@ class Student extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingCertificates()
-    {
-        return $this->hasMany(TrainingCertificate::className(), ['tb_student_id' => 'id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getTrainingClassStudents()
     {
         return $this->hasMany(TrainingClassStudent::className(), ['tb_student_id' => 'id']);
@@ -205,22 +204,21 @@ class Student extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingStudents()
+    public function getTrainingClassSubjectTrainerEvaluations()
     {
-        return $this->hasMany(TrainingStudent::className(), ['tb_student_id' => 'id']);
+        return $this->hasMany(TrainingClassSubjectTrainerEvaluation::className(), ['tb_student_id' => 'id']);
     }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainingStudentAttendances()
+	
+	public function setPassword($password)
     {
-        return $this->hasMany(TrainingStudentAttendance::className(), ['tb_student_id' => 'id']);
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
-	    /**
-     * @return \yii\db\ActiveQuery
+
+    /**
+     * Generates "remember me" authentication key
      */
-    public function getTrainingTrainerEvaluations()
+    public function generateAuthKey()
     {
-        return $this->hasMany(TrainingTrainerEvaluation::className(), ['tb_student_id' => 'id']);
+        $this->auth_key = Yii::$app->security->generateRandomString();
     }
 }
