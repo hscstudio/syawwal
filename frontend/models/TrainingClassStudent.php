@@ -41,10 +41,11 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-	 public $peserta_diklat;
-	 public $document;
-	 public $pengajar;
-	 public $evaluasi_penyelenggaraan;
+	 public $name;
+	 public $nip;
+	 public $telp;
+	 public $email;
+	 public $unit;
 	 
     public static function tableName()
     {
@@ -97,7 +98,8 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'tb_training_class_id' => 'Tb Training Class ID',
+			'tb_training_id' => 'Training',
+            'tb_training_class_id' => 'Training Class',
             'tb_student_id' => 'Tb Student ID',
             'number' => 'Number',
             'headClass' => 'Head Class',
@@ -120,7 +122,7 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
      */
     public function getTrainingClass()
     {
-        return $this->hasOne(TrainingClassSubject::className(), ['id' => 'tb_training_class_id']);
+        return $this->hasOne(TrainingClass::className(), ['id' => 'tb_training_class_id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery

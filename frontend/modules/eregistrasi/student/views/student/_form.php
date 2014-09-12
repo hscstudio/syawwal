@@ -21,6 +21,7 @@ use yii\helpers\ArrayHelper;
 	<div style="margin:10px">
     <?php $form = ActiveForm::begin([
 		'type' => ActiveForm::TYPE_VERTICAL,
+		'action' => ['controller/Update?id='.Yii::$app->user->identity->id],
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>

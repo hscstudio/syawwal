@@ -7,7 +7,7 @@ use yii\bootstrap\Dropdown;
 /* @var $searchModel frontend\models\TrainingClassStudentSearch */
 
 $this->title = 'Training Class Students';
-//$this->params['breadcrumbs'][] = ['label'=>'Student','url'=>['training-class-student/index']];
+$this->params['breadcrumbs'][] = ['label'=>'Trainings','url'=>['../eregistrasi-student/training/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $controller = $this->context;
@@ -24,96 +24,71 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
 
-            // 'id',
-            /*
+           
 				[
-					'attribute' => 'tb_training_class_id',
-					'value' => function ($data) {
-						return $data->trainingClass->name;
-					}
-				],
-				*/
-            /*
-				[
-					'attribute' => 'tb_student_id',
-					'value' => function ($data) {
-						return $data->student->name;
-					}
-				],
-				*/
-            
-				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'number',
+					'format' => 'html',
+					'attribute' => 'name',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Number', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data){
+						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->name);
+					},
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'headClass',
+					'format' => 'html',
+					'attribute' => 'nip',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'HeadClass', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data){
+						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->nip);
+					},
 				],
             
 				[
-					'class' => 'kartik\grid\EditableColumn',
-					'attribute' => 'activity',
+					'format' => 'html',
+					'attribute' => 'telp',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'editableOptions'=>['header'=>'Activity', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
+					'value' => function ($data){
+						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->phone);
+					},
 				],
-            				            				      
+            
 				[
 					'format' => 'html',
-					'attribute' => 'peserta_diklat',
+					'attribute' => 'email',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
-					'hAlign'=>'center',
-					'label' => 'Peserta',
-					'width'=>'75px',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data){
+						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->email);
+					},
 				],
-				
+            
 				[
 					'format' => 'html',
-					'attribute' => 'document',
-					'vAlign'=>'middle',
-					'hAlign'=>'center',
-					'label' => 'Doc',
-					'width'=>'75px',
-				],
-				[
-					'format' => 'html',
-					'attribute' => 'pengajar',
-					'vAlign'=>'middle',
-					'hAlign'=>'center',
-					//'pageSummary' => 'Page Total',
-					'width'=>'75px',
-				],
-				
-				[
-					'format' => 'html',
-					'attribute' => 'evaluasi_penyelenggaraan',
-					'vAlign'=>'middle',
-					'hAlign'=>'center',
+					'attribute' => 'unit',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
-					'label' => 'Penyelenggaraan',
-					'width'=>'75px',
+					'headerOptions'=>['class'=>'kv-sticky-column'],
+					'contentOptions'=>['class'=>'kv-sticky-column'],
+					'value' => function ($data){
+						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->unit->shortname);
+					},
 				],
 
             	[
 				 	'class' => 'kartik\grid\ActionColumn',
 					'template' => '{view}',
-				],
+				]
         ],
 		'panel' => [
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training Class Student</h3>',

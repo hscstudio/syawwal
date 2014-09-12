@@ -15,8 +15,8 @@ class Module extends \yii\base\Module
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			// Add here your items module
-			['icon'=>'fa fa-fw fa-user', 'label' => 'Student', 'url' => ['/'.$this->uniqueId.'/student/update?id='.Yii::$app->user->identity->id],'path'=>'/student/'],
-			['icon'=>'fa fa-fw fa-book', 'label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training-class-student/index'],'path'=>'/training-class-student/'],
+			['icon'=>'fa fa-fw fa-user', 'label' => 'Student', 'url' => ['/'.$this->uniqueId.'/student/update'],'path'=>'/student/'],
+			['icon'=>'fa fa-fw fa-book', 'label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'],'path'=>'/training/'],
 		];
 	}
 }

@@ -15,6 +15,9 @@ return [
         'eregistrasi-student' => [
             'class' => '\frontend\modules\eregistrasi\student\Module',
         ],
+		'eregistrasi-training' => [
+            'class' => 'frontend\modules\eregistrasi\trainingclass\Module',
+        ],
 		'gridview' => [
 			'class' => '\kartik\grid\Module',
 		],
@@ -56,6 +59,7 @@ return [
 						'gridview/*',	// add or remove allowed actions to this list
 						'file/*',
 						'eregistrasi-student/*',
+						'eregistrasi-training/*',
 						],
 					'authManager' => [
 					  'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'

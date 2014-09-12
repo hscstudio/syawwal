@@ -15,6 +15,7 @@ $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 $data = \frontend\models\Student::find()->where(['nip'=>Yii::$app->user->identity->nip])->One();
+$tgllahir = explode('-',$data->birthDay);
 ?>
 <?php
     Modal::begin([
@@ -47,7 +48,7 @@ $data = \frontend\models\Student::find()->where(['nip'=>Yii::$app->user->identit
     	<td>NIP</td><td>:</td><td><?php echo $data->nip;?></td>
     </tr>
     <tr>
-    	<td>TEMPAT / TANGGAL LAHIR </td><td>:</td><td><?php echo strtoupper($data->born);?> / <?php echo $data->birthDay;?></td>
+    	<td>TEMPAT / TANGGAL LAHIR </td><td>:</td><td><?php echo strtoupper($data->born);?> / <?php echo $tgllahir[2].'-'.$tgllahir[1].'-'.$tgllahir[0];?></td>
     </tr>
     <tr>
     	<td>KEMENTERIAN</td><td>:</td><td>KEMENTERIAN KEUANGAN</td>
