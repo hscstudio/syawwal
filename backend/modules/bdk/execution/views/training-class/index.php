@@ -69,8 +69,8 @@ $buttonHeaderBefore .= '</div>';
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function($data) {
-					return Html::a($data->getTrainingClassSubjects()->count(), Url::to(['training-class-subject/index', 'tb_training_class_id' => $data->id]), [
-							'class' => 'label label-default',
+					return Html::a('<strong>'.$data->getTrainingClassSubjects()->count().'</strong>', Url::to(['training-class-subject/index', 'tb_training_class_id' => $data->id]), [
+							'class' => 'btn btn-info btn-xs',
 							'data-pjax' => "0"
 						]);
 				}
