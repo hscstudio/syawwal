@@ -224,6 +224,49 @@ class TrainingClassController extends Controller
 
 
 
+
+public function actionSchedule($tb_training_class_id,$start="",$finish="")
+    {
+		$trainingClass=$this->findModel($tb_training_class_id);
+		if(empty($start)){
+			$start = $trainingClass->training->start;
+		}
+		
+		if(empty($finish) or $finish<$start){
+			$finish = $start;
+		}
+		$searchModel = new \backend\models\TrainingScheduleSearch();
+		$queryParams['TrainingScheduleSearch']=[				
+			'tb_training_class_id'=>$tb_training_class_id,
+			'startDate'=>$start,
+			'finishDate'=>$finish,
+		];		
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        $dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_ASC,'finishTime'=>SORT_ASC];
+
+		if (Yii::$app->request->isAjax){
+			return $this->renderAjax('schedule', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'trainingClass'=>$trainingClass,
+				'start'=>$start,
+				'finish'=>$finish,
+			]);
+		}
+		else{
+			return $this->render('schedule', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'trainingClass'=>$trainingClass,
+				'start'=>$start,
+				'finish'=>$finish,
+			]);
+		}
+    }
+
+
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);

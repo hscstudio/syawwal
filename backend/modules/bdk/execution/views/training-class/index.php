@@ -77,6 +77,24 @@ $buttonHeaderBefore .= '</div>';
 			],
 
 			[
+				'format' => 'raw',
+				'label' => 'Schedule',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'80px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($model){
+					return Html::a('<strong>SET</strong>',
+						Url::to(['schedule','tb_training_class_id'=>$model->id]),
+						[
+							'class'=>'btn btn-default btn-xs',
+							'data-pjax' => '0'
+						]);
+				}
+			],
+
+			[
 				'class' => '\kartik\grid\BooleanColumn',
 				'attribute' => 'status',
 				'vAlign'=>'middle',
