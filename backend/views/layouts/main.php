@@ -38,6 +38,17 @@ AppAsset::register($this);
                 $menuItems[] = ['label' => 'Register', 'url' => ['/user/registration/register']];
 				$menuItems[] = ['label' => 'Login', 'url' => ['/user/security/login']];
             } else {
+				$callback = function($menuX){
+					$data = eval($menuX['data']);
+					return [
+						'label' => $menuX['name'], 
+						'url' => [$menuX['route']],
+						'icon'=> isset($data['icon'])?$data['icon']:'',
+						'path'=> isset($data['path'])?$data['path']:'',
+						'items' => $menuX['children'],
+					];
+				};
+				
                 $menuItemsLeft[] =
                     ['icon'=>'fa fa-android fa-fw','label' => 'ADMIN', 'url' => ['/administrator/default/index'], 'items' => [
                         ['icon'=>'fa fa-cog fa-fw fa-spin','label'=>'Generator', 'url'=> ['/gii']],
@@ -52,6 +63,11 @@ AppAsset::register($this);
                         ['icon'=>'fa fa-desktop fa-fw','label'=>'Information Technology', 'url'=> ['/sekretariat-it/default/index'],'path'=>'sekretariat-it' ],
                         ['icon'=>'fa fa-joomla fa-fw','label'=>'General', 'url'=> ['/sekretariat-general/default/index'],'path'=>'sekretariat-general' ],
                     ]];
+				
+				/*
+				$menus_pusdiklat = (\hscstudio\heart\modules\admin\components\AccessHelper::getAssignedMenu(Yii::$app->user->id,3,$callback,true));
+				$menuItemsLeft[] = ['icon'=>'fa fa-building fa-fw','label' => 'PUSDIKLAT', 'url' => ['#'], 'items' => $menus_pusdiklat ];				
+				*/
                 $menuItemsLeft[] =
                     ['icon'=>'fa fa-building fa-fw','label' => 'PUSDIKLAT', 'url' => ['#'], 'items' => [
                         ['icon'=>'fa fa-joomla fa-fw','label'=>'General', 'url'=> ['/pusdiklat-general/default/index'],'path'=>'pusdiklat-general'],
@@ -64,13 +80,15 @@ AppAsset::register($this);
                         ['icon'=>'fa fa-sort-numeric-asc fa-fw','label'=>'Test', 'url'=> ['/pusdiklat2-test/default/index'],'path'=>'pusdiklat2-test' ],
 						['icon'=>'fa fa-graduation-cap fa-fw','label'=>'Scholarship', 'url'=> ['/pusdiklat2-scholarship/default/index'],'path'=>'pusdiklat2-scholarship' ],
                     ]];
+				
                 $menuItemsLeft[] =
                     ['icon'=>'fa fa-university fa-fw','label' => 'BDK', 'url' => ['#'], 'items' => [
                         ['icon'=>'fa fa-joomla fa-fw','label'=>'General', 'url'=> ['/bdk-general/default/index'],'path'=>'bdk-general'],
                         ['icon'=>'fa fa-paper-plane fa-fw','label'=>'Execution', 'url'=> ['/bdk-execution/default/index'],'path'=>'bdk-execution'],
                         ['icon'=>'fa fa-check-square-o fa-fw','label'=>'Evaluation', 'url'=> ['/bdk-evaluation/default/index'],'path'=>'bdk-evaluation'],
                     ]];
-
+				
+				
                 echo Nav::widget([
                     'options' => ['class' => 'navbar-nav'],
                     'position'=>'left',

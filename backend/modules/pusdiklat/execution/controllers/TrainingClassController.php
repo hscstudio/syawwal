@@ -44,6 +44,7 @@ class TrainingClassController extends Controller
 		$dataProvider = $searchModel->search($queryParams); 
 		
 		$training=\backend\models\Training::findOne($tb_training_id);
+		
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

@@ -160,6 +160,31 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		$assets = $view->assetManager->publish('@hscstudio/heart/assets/heart');
 		$view->registerCssFile($assets[1].'/css/heart.css', ['yii\bootstrap\BootstrapAsset']);
 		$view->registerJsFile($assets[1].'/js/heart.js', ['yii\web\JqueryAsset']);
+		$css = '
+		.overlay, .loading-img {
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  width: 100%;
+			  height: 100%;
+		}
+		
+		.overlay {
+		  z-index: 1010;
+		  background: rgba(255, 255, 255, 0.7);
+		}
+		
+		.overlay.dark {
+		  background: rgba(0, 0, 0, 0.5);
+		}
+		
+		.loading-img {
+		  z-index: 1020;
+		  background: transparent url("'.$assets[1].'/img/ajax-loader1.gif") 50% 20% no-repeat;
+		}
+		';
+		$view->registerCss($css);
+		
 		//$view->registerJsFile($assets[1].'/js/bootstrap-growl.min.js', ['yii\web\JqueryAsset']);
 
 		\yii\base\Event::on('yii\web\Controller','beforeAction',function($event){

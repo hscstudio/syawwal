@@ -10,9 +10,10 @@ use \kartik\widgets\DatePicker;
 use \kartik\widgets\TimePicker;
 use \kartik\datecontrol\DateControl;
 use kartik\checkbox\CheckboxX;
+use hscstudio\heart\widgets\Box;
 /* @var $searchModel backend\models\RoomSearch */
 
-$this->title = $activity->name;
+$this->title = \yii\helpers\Inflector::camel2words($activity->name);
 $this->params['breadcrumbs'][] = ['label' => 'Training', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -23,6 +24,42 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 <div class="room-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+	
+	<div class="panel" id="panel-heading-dashboard" style="display:none;" >
+		<a href="<?= yii\helpers\Url::to(["training/dashboard","id"=>$activity->id]) ?>" style="color:#666;padding:5px;display:block;text-align:center;background:#ddd;border-bottom: 1px solid #ddd;border-radius:4px 4px 0 0">
+			<span class="badge"><i class="fa fa-arrow-circle-left"></i> Back To Dashboard</span>
+		</a>
+		<?php
+		Box::begin([
+			'type'=>'small', // ,small, solid, tiles
+			'bgColor'=>'yellow', // , aqua, green, yellow, red, blue, purple, teal, maroon, navy, light-blue
+			'options' => [
+			],
+			'headerOptions' => [
+				'button' => ['collapse','remove'],
+				'position' => 'right', //right, left
+				'color' => '', //primary, info, warning, success, danger
+				'class' => '',
+			],
+			'header' => 'T',
+			'bodyOptions' => [],
+			'icon' => 'fa fa-home',
+			//'link' => ['./training-class','tb_training_id'=>$training->id],
+			'footerOptions' => ['class'=>'hide'],
+			//'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
+		]);
+		?>
+			<h3>Room</h3>
+			<p>Room of Training</p>
+		<?php
+		Box::end();
+		?>
+	</div>
+	<?php
+	$this->registerJs('
+		$("div#panel-heading-dashboard").slideToggle("slow");
+	');
+	?>
 	
 	<div class="panel panel-default" id="booking-room">
 	<div class="panel-heading">

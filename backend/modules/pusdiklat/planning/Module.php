@@ -1,6 +1,7 @@
 <?php
 
 namespace backend\modules\pusdiklat\planning;
+use Yii;
 
 class Module extends \yii\base\Module
 {
@@ -12,15 +13,28 @@ class Module extends \yii\base\Module
     }
 	
 	public function getMenuItems(){
+		$callback = function($menuX){
+			$data = eval($menuX['data']);
+			return [
+				'label' => $menuX['name'], 
+				'url' => [$menuX['route']],
+				'icon'=> isset($data['icon'])?$data['icon']:'',
+				'path'=> isset($data['path'])?$data['path']:'',
+				'items' => $menuX['children'],
+			];
+		};
+		
+		$menus = (\hscstudio\heart\modules\admin\components\AccessHelper::getAssignedMenu(Yii::$app->user->id,4,$callback,true));
+		//return $menus;
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default']],
 			['icon'=>'fa fa-fw fa-code-fork', 'label' => 'Program [75%]', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-list','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program/index'],'path'=>[
 					'program/','program-subject/','program-document/','program-history/','program-subject-document/','program-subject-history/'
 				]],
-				['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'],'path'=>['training/']],
-				['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training Unit Plan', 'url' => ['/'.$this->uniqueId.'/training-unit-plan/index'],'path'=>[
-					'training-unit-plan/']],
+				['icon'=>'fa fa-fw fa-stack-overflow','label' => 'Training', 'url' => ['/'.$this->uniqueId.'/training/index'],'path'=>[
+					'training/','training-unit-plan/',
+				]],
 			]],
 			['icon'=>'fa fa-fw fa-university', 'label' => 'Kurikulum [75%]', 'url' => ['#'], 'items'=>[
 				['icon'=>'fa fa-fw fa-list','label' => 'Program', 'url' => ['/'.$this->uniqueId.'/program2/index'],'path'=>[
@@ -45,5 +59,14 @@ class Module extends \yii\base\Module
 					'testing/',
 				]],
 		];
+		
+		/*
+		return [
+			'icon'=>'fa fa-list fa-fw',
+			'path'=>[
+				'program/','program-subject/','program-document/','program-history/','program-subject-document/','program-subject-history/'
+			]
+		];
+		*/
 	}
 }
