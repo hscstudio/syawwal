@@ -105,9 +105,16 @@ class TrainingController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        if (Yii::$app->request->isAjax){	
+			return $this->renderAjax('view', [
+				'model' => $this->findModel($id),
+			]);
+		}
+		else{
+			return $this->render('view', [
+				'model' => $this->findModel($id),
+			]);
+		}
     }
 
     
@@ -801,5 +808,18 @@ class TrainingController extends Controller
 			return $this->redirect(['room', 'activity_id' => $activity_id]);
 		}		
 		
-    }	
+    }
+
+	/**
+     * Displays a single Training model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDashboard($id)
+    {
+        return $this->render('dashboard', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+	
 }

@@ -117,6 +117,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
 			//'type'=>'primary',
 			'before'=>
+				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Training', ['training/index'], ['class' => 'btn btn-warning']).
 				'<div class="pull-right" style="margin-right:5px;">'.
 				Select2::widget([
 					'name' => 'year', 

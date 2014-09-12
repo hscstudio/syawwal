@@ -3,16 +3,17 @@
 namespace frontend\modules\eregistrasi\student\controllers;
 
 use Yii;
-use frontend\models\TrainingClassStudent;
-use frontend\models\TrainingClassStudentSearch;
+use frontend\models\Training;
+use frontend\models\TrainingSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
- * TrainingClassStudentController implements the CRUD actions for TrainingClassStudent model.
+ * TrainingController implements the CRUD actions for Training model.
  */
-class TrainingClassStudentController extends Controller
+class TrainingController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,22 +31,43 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Lists all TrainingClassStudent models.
+     * Lists all Training models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($ref_satker_id='all')
     {
-        $searchModel = new TrainingClassStudentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$satker = ArrayHelper::map(\frontend\models\Satker::find()->select(['id','name'])->asArray()->all(), 'id', 'name');
+		
+        $searchModel = new TrainingSearch();
+		$queryParams = Yii::$app->request->getQueryParams();
+		
+		if($ref_satker_id!='all'){
+			$queryParams['TrainingSearch']=[
+				'ref_satker_id'=>$ref_satker_id,
+			];
+		}
+		else{
+			$queryParams['TrainingSearch']=[
+				//'ref_satker_id'=>$ref_satker_id,		   
+			];
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		
+		
+		
+        //$dataProvider = $searchModel->search(Yii::$app->request->queryParams);		
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'satker' => $satker,
+			'ref_satker_id' =>$ref_satker_id,
         ]);
     }
 
     /**
-     * Displays a single TrainingClassStudent model.
+     * Displays a single Training model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +79,13 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Creates a new TrainingClassStudent model.
+     * Creates a new Training model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new TrainingClassStudent();
+        $model = new Training();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -81,7 +103,7 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Updates an existing TrainingClassStudent model.
+     * Updates an existing Training model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -118,7 +140,7 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Deletes an existing TrainingClassStudent model.
+     * Deletes an existing Training model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -131,15 +153,15 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Finds the TrainingClassStudent model based on its primary key value.
+     * Finds the Training model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return TrainingClassStudent the loaded model
+     * @return Training the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = TrainingClassStudent::findOne($id)) !== null) {
+        if (($model = Training::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -147,15 +169,15 @@ class TrainingClassStudentController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new TrainingClassStudent; // your model can be loaded here
+		$model = new Training; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['TrainingClassStudent'][$_POST['editableIndex']]);
-				$value=$_POST['TrainingClassStudent'][$_POST['editableIndex']][$name];
+				$name=key($_POST['Training'][$_POST['editableIndex']]);
+				$value=$_POST['Training'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -175,7 +197,7 @@ class TrainingClassStudentController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudent::find(),
+            'query' => Training::find(),
         ]);
 		
 		try {
@@ -189,20 +211,20 @@ class TrainingClassStudentController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "TrainingClassStudent";
+			$OpenTBS->VarRef['modelName']= "Training";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_training_class_id';			
-			$data1[]['col2'] = 'tb_student_id';			
-			$data1[]['col3'] = 'number';			
+			$data1[]['col1'] = 'tb_program_id';			
+			$data1[]['col2'] = 'tb_program_revision';			
+			$data1[]['col3'] = 'ref_satker_id';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $trainingclassstudent){
+			foreach($dataProvider->getModels() as $training){
 				$data2[] = [
-					'col0'=>$trainingclassstudent->id,
-					'col1'=>$trainingclassstudent->tb_training_class_id,
-					'col2'=>$trainingclassstudent->tb_student_id,
-					'col3'=>$trainingclassstudent->number,
+					'col0'=>$training->id,
+					'col1'=>$training->tb_program_id,
+					'col2'=>$training->tb_program_revision,
+					'col3'=>$training->ref_satker_id,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -221,7 +243,7 @@ class TrainingClassStudentController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudent::find(),
+            'query' => Training::find(),
         ]);
 		
 		try {
@@ -236,13 +258,13 @@ class TrainingClassStudentController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingClassStudent');
+								->setCellValue('A1', 'Tabel Training');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingclassstudent){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudent->id)
-													  ->setCellValue('B'.$idx, $trainingclassstudent->tb_training_class_id)
-													  ->setCellValue('C'.$idx, $trainingclassstudent->tb_student_id)
-													  ->setCellValue('D'.$idx, $trainingclassstudent->number);
+					foreach($dataProvider->getModels() as $training){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
+													  ->setCellValue('B'.$idx, $training->tb_program_id)
+													  ->setCellValue('C'.$idx, $training->tb_program_revision)
+													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
 					
@@ -267,13 +289,13 @@ class TrainingClassStudentController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingClassStudent');
+								->setCellValue('A1', 'Tabel Training');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingclassstudent){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudent->id)
-													  ->setCellValue('B'.$idx, $trainingclassstudent->tb_training_class_id)
-													  ->setCellValue('C'.$idx, $trainingclassstudent->tb_student_id)
-													  ->setCellValue('D'.$idx, $trainingclassstudent->number);
+					foreach($dataProvider->getModels() as $training){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
+													  ->setCellValue('B'.$idx, $training->tb_program_id)
+													  ->setCellValue('C'.$idx, $training->tb_program_revision)
+													  ->setCellValue('D'.$idx, $training->ref_satker_id);
 						$idx++;
 					}		
 									
@@ -315,13 +337,13 @@ class TrainingClassStudentController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel TrainingClassStudent');
+									->setCellValue('A1', 'Tabel Training');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $trainingclassstudent){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudent->id)
-														  ->setCellValue('B'.$idx, $trainingclassstudent->tb_training_class_id)
-														  ->setCellValue('C'.$idx, $trainingclassstudent->tb_student_id)
-														  ->setCellValue('D'.$idx, $trainingclassstudent->number);
+						foreach($dataProvider->getModels() as $training){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $training->id)
+														  ->setCellValue('B'.$idx, $training->tb_program_id)
+														  ->setCellValue('C'.$idx, $training->tb_program_revision)
+														  ->setCellValue('D'.$idx, $training->ref_satker_id);
 							$idx++;
 						}		
 						
@@ -362,106 +384,4 @@ class TrainingClassStudentController extends Controller
             'dataProvider' => $dataProvider,
         ]);	
     }
-	
-	public function actionImport(){
-		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudent::find(),
-        ]);
-		
-		/* 
-		Please read guide of upload https://github.com/yiisoft/yii2/blob/master/docs/guide/input-file-upload.md
-		maybe I do mistake :)
-		*/		
-		if (!empty($_FILES)) {
-			$importFile = \yii\web\UploadedFile::getInstanceByName('importFile');
-			if(!empty($importFile)){
-				$fileTypes = ['xls','xlsx']; // File extensions allowed
-				//$ext = end((explode(".", $importFile->name)));
-				$ext=$importFile->extension;
-				if(in_array($ext,$fileTypes)){
-					$inputFileType = \PHPExcel_IOFactory::identify($importFile->tempName );
-					$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
-					$objPHPExcel = $objReader->load($importFile->tempName );
-					$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
-					$baseRow = 2;
-					$inserted=0;
-					$read_status = false;
-					$err=[];
-					while(!empty($sheetData[$baseRow]['A'])){
-						$read_status = true;
-						$abjadX=array();
-						//$id=  $sheetData[$baseRow]['A'];
-						$tb_training_class_id=  $sheetData[$baseRow]['B'];
-						$tb_student_id=  $sheetData[$baseRow]['C'];
-						$number=  $sheetData[$baseRow]['D'];
-						$headClass=  $sheetData[$baseRow]['E'];
-						$activity=  $sheetData[$baseRow]['F'];
-						$presence=  $sheetData[$baseRow]['G'];
-						$pretest=  $sheetData[$baseRow]['H'];
-						$posttest=  $sheetData[$baseRow]['I'];
-						$test=  $sheetData[$baseRow]['J'];
-						$status=  $sheetData[$baseRow]['K'];
-						//$created=  $sheetData[$baseRow]['L'];
-						//$createdBy=  $sheetData[$baseRow]['M'];
-						//$modified=  $sheetData[$baseRow]['N'];
-						//$modifiedBy=  $sheetData[$baseRow]['O'];
-						//$deleted=  $sheetData[$baseRow]['P'];
-						//$deletedBy=  $sheetData[$baseRow]['Q'];
-
-						$model2=new TrainingClassStudent;
-						//$model2->id=  $id;
-						$model2->tb_training_class_id=  $tb_training_class_id;
-						$model2->tb_student_id=  $tb_student_id;
-						$model2->number=  $number;
-						$model2->headClass=  $headClass;
-						$model2->activity=  $activity;
-						$model2->presence=  $presence;
-						$model2->pretest=  $pretest;
-						$model2->posttest=  $posttest;
-						$model2->test=  $test;
-						$model2->status=  $status;
-						//$model2->created=  $created;
-						//$model2->createdBy=  $createdBy;
-						//$model2->modified=  $modified;
-						//$model2->modifiedBy=  $modifiedBy;
-						//$model2->deleted=  $deleted;
-						//$model2->deletedBy=  $deletedBy;
-
-						try{
-							if($model2->save()){
-								$inserted++;
-							}
-							else{
-								foreach ($model2->errors as $error){
-									$err[]=($baseRow-1).'. '.implode('|',$error);
-								}
-							}
-						}
-						catch (\yii\base\ErrorException $e){
-							Yii::$app->session->setFlash('error', "{$e->getMessage()}");
-							//$this->refresh();
-						} 
-						$baseRow++;
-					}	
-					Yii::$app->session->setFlash('success', ($inserted).' row inserted');
-					if(!empty($err)){
-						Yii::$app->session->setFlash('warning', 'There are error: <br>'.implode('<br>',$err));
-					}
-				}
-				else{
-					Yii::$app->session->setFlash('error', 'Filetype allowed only xls and xlsx');
-				}				
-			}
-			else{
-				Yii::$app->session->setFlash('error', 'File import empty!');
-			}
-		}
-		else{
-			Yii::$app->session->setFlash('error', 'File import empty!');
-		}
-		
-		return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);					
-	}
 }

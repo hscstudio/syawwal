@@ -8,6 +8,7 @@ use backend\models\ProgramSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * ProgramController implements the CRUD actions for Program model.

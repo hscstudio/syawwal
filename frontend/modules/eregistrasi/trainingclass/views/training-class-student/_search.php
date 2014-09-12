@@ -17,13 +17,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
+    <?= $form->field($model, 'tb_training_id') ?>
+
     <?= $form->field($model, 'tb_training_class_id') ?>
 
     <?= $form->field($model, 'tb_student_id') ?>
 
     <?= $form->field($model, 'number') ?>
 
-    <?= $form->field($model, 'headClass') ?>
+    <?php // echo $form->field($model, 'headClass') ?>
 
     <?php // echo $form->field($model, 'activity') ?>
 

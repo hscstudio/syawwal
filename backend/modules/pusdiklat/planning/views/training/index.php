@@ -190,6 +190,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				]).
 				'</div>',
 			'after'=>
+				Html::a('<i class="fa fa-fw fa-link"></i> Training Unit Plan', ['/'.$controller->module->uniqueId.'/training-unit-plan/index'], ['class' => 'btn btn-default']).' '.
 				Html::a('<i class="fa fa-fw fa-link"></i> By Program', ['index-by-program'], ['class' => 'btn btn-default']).' '.
 				Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false

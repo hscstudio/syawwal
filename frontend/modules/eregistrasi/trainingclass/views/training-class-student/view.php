@@ -32,6 +32,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'attributes' => [
             'id',
             [
+				'attribute' => 'tb_training_id',
+				'value' => $model->training->name,
+			],
+            'tb_training_id',
+            [
 				'attribute' => 'tb_training_class_id',
 				'value' => $model->trainingClass->name,
 			],

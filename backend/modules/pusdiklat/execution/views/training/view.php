@@ -38,14 +38,19 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 		}
 		return Html::tag('span', $icon.' '.$title, ['class'=>$label,'title'=>$title,'data-toggle'=>"tooltip",'data-placement'=>"top",'style'=>'cursor:pointer']);
 	}
+	
+	$panel = [
+			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Trainings # ' . $model->id,
+			'type'=>DetailView::TYPE_DEFAULT,
+		];
+	if (Yii::$app->request->isAjax){	
+		$panel = [];
+	}
 	?>
     <?= DetailView::widget([
         'model' => $model,
 		'mode'=>DetailView::MODE_VIEW,
-		'panel'=>[
-			'heading'=>'<i class="fa fa-fw fa-globe"></i> '.'Trainings # ' . $model->id,
-			'type'=>DetailView::TYPE_DEFAULT,
-		],
+		'panel'=> $panel,
 		'buttons1'=> Html::a('<i class="fa fa-fw fa-arrow-left"></i> BACK',['index'],
 						['class'=>'btn btn-xs btn-primary',
 						 'title'=>'Back to Index',
@@ -98,5 +103,4 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
             'approvedStatusBy',
         ],
     ]) ?>
-
 </div>

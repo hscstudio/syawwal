@@ -192,8 +192,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
             [
 				'class' => 'kartik\grid\ActionColumn',
-				'template' => '{view} {update}',
+				'template' => '{dashboard} {update}',
 				'buttons' => [
+					'dashboard' => function ($url, $model) {
+								$icon='<span class="fa fa-dashboard"></span>';
+								return ($model->status!=2 AND $model->status!=1)?'':Html::a($icon,$url,[
+									'data-pjax'=>"0",
+								]);
+							},
 					'update' => function ($url, $model) {
 								$icon='<span class="glyphicon glyphicon-pencil"></span>';
 								return ($model->status!=2 AND $model->status!=1)?'':Html::a($icon,$url,[
