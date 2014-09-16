@@ -419,7 +419,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'data-placement'=>"top",
 						]);
 						
-						$trainingScheduleTrainer = \backend\models\trainingScheduleTrainer::find()
+						$trainingScheduleTrainer = \backend\models\TrainingScheduleTrainer::find()
 							->where([
 								'tb_training_schedule_id'=>$model->id,
 								'status'=>1,
