@@ -10,6 +10,7 @@ use \kartik\widgets\DatePicker;
 use \kartik\widgets\TimePicker;
 use \kartik\datecontrol\DateControl;
 use kartik\checkbox\CheckboxX;
+/* @var $searchModel backend\models\RoomSearch */
 
 $this->title = 'Schedule : Class '.$trainingClass->class;
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training/index'])];
@@ -21,6 +22,8 @@ $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="schedule-index">
+
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 	
 	<div class="panel panel-default" id="booking-schedule">
 	<div class="panel-heading">
@@ -84,6 +87,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	<tr>
 		<td>
 		<?php
+		//echo '<label class="control-label">StartTime</label>';		
 		echo "<div class='clearfix' style='width:275px;'>";
 		echo "<div style='width:150px;' class='pull-left'>";
 		echo $form->field($model, 'startDate')->widget(DateControl::classname(), [
@@ -224,7 +228,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 		])->label(false); ?>
 		<?php 
-		if(isset($_GET['s2I'])){
+		if(isset($_GET['s2I']) and !empty(Yii::$app->request->get('s2I')) ){
 			$this->registerJs('
 				$("#trainingscheduleextsearch-tb_training_class_subject_id").select2().select2("val", '.$_GET['s2I'].');
 			');
@@ -272,9 +276,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 		])->label(false); 
 		$this->registerCss('#s2id_trainingscheduleextsearch-tb_activity_room_id { width: 275px !important; }');
-		$this->registerJs('
-				$("#trainingscheduleextsearch-tb_activity_room_id").select2().select2("val", '.$firstAR.');
-			');
+		if ( !empty($firstAR) ) {
+			$this->registerJs('
+					$("#trainingscheduleextsearch-tb_activity_room_id").select2().select2("val", '.$firstAR.');
+				');
+		}
 		?>
 		</td>
 		<td>
@@ -415,7 +421,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'data-placement'=>"top",
 						]);
 						
-						$trainingScheduleTrainer = \backend\models\trainingScheduleTrainer::find()
+						$trainingScheduleTrainer = \backend\models\TrainingScheduleTrainer::find()
 							->where([
 								'tb_training_schedule_id'=>$model->id,
 								'status'=>1,
