@@ -224,4 +224,14 @@ class Employee extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Unit::className(), ['id' => 'ref_unit_id']);
     }
+	
+	public function getTrainer()
+    {
+        return $this->hasOne(Trainer::className(), ['nip' => 'nip'])->onCondition('LENGTH('.Trainer::tableName().'.nip)>=9');
+    }
+	
+	public function getStudent()
+    {
+        return $this->hasOne(Student::className(), ['nip' => 'nip'])->onCondition('LENGTH('.Student::tableName().'.nip)>=9');
+    }
 }

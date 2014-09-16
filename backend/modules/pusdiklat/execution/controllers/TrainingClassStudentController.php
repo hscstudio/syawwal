@@ -46,6 +46,14 @@ class TrainingClassStudentController extends Controller
 			}
 			$listTrainingClass[$ts->id]=$ts->class;
 		}
+		
+		if($tb_training_class_id==0){
+			Yii::$app->session->setFlash('warning', 'Anda harus membuat kelas terlebih dulu!');
+			return $this->redirect([
+				'./training-class/index', 'tb_training_id' => $tb_training_id
+			]);
+		}
+		
         $searchModel = new TrainingClassStudentSearch();
 		$queryParams = Yii::$app->request->getQueryParams();
 		$queryParams['TrainingClassStudentSearch']=[
@@ -56,6 +64,8 @@ class TrainingClassStudentController extends Controller
 		//$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
 		
 		$training = \backend\models\Training::findOne($tb_training_id);
+		
+		
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

@@ -479,4 +479,75 @@ class TrainingClassSubjectController extends Controller
             'dataProvider' => $dataProvider,
         ]);					
 	}
+	
+	/**
+     * Displays a single TrainingClassSubject model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionTrainer($id)
+    {
+		$model = $this->findModel($id);
+		$trainingScheduleTrainer = \backend\models\TrainingScheduleTrainer::find()
+			->where([
+				'tb_training_schedule_id' => \backend\models\TrainingSchedule::find()
+					->select(['id'])
+					->where([
+						'tb_training_class_id' => $model->tb_training_class_id,
+						'tb_training_class_subject_id' => $model->id,
+						'status' => 1,
+					]),
+				'status'=>1,	
+			])
+			->groupBy('tb_trainer_id');
+		
+		$provider = new \yii\data\ActiveDataProvider([
+			'query' => $trainingScheduleTrainer,
+			'pagination' => [
+				'pageSize' => 20,
+			]
+		]);		
+        return $this->render('trainer', [
+            'model' => $model,
+			'provider' => $provider,
+        ]);
+    }
+	
+	/**
+     * Displays a single TrainingClassSubject model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionCostTrainer($id,$tb_trainer_id)
+    {
+		$tcs = $this->findModel($id);
+		$model = \backend\models\TrainingScheduleTrainer::find()
+			->where([
+				'tb_training_schedule_id' => \backend\models\TrainingSchedule::find()
+					->select(['id'])
+					->where([
+						'tb_training_class_id' => $tcs->tb_training_class_id,
+						'tb_training_class_subject_id' => $id,
+						'status' => 1,
+					]),
+				'tb_trainer_id' => $tb_trainer_id,
+				'status'=>1,	
+			])
+			->groupBy('tb_trainer_id')
+			->one();
+		
+		if ($model->load(Yii::$app->request->post())) {			
+            if($model->save()){
+				Yii::$app->session->setFlash('success', 'Data saved');
+            } else {
+				Yii::$app->session->setFlash('error', 'There are some errors');
+            }            
+        }
+		else{		
+			return $this->renderAjax('costTrainer', [
+				'model' => $model,
+				'tb_trainer_id'=>$tb_trainer_id,
+			]);
+		}
+    }
 }

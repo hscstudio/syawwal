@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 10, 2014 at 12:32 PM
+-- Generation Time: Sep 16, 2014 at 05:06 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.9
 
@@ -50,6 +50,14 @@ CREATE TABLE IF NOT EXISTS `auth_assignment` (
   PRIMARY KEY (`item_name`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `auth_assignment`
+--
+
+INSERT INTO `auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
+('PEJABAT - PROGRAM - PLANNING - PUSDIKLAT', '2', 1410406566),
+('PEJABAT - PUSDIKLAT', '1', 1410385976);
+
 -- --------------------------------------------------------
 
 --
@@ -69,6 +77,224 @@ CREATE TABLE IF NOT EXISTS `auth_item` (
   KEY `idx-auth_item-type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `auth_item`
+--
+
+INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `created_at`, `updated_at`) VALUES
+('/pusdiklat-general/default/index', 2, NULL, NULL, NULL, 1410390361, 1410390361),
+('/pusdiklat-planning/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/default/index', 2, NULL, NULL, NULL, 1410385214, 1410385214),
+('/pusdiklat-planning/program-document/*', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document/index', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document/open-tbs', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document/php-excel', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document/view', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/*', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/create', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/delete', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/editable', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/import', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/index', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/open-tbs', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/php-excel', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/status', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/update', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-document2/view', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history/*', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history/index', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history/open-tbs', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history/php-excel', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history/view', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history2/*', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history2/index', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history2/open-tbs', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history2/php-excel', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-history2/view', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject-document/*', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document/index', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document/open-tbs', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document/php-excel', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document/view', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/*', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/create', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/delete', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/editable', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/import', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/index', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/open-tbs', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/php-excel', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/status', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/update', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-document2/view', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history/*', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history/index', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history/open-tbs', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history/php-excel', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history/view', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history2/*', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history2/index', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history2/open-tbs', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history2/php-excel', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject-history2/view', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject/*', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject/index', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject/open-tbs', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject/php-excel', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject/view', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject2/*', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject2/create', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject2/delete', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject2/editable', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject2/import', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject2/index', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject2/open-tbs', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject2/php-excel', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject2/status', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject2/update', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject2/view', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program-subject3/*', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/create', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/delete', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/editable', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/import', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/index', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/open-tbs', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/php-excel', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/status', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/update', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program-subject3/view', 2, NULL, NULL, NULL, 1410397081, 1410397081),
+('/pusdiklat-planning/program/*', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program/create', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/delete', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/editable', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/import', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/index', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/open-tbs', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/php-excel', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/status', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/update', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program/view', 2, NULL, NULL, NULL, 1410385016, 1410385016),
+('/pusdiklat-planning/program2/*', 2, NULL, NULL, NULL, 1410397061, 1410397061),
+('/pusdiklat-planning/program2/editable', 2, NULL, NULL, NULL, 1410397061, 1410397061),
+('/pusdiklat-planning/program2/index', 2, NULL, NULL, NULL, 1410397061, 1410397061),
+('/pusdiklat-planning/program2/open-tbs', 2, NULL, NULL, NULL, 1410397061, 1410397061),
+('/pusdiklat-planning/program2/php-excel', 2, NULL, NULL, NULL, 1410397061, 1410397061),
+('/pusdiklat-planning/program2/update', 2, NULL, NULL, NULL, 1410397061, 1410397061),
+('/pusdiklat-planning/program2/view', 2, NULL, NULL, NULL, 1410397061, 1410397061),
+('/pusdiklat-planning/program3/*', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program3/editable', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program3/index', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program3/open-tbs', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program3/php-excel', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program3/update', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/program3/view', 2, NULL, NULL, NULL, 1410397080, 1410397080),
+('/pusdiklat-planning/trainer3/*', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/create', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/delete', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/editable', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/import', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/index', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/open-tbs', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/php-excel', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/update', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/trainer3/view', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training-history/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/create', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/delete', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/editable', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/import', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/index', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/open-tbs', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/php-excel', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/update', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history/view', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/create', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/delete', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/editable', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/import', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/index', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/open-tbs', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/php-excel', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/update', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-history2/view', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/cre', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/del', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/edi', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/imp', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/ind', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/ope', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/php', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/upd', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject-trainer-recommendation3/vie', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/create', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/delete', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/editable', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/import', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/index', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/open-tbs', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/php-excel', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/status', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/update', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-subject3/view', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-unit-plan/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training-unit-plan/delete', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training-unit-plan/editable', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training-unit-plan/import', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training-unit-plan/index', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training-unit-plan/open-tbs', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training-unit-plan/php-excel', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training-unit-plan/update', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training-unit-plan/view', 2, NULL, NULL, NULL, 1410395781, 1410395781),
+('/pusdiklat-planning/training/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training/create', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/delete', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/editable', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/import', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/index', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/index-by-program', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/open-tbs', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/php-excel', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/program-name', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/update', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training/view', 2, NULL, NULL, NULL, 1410385038, 1410385038),
+('/pusdiklat-planning/training2/*', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/delete', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/editable', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/import', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/index', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/open-tbs', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/php-excel', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/update', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training2/view', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training3/*', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training3/delete', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training3/editable', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training3/import', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training3/index', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('/pusdiklat-planning/training3/open-tbs', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training3/php-excel', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training3/update', 2, NULL, NULL, NULL, 1410396063, 1410396063),
+('/pusdiklat-planning/training3/view', 2, NULL, NULL, NULL, 1410396062, 1410396062),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', 2, NULL, NULL, NULL, 1410397004, 1410397195),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', 2, NULL, NULL, NULL, 1410384839, 1410384839),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', 2, NULL, NULL, NULL, 1410397242, 1410397242),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', 2, NULL, NULL, NULL, 1410397270, 1410397270),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', 2, NULL, NULL, NULL, 1410397208, 1410397208),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', 2, NULL, NULL, NULL, 1410384868, 1410384868),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', 2, NULL, NULL, NULL, 1410397259, 1410397259),
+('PEJABAT - CURRICULUM - PLANNING - PUSDIKLAT', 1, NULL, NULL, NULL, 1410396585, 1410396585),
+('PEJABAT - PLANNING - PUSDIKLAT', 1, NULL, NULL, NULL, 1410384451, 1410384659),
+('PEJABAT - PROGRAM - PLANNING - PUSDIKLAT', 1, NULL, NULL, NULL, 1410384380, 1410384635),
+('PEJABAT - PUSDIKLAT', 1, NULL, NULL, NULL, 1410384685, 1410384685),
+('PEJABAT - TRAINER - PLANNING - PUSDIKLAT', 1, NULL, NULL, NULL, 1410396632, 1410396632),
+('PELAKSANA - CURRICULUM - PLANNING - PUSDIKLAT', 1, NULL, NULL, NULL, 1410396779, 1410396779),
+('PELAKSANA - PROGRAM - PLANNING - PUSDIKLAT', 1, NULL, NULL, NULL, 1410384435, 1410384572),
+('PELAKSANA - TRAINER - PLANNING - PUSDIKLAT', 1, NULL, NULL, NULL, 1410396792, 1410396792);
+
 -- --------------------------------------------------------
 
 --
@@ -81,6 +307,222 @@ CREATE TABLE IF NOT EXISTS `auth_item_child` (
   PRIMARY KEY (`parent`,`child`),
   KEY `child` (`child`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `auth_item_child`
+--
+
+INSERT INTO `auth_item_child` (`parent`, `child`) VALUES
+('PELAKSANA - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/default/index'),
+('PELAKSANA - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/default/index'),
+('PELAKSANA - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/default/index'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document/*'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document/index'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document/open-tbs'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document/php-excel'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document/view'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/*'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/create'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/delete'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/editable'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/import'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/index'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/open-tbs'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/php-excel'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/status'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/update'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-document2/view'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history/*'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history/index'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history/open-tbs'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history/php-excel'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history/view'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history2/*'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history2/index'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history2/open-tbs'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history2/php-excel'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-history2/view'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document/*'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document/index'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document/open-tbs'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document/php-excel'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document/view'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/*'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/create'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/delete'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/editable'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/import'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/index'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/open-tbs'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/php-excel'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/status'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/update'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-document2/view'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history/*'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history/index'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history/open-tbs'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history/php-excel'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history/view'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history2/*'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history2/index'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history2/open-tbs'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history2/php-excel'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject-history2/view'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject/*'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject/index'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject/open-tbs'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject/php-excel'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject/view'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/*'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/create'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/delete'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/editable'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/import'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/index'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/open-tbs'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/php-excel'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/status'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/update'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject2/view'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/*'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/create'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/delete'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/editable'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/import'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/index'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/open-tbs'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/php-excel'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/status'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/update'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program-subject3/view'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/*'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/create'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/delete'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/editable'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/import'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/index'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/open-tbs'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/php-excel'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/status'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/update'),
+('CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program/view'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program2/*'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program2/editable'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program2/index'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program2/open-tbs'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program2/php-excel'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program2/update'),
+('CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program2/view'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program3/*'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program3/editable'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program3/index'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program3/open-tbs'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program3/php-excel'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program3/update'),
+('CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/program3/view'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/*'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/create'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/delete'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/editable'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/import'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/index'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/open-tbs'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/php-excel'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/update'),
+('CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/trainer3/view'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/*'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/create'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/delete'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/editable'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/import'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/index'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/open-tbs'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/php-excel'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/update'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history/view'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/*'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/create'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/delete'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/editable'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/import'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/index'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/open-tbs'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/php-excel'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/update'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-history2/view'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/*'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/cre'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/del'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/edi'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/imp'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/ind'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/ope'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/php'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/upd'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject-trainer-recommendation3/vie'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/*'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/create'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/delete'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/editable'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/import'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/index'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/open-tbs'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/php-excel'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/status'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/update'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-subject3/view'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/delete'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/editable'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/import'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/index'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/open-tbs'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/php-excel'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/update'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training-unit-plan/view'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/*'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/create'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/delete'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/editable'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/import'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/index'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/index-by-program'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/open-tbs'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/php-excel'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/program-name'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/update'),
+('CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training/view'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/*'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/delete'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/editable'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/import'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/index'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/open-tbs'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/php-excel'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/update'),
+('CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training2/view'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/*'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/delete'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/editable'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/import'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/index'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/open-tbs'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/php-excel'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/update'),
+('CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT', '/pusdiklat-planning/training3/view'),
+('PELAKSANA - CURRICULUM - PLANNING - PUSDIKLAT', 'CRUD PROGRAM - CURRICULUM - PLANNING - PUSDIKLAT'),
+('PELAKSANA - PROGRAM - PLANNING - PUSDIKLAT', 'CRUD PROGRAM - PROGRAM - PLANNING - PUSDIKLAT'),
+('PELAKSANA - TRAINER - PLANNING - PUSDIKLAT', 'CRUD PROGRAM - TRAINER - PLANNING - PUSDIKLAT'),
+('PELAKSANA - TRAINER - PLANNING - PUSDIKLAT', 'CRUD TRAINER - TRAINER - PLANNING - PUSDIKLAT'),
+('PELAKSANA - CURRICULUM - PLANNING - PUSDIKLAT', 'CRUD TRAINING - CURRICULUM - PLANNING - PUSDIKLAT'),
+('PELAKSANA - PROGRAM - PLANNING - PUSDIKLAT', 'CRUD TRAINING - PROGRAM - PLANNING - PUSDIKLAT'),
+('PELAKSANA - TRAINER - PLANNING - PUSDIKLAT', 'CRUD TRAINING - TRAINER - PLANNING - PUSDIKLAT'),
+('PEJABAT - PLANNING - PUSDIKLAT', 'PEJABAT - CURRICULUM - PLANNING - PUSDIKLAT'),
+('PEJABAT - PUSDIKLAT', 'PEJABAT - PLANNING - PUSDIKLAT'),
+('PEJABAT - PLANNING - PUSDIKLAT', 'PEJABAT - PROGRAM - PLANNING - PUSDIKLAT'),
+('PEJABAT - PLANNING - PUSDIKLAT', 'PEJABAT - TRAINER - PLANNING - PUSDIKLAT'),
+('PEJABAT - CURRICULUM - PLANNING - PUSDIKLAT', 'PELAKSANA - CURRICULUM - PLANNING - PUSDIKLAT'),
+('PEJABAT - PROGRAM - PLANNING - PUSDIKLAT', 'PELAKSANA - PROGRAM - PLANNING - PUSDIKLAT'),
+('PEJABAT - TRAINER - PLANNING - PUSDIKLAT', 'PELAKSANA - TRAINER - PLANNING - PUSDIKLAT');
 
 -- --------------------------------------------------------
 
@@ -111,7 +553,29 @@ CREATE TABLE IF NOT EXISTS `menu` (
   `data` text,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+
+--
+-- Dumping data for table `menu`
+--
+
+INSERT INTO `menu` (`id`, `name`, `parent`, `route`, `order`, `data`) VALUES
+(1, 'BPPK', NULL, NULL, NULL, NULL),
+(2, 'SEKRETARIAT', 1, NULL, NULL, NULL),
+(3, 'PUSDIKLAT', 1, NULL, NULL, 'return [\r\n''icon''=>''fa fa-building fa-fw''\r\n]'),
+(4, 'Planning', 3, '/pusdiklat-planning/default/index', NULL, 'return [\r\n''icon''=>''fa fa-calendar fa-fw'',\r\n''path''=>''pusdiklat-planning/'',\r\n];'),
+(5, 'Dashboard', 4, '/pusdiklat-planning/default/index', 1, 'return [\r\n''icon''=>''fa fa-dashboard fa-fw'',\r\n];'),
+(6, 'Program -', 4, '/pusdiklat-planning/program/index', 2, 'return [\r\n	''icon''=>''fa fa-code-fork fa-fw'',\r\n	''path''=>[\r\n	]\r\n];'),
+(7, 'Program', 6, '/pusdiklat-planning/program/index', NULL, 'return [\r\n	''icon''=>''fa fa-list fa-fw'',\r\n	''path''=>[\r\n		''program/'',''program-subject/'',''program-document/'',''program-history/'',''program-subject-document/'',''program-subject-history/''\r\n	]\r\n];'),
+(8, 'Training', 6, '/pusdiklat-planning/training/index', NULL, 'return [\r\n	''icon''=>''fa fa-fw fa-stack-overflow'',\r\n	''path''=>[\r\n		''training/''\r\n	]\r\n];'),
+(9, 'Training Unit Plan', 6, '/pusdiklat-planning/training-unit-plan/index', NULL, 'return [\r\n	''icon''=>''fa fa-fw fa-stack-overflow'',\r\n	''path''=>[\r\n		''training-unit-plan/''\r\n	]\r\n];'),
+(10, 'Curriculum -', 4, '/pusdiklat-planning/program2/index', 3, 'return [\r\n    ''icon''=>''fa fa-fw fa-university'',\r\n]'),
+(11, 'Trainer -', 4, '/pusdiklat-planning/program3/index', 4, 'return [\r\n    ''icon''=>''fa fa-fw fa-users''\r\n]'),
+(12, 'Program', 10, '/pusdiklat-planning/program2/index', NULL, 'return [\r\n	''icon''=>''fa fa-list fa-fw'',\r\n	''path''=>[\r\n		''program2/'',''program-subject2/'',''program-document2/'',''program-history2/'',''program-subject-document2/'',''program-subject-history2/''\r\n	]\r\n];'),
+(13, 'Program', 11, '/pusdiklat-planning/program3/index', NULL, 'return [\r\n	''icon''=>''fa fa-list fa-fw'',\r\n	''path''=>[\r\n		''program3/'',''program-subject3/'',''program-document3/'',''program-history3/'',''program-subject-document3/'',''program-subject-history3/''\r\n	]\r\n];'),
+(14, 'Training', 11, '/pusdiklat-planning/training3/index', NULL, 'return [\r\n	''icon''=>''fa fa-fw fa-stack-exchange'',\r\n	''path''=>[\r\n		''training3/'',''training-history3/'',''training-subject3/'',''training-subject-trainer-recommendation3/'',\r\n	]\r\n];'),
+(15, 'Trainer', 11, '/pusdiklat-planning/trainer3/index', NULL, 'return [\r\n	''icon''=>''fa fa-fw fa-stack-exchange'',\r\n	''path''=>[\r\n		''trainer3/'',\r\n	]\r\n];\r\n'),
+(16, 'Training', 10, '/pusdiklat-planning/training2/index', NULL, 'return [\r\n	''icon''=>''fa fa-book fa-fw'',\r\n	''path''=>[\r\n		''training2/'',''training-history2/'',\r\n	]\r\n];');
 
 -- --------------------------------------------------------
 
@@ -1447,6 +1911,7 @@ CREATE TABLE IF NOT EXISTS `tb_trainer` (
   `photo` varchar(255) DEFAULT NULL,
   `blood` varchar(10) DEFAULT NULL,
   `position` varchar(255) DEFAULT NULL,
+  `eselon` int(1) DEFAULT '0',
   `organization` varchar(45) DEFAULT NULL,
   `widyaiswara` tinyint(1) NOT NULL DEFAULT '0',
   `education` varchar(255) DEFAULT NULL,
@@ -1480,10 +1945,10 @@ CREATE TABLE IF NOT EXISTS `tb_trainer` (
 -- Dumping data for table `tb_trainer`
 --
 
-INSERT INTO `tb_trainer` (`id`, `idn`, `ref_graduate_id`, `ref_rank_class_id`, `ref_religion_id`, `name`, `nickName`, `frontTitle`, `backTitle`, `nip`, `born`, `birthDay`, `gender`, `phone`, `email`, `address`, `married`, `photo`, `blood`, `position`, `organization`, `widyaiswara`, `education`, `educationHistory`, `trainingHistory`, `experience`, `competency`, `npwp`, `bankAccount`, `officePhone`, `officeFax`, `officeEmail`, `officeAddress`, `document1`, `document2`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, '198604302009011002', 8, 10, 0, 'Hafid Mukhlasin', 'Hafid', 'Dr', 'PHD', '1234567890', 'Jember', '1986-04-30', 1, '081559915720', 'milisstudio@gmail.com', '', 1, '', '', '', 'BPPK', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', 1, '2014-08-28 15:23:02', 1, '2014-09-03 11:46:21', 1, NULL, NULL),
-(2, '198604302009011003', 0, 0, 0, 'Fajar Megantara', '', '', '', '', '', NULL, 1, '', '', '', 0, '', '', '', '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', 1, '2014-08-29 17:57:57', 1, '2014-08-29 17:57:57', 1, NULL, NULL),
-(3, '123456789', 0, 0, 0, 'Wida Choirunnisa', 'Wida', 'IR.', 'MMM', '199908947495859584', 'pandeglang', '1990-09-15', 1, '087776584873673', 'choirs.22@depkeu.go.id', 'padamhank', 1, '', '', '', '', 1, '', '', '', '', '', '', '', '', '', '', '', '', '', 1, '2014-09-03 11:59:06', 1, '2014-09-03 11:59:06', 1, NULL, NULL);
+INSERT INTO `tb_trainer` (`id`, `idn`, `ref_graduate_id`, `ref_rank_class_id`, `ref_religion_id`, `name`, `nickName`, `frontTitle`, `backTitle`, `nip`, `born`, `birthDay`, `gender`, `phone`, `email`, `address`, `married`, `photo`, `blood`, `position`, `eselon`, `organization`, `widyaiswara`, `education`, `educationHistory`, `trainingHistory`, `experience`, `competency`, `npwp`, `bankAccount`, `officePhone`, `officeFax`, `officeEmail`, `officeAddress`, `document1`, `document2`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
+(1, '198604302009011002', 8, 10, 0, 'Hafid Mukhlasin', 'Hafid', 'Dr', 'PHD', '198604302009011002', 'Jember', '1986-04-30', 1, '081559915720', 'milisstudio@gmail.com', '', 1, '', '', '', 0, 'BPPK', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', 1, '2014-08-28 15:23:02', 1, '2014-09-03 11:46:21', 1, NULL, NULL),
+(2, '198604302009011003', 0, 0, 0, 'Fajar Megantara', '', '', '', '', '', NULL, 1, '', '', '', 0, '', '', '', 0, '', 0, '', '', '', '', '', '', '', '', '', '', '', '', '', 1, '2014-08-29 17:57:57', 1, '2014-08-29 17:57:57', 1, NULL, NULL),
+(3, '123456789', 0, 0, 0, 'Wida Choirunnisa', 'Wida', 'IR.', 'MMM', '199908947495859584', 'pandeglang', '1990-09-15', 1, '087776584873673', 'choirs.22@depkeu.go.id', 'padamhank', 1, '', '', '', 0, '', 1, '', '', '', '', '', '', '', '', '', '', '', '', '', 1, '2014-09-03 11:59:06', 1, '2014-09-03 11:59:06', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1534,7 +1999,7 @@ CREATE TABLE IF NOT EXISTS `tb_training` (
 
 INSERT INTO `tb_training` (`id`, `tb_program_id`, `tb_program_revision`, `ref_satker_id`, `number`, `name`, `start`, `finish`, `note`, `studentCount`, `classCount`, `executionSK`, `resultSK`, `costPlan`, `costRealisation`, `sourceCost`, `hostel`, `reguler`, `stakeholder`, `location`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`, `approvedStatus`, `approvedStatusNote`, `approvedStatusDate`, `approvedStatusBy`) VALUES
 (7, 4, 1, 3, '2014-03-00-2.2.1.3.1', 'DIKLAT PRANATA KOMPUTER AHLI AKT I', '2014-08-04', '2014-08-29', 'Halo', 50, 1, NULL, NULL, NULL, NULL, NULL, 1, 1, '', '', 0, '2014-08-25 10:59:34', 1, '2014-09-01 14:00:47', 1, NULL, NULL, 1, '', NULL, NULL),
-(8, 4, 2, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', 30, 1, '', NULL, NULL, NULL, '', 0, 1, '', '3', 2, '2014-08-25 11:37:50', 1, '2014-09-05 15:18:35', 1, NULL, NULL, 0, '', NULL, NULL),
+(8, 4, 2, 3, '2014-03-00-2.2.1.0.2', 'DIKLAT PRANATA KOMPUTER AHLI KHUSUS SETJEN', '2014-08-19', '2014-08-27', '', 30, 1, '', NULL, NULL, NULL, '', 0, 1, '', '3', 2, '2014-08-25 11:37:50', 1, '2014-09-12 13:37:17', 1, NULL, NULL, 0, '', NULL, NULL),
 (9, 4, 1, 3, '2014-03-00-.4', 'PRANATA KOMPUTER AHLI AKT I', '2014-08-27', '2014-08-28', '', NULL, 3, '', NULL, NULL, NULL, '', 0, 1, '', '3', 0, '2014-08-25 11:40:53', 1, '2014-09-08 10:58:16', 1, NULL, NULL, 0, '', NULL, NULL),
 (10, 4, 1, 3, '2014-03-00-2.2.1.0.4', 'KOM', '2014-08-27', '2014-08-27', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 3, '2014-08-25 11:41:37', 1, '2014-08-25 11:41:37', 1, NULL, NULL, NULL, NULL, NULL, NULL),
 (11, 5, 0, 3, '2014-03-00-1.0.0.0.2', 'Diklat Prajabatan Golongan III Angk. II', '2014-08-12', '2014-08-27', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, '', '', 0, '2014-08-27 16:28:48', 1, '2014-08-27 16:28:48', 1, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -1562,7 +2027,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_class` (
   `deletedBy` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=39 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=41 ;
 
 --
 -- Dumping data for table `tb_training_class`
@@ -1570,7 +2035,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_class` (
 
 INSERT INTO `tb_training_class` (`id`, `tb_training_id`, `class`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
 (2, 7, 'A', 1, '2014-09-08 03:45:52', 1, '2014-09-08 03:45:52', 1, NULL, NULL),
-(3, 8, 'A', 1, '2014-09-08 04:22:30', 1, '2014-09-08 04:22:30', 1, NULL, NULL),
 (5, 15, 'B', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
 (6, 15, 'C', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
 (7, 15, 'D', 1, '2014-09-08 09:59:28', 1, '2014-09-08 09:59:28', 1, NULL, NULL),
@@ -1603,7 +2067,8 @@ INSERT INTO `tb_training_class` (`id`, `tb_training_id`, `class`, `status`, `cre
 (34, 15, 'AD', 1, '2014-09-08 10:14:29', 1, '2014-09-08 10:14:29', 1, NULL, NULL),
 (36, 9, 'B', 1, '2014-09-08 10:58:23', 1, '2014-09-08 10:58:23', 1, NULL, NULL),
 (37, 9, 'C', 1, '2014-09-08 10:58:23', 1, '2014-09-08 10:58:23', 1, NULL, NULL),
-(38, 9, 'C', 1, '2014-09-08 10:59:00', 1, '2014-09-08 10:59:00', 1, NULL, NULL);
+(38, 9, 'C', 1, '2014-09-08 10:59:00', 1, '2014-09-08 10:59:00', 1, NULL, NULL),
+(40, 8, 'A', 1, '2014-09-12 14:35:11', 1, '2014-09-12 14:35:11', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1635,62 +2100,53 @@ CREATE TABLE IF NOT EXISTS `tb_training_class_student` (
   KEY `fk_tb_training_subject_student_tb_training_assignment1` (`tb_training_class_id`),
   KEY `fk_tb_training_subject_student_tb_student1` (`tb_student_id`),
   KEY `tb_training_id` (`tb_training_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
 
 --
 -- Dumping data for table `tb_training_class_student`
 --
 
 INSERT INTO `tb_training_class_student` (`id`, `tb_training_id`, `tb_training_class_id`, `tb_student_id`, `number`, `headClass`, `activity`, `presence`, `pretest`, `posttest`, `test`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(51, 15, 5, 53, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:50', 1, '2014-09-10 17:05:50', 1, NULL, NULL),
-(52, 15, 5, 54, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:52', 1, '2014-09-10 17:05:52', 1, NULL, NULL),
-(53, 15, 5, 55, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:53', 1, '2014-09-10 17:05:53', 1, NULL, NULL),
-(54, 15, 5, 56, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:54', 1, '2014-09-10 17:05:54', 1, NULL, NULL),
-(55, 15, 5, 57, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:55', 1, '2014-09-10 17:05:55', 1, NULL, NULL),
-(56, 15, 5, 58, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:56', 1, '2014-09-10 17:05:56', 1, NULL, NULL),
-(57, 15, 5, 59, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:57', 1, '2014-09-10 17:05:57', 1, NULL, NULL),
-(58, 15, 5, 60, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:58', 1, '2014-09-10 17:05:58', 1, NULL, NULL),
-(59, 15, 5, 61, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:05:59', 1, '2014-09-10 17:05:59', 1, NULL, NULL),
-(60, 15, 5, 62, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:00', 1, '2014-09-10 17:06:00', 1, NULL, NULL),
-(61, 15, 5, 63, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:01', 1, '2014-09-10 17:06:01', 1, NULL, NULL),
-(62, 15, 5, 64, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:02', 1, '2014-09-10 17:06:02', 1, NULL, NULL),
-(63, 15, 5, 65, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:02', 1, '2014-09-10 17:06:02', 1, NULL, NULL),
-(64, 15, 5, 66, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:03', 1, '2014-09-10 17:06:03', 1, NULL, NULL),
-(65, 15, 5, 67, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:04', 1, '2014-09-10 17:06:04', 1, NULL, NULL),
-(66, 15, 5, 68, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:06', 1, '2014-09-10 17:06:06', 1, NULL, NULL),
-(67, 15, 5, 69, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:08', 1, '2014-09-10 17:06:08', 1, NULL, NULL),
-(68, 15, 5, 70, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:09', 1, '2014-09-10 17:06:09', 1, NULL, NULL),
-(69, 15, 5, 71, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:11', 1, '2014-09-10 17:06:11', 1, NULL, NULL),
-(70, 15, 5, 72, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:12', 1, '2014-09-10 17:06:12', 1, NULL, NULL),
-(71, 15, 5, 73, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:15', 1, '2014-09-10 17:06:15', 1, NULL, NULL),
-(72, 15, 5, 74, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:17', 1, '2014-09-10 17:06:17', 1, NULL, NULL),
-(73, 15, 5, 75, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:41', 1, '2014-09-10 17:06:41', 1, NULL, NULL),
-(74, 15, 5, 76, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:43', 1, '2014-09-10 17:06:43', 1, NULL, NULL),
-(75, 15, 5, 77, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:45', 1, '2014-09-10 17:06:45', 1, NULL, NULL),
-(76, 15, 5, 78, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:46', 1, '2014-09-10 17:06:46', 1, NULL, NULL),
-(77, 15, 5, 79, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:48', 1, '2014-09-10 17:06:48', 1, NULL, NULL),
-(78, 15, 5, 80, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:50', 1, '2014-09-10 17:06:50', 1, NULL, NULL),
-(79, 15, 5, 81, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:52', 1, '2014-09-10 17:06:52', 1, NULL, NULL),
-(80, 15, 5, 82, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:53', 1, '2014-09-10 17:06:53', 1, NULL, NULL),
-(81, 15, 5, 83, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:55', 1, '2014-09-10 17:06:55', 1, NULL, NULL),
-(82, 15, 5, 84, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:56', 1, '2014-09-10 17:06:56', 1, NULL, NULL),
-(83, 15, 5, 85, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:57', 1, '2014-09-10 17:06:57', 1, NULL, NULL),
-(84, 15, 5, 86, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:06:59', 1, '2014-09-10 17:06:59', 1, NULL, NULL),
-(85, 15, 5, 87, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:00', 1, '2014-09-10 17:07:00', 1, NULL, NULL),
-(86, 15, 5, 88, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:01', 1, '2014-09-10 17:07:01', 1, NULL, NULL),
-(87, 15, 5, 89, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:02', 1, '2014-09-10 17:07:02', 1, NULL, NULL),
-(88, 15, 5, 90, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:04', 1, '2014-09-10 17:07:04', 1, NULL, NULL),
-(89, 15, 5, 91, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:05', 1, '2014-09-10 17:07:05', 1, NULL, NULL),
-(90, 15, 5, 92, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:07', 1, '2014-09-10 17:07:07', 1, NULL, NULL),
-(91, 15, 5, 93, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:09', 1, '2014-09-10 17:07:09', 1, NULL, NULL),
-(92, 15, 5, 94, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:18', 1, '2014-09-10 17:07:18', 1, NULL, NULL),
-(93, 15, 5, 95, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:19', 1, '2014-09-10 17:07:19', 1, NULL, NULL),
-(94, 15, 5, 96, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:21', 1, '2014-09-10 17:07:21', 1, NULL, NULL),
-(95, 15, 5, 97, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:23', 1, '2014-09-10 17:07:23', 1, NULL, NULL),
-(96, 15, 5, 98, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:24', 1, '2014-09-10 17:07:24', 1, NULL, NULL),
-(97, 15, 5, 99, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:25', 1, '2014-09-10 17:07:25', 1, NULL, NULL),
-(98, 15, 5, 100, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:28', 1, '2014-09-10 17:07:28', 1, NULL, NULL),
-(99, 15, 5, 101, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-10 17:07:30', 1, '2014-09-10 17:07:30', 1, NULL, NULL);
+(100, 8, 40, 53, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(101, 8, 40, 54, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(102, 8, 40, 55, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(103, 8, 40, 56, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(104, 8, 40, 57, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(105, 8, 40, 58, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(106, 8, 40, 59, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(107, 8, 40, 60, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(108, 8, 40, 61, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:37', 1, '2014-09-12 15:00:37', 1, NULL, NULL),
+(109, 8, 40, 62, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(110, 8, 40, 63, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(111, 8, 40, 64, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(112, 8, 40, 65, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(113, 8, 40, 66, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(114, 8, 40, 67, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(115, 8, 40, 68, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(116, 8, 40, 69, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(117, 8, 40, 70, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(118, 8, 40, 71, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(119, 8, 40, 72, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(120, 8, 40, 73, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(121, 8, 40, 74, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(122, 8, 40, 75, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(123, 8, 40, 76, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(124, 8, 40, 77, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(125, 8, 40, 78, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(126, 8, 40, 79, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(127, 8, 40, 80, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(128, 8, 40, 81, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(129, 8, 40, 82, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(130, 8, 40, 83, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(131, 8, 40, 84, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(132, 8, 40, 85, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(133, 8, 40, 86, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(134, 8, 40, 87, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(135, 8, 40, 88, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(136, 8, 40, 89, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(137, 8, 40, 90, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(138, 8, 40, 91, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL),
+(139, 8, 40, 92, NULL, 0, '1.00', NULL, NULL, NULL, NULL, 1, '2014-09-12 15:00:38', 1, '2014-09-12 15:00:38', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1769,15 +2225,15 @@ CREATE TABLE IF NOT EXISTS `tb_training_class_subject` (
   PRIMARY KEY (`id`),
   KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_class_id`),
   KEY `fk_tb_training_assignment_tb_trainer1` (`tb_program_subject_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `tb_training_class_subject`
 --
 
 INSERT INTO `tb_training_class_subject` (`id`, `tb_training_class_id`, `tb_program_subject_id`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 3, 1, 1, '2014-09-08 05:21:00', 1, '2014-09-08 05:21:00', 1, NULL, NULL),
-(2, 3, 2, 1, '2014-09-08 05:21:01', 1, '2014-09-08 05:21:01', 1, NULL, NULL);
+(5, 40, 1, 1, '2014-09-13 01:00:46', 1, '2014-09-13 01:00:46', 1, NULL, NULL),
+(6, 40, 2, 1, '2014-09-13 01:00:46', 1, '2014-09-13 01:00:46', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1833,14 +2289,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_class_subject_trainer` (
   KEY `fk_tb_training_assignment_tb_trainer1` (`tb_trainer_id`),
   KEY `type` (`ref_trainer_type_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `tb_training_class_subject_trainer`
---
-
-INSERT INTO `tb_training_class_subject_trainer` (`id`, `tb_training_class_subject_id`, `tb_trainer_id`, `ref_trainer_type_id`, `cost`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(1, 1, 1, 0, 1000000, 1, '2014-09-08 14:51:10', 1, '2014-09-08 15:23:00', 1, NULL, NULL),
-(2, 1, 3, 2, 1000000, 1, '2014-09-08 16:52:10', 1, '2014-09-08 16:52:10', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2056,19 +2504,17 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule` (
   KEY `tb_activity_room_id` (`tb_activity_room_id`),
   KEY `tb_training_class_subject_assignment_id` (`tb_training_class_subject_id`),
   KEY `tb_training_class_id` (`tb_training_class_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=32 ;
 
 --
 -- Dumping data for table `tb_training_schedule`
 --
 
 INSERT INTO `tb_training_schedule` (`id`, `tb_training_class_id`, `tb_training_class_subject_id`, `tb_activity_room_id`, `activity`, `pic`, `hours`, `startTime`, `finishTime`, `session`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(21, 3, -3, 5, 'Pembukaan', 'Kapusdiklat', '0.00', '2014-08-19 08:00:00', '2014-08-19 08:30:00', 1, 1, '2014-09-10 06:00:23', 1, '2014-09-10 06:00:23', 1, NULL, NULL),
-(22, 3, 1, 5, '', '', '2.00', '2014-08-19 08:30:00', '2014-08-19 10:00:00', 1, 1, '2014-09-10 06:04:24', 1, '2014-09-10 06:54:06', 1, NULL, NULL),
-(23, 3, 1, 6, '', '', '1.00', '2014-08-20 10:00:00', '2014-08-20 10:45:00', 6, 1, '2014-09-10 06:55:07', 1, '2014-09-10 07:13:18', 1, NULL, NULL),
-(24, 3, 2, 5, '', '', '1.00', '2014-08-19 10:00:00', '2014-08-19 10:45:00', 1, 1, '2014-09-10 08:13:32', 1, '2014-09-10 08:13:32', 1, NULL, NULL),
-(25, 3, 2, 5, '', '', '1.00', '2014-08-19 10:45:00', '2014-08-19 11:30:00', 1, 1, '2014-09-10 08:13:50', 1, '2014-09-10 08:13:50', 1, NULL, NULL),
-(26, 3, -3, 5, 'Ceramah', 'Kapus', '0.00', '2014-08-20 07:00:00', '2014-08-20 07:30:00', 1, 1, '2014-09-10 11:08:53', 1, '2014-09-10 11:08:53', 1, NULL, NULL);
+(27, 40, -1, 5, 'Coffe Break', '-', '0.00', '2014-08-20 08:00:00', '2014-08-20 08:15:00', 1, 1, '2014-09-13 00:42:32', 1, '2014-09-13 00:42:32', 1, NULL, NULL),
+(28, 40, 5, 5, '', '', '1.00', '2014-08-19 08:00:00', '2014-08-19 08:45:00', 1, 1, '2014-09-13 01:02:02', 1, '2014-09-13 01:02:02', 1, NULL, NULL),
+(30, 40, 5, 5, '', '', '3.00', '2014-08-19 09:30:00', '2014-08-19 11:45:00', 2, 1, '2014-09-15 16:12:30', 1, '2014-09-16 05:37:20', 1, NULL, NULL),
+(31, 40, 6, 5, '', '', '5.00', '2014-08-19 11:45:00', '2014-08-19 15:30:00', 1, 1, '2014-09-15 16:37:40', 1, '2014-09-15 16:37:40', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2095,16 +2541,18 @@ CREATE TABLE IF NOT EXISTS `tb_training_schedule_trainer` (
   KEY `tb_activity_room_id` (`ref_trainer_type_id`),
   KEY `tb_training_class_subject_assignment_id` (`tb_trainer_id`),
   KEY `tb_training_class_id` (`tb_training_schedule_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 --
 -- Dumping data for table `tb_training_schedule_trainer`
 --
 
 INSERT INTO `tb_training_schedule_trainer` (`id`, `tb_training_schedule_id`, `tb_trainer_id`, `ref_trainer_type_id`, `cost`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(8, 25, 2, 0, NULL, 1, '2014-09-10 08:13:58', 1, '2014-09-10 08:13:58', 1, NULL, NULL),
-(11, 22, 3, 2, NULL, 1, '2014-09-10 09:24:40', 1, '2014-09-10 09:24:40', 1, NULL, NULL),
-(13, 22, 1, 0, NULL, 1, '2014-09-10 11:03:40', 1, '2014-09-10 11:03:40', 1, NULL, NULL);
+(15, 28, 1, 0, 200000, 1, '2014-09-13 01:02:12', 1, '2014-09-14 07:31:52', 1, NULL, NULL),
+(18, 30, 1, 0, NULL, 1, '2014-09-15 16:12:45', 1, '2014-09-15 16:12:45', 1, NULL, NULL),
+(19, 30, 2, 1, NULL, 1, '2014-09-15 16:12:45', 1, '2014-09-15 16:12:45', 1, NULL, NULL),
+(20, 31, 3, 0, NULL, 1, '2014-09-15 16:37:51', 1, '2014-09-15 16:37:51', 1, NULL, NULL),
+(21, 28, 3, 2, NULL, 1, '2014-09-15 16:37:59', 1, '2014-09-15 16:37:59', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2177,7 +2625,7 @@ CREATE TABLE IF NOT EXISTS `tb_training_unit_plan` (
 --
 
 INSERT INTO `tb_training_unit_plan` (`tb_training_id`, `ref_unit_id`, `spread`, `status`, `created`, `createdBy`, `modified`, `modifiedBy`, `deleted`, `deletedBy`) VALUES
-(7, 3, '10|5|0|0|7|5|0|0|5|4|0|0|0', 1, NULL, NULL, '2014-09-01 15:11:01', 1, NULL, NULL),
+(7, 3, '10|5|0|0|7|5|0|0|5|4|0|0|0', 1, NULL, NULL, '2014-09-15 00:39:15', 1, NULL, NULL),
 (9, NULL, '10|0|0|0|0|0|0|0|0|0|0|0|0', 1, '2014-08-27 15:03:05', 1, '2014-08-27 15:03:14', 1, NULL, NULL),
 (10, NULL, '10|0|0|0|0|0|0|0|0|0|0|10|0', 1, '2014-08-27 15:05:44', 1, '2014-08-27 15:06:02', 1, NULL, NULL),
 (11, NULL, '0|0|0|0|0|0|0|0|0|0|0|0|0', 0, '2014-08-27 16:28:48', 1, '2014-08-29 16:37:27', 1, NULL, NULL),
@@ -2223,8 +2671,8 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 --
 
 INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmation_token`, `confirmation_sent_at`, `confirmed_at`, `unconfirmed_email`, `recovery_token`, `recovery_sent_at`, `blocked_at`, `role`, `registered_from`, `logged_in_from`, `logged_in_at`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1410144136, 1405728264, 1410144136),
-(2, 'psdm', '', '$2y$13$ge.61GlxXqBN3xVzgEXRwO7x7uyCJLPkd42EITP60K15u4xCjfYbi', 'G9߉', NULL, NULL, 1409816772, NULL, NULL, NULL, NULL, NULL, NULL, 170755228, 1409816881, 1409816773, 1409816881);
+(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1410408408, 1405728264, 1410408408),
+(2, 'psdm', '', '$2y$13$ge.61GlxXqBN3xVzgEXRwO7x7uyCJLPkd42EITP60K15u4xCjfYbi', 'G9߉', NULL, NULL, 1409816772, NULL, NULL, NULL, NULL, NULL, NULL, 2130706433, 1410407790, 1409816773, 1410407790);
 
 -- --------------------------------------------------------
 
@@ -3575,8 +4023,8 @@ ALTER TABLE `tb_training_class_student_certificate`
 -- Constraints for table `tb_training_class_subject`
 --
 ALTER TABLE `tb_training_class_subject`
-  ADD CONSTRAINT `tb_training_class_subject_ibfk_2` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_program_subject` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `tb_training_class_subject_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `tb_training_class_subject_ibfk_1` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tb_training_class_subject_ibfk_2` FOREIGN KEY (`tb_program_subject_id`) REFERENCES `tb_program_subject` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_class_subject_trainer`

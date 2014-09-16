@@ -131,7 +131,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-home',
+				'icon' => 'fa fa-th',
 				'link' => ['room','activity_id'=>$model->id],
 				'footerOptions' => ['data-pjax'=>0],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
@@ -159,7 +159,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-user',
+				'icon' => 'fa fa-users',
 				'link' => ['./training-class-student','tb_training_id'=>$model->id],
 				'footerOptions' => ['data-pjax'=>0],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
@@ -187,7 +187,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-user',
+				'icon' => 'fa fa-book',
 				'link' => '',
 				'footerOptions' => [],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
@@ -215,7 +215,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-user',
+				'icon' => 'fa fa-list-ol',
 				'link' => '',
 				'footerOptions' => [],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
@@ -243,7 +243,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-user',
+				'icon' => 'fa fa-cogs',
 				'link' => '',
 				'footerOptions' => [],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
@@ -271,7 +271,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-user',
+				'icon' => 'fa fa-upload',
 				'link' => '',
 				'footerOptions' => [],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
@@ -299,9 +299,9 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-user',
-				'link' => '',
-				'footerOptions' => [],
+				'icon' => 'fa fa-money',
+				'link' => ['./training-honour','tb_training_id'=>$model->id],
+				'footerOptions' => ['data-pjax'=>0],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
 			]);
 			?>
@@ -327,9 +327,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				],
 				'header' => 'T',
 				'bodyOptions' => [],
-				'icon' => 'fa fa-user',
-				'link' => '',
-				'footerOptions' => [],
+				'icon' => 'fa fa-user-md',
+				'link' => ['trainer','id'=>$model->id],
+				'footerOptions' => [
+					'class' => 'dashboard-hide',
+				],
 				'footer' => 'More info <i class="fa fa-arrow-circle-right"></i>',
 			]);
 			?>
@@ -380,7 +382,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 	'); 
 	?>
 	<div id="ajax-loader" class="overlay dark">
-	<div class="loading-img"></div>
+	<div class="fa fa-spinner loading-img"></div>
 	</div>
 	
 	<?php \yii\widgets\Pjax::end(); ?>

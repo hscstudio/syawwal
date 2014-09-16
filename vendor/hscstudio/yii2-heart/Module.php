@@ -159,6 +159,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		
 		$assets = $view->assetManager->publish('@hscstudio/heart/assets/heart');
 		$view->registerCssFile($assets[1].'/css/heart.css', ['yii\bootstrap\BootstrapAsset']);
+		$view->registerCssFile($assets[1].'/css/metroui.css', ['yii\bootstrap\BootstrapAsset']);
 		$view->registerJsFile($assets[1].'/js/heart.js', ['yii\web\JqueryAsset']);
 		$css = '
 		.overlay, .loading-img {

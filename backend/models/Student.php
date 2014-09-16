@@ -221,4 +221,14 @@ class Student extends \yii\db\ActiveRecord
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
+	
+	public function getTrainer()
+    {
+        return $this->hasOne(Trainer::className(), ['nip' => 'nip'])->onCondition('LENGTH('.Trainer::tableName().'.nip)>=9');
+    }
+	
+	public function getEmployee()
+    {
+        return $this->hasOne(Employee::className(), ['nip' => 'nip'])->onCondition('LENGTH('.Employee::tableName().'.nip)>=9');
+    }
 }

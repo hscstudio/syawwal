@@ -105,14 +105,15 @@ class TrainingController extends Controller
      */
     public function actionView($id)
     {
+		$model = $this->findModel($id);
         if (Yii::$app->request->isAjax){	
 			return $this->renderAjax('view', [
-				'model' => $this->findModel($id),
+				'model' => $model,
 			]);
 		}
 		else{
 			return $this->render('view', [
-				'model' => $this->findModel($id),
+				'model' => $model,
 			]);
 		}
     }
@@ -820,6 +821,46 @@ class TrainingController extends Controller
         return $this->render('dashboard', [
             'model' => $this->findModel($id),
         ]);
+    }
+	
+	/**
+     * Displays a single Training model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionTrainer($id)
+    {
+		$trainingTrainers = \backend\models\TrainingScheduleTrainer::find()
+			->where([
+				'tb_training_schedule_id'=>
+					\backend\models\TrainingSchedule::find()
+						->select('id')
+						->where([
+							'tb_training_class_id'=>
+								\backend\models\TrainingClass::find()
+									->select('id')
+									->where([
+										'tb_training_id'=>$id,
+										'status'=>1,
+									]),
+							'status'=>1,
+						]),
+				'status'=>1,
+			])
+			->groupBy('tb_trainer_id')
+			->all();
+        if (Yii::$app->request->isAjax){	
+			return $this->renderAjax('trainer', [
+				'model' => $this->findModel($id),
+				'trainingTrainers' => $trainingTrainers,
+			]);
+		}
+		else{
+			return $this->render('trainer', [
+				'model' => $this->findModel($id),
+				'trainingTrainers' => $trainingTrainers,
+			]);
+		}
     }
 	
 }
