@@ -108,15 +108,30 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'format'=>'raw',
 				'hAlign'=>'center',
 				'value' => function ($data) {
-					$trainerCount=\backend\models\TrainingClassSubjectTrainer::find()
+					$trainingSchedule=\backend\models\TrainingSchedule::find()
+								->select('id')
+								->where([
+									'tb_training_class_subject_id'=>$data->id,
+									'status'=>1,
+								])
+								->groupBy('tb_training_class_subject_id')
+								->asArray()
+								->all();
+					$tsid=[];			
+					foreach($trainingSchedule as $ts){
+						$tsid[] = $ts['id'];
+					}
+					$trainingScheduleTrainerCount=\backend\models\TrainingScheduleTrainer::find()
 						->where([
-							'tb_training_class_subject_id'=>$data->id,
-							'status'=>1
+							'tb_training_schedule_id'=>$tsid,
+							'status'=>1,
 						])
 						->count();
-					return Html::a($trainerCount,
-						\yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class-subject-trainer/index',
-						'tb_training_class_subject_id'=>$data->id]),
+					return Html::a($trainingScheduleTrainerCount,
+						\yii\helpers\Url::to(['trainer',
+							'id'=>$data->id,
+							'tb_training_class_id'=>$data->tb_training_class_id,
+						]),
 						['class'=>'label label-default']);
 				}
 			],

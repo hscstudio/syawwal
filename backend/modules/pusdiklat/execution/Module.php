@@ -19,6 +19,7 @@ class Module extends \yii\base\Module
 					'training/','training-class/',
 					'training-class-subject/','training-class-subject-trainer/',
 					'training-class-student/',
+					'training-honour/',
 				]],
 			]],
 		];

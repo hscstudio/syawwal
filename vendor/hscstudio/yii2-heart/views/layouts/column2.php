@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Html;
-use kartik\widgets\SideNav;
+use hscstudio\heart\widgets\SideNavMetro;
 use hscstudio\heart\widgets\Breadcrumbs;
 use kartik\widgets\AlertBlock;
 use kartik\icons\Icon;
@@ -37,6 +37,24 @@ Icon::map($this, Icon::FA);
 			*/
 			$route = $controller->route;
 			$items = [];
+			$colors = [
+				'stick-red',
+				'stick-yellow',
+				'stick-green',
+				'stick-blue',
+				'stick-light-blue',
+				'stick-aqua',
+				'stick-navy',
+				'stick-teal',
+				'stick-olive',
+				'stick-lime',
+				'stick-orange',
+				'stick-fuchsia',
+				'stick-purple',
+				'stick-maroon',
+				'stick-black'
+			];
+			$idx=0;
 			foreach ($menus as $menu) {
 				$active = strpos($route, trim($menu['url'][0], '/')) === 0 ? ' active' : '';
 				// CHECKING PATH IS ARRAY??
@@ -104,9 +122,13 @@ Icon::map($this, Icon::FA);
 					$items2[] = ['label'=>$menu2['label'],'icon'=>$icon2,'url'=>$menu2['url'],'options'=>['class'=>$active2],'items'=>$menus3];
 				}
 				
-				$items[] = ['label'=>$menu['label'],'icon'=>$icon,'url'=>$menu['url'],'options'=>['class'=>$active],'items'=>$items2];
+				$color = '';
+				if(count($items2)>0){ 
+					$color = ' stick '.$colors[$idx++];
+				}
+				$items[] = ['label'=>$menu['label'],'icon'=>$icon,'url'=>$menu['url'],'options'=>['class'=>$active.' '.$color],'items'=>$items2];
 			}
-			echo SideNav::widget([
+			echo SideNavMetro::widget([
 				//'type' => SideNav::TYPE_PRIMARY,
 				//'heading' => 'Options',
 				'items' => !empty($items) ? $items :  [

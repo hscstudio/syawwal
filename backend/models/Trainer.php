@@ -32,6 +32,7 @@ use yii\behaviors\BlameableBehavior;
  * @property string $photo
  * @property string $blood
  * @property string $position
+ * @property string $eselon
  * @property string $organization
  * @property integer $widyaiswara
  * @property string $education
@@ -104,7 +105,7 @@ class Trainer extends \yii\db\ActiveRecord
     {
         return [
             [['idn', 'name'], 'required'],
-            [['ref_graduate_id', 'ref_rank_class_id', 'ref_religion_id', 'gender', 'married', 'widyaiswara', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['ref_graduate_id', 'ref_rank_class_id', 'ref_religion_id', 'eselon', 'gender', 'married', 'widyaiswara', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['birthDay', 'created', 'modified', 'deleted'], 'safe'],
             [['idn', 'address', 'photo', 'position', 'education', 'competency', 'bankAccount', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
             [['name', 'nickName', 'born', 'phone', 'npwp', 'officePhone', 'officeFax'], 'string', 'max' => 50],
@@ -144,6 +145,7 @@ class Trainer extends \yii\db\ActiveRecord
             'photo' => 'Photo',
             'blood' => 'Blood',
             'position' => 'Position',
+			'eselon' => 'Eselon',
             'organization' => 'Organization',
             'widyaiswara' => 'Widyaiswara',
             'education' => 'Education',
@@ -189,6 +191,14 @@ class Trainer extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Religion::className(), ['id' => 'ref_religion_id']);
     }
+	
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSatker()
+    {
+        return $this->hasOne(Satker::className(), ['id' => 'ref_satker_id']);
+    }
 	    /**
      * @return \yii\db\ActiveQuery
      */
@@ -209,5 +219,15 @@ class Trainer extends \yii\db\ActiveRecord
     public function getTrainingTrainerAttendances()
     {
         return $this->hasMany(TrainingTrainerAttendance::className(), ['tb_trainer_id' => 'id']);
+    }
+	
+	public function getEmployee()
+    {
+        return $this->hasOne(Employee::className(), ['nip' => 'nip'])->onCondition('LENGTH('.Employee::tableName().'.nip)>=9');
+    }
+	
+	public function getStudent()
+    {
+        return $this->hasOne(Student::className(), ['nip' => 'nip'])->onCondition('LENGTH('.Student::tableName().'.nip)>=9');
     }
 }

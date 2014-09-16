@@ -159,11 +159,13 @@ class TrainingClassController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+		$tb_training_id=$model->tb_training_id;
+		$model->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index','tb_training_id'=>$tb_training_id]);
     }
-
+	
     /**
      * Finds the TrainingClass model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

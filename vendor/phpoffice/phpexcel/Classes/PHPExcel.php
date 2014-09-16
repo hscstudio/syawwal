@@ -378,8 +378,8 @@ class PHPExcel
         $this->_cellXfSupervisor->bindParent($this);
 
         // Create the default style
-        $this->addCellXf(new PHPExcel_Style);
-        $this->addCellStyleXf(new PHPExcel_Style);
+        $this->addCellXf(new \PHPExcel_Style);
+        $this->addCellStyleXf(new \PHPExcel_Style);
     }
 
     /**
