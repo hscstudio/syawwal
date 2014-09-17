@@ -16,6 +16,9 @@ return [
 		'sekretariat-organisation' => [
             'class' => 'backend\modules\sekretariat\organisation\Module',
         ],
+		/*'eregistrasi-training' => [
+            'class' => 'frontend\modules\eregistrasi\trainingclass\Module',
+        ],*/
 		'sekretariat-hrd' => [
             'class' => 'backend\modules\sekretariat\hrd\Module',
         ],

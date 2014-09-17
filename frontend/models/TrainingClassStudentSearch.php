@@ -41,11 +41,11 @@ class TrainingClassStudentSearch extends TrainingClassStudent
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params,$id)
     {
-        $session = new Session;
+		$tb_training_id = $id;
 		$query = TrainingClassStudent::find()
-				->where(['tb_training_id'=>base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($session['tb_training_id']))]);
+				->where(['tb_training_id'=>$tb_training_id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
