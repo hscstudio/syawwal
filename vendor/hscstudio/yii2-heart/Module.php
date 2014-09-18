@@ -186,7 +186,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface
 		';
 		$view->registerCss($css);
 		
-		//$view->registerJsFile($assets[1].'/js/bootstrap-growl.min.js', ['yii\web\JqueryAsset']);
+		$view->registerJsFile($assets[1].'/js/bootstrap-growl.min.js', ['yii\web\JqueryAsset']);
 
 		\yii\base\Event::on('yii\web\Controller','beforeAction',function($event){
 			if($event->sender->uniqueId=='site'){

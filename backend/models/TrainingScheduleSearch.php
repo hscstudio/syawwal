@@ -71,19 +71,16 @@ class TrainingScheduleSearch extends TrainingSchedule
             'deletedBy' => $this->deletedBy,
         ]);
 		
-		//$this->startDate='2018-08-20';
-		
         $query->andFilterWhere(['like', 'activity', $this->activity])
               ->andFilterWhere(['like', 'pic', $this->pic]);
 		
-		if($this->startDate==$this->finishDate){
+		if($this->startDate==$this->finishDate) {
 			$query->andFilterWhere(['=', 'date(startTime)', $this->startDate]);
 		}
 		else{
 			$query->andFilterWhere(['>=', 'date(startTime)', $this->startDate]);
 			$query->andFilterWhere(['<=', 'date(finishTime)', $this->finishDate]);
 		}
-		//$query->andFilterWhere(['<', 'price', $this->max_price]);
 	
         return $dataProvider;
     }
