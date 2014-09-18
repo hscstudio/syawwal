@@ -26,17 +26,7 @@ use yii\helpers\ArrayHelper;
 		'options'=>['enctype'=>'multipart/form-data']
 	]); ?>
 	<?= $form->errorSummary($model) ?>    
-
-    <?php //echo $toke; ?>
-
-    <?php /*$form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::classname(), [
-					'pluginOptions' => [
-						'onText' => 'On',
-						'offText' => 'Off',
-					]
-				])*/ ?>
-
-   <?php /////////////;?>
+    
    <?php
    $group_arr=array(
 					0=>"I. <strong>KURIKULUM</strong> - penilaian Anda atas kurikulum yang kami sajikan",

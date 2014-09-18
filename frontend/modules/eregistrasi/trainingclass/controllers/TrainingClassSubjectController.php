@@ -3,16 +3,16 @@
 namespace frontend\modules\eregistrasi\trainingclass\controllers;
 
 use Yii;
-use frontend\models\TrainingExecutionEvaluation;
-use frontend\models\TrainingExecutionEvaluationSearch;
+use frontend\models\TrainingClassSubject;
+use frontend\models\TrainingClassSubjectSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TrainingExecutionEvaluationController implements the CRUD actions for TrainingExecutionEvaluation model.
+ * TrainingClassSubjectController implements the CRUD actions for TrainingClassSubject model.
  */
-class TrainingExecutionEvaluationController extends Controller
+class TrainingClassSubjectController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,118 +30,118 @@ class TrainingExecutionEvaluationController extends Controller
     }
 
     /**
-     * Lists all TrainingExecutionEvaluation models.
+     * Lists all TrainingClassSubject models.
      * @return mixed
      */
     public function actionIndex($tb_training_id)
     {
-        /*$searchModel = new TrainingExecutionEvaluationSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $id = base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id));;
+		$searchModel = new TrainingClassSubjectSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$id);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'tb_training_id' => $id,
         ]);
-		return $this->render('create', [
-            'tb_training_id' => $tb_training_id,
-        ]);*/	
-		$tb_training_class_student_id = \frontend\models\TrainingClassStudent::findOne(['tb_student_id' => Yii::$app->user->identity->id,'tb_training_id'=>base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id))])->id;
-		
-		if (($model = TrainingExecutionEvaluation::findOne(['tb_training_class_student_id'=>$tb_training_class_student_id])) !== null) 
-		{
-				return $this->redirect(['view',
-						'tb_training_id' => $tb_training_id,		
-				]);
-		}
-		else
-		{		return $this->redirect(['create',
-						'tb_training_id' => $tb_training_id,		
-				]);
-		}
     }
 
     /**
-     * Displays a single TrainingExecutionEvaluation model.
+     * Displays a single TrainingClassSubject model.
      * @param integer $id
      * @return mixed
      */
-    public function actionView($tb_training_id)
+    public function actionView($id)
     {
-        $tb_training_class_student_id = \frontend\models\TrainingClassStudent::findOne(['tb_student_id' => Yii::$app->user->identity->id,'tb_training_id'=>base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id))])->id;
-		return $this->render('view', [
-            'model' => $this->findModel($tb_training_class_student_id),
-			'tb_training_id' => base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id)),
+        return $this->render('view', [
+            'model' => $this->findModel($id),
         ]);
     }
 
     /**
-     * Creates a new TrainingExecutionEvaluation model.
+     * Creates a new TrainingClassSubject model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($tb_training_id)
+    public function actionCreate()
     {
-		$id = base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id));
-		$model = new TrainingExecutionEvaluation();
-		
+        $model = new TrainingClassSubject();
+
         if ($model->load(Yii::$app->request->post())){
-			
-			for($x=1;$x<=33;$x++)
-			{
-				$model->value[$x];
-			}
-			$model->value=implode("|",$model->value);
-			$model->tb_training_class_student_id = \frontend\models\TrainingClassStudent::findOne(['tb_student_id' => Yii::$app->user->identity->id,'tb_training_id'=>$id])->id;
-			$model->status=1;
 			if($model->save()) {
 				 Yii::$app->session->setFlash('success', 'Data saved');
 			}
 			else{
 				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
 			}
-            return $this->redirect(['view', 'tb_training_id' => $tb_training_id]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
-				//'toke' => 15,
             ]);
         }
     }
 
     /**
-     * Updates an existing TrainingExecutionEvaluation model.
+     * Updates an existing TrainingClassSubject model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+        $currentFiles=[];
+        
+        if ($model->load(Yii::$app->request->post())) {
+            $files=[];
+			
+            if($model->save()){
+				$idx=0;
+                foreach($files as $file){
+					if(isset($paths[$idx])){
+						$file->saveAs($paths[$idx]);
+					}
+					$idx++;
+				}
+				Yii::$app->session->setFlash('success', 'Data saved');
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                // error in saving model
+				Yii::$app->session->setFlash('error', 'There are some errors');
+            }            
+        }
+		else{
+			//return $this->render(['update', 'id' => $model->id]);
+			return $this->render('update', [
+                'model' => $model,
+            ]);
+		}
     }
 
     /**
-     * Deletes an existing TrainingExecutionEvaluation model.
+     * Deletes an existing TrainingClassSubject model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
     public function actionDelete($id)
     {
-        //$this->findModel($id)->delete();
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the TrainingExecutionEvaluation model based on its primary key value.
+     * Finds the TrainingClassSubject model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return TrainingExecutionEvaluation the loaded model
+     * @return TrainingClassSubject the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = TrainingExecutionEvaluation::findOne(['tb_training_class_student_id'=>$id])) !== null) {
+        if (($model = TrainingClassSubject::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -149,15 +149,15 @@ class TrainingExecutionEvaluationController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new TrainingExecutionEvaluation; // your model can be loaded here
+		$model = new TrainingClassSubject; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['TrainingExecutionEvaluation'][$_POST['editableIndex']]);
-				$value=$_POST['TrainingExecutionEvaluation'][$_POST['editableIndex']][$name];
+				$name=key($_POST['TrainingClassSubject'][$_POST['editableIndex']]);
+				$value=$_POST['TrainingClassSubject'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -177,7 +177,7 @@ class TrainingExecutionEvaluationController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingExecutionEvaluation::find(),
+            'query' => TrainingClassSubject::find(),
         ]);
 		
 		try {
@@ -191,20 +191,20 @@ class TrainingExecutionEvaluationController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "TrainingExecutionEvaluation";
+			$OpenTBS->VarRef['modelName']= "TrainingClassSubject";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_training_class_student_id';			
-			$data1[]['col2'] = 'value';			
-			$data1[]['col3'] = 'text1';			
+			$data1[]['col1'] = 'tb_training_class_id';			
+			$data1[]['col2'] = 'tb_program_subject_id';			
+			$data1[]['col3'] = 'status';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $trainingexecutionevaluation){
+			foreach($dataProvider->getModels() as $trainingclasssubject){
 				$data2[] = [
-					'col0'=>$trainingexecutionevaluation->id,
-					'col1'=>$trainingexecutionevaluation->tb_training_class_student_id,
-					'col2'=>$trainingexecutionevaluation->value,
-					'col3'=>$trainingexecutionevaluation->text1,
+					'col0'=>$trainingclasssubject->id,
+					'col1'=>$trainingclasssubject->tb_training_class_id,
+					'col2'=>$trainingclasssubject->tb_program_subject_id,
+					'col3'=>$trainingclasssubject->status,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -223,7 +223,7 @@ class TrainingExecutionEvaluationController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingExecutionEvaluation::find(),
+            'query' => TrainingClassSubject::find(),
         ]);
 		
 		try {
@@ -238,13 +238,13 @@ class TrainingExecutionEvaluationController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingExecutionEvaluation');
+								->setCellValue('A1', 'Tabel TrainingClassSubject');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingexecutionevaluation){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingexecutionevaluation->id)
-													  ->setCellValue('B'.$idx, $trainingexecutionevaluation->tb_training_class_student_id)
-													  ->setCellValue('C'.$idx, $trainingexecutionevaluation->value)
-													  ->setCellValue('D'.$idx, $trainingexecutionevaluation->text1);
+					foreach($dataProvider->getModels() as $trainingclasssubject){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclasssubject->id)
+													  ->setCellValue('B'.$idx, $trainingclasssubject->tb_training_class_id)
+													  ->setCellValue('C'.$idx, $trainingclasssubject->tb_program_subject_id)
+													  ->setCellValue('D'.$idx, $trainingclasssubject->status);
 						$idx++;
 					}		
 					
@@ -269,13 +269,13 @@ class TrainingExecutionEvaluationController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingExecutionEvaluation');
+								->setCellValue('A1', 'Tabel TrainingClassSubject');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingexecutionevaluation){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingexecutionevaluation->id)
-													  ->setCellValue('B'.$idx, $trainingexecutionevaluation->tb_training_class_student_id)
-													  ->setCellValue('C'.$idx, $trainingexecutionevaluation->value)
-													  ->setCellValue('D'.$idx, $trainingexecutionevaluation->text1);
+					foreach($dataProvider->getModels() as $trainingclasssubject){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclasssubject->id)
+													  ->setCellValue('B'.$idx, $trainingclasssubject->tb_training_class_id)
+													  ->setCellValue('C'.$idx, $trainingclasssubject->tb_program_subject_id)
+													  ->setCellValue('D'.$idx, $trainingclasssubject->status);
 						$idx++;
 					}		
 									
@@ -317,13 +317,13 @@ class TrainingExecutionEvaluationController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel TrainingExecutionEvaluation');
+									->setCellValue('A1', 'Tabel TrainingClassSubject');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $trainingexecutionevaluation){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingexecutionevaluation->id)
-														  ->setCellValue('B'.$idx, $trainingexecutionevaluation->tb_training_class_student_id)
-														  ->setCellValue('C'.$idx, $trainingexecutionevaluation->value)
-														  ->setCellValue('D'.$idx, $trainingexecutionevaluation->text1);
+						foreach($dataProvider->getModels() as $trainingclasssubject){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclasssubject->id)
+														  ->setCellValue('B'.$idx, $trainingclasssubject->tb_training_class_id)
+														  ->setCellValue('C'.$idx, $trainingclasssubject->tb_program_subject_id)
+														  ->setCellValue('D'.$idx, $trainingclasssubject->status);
 							$idx++;
 						}		
 						
@@ -364,4 +364,92 @@ class TrainingExecutionEvaluationController extends Controller
             'dataProvider' => $dataProvider,
         ]);	
     }
+	
+	public function actionImport(){
+		$dataProvider = new ActiveDataProvider([
+            'query' => TrainingClassSubject::find(),
+        ]);
+		
+		/* 
+		Please read guide of upload https://github.com/yiisoft/yii2/blob/master/docs/guide/input-file-upload.md
+		maybe I do mistake :)
+		*/		
+		if (!empty($_FILES)) {
+			$importFile = \yii\web\UploadedFile::getInstanceByName('importFile');
+			if(!empty($importFile)){
+				$fileTypes = ['xls','xlsx']; // File extensions allowed
+				//$ext = end((explode(".", $importFile->name)));
+				$ext=$importFile->extension;
+				if(in_array($ext,$fileTypes)){
+					$inputFileType = \PHPExcel_IOFactory::identify($importFile->tempName );
+					$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+					$objPHPExcel = $objReader->load($importFile->tempName );
+					$sheetData = $objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+					$baseRow = 2;
+					$inserted=0;
+					$read_status = false;
+					$err=[];
+					while(!empty($sheetData[$baseRow]['A'])){
+						$read_status = true;
+						$abjadX=array();
+						//$id=  $sheetData[$baseRow]['A'];
+						$tb_training_class_id=  $sheetData[$baseRow]['B'];
+						$tb_program_subject_id=  $sheetData[$baseRow]['C'];
+						$status=  $sheetData[$baseRow]['D'];
+						//$created=  $sheetData[$baseRow]['E'];
+						//$createdBy=  $sheetData[$baseRow]['F'];
+						//$modified=  $sheetData[$baseRow]['G'];
+						//$modifiedBy=  $sheetData[$baseRow]['H'];
+						//$deleted=  $sheetData[$baseRow]['I'];
+						//$deletedBy=  $sheetData[$baseRow]['J'];
+
+						$model2=new TrainingClassSubject;
+						//$model2->id=  $id;
+						$model2->tb_training_class_id=  $tb_training_class_id;
+						$model2->tb_program_subject_id=  $tb_program_subject_id;
+						$model2->status=  $status;
+						//$model2->created=  $created;
+						//$model2->createdBy=  $createdBy;
+						//$model2->modified=  $modified;
+						//$model2->modifiedBy=  $modifiedBy;
+						//$model2->deleted=  $deleted;
+						//$model2->deletedBy=  $deletedBy;
+
+						try{
+							if($model2->save()){
+								$inserted++;
+							}
+							else{
+								foreach ($model2->errors as $error){
+									$err[]=($baseRow-1).'. '.implode('|',$error);
+								}
+							}
+						}
+						catch (\yii\base\ErrorException $e){
+							Yii::$app->session->setFlash('error', "{$e->getMessage()}");
+							//$this->refresh();
+						} 
+						$baseRow++;
+					}	
+					Yii::$app->session->setFlash('success', ($inserted).' row inserted');
+					if(!empty($err)){
+						Yii::$app->session->setFlash('warning', 'There are error: <br>'.implode('<br>',$err));
+					}
+				}
+				else{
+					Yii::$app->session->setFlash('error', 'Filetype allowed only xls and xlsx');
+				}				
+			}
+			else{
+				Yii::$app->session->setFlash('error', 'File import empty!');
+			}
+		}
+		else{
+			Yii::$app->session->setFlash('error', 'File import empty!');
+		}
+		
+		return $this->render('index', [
+            'dataProvider' => $dataProvider,
+        ]);					
+	}
 }
