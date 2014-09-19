@@ -20,7 +20,7 @@ class Module extends \yii\base\Module
 		return [
 			['icon'=>'fa fa-fw fa-dashboard','label' => 'Dashboard', 'url' => ['/'.$this->uniqueId.'/default/index','tb_training_id'=>$id],'path'=>'default/'],
 			// Add here your items module
-			['icon'=>'fa fa-fw fa-cutlery', 'label' => 'Properti Diklat', 'url' => ['/'.$this->uniqueId.'/properti-diklat/index','tb_training_id'=>$id],'path'=>'properti-diklat/'],
+			['icon'=>'fa fa-fw fa-cutlery', 'label' => 'Properti Diklat', 'url' => ['/'.$this->uniqueId.'/training-pic/index','tb_training_id'=>$id],'path'=>'properti-diklat/'],
 			['icon'=>'fa fa-fw fa-user', 'label' => 'Peserta Diklat', 'url' => ['/'.$this->uniqueId.'/training-class-student/index','tb_training_id'=>$id],'path'=>'training-class-student/'],
 			['icon'=>'fa fa-fw fa-sliders', 'label' => 'Evaluasi Pengajar', 'url' => ['/'.$this->uniqueId.'/training-class-subject/index','tb_training_id'=>$id],'path'=>'properti-diklat/'],
 			['icon'=>'fa fa-fw fa-sliders', 'label' => 'Evaluasi Penyelenggara', 'url' => ['/'.$this->uniqueId.'/training-execution-evaluation/index','tb_training_id'=>$id],'path'=>'training-execution-evaluation/'],
