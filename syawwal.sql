@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 18, 2014 at 04:57 PM
+-- Generation Time: Sep 19, 2014 at 01:32 PM
 -- Server version: 5.5.39-MariaDB
 -- PHP Version: 5.5.16
 
@@ -1467,7 +1467,7 @@ CREATE TABLE IF NOT EXISTS `tb_program` (
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tb_program`
@@ -2310,26 +2310,6 @@ CREATE TABLE IF NOT EXISTS `tb_training_class_subject_trainer` (
   `modifiedBy` int(11) DEFAULT NULL,
   `deleted` datetime DEFAULT NULL,
   `deletedBy` int(11) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_training_class_subject_trainer_attendance`
---
-
-CREATE TABLE IF NOT EXISTS `tb_training_class_subject_trainer_attendance` (
-`id` int(11) NOT NULL,
-  `tb_training_schedule_trainer_id` int(11) NOT NULL,
-  `hours` int(3) DEFAULT NULL,
-  `reason` varchar(255) DEFAULT NULL,
-  `status` int(1) NOT NULL DEFAULT '1',
-  `created` datetime DEFAULT NULL,
-  `createdBy` int(11) DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `modifiedBy` int(11) DEFAULT NULL,
-  `deleted` datetime DEFAULT NULL,
-  `deletedBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2550,6 +2530,26 @@ INSERT INTO `tb_training_schedule_trainer` (`id`, `tb_training_schedule_id`, `tb
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tb_training_schedule_trainer_attendance`
+--
+
+CREATE TABLE IF NOT EXISTS `tb_training_schedule_trainer_attendance` (
+`id` int(11) NOT NULL,
+  `tb_training_schedule_trainer_id` int(11) NOT NULL,
+  `hours` int(3) DEFAULT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `created` datetime DEFAULT NULL,
+  `createdBy` int(11) DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  `modifiedBy` int(11) DEFAULT NULL,
+  `deleted` datetime DEFAULT NULL,
+  `deletedBy` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tb_training_subject_trainer_recommendation`
 --
 
@@ -2644,14 +2644,14 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
   `logged_in_at` int(11) DEFAULT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `tb_user`
 --
 
 INSERT INTO `tb_user` (`id`, `username`, `email`, `password_hash`, `auth_key`, `confirmation_token`, `confirmation_sent_at`, `confirmed_at`, `unconfirmed_email`, `recovery_token`, `recovery_sent_at`, `blocked_at`, `role`, `registered_from`, `logged_in_from`, `logged_in_at`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1411031090, 1405728264, 1411031090),
+(1, 'admin', 'admin@gmail.com', '$2y$13$xOnFV4B5NGTJpu1P/qy03Owrkx6j/35dZJR6gPNscLSV2A6kR98fa', '_ZSeDwI6bRSftr4iK42GukuBrWgvHjwz', NULL, NULL, 1405729304, NULL, NULL, NULL, NULL, '', 2130706433, 2130706433, 1411100087, 1405728264, 1411100087),
 (2, 'psdm', '', '$2y$13$ge.61GlxXqBN3xVzgEXRwO7x7uyCJLPkd42EITP60K15u4xCjfYbi', 'G9߉', NULL, NULL, 1409816772, NULL, NULL, NULL, NULL, NULL, NULL, 2130706433, 1410407790, 1409816773, 1410407790);
 
 -- --------------------------------------------------------
@@ -4086,12 +4086,6 @@ ALTER TABLE `tb_training_class_subject_trainer`
  ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_assignment_tb_training_subject1` (`tb_training_class_subject_id`), ADD KEY `fk_tb_training_assignment_tb_trainer1` (`tb_trainer_id`), ADD KEY `type` (`ref_trainer_type_id`);
 
 --
--- Indexes for table `tb_training_class_subject_trainer_attendance`
---
-ALTER TABLE `tb_training_class_subject_trainer_attendance`
- ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_trainer_attendance_tb_training_schedule1` (`tb_training_schedule_trainer_id`);
-
---
 -- Indexes for table `tb_training_class_subject_trainer_evaluation`
 --
 ALTER TABLE `tb_training_class_subject_trainer_evaluation`
@@ -4132,6 +4126,12 @@ ALTER TABLE `tb_training_schedule`
 --
 ALTER TABLE `tb_training_schedule_trainer`
  ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `tb_training_schedule_id` (`tb_training_schedule_id`,`tb_trainer_id`), ADD KEY `fk_tb_training_schedule_tb_room1` (`ref_trainer_type_id`), ADD KEY `tb_activity_room_id` (`ref_trainer_type_id`), ADD KEY `tb_training_class_subject_assignment_id` (`tb_trainer_id`), ADD KEY `tb_training_class_id` (`tb_training_schedule_id`);
+
+--
+-- Indexes for table `tb_training_schedule_trainer_attendance`
+--
+ALTER TABLE `tb_training_schedule_trainer_attendance`
+ ADD PRIMARY KEY (`id`), ADD KEY `fk_tb_training_trainer_attendance_tb_training_schedule1` (`tb_training_schedule_trainer_id`);
 
 --
 -- Indexes for table `tb_training_subject_trainer_recommendation`
@@ -4215,7 +4215,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT for table `tb_program`
 --
 ALTER TABLE `tb_program`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `tb_program_document`
 --
@@ -4290,11 +4290,6 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 -- AUTO_INCREMENT for table `tb_training_class_subject_trainer`
 --
 ALTER TABLE `tb_training_class_subject_trainer`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `tb_training_class_subject_trainer_attendance`
---
-ALTER TABLE `tb_training_class_subject_trainer_attendance`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tb_training_class_subject_trainer_evaluation`
@@ -4327,6 +4322,11 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=32;
 ALTER TABLE `tb_training_schedule_trainer`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=22;
 --
+-- AUTO_INCREMENT for table `tb_training_schedule_trainer_attendance`
+--
+ALTER TABLE `tb_training_schedule_trainer_attendance`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `tb_training_subject_trainer_recommendation`
 --
 ALTER TABLE `tb_training_subject_trainer_recommendation`
@@ -4335,7 +4335,7 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
 -- AUTO_INCREMENT for table `tb_user`
 --
 ALTER TABLE `tb_user`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `testing`
 --
@@ -4497,9 +4497,9 @@ ADD CONSTRAINT `tb_training_class_ibfk_1` FOREIGN KEY (`tb_training_id`) REFEREN
 -- Constraints for table `tb_training_class_student`
 --
 ALTER TABLE `tb_training_class_student`
-ADD CONSTRAINT `tb_training_class_student_ibfk_5` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON UPDATE CASCADE,
 ADD CONSTRAINT `tb_training_class_student_ibfk_3` FOREIGN KEY (`tb_training_class_id`) REFERENCES `tb_training_class` (`id`) ON UPDATE CASCADE,
-ADD CONSTRAINT `tb_training_class_student_ibfk_4` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON UPDATE CASCADE;
+ADD CONSTRAINT `tb_training_class_student_ibfk_4` FOREIGN KEY (`tb_student_id`) REFERENCES `tb_student` (`id`) ON UPDATE CASCADE,
+ADD CONSTRAINT `tb_training_class_student_ibfk_5` FOREIGN KEY (`tb_training_id`) REFERENCES `tb_training` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_class_student_attendance`
@@ -4531,12 +4531,6 @@ ALTER TABLE `tb_training_class_subject_trainer`
 ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_1` FOREIGN KEY (`tb_training_class_subject_id`) REFERENCES `tb_training_class_subject` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_2` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`),
 ADD CONSTRAINT `tb_training_class_subject_trainer_ibfk_3` FOREIGN KEY (`ref_trainer_type_id`) REFERENCES `ref_trainer_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Constraints for table `tb_training_class_subject_trainer_attendance`
---
-ALTER TABLE `tb_training_class_subject_trainer_attendance`
-ADD CONSTRAINT `tb_training_class_subject_trainer_attendance_ibfk_1` FOREIGN KEY (`tb_training_schedule_trainer_id`) REFERENCES `tb_training_schedule_trainer` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_class_subject_trainer_evaluation`
@@ -4582,9 +4576,15 @@ ADD CONSTRAINT `tb_training_schedule_ibfk_3` FOREIGN KEY (`tb_training_class_id`
 -- Constraints for table `tb_training_schedule_trainer`
 --
 ALTER TABLE `tb_training_schedule_trainer`
-ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_3` FOREIGN KEY (`ref_trainer_type_id`) REFERENCES `ref_trainer_type` (`id`) ON UPDATE CASCADE,
-ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_1` FOREIGN KEY (`tb_training_schedule_id`) REFERENCES `tb_training_schedule` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_2` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON UPDATE CASCADE;
+ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_1` FOREIGN KEY (`tb_training_schedule_id`) REFERENCES `tb_training_schedule` (`id`) ON UPDATE CASCADE,
+ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_2` FOREIGN KEY (`tb_trainer_id`) REFERENCES `tb_trainer` (`id`) ON UPDATE CASCADE,
+ADD CONSTRAINT `tb_training_schedule_trainer_ibfk_3` FOREIGN KEY (`ref_trainer_type_id`) REFERENCES `ref_trainer_type` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `tb_training_schedule_trainer_attendance`
+--
+ALTER TABLE `tb_training_schedule_trainer_attendance`
+ADD CONSTRAINT `tb_training_schedule_trainer_attendance_ibfk_1` FOREIGN KEY (`tb_training_schedule_trainer_id`) REFERENCES `tb_training_schedule_trainer` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tb_training_subject_trainer_recommendation`

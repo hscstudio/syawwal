@@ -257,7 +257,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					).' '.
 					Html::a('<i class="fa fa-fw fa-child"></i>', Url::to([
 							'training-class-student-attendance/update', 
-							'for' => 'student',
 							'idSubjects' => $idTrainingClassSubject,
 							'tb_training_schedule_id' => $idSchedule
 						]), ['class' => 'btn btn-default btn-xs']

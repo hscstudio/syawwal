@@ -31,269 +31,103 @@ class TrainingClassStudentAttendanceController extends Controller
         ];
     }
 
-    /**
-     * Lists all TrainingClassStudentAttendance models.
-     * @return mixed
-     */
-    public function actionIndex()
+
+
+
+
+
+
+
+    public function actionUpdate($idSubjects, $tb_training_schedule_id)
     {
-        $searchModel = new TrainingClassStudentAttendanceSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+		// Mbelah id schedule, kalau jamak
+		$idSchedule = explode('_', $tb_training_schedule_id);
+		// dah
 
-    /**
-     * Displays a single TrainingClassStudentAttendance model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+		// Ngambil schedule
+		$modelTrainingSchedule = [];
+		for ($i = 0; $i < count($idSchedule); $i++) {
+    		$modelTrainingSchedule[$i] = TrainingSchedule::find()
+    			->where(['id' => $idSchedule[$i]])
+    			->one();
+		}
+		//dah
 
-    /**
-     * Creates a new TrainingClassStudentAttendance model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new TrainingClassStudentAttendance();
-
-        if ($model->load(Yii::$app->request->post())){
-			if($model->save()) {
-				 Yii::$app->session->setFlash('success', 'Data saved');
+		// Cek dulu apakah class_id pada schedule itu sama, klo beda ada yg salah sm request, lempar
+		// Jadi, class_id yg sama pada setiap schedule artinya kita sedang mengedit absensi untuk session yang sama
+		$different = false;
+		$referenceClass = '';
+		
+		for ($i = 0; $i < count($modelTrainingSchedule); $i++) {
+			
+			if ($referenceClass == '') {
+				$referenceClass = $modelTrainingSchedule[$i]['tb_training_class_id'];
 			}
-			else{
-				 Yii::$app->session->setFlash('error', 'Unable create there are some error');
+
+			if ($modelTrainingSchedule[$i]['tb_training_class_id'] != $referenceClass) {
+				$different = true;
 			}
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
 
+		}
 
-
-
-
-
-
-    public function actionUpdate($for, $idSubjects, $tb_training_schedule_id)
-    {
-    	if ($for == 'student') {
-
-    		// Mbelah id schedule, kalau jamak
-    		$idSchedule = explode('_', $tb_training_schedule_id);
-    		// dah
-
-    		// Ngambil schedule
-    		$modelTrainingSchedule = [];
-    		for ($i = 0; $i < count($idSchedule); $i++) {
-	    		$modelTrainingSchedule[$i] = TrainingSchedule::find()
-	    			->where(['id' => $idSchedule[$i]])
-	    			->one();
-    		}
-    		//dah
-
-    		// Cek dulu apakah class_id pada schedule itu sama, klo beda ada yg salah sm request, lempar
-    		// Jadi, class_id yg sama pada setiap schedule artinya kita sedang mengedit absensi untuk session yang sama
-    		$different = false;
-    		$referenceClass = '';
-    		
-    		for ($i = 0; $i < count($modelTrainingSchedule); $i++) {
-    			
-    			if ($referenceClass == '') {
-    				$referenceClass = $modelTrainingSchedule[$i]['tb_training_class_id'];
-    			}
-
-    			if ($modelTrainingSchedule[$i]['tb_training_class_id'] != $referenceClass) {
-    				$different = true;
-    			}
-
-    		}
-
-    		if ($different) {
-    			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Filling attendance should for one class only!');
-    			return $this->redirect(['training/index']);
-    		}
-    		// dah
-
-			// Input tabel attendance dg schedule_id dan student_id
-			$readyInjectStudent2Attendance = TrainingClassStudent::find()->where(['tb_training_class_id' => $referenceClass])->all();
-
-			for ($i = 0; $i < count($idSchedule); $i++) {						// Ngeloop dulu, siapa tau schedule_id nya lebih dari 1
-				foreach ($readyInjectStudent2Attendance as $row) {						// Dari sini, mulai nginject
-					$injector = TrainingClassStudentAttendance::find()
-						->where([
-							'tb_training_schedule_id' => $idSchedule[$i],
-							'tb_training_class_student_id' => $row->id
-						])
-						->one();
-
-					// Cek uda ada record ga?
-					if ($injector === null) {
-						$injector = new TrainingClassStudentAttendance;
-						$injector->tb_training_schedule_id = $idSchedule[$i];
-						$injector->tb_training_class_student_id = $row->id;
-						$injector->hours = 0;
-						$injector->status = 1;
-						$injector->save();
-					}
-				}
-			}
-			// dah
-
-    		// Bikin data provider student dari class schedule
-    		$searchModel = new TrainingClassStudentSearch(); 
-
-			$queryParams['TrainingClassStudentSearch'] = [
-				'tb_training_class_id' => $referenceClass
-			];
-
-			$queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-
-			$dataProvider = $searchModel->search($queryParams);
-			// dah
-    		
-            return $this->render('update', [
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel,
-                'tb_training_schedule_id' => $tb_training_schedule_id,
-                'tb_training_class_id' => $referenceClass,
-                'idSchedule' => $idSchedule
-            ]);
-
-    	}
-
-    	else if ($for == 'trainer') {
-
-    		// Mbelah id schedule, kalau jamak
-    		$idSchedule = explode('_', $tb_training_schedule_id);
-    		// dah
-
-    		// Ngambil schedule
-    		$modelTrainingSchedule = [];
-    		for ($i = 0; $i < count($idSchedule); $i++) {
-	    		$modelTrainingSchedule[$i] = TrainingSchedule::find()
-	    			->where(['id' => $idSchedule[$i]])
-	    			->one();
-    		}
-    		//dah
-
-    		// Cek dulu apakah class_id pada schedule itu sama, klo beda ada yg salah sm request, lempar
-    		// Jadi, class_id yg sama pada setiap schedule artinya kita sedang mengedit absensi untuk session yang sama
-    		$different = false;
-    		$referenceClass = '';
-    		
-    		for ($i = 0; $i < count($modelTrainingSchedule); $i++) {
-    			
-    			if ($referenceClass == '') {
-    				$referenceClass = $modelTrainingSchedule[$i]['tb_training_class_id'];
-    			}
-
-    			if ($modelTrainingSchedule[$i]['tb_training_class_id'] != $referenceClass) {
-    				$different = true;
-    			}
-
-    		}
-
-    		if ($different) {
-    			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Filling attendance should for one class only!');
-    			return $this->redirect(['training/index']);
-    		}
-    		// dah
-
-			// Input tabel attendance dg schedule_id dan student_id
-			$readyInjectStudent2Attendance = TrainingClassStudent::find()->where(['tb_training_class_id' => $referenceClass])->all();
-
-			for ($i = 0; $i < count($idSchedule); $i++) {						// Ngeloop dulu, siapa tau schedule_id nya lebih dari 1
-				foreach ($readyInjectStudent2Attendance as $row) {						// Dari sini, mulai nginject
-					$injector = TrainingClassStudentAttendance::find()
-						->where([
-							'tb_training_schedule_id' => $idSchedule[$i],
-							'tb_training_class_student_id' => $row->id
-						])
-						->one();
-
-					// Cek uda ada record ga?
-					if ($injector === null) {
-						$injector = new TrainingClassStudentAttendance;
-						$injector->tb_training_schedule_id = $idSchedule[$i];
-						$injector->tb_training_class_student_id = $row->id;
-						$injector->hours = 0;
-						$injector->status = 1;
-						$injector->save();
-					}
-				}
-			}
-			// dah
-
-    		// Bikin data provider student dari class schedule
-    		$searchModel = new TrainingClassStudentSearch(); 
-
-			$queryParams['TrainingClassStudentSearch'] = [
-				'tb_training_class_id' => $referenceClass
-			];
-
-			$queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-
-			$dataProvider = $searchModel->search($queryParams);
-			// dah
-    		
-            return $this->render('update', [
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel,
-                'tb_training_schedule_id' => $tb_training_schedule_id,
-                'tb_training_class_id' => $referenceClass,
-                'idSchedule' => $idSchedule
-            ]);
-
-    	}
-    	else {
-    		// Request for ga dikenali, lempar
-    		Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Request is not recognized while attempting attendance!');
+		if ($different) {
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Filling attendance should for one class only!');
 			return $this->redirect(['training/index']);
-    	}
+		}
+		// dah
+
+		// Input tabel attendance dg schedule_id dan student_id
+		$readyInjectStudent2Attendance = TrainingClassStudent::find()->where(['tb_training_class_id' => $referenceClass])->all();
+
+		for ($i = 0; $i < count($idSchedule); $i++) {						// Ngeloop dulu, siapa tau schedule_id nya lebih dari 1
+			foreach ($readyInjectStudent2Attendance as $row) {						// Dari sini, mulai nginject
+				$injector = TrainingClassStudentAttendance::find()
+					->where([
+						'tb_training_schedule_id' => $idSchedule[$i],
+						'tb_training_class_student_id' => $row->id
+					])
+					->one();
+
+				// Cek uda ada record ga?
+				if ($injector === null) {
+					$injector = new TrainingClassStudentAttendance;
+					$injector->tb_training_schedule_id = $idSchedule[$i];
+					$injector->tb_training_class_student_id = $row->id;
+					$injector->hours = 0;
+					$injector->status = 1;
+					$injector->save();
+				}
+			}
+		}
+		// dah
+
+		// Bikin data provider student dari class schedule
+		$searchModel = new TrainingClassStudentSearch(); 
+
+		$queryParams['TrainingClassStudentSearch'] = [
+			'tb_training_class_id' => $referenceClass
+		];
+
+		$queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+
+		$dataProvider = $searchModel->search($queryParams);
+		// dah
+		
+        return $this->render('update', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'tb_training_schedule_id' => $tb_training_schedule_id,
+            'tb_training_class_id' => $referenceClass,
+            'idSchedule' => $idSchedule
+        ]);
+
     }
 
-    /**
-     * Deletes an existing TrainingClassStudentAttendance model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
-    }
 
-    /**
-     * Finds the TrainingClassStudentAttendance model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return TrainingClassStudentAttendance the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = TrainingClassStudentAttendance::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
+
+
 	
 	public function actionEditable() {
 
@@ -314,8 +148,6 @@ class TrainingClassStudentAttendanceController extends Controller
 		$modelTrainingClassStudentAttendance->hours = Yii::$app->request->post('hours');
 
 		$modelTrainingClassStudentAttendance->save();
-
-		Yii::$app->session->setFlash('success', '<i class="fa fa-fw fa-check-circle"></i> Change saved!');
 
 		echo Json::encode($modelTrainingClassStudentAttendance->hours);
 
