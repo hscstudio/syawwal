@@ -5,13 +5,12 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\TrainingClassStudent;
-use yii\web\Session;
+use frontend\models\TrainingClassSubjectTrainerEvaluation;
 
 /**
- * TrainingClassStudentSearch represents the model behind the search form about `frontend\models\TrainingClassStudent`.
+ * TrainingClassSubjectTrainerEvaluationSearch represents the model behind the search form about `frontend\models\TrainingClassSubjectTrainerEvaluation`.
  */
-class TrainingClassStudentSearch extends TrainingClassStudent
+class TrainingClassSubjectTrainerEvaluationSearch extends TrainingClassSubjectTrainerEvaluation
 {
     /**
      * @inheritdoc
@@ -19,9 +18,8 @@ class TrainingClassStudentSearch extends TrainingClassStudent
     public function rules()
     {
         return [
-            [['id', 'tb_training_class_id', 'tb_student_id', 'headClass', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['number', 'created', 'modified', 'deleted'], 'safe'],
-            [['activity', 'presence', 'pretest', 'posttest', 'test'], 'number'],
+            [['id', 'tb_training_class_subject_id', 'tb_trainer_id', 'tb_student_id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['value', 'comment', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }
 
@@ -41,11 +39,9 @@ class TrainingClassStudentSearch extends TrainingClassStudent
      *
      * @return ActiveDataProvider
      */
-    public function search($params,$id)
+    public function search($params)
     {
-		$tb_training_id = $id;
-		$query = TrainingClassStudent::find()
-				->where(['tb_training_id'=>$tb_training_id]);
+        $query = TrainingClassSubjectTrainerEvaluation::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,25 +53,20 @@ class TrainingClassStudentSearch extends TrainingClassStudent
 
         $query->andFilterWhere([
             'id' => $this->id,
-			'tb_training_id' => $this->tb_training_id,
-            'tb_training_class_id' => $this->tb_training_class_id,
+            'tb_training_class_subject_id' => $this->tb_training_class_subject_id,
+            'tb_trainer_id' => $this->tb_trainer_id,
             'tb_student_id' => $this->tb_student_id,
-            'headClass' => $this->headClass,
-            /*'activity' => $this->activity,
-            'presence' => $this->presence,
-            'pretest' => $this->pretest,
-            'posttest' => $this->posttest,
-            'test' => $this->test,
             'status' => $this->status,
             'created' => $this->created,
             'createdBy' => $this->createdBy,
             'modified' => $this->modified,
             'modifiedBy' => $this->modifiedBy,
             'deleted' => $this->deleted,
-            'deletedBy' => $this->deletedBy,*/
+            'deletedBy' => $this->deletedBy,
         ]);
 
-        $query->andFilterWhere(['like', 'number', $this->number]);
+        $query->andFilterWhere(['like', 'value', $this->value])
+            ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;
     }

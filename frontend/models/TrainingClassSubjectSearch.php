@@ -5,13 +5,12 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\TrainingClassStudent;
-use yii\web\Session;
+use frontend\models\TrainingClassSubject;
 
 /**
- * TrainingClassStudentSearch represents the model behind the search form about `frontend\models\TrainingClassStudent`.
+ * TrainingClassSubjectSearch represents the model behind the search form about `frontend\models\TrainingClassSubject`.
  */
-class TrainingClassStudentSearch extends TrainingClassStudent
+class TrainingClassSubjectSearch extends TrainingClassSubject
 {
     /**
      * @inheritdoc
@@ -19,9 +18,8 @@ class TrainingClassStudentSearch extends TrainingClassStudent
     public function rules()
     {
         return [
-            [['id', 'tb_training_class_id', 'tb_student_id', 'headClass', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['number', 'created', 'modified', 'deleted'], 'safe'],
-            [['activity', 'presence', 'pretest', 'posttest', 'test'], 'number'],
+            [['id', 'tb_training_class_id', 'tb_program_subject_id', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['created', 'modified', 'deleted'], 'safe'],
         ];
     }
 
@@ -41,11 +39,16 @@ class TrainingClassStudentSearch extends TrainingClassStudent
      *
      * @return ActiveDataProvider
      */
-    public function search($params,$id)
+	 
+    public function search($params,$tb_training_id)
     {
-		$tb_training_id = $id;
-		$query = TrainingClassStudent::find()
-				->where(['tb_training_id'=>$tb_training_id]);
+        $query = TrainingClassSubject::find()
+				->where(['tb_training_class_id'=>\frontend\models\TrainingClassStudent::find()
+														->select('tb_training_class_id')
+														->where(['tb_training_id'=>$tb_training_id,
+																 'tb_student_id'=>Yii::$app->user->identity->id]),						 
+						 'status'=>1])
+				;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,25 +60,16 @@ class TrainingClassStudentSearch extends TrainingClassStudent
 
         $query->andFilterWhere([
             'id' => $this->id,
-			'tb_training_id' => $this->tb_training_id,
             'tb_training_class_id' => $this->tb_training_class_id,
-            'tb_student_id' => $this->tb_student_id,
-            'headClass' => $this->headClass,
-            /*'activity' => $this->activity,
-            'presence' => $this->presence,
-            'pretest' => $this->pretest,
-            'posttest' => $this->posttest,
-            'test' => $this->test,
+            'tb_program_subject_id' => $this->tb_program_subject_id,
             'status' => $this->status,
             'created' => $this->created,
             'createdBy' => $this->createdBy,
             'modified' => $this->modified,
             'modifiedBy' => $this->modifiedBy,
             'deleted' => $this->deleted,
-            'deletedBy' => $this->deletedBy,*/
+            'deletedBy' => $this->deletedBy,
         ]);
-
-        $query->andFilterWhere(['like', 'number', $this->number]);
 
         return $dataProvider;
     }

@@ -3,16 +3,16 @@
 namespace frontend\modules\eregistrasi\trainingclass\controllers;
 
 use Yii;
-use frontend\models\TrainingClassStudent;
-use frontend\models\TrainingClassStudentSearch;
+use frontend\models\TrainingPic;
+use backend\models\TrainingPicSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TrainingClassStudentController implements the CRUD actions for TrainingClassStudent model.
+ * TrainingPicController implements the CRUD actions for TrainingPic model.
  */
-class TrainingClassStudentController extends Controller
+class TrainingPicController extends Controller
 {
 		public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,24 +30,23 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Lists all TrainingClassStudent models.
+     * Lists all TrainingPic models.
      * @return mixed
      */
     public function actionIndex($tb_training_id)
     {
-        $id = base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id));
-		$searchModel = new TrainingClassStudentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$id);
+        $searchModel = new TrainingPicSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-			'tb_training_id' => $id,
+			'tb_training_id' => base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id)),
         ]);
     }
 
     /**
-     * Displays a single TrainingClassStudent model.
+     * Displays a single TrainingPic model.
      * @param integer $id
      * @return mixed
      */
@@ -59,13 +58,13 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Creates a new TrainingClassStudent model.
+     * Creates a new TrainingPic model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new TrainingClassStudent();
+        $model = new TrainingPic();
 
         if ($model->load(Yii::$app->request->post())){
 			if($model->save()) {
@@ -83,7 +82,7 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Updates an existing TrainingClassStudent model.
+     * Updates an existing TrainingPic model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -120,7 +119,7 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Deletes an existing TrainingClassStudent model.
+     * Deletes an existing TrainingPic model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -133,15 +132,15 @@ class TrainingClassStudentController extends Controller
     }
 
     /**
-     * Finds the TrainingClassStudent model based on its primary key value.
+     * Finds the TrainingPic model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return TrainingClassStudent the loaded model
+     * @return TrainingPic the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = TrainingClassStudent::findOne($id)) !== null) {
+        if (($model = TrainingPic::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -149,15 +148,15 @@ class TrainingClassStudentController extends Controller
     }
 	
 	public function actionEditable() {
-		$model = new TrainingClassStudent; // your model can be loaded here
+		$model = new TrainingPic; // your model can be loaded here
 		// Check if there is an Editable ajax request
 		if (isset($_POST['hasEditable'])) {
 			// read your posted model attributes
 			if ($model->load($_POST)) {
 				// read or convert your posted information
 				$model2 = $this->findModel($_POST['editableKey']);
-				$name=key($_POST['TrainingClassStudent'][$_POST['editableIndex']]);
-				$value=$_POST['TrainingClassStudent'][$_POST['editableIndex']][$name];
+				$name=key($_POST['TrainingPic'][$_POST['editableIndex']]);
+				$value=$_POST['TrainingPic'][$_POST['editableIndex']][$name];
 				$model2->$name = $value ;
 				$model2->save();
 				// return JSON encoded output in the below format
@@ -177,7 +176,7 @@ class TrainingClassStudentController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudent::find(),
+            'query' => TrainingPic::find(),
         ]);
 		
 		try {
@@ -191,20 +190,20 @@ class TrainingClassStudentController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "TrainingClassStudent";
+			$OpenTBS->VarRef['modelName']= "TrainingPic";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_training_id';			
-			$data1[]['col2'] = 'tb_training_class_id';			
-			$data1[]['col3'] = 'tb_student_id';			
+			$data1[]['col1'] = 'tb_training_class_id';			
+			$data1[]['col2'] = 'tb_user_id';			
+			$data1[]['col3'] = 'type';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $trainingclassstudent){
+			foreach($dataProvider->getModels() as $trainingpic){
 				$data2[] = [
-					'col0'=>$trainingclassstudent->id,
-					'col1'=>$trainingclassstudent->tb_training_id,
-					'col2'=>$trainingclassstudent->tb_training_class_id,
-					'col3'=>$trainingclassstudent->tb_student_id,
+					'col0'=>$trainingpic->id,
+					'col1'=>$trainingpic->tb_training_class_id,
+					'col2'=>$trainingpic->tb_user_id,
+					'col3'=>$trainingpic->type,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -223,7 +222,7 @@ class TrainingClassStudentController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudent::find(),
+            'query' => TrainingPic::find(),
         ]);
 		
 		try {
@@ -238,13 +237,13 @@ class TrainingClassStudentController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingClassStudent');
+								->setCellValue('A1', 'Tabel TrainingPic');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingclassstudent){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudent->id)
-													  ->setCellValue('B'.$idx, $trainingclassstudent->tb_training_id)
-													  ->setCellValue('C'.$idx, $trainingclassstudent->tb_training_class_id)
-													  ->setCellValue('D'.$idx, $trainingclassstudent->tb_student_id);
+					foreach($dataProvider->getModels() as $trainingpic){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingpic->id)
+													  ->setCellValue('B'.$idx, $trainingpic->tb_training_class_id)
+													  ->setCellValue('C'.$idx, $trainingpic->tb_user_id)
+													  ->setCellValue('D'.$idx, $trainingpic->type);
 						$idx++;
 					}		
 					
@@ -269,13 +268,13 @@ class TrainingClassStudentController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingClassStudent');
+								->setCellValue('A1', 'Tabel TrainingPic');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingclassstudent){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudent->id)
-													  ->setCellValue('B'.$idx, $trainingclassstudent->tb_training_id)
-													  ->setCellValue('C'.$idx, $trainingclassstudent->tb_training_class_id)
-													  ->setCellValue('D'.$idx, $trainingclassstudent->tb_student_id);
+					foreach($dataProvider->getModels() as $trainingpic){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingpic->id)
+													  ->setCellValue('B'.$idx, $trainingpic->tb_training_class_id)
+													  ->setCellValue('C'.$idx, $trainingpic->tb_user_id)
+													  ->setCellValue('D'.$idx, $trainingpic->type);
 						$idx++;
 					}		
 									
@@ -317,13 +316,13 @@ class TrainingClassStudentController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel TrainingClassStudent');
+									->setCellValue('A1', 'Tabel TrainingPic');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $trainingclassstudent){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudent->id)
-														  ->setCellValue('B'.$idx, $trainingclassstudent->tb_training_id)
-														  ->setCellValue('C'.$idx, $trainingclassstudent->tb_training_class_id)
-														  ->setCellValue('D'.$idx, $trainingclassstudent->tb_student_id);
+						foreach($dataProvider->getModels() as $trainingpic){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingpic->id)
+														  ->setCellValue('B'.$idx, $trainingpic->tb_training_class_id)
+														  ->setCellValue('C'.$idx, $trainingpic->tb_user_id)
+														  ->setCellValue('D'.$idx, $trainingpic->type);
 							$idx++;
 						}		
 						
@@ -367,7 +366,7 @@ class TrainingClassStudentController extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudent::find(),
+            'query' => TrainingPic::find(),
         ]);
 		
 		/* 
@@ -393,36 +392,22 @@ class TrainingClassStudentController extends Controller
 						$read_status = true;
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
-						$tb_training_id=  $sheetData[$baseRow]['B'];
-						$tb_training_class_id=  $sheetData[$baseRow]['C'];
-						$tb_student_id=  $sheetData[$baseRow]['D'];
-						$number=  $sheetData[$baseRow]['E'];
-						$headClass=  $sheetData[$baseRow]['F'];
-						$activity=  $sheetData[$baseRow]['G'];
-						$presence=  $sheetData[$baseRow]['H'];
-						$pretest=  $sheetData[$baseRow]['I'];
-						$posttest=  $sheetData[$baseRow]['J'];
-						$test=  $sheetData[$baseRow]['K'];
-						$status=  $sheetData[$baseRow]['L'];
-						//$created=  $sheetData[$baseRow]['M'];
-						//$createdBy=  $sheetData[$baseRow]['N'];
-						//$modified=  $sheetData[$baseRow]['O'];
-						//$modifiedBy=  $sheetData[$baseRow]['P'];
-						//$deleted=  $sheetData[$baseRow]['Q'];
-						//$deletedBy=  $sheetData[$baseRow]['R'];
+						$tb_training_class_id=  $sheetData[$baseRow]['B'];
+						$tb_user_id=  $sheetData[$baseRow]['C'];
+						$type=  $sheetData[$baseRow]['D'];
+						$status=  $sheetData[$baseRow]['E'];
+						//$created=  $sheetData[$baseRow]['F'];
+						//$createdBy=  $sheetData[$baseRow]['G'];
+						//$modified=  $sheetData[$baseRow]['H'];
+						//$modifiedBy=  $sheetData[$baseRow]['I'];
+						//$deleted=  $sheetData[$baseRow]['J'];
+						//$deletedBy=  $sheetData[$baseRow]['K'];
 
-						$model2=new TrainingClassStudent;
+						$model2=new TrainingPic;
 						//$model2->id=  $id;
-						$model2->tb_training_id=  $tb_training_id;
 						$model2->tb_training_class_id=  $tb_training_class_id;
-						$model2->tb_student_id=  $tb_student_id;
-						$model2->number=  $number;
-						$model2->headClass=  $headClass;
-						$model2->activity=  $activity;
-						$model2->presence=  $presence;
-						$model2->pretest=  $pretest;
-						$model2->posttest=  $posttest;
-						$model2->test=  $test;
+						$model2->tb_user_id=  $tb_user_id;
+						$model2->type=  $type;
 						$model2->status=  $status;
 						//$model2->created=  $created;
 						//$model2->createdBy=  $createdBy;

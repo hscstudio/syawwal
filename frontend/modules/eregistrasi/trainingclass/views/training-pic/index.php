@@ -4,9 +4,9 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\bootstrap\Dropdown;
 
-/* @var $searchModel frontend\models\TrainingClassStudentSearch */
+/* @var $searchModel backend\models\TrainingPicSearch */
 
-$this->title = 'Training Class Students';
+$this->title = 'Training Pics';
 $this->params['breadcrumbs'][] = ['label'=>'Trainings','url'=>['../eregistrasi-student/training/index']];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -14,7 +14,7 @@ $controller = $this->context;
 $menus = $controller->module->getMenuItems();
 $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
-<div class="training-class-student-index">
+<div class="training-pic-index">
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -23,78 +23,52 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'kartik\grid\SerialColumn'],
-
-           
+			
 				[
 					'format' => 'html',
-					'attribute' => 'name',
+					'attribute' => 'tb_user_id',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data){
-						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->name);
+					'value' => function($data){
+						return HTML::a(\frontend\models\Employee::findOne(['user_id'=>$data->tb_user_id])->name);
 					},
 				],
             
 				[
-					'format' => 'html',
-					'attribute' => 'nip',
+					'class' => 'kartik\grid\EditableColumn',
+					'attribute' => 'type',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data){
-						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->nip);
-					},
+					'editableOptions'=>['header'=>'Type', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 				],
-            
+				
 				[
 					'format' => 'html',
-					'attribute' => 'telp',
+					'attribute' => 'tb_training_class_id',
 					//'pageSummary' => 'Page Total',
 					'vAlign'=>'middle',
 					'headerOptions'=>['class'=>'kv-sticky-column'],
 					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data){
-						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->phone);
+					'value' => function($data){
+						return HTML::a($data->trainingClass->class);
 					},
 				],
-            
+            								
 				[
-					'format' => 'html',
-					'attribute' => 'email',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data){
-						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->email);
-					},
+					'class' => 'kartik\grid\ActionColumn',
+						'template' => '{view} {update}',
 				],
-            
-				[
-					'format' => 'html',
-					'attribute' => 'unit',
-					//'pageSummary' => 'Page Total',
-					'vAlign'=>'middle',
-					'headerOptions'=>['class'=>'kv-sticky-column'],
-					'contentOptions'=>['class'=>'kv-sticky-column'],
-					'value' => function ($data){
-						return Html::a(\frontend\models\Student::findOne(['id'=>$data->tb_student_id])->unit->shortname);
-					},
-				],
-
-            	[
-				 	'class' => 'kartik\grid\ActionColumn',
-					'template' => '{view}',
-				]
+      
         ],
 		'panel' => [
-			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training Class Student</h3>',
+			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training Pic</h3>',
 			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i>'.\frontend\models\Training::findOne($tb_training_id)->name.'</h3>',
 			//'type'=>'primary',
-			//'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class Student', ['create'], ['class' => 'btn btn-success']),
+			//'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Pic', ['create'], ['class' => 'btn btn-success']),
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
@@ -130,6 +104,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				]); 
 			echo Html::endTag('div');
 		echo Html::endTag('div');
+		
 		
 	echo Html::endTag('div');
 	?>
