@@ -109,6 +109,6 @@ class TrainingClassStudentAttendance extends \yii\db\ActiveRecord
      */
     public function getTrainingSchedule()
     {
-        return $this->hasOne(TrainingClassStudent::className(), ['id' => 'tb_training_schedule_id']);
+        return $this->hasOne(TrainingSchedule::className(), ['id' => 'tb_training_schedule_id']);
     }
 }

@@ -8,9 +8,10 @@ use kartik\widgets\AlertBlock;
 use kartik\widgets\Growl;
 use kartik\grid\GridView;
 use backend\models\TrainingSchedule;
-use backend\models\TrainingClassStudentAttendance;
+use backend\models\TrainingScheduleTrainer;
+use backend\models\tendance;
 
-$this->title = 'Update Training Class Student Attendance: ';
+$this->title = 'Update Trainer Attendance: ';
 $this->params['breadcrumbs'][] = 'Update';
 $controller = $this->context;
 $menus = $controller->module->getMenuItems();
@@ -22,7 +23,7 @@ echo AlertBlock::widget([
 ]);
 ?>
 
-<div class="training-class-student-attendance-update">
+<div class="training-schedule-trainer-attendance-update">
 
     <?php
 
@@ -35,7 +36,7 @@ echo AlertBlock::widget([
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) {
-					return $model->student->name;
+					return $model->trainer->name;
 				}
 			],
 
@@ -45,17 +46,17 @@ echo AlertBlock::widget([
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) {
-					return $model->student->nip;
+					return $model->trainer->nip;
 				}
 			],
 
     		[
-    			'label' => 'Unit',
+    			'label' => 'Organization',
 				'vAlign'=>'middle',
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) {
-					return $model->student->unit->shortname;
+					return $model->trainer->organization;
 				}
 			],
     	];
@@ -68,74 +69,75 @@ echo AlertBlock::widget([
 				'vAlign'=>'middle',
 				'format' => 'raw',
 				'width' => '80px',
-				'headerOptions'=>[
-					'class'=>'kv-sticky-column',
-				],
+				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function($model) use ($currentSchedule, $modelTrainingSchedule) {
-					$modelAttendance = TrainingClassStudentAttendance::find()
+					$modelTrainingScheduleTrainer = TrainingScheduleTrainer::find()
 						->where([
-							'tb_training_class_student_id' => $model->id,
+							'tb_trainer_id' => $model->tb_trainer_id,
 							'tb_training_schedule_id' => $currentSchedule
 						])
 						->one();
-					return Html::input('text', 'hours', $modelAttendance->hours, [
-							'class' => 'form-control',
-							'onchange' => new JsExpression('
-								var maxVal = '.$modelTrainingSchedule->hours.';
-								var currEle = $(this);
-								if ( currEle.val() > maxVal) {
-									$.growl({
-										icon: "fa fa-fw fa-exclamation-circle",
-										title: " <strong>Jamlat error!</strong> ",
-										message: "Jamlat value should not greater than " + maxVal,
-									}, {
-										type: "warning",
-									});
-									currEle.select();
-								}
-								else {
-					    			$.ajax({
-										type: "post",
-										url: "editable",
-										data: {
-											hours: $(this).val(),
-											tb_training_schedule_id: "'.$modelAttendance->tb_training_schedule_id.'",
-											tb_training_class_student_id: "'.$modelAttendance->tb_training_class_student_id.'",
-										},
-										success: function(data) {
-											data = JSON.parse(data);
-											if (data.error != "max") {
-												$.growl({
-													icon: "fa fa-fw fa-check-circle",
-													title: " <strong>Saved!</strong> ",
-													message: "New value is " + data.hours,
-												}, {
-													type: "success",
-												});
+					if ($modelTrainingScheduleTrainer) {
+						return Html::input('text', 'hours', $modelTrainingScheduleTrainer->hours, [
+								'class' => 'form-control',
+								'onchange' => new JsExpression('
+									var maxVal = '.$modelTrainingSchedule->hours.';
+									var currEle = $(this);
+									if ( currEle.val() > maxVal) {
+										$.growl({
+											icon: "fa fa-fw fa-exclamation-circle",
+											title: " <strong>Jamlat error!</strong> ",
+											message: "Jamlat value should not greater than " + maxVal,
+										}, {
+											type: "warning",
+										});
+										currEle.select();
+									}
+									else {
+						    			$.ajax({
+											type: "post",
+											url: "editable",
+											data: {
+												hours: $(this).val(),
+												id: "'.$modelTrainingScheduleTrainer->id.'",
+											},
+											success: function(data) {
+												data = JSON.parse(data);
+												if (data.error != "max") {
+													$.growl({
+														icon: "fa fa-fw fa-check-circle",
+														title: " <strong>Saved!</strong> ",
+														message: "New value is " + data.hours,
+													}, {
+														type: "success",
+													});
+												}
+												else {
+													$.growl({
+														icon: "fa fa-fw fa-exclamation-circle",
+														title: " <strong>Jamlat error!</strong> ",
+														message: "Jamlat value should not greater than " + data.hours,
+													}, {
+														type: "warning",
+													});
+													currEle.select();
+												}
 											}
-											else {
-												currEle.select();
-												$.growl({
-													icon: "fa fa-fw fa-exclamation-circle",
-													title: " <strong>Jamlat error!</strong> ",
-													message: "Jamlat value should not greater than " + data.hours,
-												}, {
-													type: "warning",
-												});
-											}
-										}
-									})
-								}
-					    	')
-						]);
+										})
+									}
+						    	')
+							]);
+					}
+					else {
+						return '';
+					}
 				}
 			];
     	}
 
     	echo GridView::widget([
     			'dataProvider' => $dataProvider,
-    			'filterModel' => $searchModel,
     			'columns' => $columns,
     			'striped' => true,
     			'hover' => true,

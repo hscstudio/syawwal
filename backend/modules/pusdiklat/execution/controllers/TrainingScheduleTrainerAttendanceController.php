@@ -3,18 +3,18 @@
 namespace backend\modules\pusdiklat\execution\controllers;
 
 use Yii;
-use backend\models\TrainingClassStudentAttendance;
-use backend\models\TrainingClassStudentAttendanceSearch;
-use backend\models\TrainingClassStudent;
-use backend\models\TrainingClassStudentSearch;
+use backend\models\TrainingScheduleTrainer;
+use backend\models\TrainingScheduleTrainerAttendance;
+use backend\models\TrainingScheduleTrainerAttendanceSearch;
 use backend\models\TrainingSchedule;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\data\ActiveDataProvider;
 
-class TrainingClassStudentAttendanceController extends Controller
+class TrainingScheduleTrainerAttendanceController extends Controller
 {
 	public $layout = '@hscstudio/heart/views/layouts/column2';
 	 
@@ -30,9 +30,6 @@ class TrainingClassStudentAttendanceController extends Controller
             ],
         ];
     }
-
-
-
 
 
 
@@ -77,52 +74,24 @@ class TrainingClassStudentAttendanceController extends Controller
 		}
 		// dah
 
-		// Input tabel attendance dg schedule_id dan student_id
-		$readyInjectStudent2Attendance = TrainingClassStudent::find()->where(['tb_training_class_id' => $referenceClass])->all();
-
-		for ($i = 0; $i < count($idSchedule); $i++) {						// Ngeloop dulu, siapa tau schedule_id nya lebih dari 1
-			foreach ($readyInjectStudent2Attendance as $row) {						// Dari sini, mulai nginject
-				$injector = TrainingClassStudentAttendance::find()
-					->where([
-						'tb_training_schedule_id' => $idSchedule[$i],
-						'tb_training_class_student_id' => $row->id
-					])
-					->one();
-
-				// Cek uda ada record ga?
-				if ($injector === null) {
-					$injector = new TrainingClassStudentAttendance;
-					$injector->tb_training_schedule_id = $idSchedule[$i];
-					$injector->tb_training_class_student_id = $row->id;
-					$injector->hours = $modelTrainingSchedule[$i]->hours;
-					$injector->status = 1;
-					$injector->save();
-				}
-			}
-		}
-		// dah
-
-		// Bikin data provider student dari class schedule
-		$searchModel = new TrainingClassStudentSearch(); 
-
-		$queryParams['TrainingClassStudentSearch'] = [
-			'tb_training_class_id' => $referenceClass
-		];
-
-		$queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
-
-		$dataProvider = $searchModel->search($queryParams);
+		// Bikin data provider schedule_trainer 
+		$dataProvider = new ActiveDataProvider([
+			'query' => TrainingScheduleTrainer::find()
+			->where([
+				'tb_training_schedule_id' => $idSchedule
+			])
+			->groupBy('tb_trainer_id')
+		]);
 		// dah
 		
         return $this->render('update', [
             'dataProvider' => $dataProvider,
-            'searchModel' => $searchModel,
-            'tb_training_schedule_id' => $tb_training_schedule_id,
             'tb_training_class_id' => $referenceClass,
             'idSchedule' => $idSchedule
         ]);
 
     }
+
 
 
 
@@ -138,39 +107,39 @@ class TrainingClassStudentAttendanceController extends Controller
 		}
 		// dah
 
-		$modelTrainingClassStudentAttendance = TrainingClassStudentAttendance::find()
+
+		$modelTrainingScheduleTrainerAttendance = TrainingScheduleTrainer::find()
 			->where([
-				'tb_training_class_student_id' => Yii::$app->request->post('tb_training_class_student_id'),
-				'tb_training_schedule_id' => Yii::$app->request->post('tb_training_schedule_id'),
+				'id' => Yii::$app->request->post('id'),
 			])
 			->one();
-
+		
 		// Cek jumlah jamlat yg dinput dengan max jamlat dari schedule
 
 		$error = '';
 
-		if ( Yii::$app->request->post('hours') > $modelTrainingClassStudentAttendance->trainingSchedule->hours) {
+		if ( Yii::$app->request->post('hours') > $modelTrainingScheduleTrainerAttendance->trainingSchedule->hours) {
 
 			// Melebihi limit. Simpan ke nilai maxnya
 			$error = 'max';
 			
-			$modelTrainingClassStudentAttendance->hours = $modelTrainingClassStudentAttendance->trainingSchedule->hours;
+			$modelTrainingScheduleTrainerAttendance->hours = $modelTrainingScheduleTrainerAttendance->trainingSchedule->hours;
 
 		}
 		else {
 
-			$modelTrainingClassStudentAttendance->hours = Yii::$app->request->post('hours');
+			$modelTrainingScheduleTrainerAttendance->hours = Yii::$app->request->post('hours');
 
 		}
 
-		if ($modelTrainingClassStudentAttendance->save()) {
+		if ($modelTrainingScheduleTrainerAttendance->save()) {
 
-			echo Json::encode(['hours' => $modelTrainingClassStudentAttendance->hours, 'error' => $error]);
+			echo Json::encode(['hours' => $modelTrainingScheduleTrainerAttendance->hours, 'error' => $error]);
 
 		}
 		else {
 
-			echo Json::encode(['hours' => $modelTrainingClassStudentAttendance->errors['hours'], 'error' => $error]);
+			echo Json::encode(['hours' => $modelTrainingScheduleTrainerAttendance->errors['hours'], 'error' => $error]);
 
 		}
 
@@ -180,7 +149,7 @@ class TrainingClassStudentAttendanceController extends Controller
 
 	public function actionOpenTbs($filetype='docx'){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudentAttendance::find(),
+            'query' => TrainingScheduleTrainerAttendance::find(),
         ]);
 		
 		try {
@@ -194,20 +163,20 @@ class TrainingClassStudentAttendanceController extends Controller
 			// Change with Your template kaka
 			$template = Yii::getAlias('@hscstudio/heart').'/extensions/opentbs-template/'.$templates[$filetype];
 			$OpenTBS->LoadTemplate($template); // Also merge some [onload] automatic fields (depends of the type of document).
-			$OpenTBS->VarRef['modelName']= "TrainingClassStudentAttendance";
+			$OpenTBS->VarRef['modelName']= "TrainingScheduleTrainerAttendance";
 			$data1[]['col0'] = 'id';			
-			$data1[]['col1'] = 'tb_training_schedule_id';			
-			$data1[]['col2'] = 'tb_training_class_student_id';			
-			$data1[]['col3'] = 'hours';			
+			$data1[]['col1'] = 'tb_training_schedule_trainer_id';			
+			$data1[]['col2'] = 'hours';			
+			$data1[]['col3'] = 'reason';			
 	
 			$OpenTBS->MergeBlock('a', $data1);			
 			$data2 = [];
-			foreach($dataProvider->getModels() as $trainingclassstudentattendance){
+			foreach($dataProvider->getModels() as $trainingscheduletrainerattendance){
 				$data2[] = [
-					'col0'=>$trainingclassstudentattendance->id,
-					'col1'=>$trainingclassstudentattendance->tb_training_schedule_id,
-					'col2'=>$trainingclassstudentattendance->tb_training_class_student_id,
-					'col3'=>$trainingclassstudentattendance->hours,
+					'col0'=>$trainingscheduletrainerattendance->id,
+					'col1'=>$trainingscheduletrainerattendance->tb_training_schedule_trainer_id,
+					'col2'=>$trainingscheduletrainerattendance->hours,
+					'col3'=>$trainingscheduletrainerattendance->reason,
 				];
 			}
 			$OpenTBS->MergeBlock('b', $data2);
@@ -226,7 +195,7 @@ class TrainingClassStudentAttendanceController extends Controller
 	public function actionPhpExcel($filetype='xlsx',$template='yes',$engine='')
     {
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudentAttendance::find(),
+            'query' => TrainingScheduleTrainerAttendance::find(),
         ]);
 		
 		try {
@@ -241,13 +210,13 @@ class TrainingClassStudentAttendanceController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingClassStudentAttendance');
+								->setCellValue('A1', 'Tabel TrainingScheduleTrainerAttendance');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingclassstudentattendance){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudentattendance->id)
-													  ->setCellValue('B'.$idx, $trainingclassstudentattendance->tb_training_schedule_id)
-													  ->setCellValue('C'.$idx, $trainingclassstudentattendance->tb_training_class_student_id)
-													  ->setCellValue('D'.$idx, $trainingclassstudentattendance->hours);
+					foreach($dataProvider->getModels() as $trainingscheduletrainerattendance){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingscheduletrainerattendance->id)
+													  ->setCellValue('B'.$idx, $trainingscheduletrainerattendance->tb_training_schedule_trainer_id)
+													  ->setCellValue('C'.$idx, $trainingscheduletrainerattendance->hours)
+													  ->setCellValue('D'.$idx, $trainingscheduletrainerattendance->reason);
 						$idx++;
 					}		
 					
@@ -272,13 +241,13 @@ class TrainingClassStudentAttendanceController extends Controller
 					$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
 					$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValue('A1', 'Tabel TrainingClassStudentAttendance');
+								->setCellValue('A1', 'Tabel TrainingScheduleTrainerAttendance');
 					$idx=2; // line 2
-					foreach($dataProvider->getModels() as $trainingclassstudentattendance){
-						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudentattendance->id)
-													  ->setCellValue('B'.$idx, $trainingclassstudentattendance->tb_training_schedule_id)
-													  ->setCellValue('C'.$idx, $trainingclassstudentattendance->tb_training_class_student_id)
-													  ->setCellValue('D'.$idx, $trainingclassstudentattendance->hours);
+					foreach($dataProvider->getModels() as $trainingscheduletrainerattendance){
+						$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingscheduletrainerattendance->id)
+													  ->setCellValue('B'.$idx, $trainingscheduletrainerattendance->tb_training_schedule_trainer_id)
+													  ->setCellValue('C'.$idx, $trainingscheduletrainerattendance->hours)
+													  ->setCellValue('D'.$idx, $trainingscheduletrainerattendance->reason);
 						$idx++;
 					}		
 									
@@ -320,13 +289,13 @@ class TrainingClassStudentAttendanceController extends Controller
 						
 						$objPHPExcel->getProperties()->setTitle("PHPExcel in Yii2Heart");
 						$objPHPExcel->setActiveSheetIndex(0)
-									->setCellValue('A1', 'Tabel TrainingClassStudentAttendance');
+									->setCellValue('A1', 'Tabel TrainingScheduleTrainerAttendance');
 						$idx=2; // line 2
-						foreach($dataProvider->getModels() as $trainingclassstudentattendance){
-							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingclassstudentattendance->id)
-														  ->setCellValue('B'.$idx, $trainingclassstudentattendance->tb_training_schedule_id)
-														  ->setCellValue('C'.$idx, $trainingclassstudentattendance->tb_training_class_student_id)
-														  ->setCellValue('D'.$idx, $trainingclassstudentattendance->hours);
+						foreach($dataProvider->getModels() as $trainingscheduletrainerattendance){
+							$objPHPExcel->getActiveSheet()->setCellValue('A'.$idx, $trainingscheduletrainerattendance->id)
+														  ->setCellValue('B'.$idx, $trainingscheduletrainerattendance->tb_training_schedule_trainer_id)
+														  ->setCellValue('C'.$idx, $trainingscheduletrainerattendance->hours)
+														  ->setCellValue('D'.$idx, $trainingscheduletrainerattendance->reason);
 							$idx++;
 						}		
 						
@@ -370,7 +339,7 @@ class TrainingClassStudentAttendanceController extends Controller
 	
 	public function actionImport(){
 		$dataProvider = new ActiveDataProvider([
-            'query' => TrainingClassStudentAttendance::find(),
+            'query' => TrainingScheduleTrainerAttendance::find(),
         ]);
 		
 		/* 
@@ -396,22 +365,20 @@ class TrainingClassStudentAttendanceController extends Controller
 						$read_status = true;
 						$abjadX=array();
 						//$id=  $sheetData[$baseRow]['A'];
-						$tb_training_schedule_id=  $sheetData[$baseRow]['B'];
-						$tb_training_class_student_id=  $sheetData[$baseRow]['C'];
-						$hours=  $sheetData[$baseRow]['D'];
-						$reason=  $sheetData[$baseRow]['E'];
-						$status=  $sheetData[$baseRow]['F'];
-						//$created=  $sheetData[$baseRow]['G'];
-						//$createdBy=  $sheetData[$baseRow]['H'];
-						//$modified=  $sheetData[$baseRow]['I'];
-						//$modifiedBy=  $sheetData[$baseRow]['J'];
-						//$deleted=  $sheetData[$baseRow]['K'];
-						//$deletedBy=  $sheetData[$baseRow]['L'];
+						$tb_training_schedule_trainer_id=  $sheetData[$baseRow]['B'];
+						$hours=  $sheetData[$baseRow]['C'];
+						$reason=  $sheetData[$baseRow]['D'];
+						$status=  $sheetData[$baseRow]['E'];
+						//$created=  $sheetData[$baseRow]['F'];
+						//$createdBy=  $sheetData[$baseRow]['G'];
+						//$modified=  $sheetData[$baseRow]['H'];
+						//$modifiedBy=  $sheetData[$baseRow]['I'];
+						//$deleted=  $sheetData[$baseRow]['J'];
+						//$deletedBy=  $sheetData[$baseRow]['K'];
 
-						$model2=new TrainingClassStudentAttendance;
+						$model2=new TrainingScheduleTrainerAttendance;
 						//$model2->id=  $id;
-						$model2->tb_training_schedule_id=  $tb_training_schedule_id;
-						$model2->tb_training_class_student_id=  $tb_training_class_student_id;
+						$model2->tb_training_schedule_trainer_id=  $tb_training_schedule_trainer_id;
 						$model2->hours=  $hours;
 						$model2->reason=  $reason;
 						$model2->status=  $status;
