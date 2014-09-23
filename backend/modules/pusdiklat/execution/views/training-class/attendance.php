@@ -165,7 +165,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					
 				}
 			],
-			[
+			/*[
 				'label' => 'PIC/Narasumber',
 				'vAlign'=>'middle',
 				'width'=>'200px;',
@@ -215,7 +215,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					return $out;
 
 				}
-			],
+			],*/
 
 			[
 				'format' => 'raw',

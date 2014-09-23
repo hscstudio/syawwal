@@ -465,7 +465,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				}
 			],
 			[
-				'label' => 'R',
+				'label' => 'Room',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
 				'width'=>'10px;',
@@ -499,7 +499,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					}
 				}
 			],
-			[
+			/*[
 				'label' => 'S',
 				'vAlign'=>'middle',
 				'hAlign'=>'center',
@@ -527,7 +527,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 						]);
 					}
 				}
-			],
+			],*/
 			[
 				'format' => 'raw',
 				'label' => 'Action',
