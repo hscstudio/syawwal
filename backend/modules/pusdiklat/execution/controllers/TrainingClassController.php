@@ -767,6 +767,12 @@ class TrainingClassController extends Controller
 					$model2->tb_trainer_id = $tb_trainer_id;
 					$model2->status = 1;
 					if($model2->save()) {
+
+						// Nyimpen nilai hourse default untuk pertama kali
+						$model2->hours = $model2->trainingSchedule->hours;
+						$model2->save();
+						// dah
+
 						$insert++;
 					}
 					else{

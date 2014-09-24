@@ -35,7 +35,7 @@ echo AlertBlock::widget([
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) {
-					return $model->student->name;
+					return $model->trainingStudent->student->name;
 				}
 			],
 
@@ -45,7 +45,7 @@ echo AlertBlock::widget([
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) {
-					return $model->student->nip;
+					return $model->trainingStudent->student->nip;
 				}
 			],
 
@@ -55,7 +55,7 @@ echo AlertBlock::widget([
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) {
-					return $model->student->unit->shortname;
+					return $model->trainingStudent->student->unit->shortname;
 				}
 			],
     	];

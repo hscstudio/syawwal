@@ -69,14 +69,14 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'attribute' => 'tb_student_id',
 				'label' => 'NAMA',
 				'value' => function ($data) {
-					return $data->student->name;
+					return $data->trainingStudent->student->name;
 				}
 			],
 			[
 				'label' => 'NIP',
 				'width' => '200px',
 				'value' => function ($data) {
-					return $data->student->nip;
+					return $data->trainingStudent->student->nip;
 				}
 			],
             /*
