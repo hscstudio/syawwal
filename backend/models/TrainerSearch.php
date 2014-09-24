@@ -18,8 +18,8 @@ class TrainerSearch extends Trainer
     public function rules()
     {
         return [
-            [['id', 'ref_graduate_id', 'ref_rank_class_id', 'ref_religion_id', 'gender', 'married', 'widyaiswara', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['idn', 'name', 'nickName', 'frontTitle', 'backTitle', 'nip', 'born', 'birthDay', 'phone', 'email', 'address', 'photo', 'blood', 'position', 'organization', 'education', 'educationHistory', 'trainingHistory', 'experience', 'competency', 'npwp', 'bankAccount', 'officePhone', 'officeFax', 'officeEmail', 'officeAddress', 'document1', 'document2', 'created', 'modified', 'deleted'], 'safe'],
+            [['id', 'ref_graduate_id', 'ref_rank_class_id', 'ref_religion_id', 'gender', 'married', 'widyaiswara', 'position', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['idn', 'name', 'nickName', 'frontTitle', 'backTitle', 'nip', 'born', 'birthDay', 'phone', 'email', 'address', 'photo', 'blood', 'positionDesc', 'organization', 'education', 'educationHistory', 'trainingHistory', 'experience', 'competency', 'npwp', 'bankAccount', 'officePhone', 'officeFax', 'officeEmail', 'officeAddress', 'document1', 'document2', 'created', 'modified', 'deleted'], 'safe'],
         ];
     }
 
@@ -58,6 +58,7 @@ class TrainerSearch extends Trainer
             'ref_religion_id' => $this->ref_religion_id,
             'birthDay' => $this->birthDay,
             'gender' => $this->gender,
+			'position' => $this->position,
             'married' => $this->married,
             'widyaiswara' => $this->widyaiswara,
             'status' => $this->status,
@@ -94,7 +95,8 @@ class TrainerSearch extends Trainer
             ->andFilterWhere(['like', 'officeFax', $this->officeFax])
             ->andFilterWhere(['like', 'officeEmail', $this->officeEmail])
             ->andFilterWhere(['like', 'officeAddress', $this->officeAddress])
-            ->andFilterWhere(['like', 'document1', $this->document1])
+			->andFilterWhere(['like', 'positionDesc', $this->positionDesc])
+            ->andFilterWhere(['like', 'document1', $this->document1])			
             ->andFilterWhere(['like', 'document2', $this->document2]);
 
         return $dataProvider;

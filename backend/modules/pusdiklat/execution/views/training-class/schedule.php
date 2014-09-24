@@ -276,9 +276,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			],
 		])->label(false); 
 		$this->registerCss('#s2id_trainingscheduleextsearch-tb_activity_room_id { width: 275px !important; }');
-		$this->registerJs('
+		if(!empty($firstAR)){
+			$this->registerJs('
 				$("#trainingscheduleextsearch-tb_activity_room_id").select2().select2("val", '.$firstAR.');
 			');
+		}
 		?>
 		</td>
 		<td>
@@ -419,7 +421,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'data-placement'=>"top",
 						]);
 						
-						$trainingScheduleTrainer = \backend\models\trainingScheduleTrainer::find()
+						$trainingScheduleTrainer = \backend\models\TrainingScheduleTrainer::find()
 							->where([
 								'tb_training_schedule_id'=>$model->id,
 								'status'=>1,

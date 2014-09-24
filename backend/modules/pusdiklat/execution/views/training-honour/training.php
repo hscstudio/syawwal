@@ -142,11 +142,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								}
 								else if($model->ref_trainer_type_id==2){ // PENCERAMAH
 									// CHECK ESELON
-									if($model->trainer->eselon==1){
+									if($model->trainer->position==1){
 										$info = "TARIF PENCERAMAH ESELON 1 INTERNAL BPPK";
 										$tarif = $sbus['honor_penceramah_pns_internal_1'];
 									}
-									else if($model->trainer->eselon==2){
+									else if($model->trainer->position==2){
 										$info = "TARIF PENCERAMAH ESELON 2 INTERNAL BPPK";
 										$tarif = $sbus['honor_penceramah_pns_internal_2'];
 									}
@@ -168,11 +168,11 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								}
 								else if($model->ref_trainer_type_id==2){ // PENCERAMAH
 									// CHECK ESELON
-									if($model->trainer->eselon==1){
+									if($model->trainer->position==1){
 										$info = "TARIF PENCERAMAH ESELON 1 EKSTERNAL BPPK";
 										$tarif = $sbus['honor_penceramah_pns_eksternal_1'];
 									}
-									else if($model->trainer->eselon==2){
+									else if($model->trainer->position==2){
 										$info = "TARIF PENCERAMAH ESELON 2 EKSTERNAL BPPK";
 										$tarif = $sbus['honor_penceramah_pns_eksternal_2'];
 									}
@@ -245,10 +245,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								}
 								else if($model->ref_trainer_type_id==2){ // PENCERAMAH
 									// CHECK ESELON
-									if($model->trainer->eselon==1){
+									if($model->trainer->position==1){
 										$tarif = $sbus['honor_penceramah_pns_internal_1'];
 									}
-									else if($model->trainer->eselon==2){
+									else if($model->trainer->position==2){
 										$tarif = $sbus['honor_penceramah_pns_internal_2'];
 									}
 									else{
@@ -266,10 +266,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								}
 								else if($model->ref_trainer_type_id==2){ // PENCERAMAH
 									// CHECK ESELON
-									if($model->trainer->eselon==1){
+									if($model->trainer->position==1){
 										$tarif = $sbus['honor_penceramah_pns_eksternal_1'];
 									}
-									else if($model->trainer->eselon==2){
+									else if($model->trainer->position==2){
 										$tarif = $sbus['honor_penceramah_pns_eksternal_2'];
 									}
 									else{
@@ -362,10 +362,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								}
 								else if($model->ref_trainer_type_id==2){ // PENCERAMAH
 									// CHECK ESELON
-									if($model->trainer->eselon==1){
+									if($model->trainer->position==1){
 										$tarif = $sbus['honor_penceramah_pns_internal_1'];
 									}
-									else if($model->trainer->eselon==2){
+									else if($model->trainer->position==2){
 										$tarif = $sbus['honor_penceramah_pns_internal_2'];
 									}
 									else{
@@ -383,10 +383,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								}
 								else if($model->ref_trainer_type_id==2){ // PENCERAMAH
 									// CHECK ESELON
-									if($model->trainer->eselon==1){
+									if($model->trainer->position==1){
 										$tarif = $sbus['honor_penceramah_pns_eksternal_1'];
 									}
-									else if($model->trainer->eselon==2){
+									else if($model->trainer->position==2){
 										$tarif = $sbus['honor_penceramah_pns_eksternal_2'];
 									}
 									else{

@@ -33,7 +33,8 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $married
  * @property string $photo
  * @property string $blood
- * @property string $position
+ * @property integer $position
+ * @property string $positionDesc
  * @property string $education
  * @property string $eselon2
  * @property string $eselon3
@@ -53,7 +54,6 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $modifiedBy
  * @property string $deleted
  * @property integer $deletedBy
- *
  * @property Graduate $refGraduate
  * @property RankClass $refRankClass
  * @property Religion $refReligion
@@ -63,7 +63,9 @@ use yii\behaviors\BlameableBehavior;
  */
 class Student extends \yii\db\ActiveRecord
 {
-    /**
+    
+	public $passwordNew;
+	/**
      * @inheritdoc
      */
     public static function tableName()
@@ -102,7 +104,7 @@ class Student extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ref_religion_id', 'ref_graduate_id', 'ref_rank_class_id', 'ref_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['position', 'ref_religion_id', 'ref_graduate_id', 'ref_rank_class_id', 'ref_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['name'], 'required'],
             [['birthDay', 'tmtSKPangkat', 'created', 'modified', 'deleted'], 'safe'],
             [['satker'], 'string'],
@@ -112,7 +114,7 @@ class Student extends \yii\db\ActiveRecord
             [['password_hash'], 'string', 'max' => 60],
             [['auth_key'], 'string', 'max' => 32],
             [['email', 'eselon2', 'eselon3', 'eselon4', 'officeEmail'], 'string', 'max' => 100],
-            [['address', 'photo', 'position', 'education', 'officeAddress', 'noSKPangkat', 'fileSKPangkat'], 'string', 'max' => 255],
+            [['address', 'photo', 'positionDesc', 'education', 'officeAddress', 'noSKPangkat', 'fileSKPangkat'], 'string', 'max' => 255],
             [['blood'], 'string', 'max' => 10]
         ];
     }
@@ -145,6 +147,7 @@ class Student extends \yii\db\ActiveRecord
             'photo' => 'Photo',
             'blood' => 'Blood',
             'position' => 'Position',
+			'positionDesc' => 'Position Description',
             'education' => 'Education',
             'eselon2' => 'Eselon2',
             'eselon3' => 'Eselon3',
@@ -194,14 +197,16 @@ class Student extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Unit::className(), ['id' => 'ref_unit_id']);
     }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainingClassStudents()
-    {
-        return $this->hasMany(TrainingClassStudent::className(), ['tb_student_id' => 'id']);
-    }
-	    /**
+	
+	/**
+	* @return \yii\db\ActiveQuery
+	*/
+	public function getTrainingStudents()
+	{
+	   return $this->hasMany(TrainingStudent::className(), ['tb_student_id' => 'id']);
+	}
+	
+	/**
      * @return \yii\db\ActiveQuery
      */
     public function getTrainingClassSubjectTrainerEvaluations()

@@ -35,7 +35,8 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $married
  * @property string $photo
  * @property string $blood
- * @property string $position
+ * @property integer $position
+ * @property string $positionDesc
  * @property string $education
  * @property string $officePhone
  * @property string $officeFax
@@ -110,7 +111,7 @@ class Employee extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ref_satker_id', 'ref_unit_id', 'ref_religion_id', 'ref_rank_class_id', 'ref_graduate_id', 'ref_sta_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'user_id'], 'integer'],
+            [['ref_satker_id', 'ref_unit_id', 'ref_religion_id', 'ref_rank_class_id', 'ref_graduate_id', 'ref_sta_unit_id', 'position', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'user_id'], 'integer'],
             [['name', 'user_id'], 'required'],
             [['birthDay', 'created', 'modified', 'deleted','ref_sub_satker','ref_sub_satker_2'], 'safe'],
             [['bio'], 'string'],
@@ -118,7 +119,7 @@ class Employee extends \yii\db\ActiveRecord
             [['frontTitle', 'backTitle'], 'string', 'max' => 20],
             [['nip'], 'string', 'max' => 18],
             [['email', 'officeEmail'], 'string', 'max' => 100],
-            [['address', 'photo', 'position', 'education', 'officeAddress', 'document1', 'document2', 'public_email', 'gravatar_email', 'location', 'website'], 'string', 'max' => 255],
+            [['address', 'photo', 'positionDesc', 'education', 'officeAddress', 'document1', 'document2', 'public_email', 'gravatar_email', 'location', 'website'], 'string', 'max' => 255],
             [['blood'], 'string', 'max' => 10],
             [['gravatar_id'], 'string', 'max' => 32]
         ];
@@ -152,6 +153,7 @@ class Employee extends \yii\db\ActiveRecord
             'photo' => 'Photo',
             'blood' => 'Blood',
             'position' => 'Position',
+			'positionDesc' => 'Position Description',
             'education' => 'Education',
             'officePhone' => 'Office Phone',
             'officeFax' => 'Office Fax',

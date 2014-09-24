@@ -34,14 +34,73 @@ class Training2Controller extends Controller
      * Lists all Training models.
      * @return mixed
      */
-    public function actionIndex()
+     public function actionIndex($year='',$status='all')
     {
+		if(empty($year)) $year = date('Y');
+		$ref_satker_id = (int)Yii::$app->user->identity->employee->ref_satker_id;
+		
         $searchModel = new TrainingSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+		$queryParams = Yii::$app->request->getQueryParams();
+		if($status!='all'){
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+			else{
+				$queryParams['TrainingSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+					'status'=>$status,
+				];
+			}
+		}
+		else{
+			if($year!='all'){
+				$queryParams['TrainingSearch']=[
+					'year' => $year,
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+			else{
+				$queryParams['TrainerSearch']=[
+					'ref_satker_id'=>$ref_satker_id,
+				];
+			}
+		}
+		$queryParams=yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+		$dataProvider = $searchModel->search($queryParams);
+		$dataProvider->getSort()->defaultOrder = ['start'=>SORT_ASC,'finish'=>SORT_ASC];
+		
+		// GET ALL TRAINING YEAR
+		$year_training = yii\helpers\ArrayHelper::map(Training::find()
+			->select(['year'=>'YEAR(start)','start','finish'])
+			->orderBy(['year'=>'DESC'])
+			->groupBy(['year'])
+			->currentSatker()
+			->active()
+			->asArray()
+			->all(), 'year', 'year');
+		$year_training['all']='All'	;
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'year' => $year,
+			'status' => $status,
+			'year_training' => $year_training,
+        ]);
+    }
+	
+	/**
+     * Displays a single Training model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDashboard($id)
+    {
+        return $this->render('dashboard', [
+            'model' => $this->findModel($id),
         ]);
     }
 
@@ -52,9 +111,17 @@ class Training2Controller extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+		$model = $this->findModel($id);
+        if (Yii::$app->request->isAjax){	
+			return $this->renderAjax('view', [
+				'model' => $model,
+			]);
+		}
+		else{
+			return $this->render('view', [
+				'model' => $model,
+			]);
+		}
     }
 
     /**

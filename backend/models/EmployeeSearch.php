@@ -18,8 +18,8 @@ class EmployeeSearch extends Employee
     public function rules()
     {
         return [
-            [['id', 'ref_satker_id', 'ref_unit_id', 'ref_religion_id', 'ref_rank_class_id', 'ref_graduate_id', 'ref_sta_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'user_id'], 'integer'],
-            [['name', 'nickName', 'frontTitle', 'backTitle', 'nip', 'born', 'birthDay', 'phone', 'email', 'address', 'photo', 'blood', 'position', 'education', 'officePhone', 'officeFax', 'officeEmail', 'officeAddress', 'document1', 'document2', 'created', 'modified', 'deleted', 'public_email', 'gravatar_email', 'gravatar_id', 'location', 'bio', 'website'], 'safe'],
+            [['id', 'ref_satker_id', 'ref_unit_id', 'ref_religion_id', 'ref_rank_class_id', 'ref_graduate_id', 'ref_sta_unit_id', 'gender', 'married', 'status', 'createdBy', 'modifiedBy', 'deletedBy', 'user_id', 'position'], 'integer'],
+            [['name', 'nickName', 'frontTitle', 'backTitle', 'nip', 'born', 'birthDay', 'phone', 'email', 'address', 'photo', 'blood', 'positionDesc', 'education', 'officePhone', 'officeFax', 'officeEmail', 'officeAddress', 'document1', 'document2', 'created', 'modified', 'deleted', 'public_email', 'gravatar_email', 'gravatar_id', 'location', 'bio', 'website'], 'safe'],
         ];
     }
 
@@ -61,6 +61,7 @@ class EmployeeSearch extends Employee
             'ref_sta_unit_id' => $this->ref_sta_unit_id,
             'birthDay' => $this->birthDay,
             'gender' => $this->gender,
+			'position' => $this->position,
             'married' => $this->married,
             'status' => $this->status,
             'created' => $this->created,
@@ -83,7 +84,7 @@ class EmployeeSearch extends Employee
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'photo', $this->photo])
             ->andFilterWhere(['like', 'blood', $this->blood])
-            ->andFilterWhere(['like', 'position', $this->position])
+            ->andFilterWhere(['like', 'positionDesc', $this->positionDesc])
             ->andFilterWhere(['like', 'education', $this->education])
             ->andFilterWhere(['like', 'officePhone', $this->officePhone])
             ->andFilterWhere(['like', 'officeFax', $this->officeFax])

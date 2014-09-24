@@ -14,7 +14,7 @@ use yii\behaviors\BlameableBehavior;
 
  * @property integer $id
  * @property integer $tb_training_class_id
- * @property integer $tb_student_id
+ * @property integer $tb_training_student_id
  * @property string $number
  * @property integer $headClass
  * @property string $activity
@@ -77,8 +77,8 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tb_training_class_id', 'tb_student_id'], 'required'],
-            [['tb_training_class_id', 'tb_student_id', 'headClass', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['tb_training_class_id', 'tb_training_student_id'], 'required'],
+            [['tb_training_class_id', 'tb_training_student_id', 'headClass', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['activity', 'presence', 'pretest', 'posttest', 'test'], 'number'],
             [['created', 'modified', 'deleted'], 'safe'],
             [['number'], 'string', 'max' => 255]
@@ -93,7 +93,7 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'tb_training_class_id' => 'Tb Training Class ID',
-            'tb_student_id' => 'Tb Student ID',
+            'tb_training_student_id' => 'Tb Training Student ID',
             'number' => 'Number',
             'headClass' => 'Head Class',
             'activity' => 'Activity',
@@ -113,16 +113,30 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTrainingClass()
+    public function getTraining()
+    {
+        return $this->hasOne(Training::className(), ['id' => 'tb_training_id']);
+    }
+	
+	public function getTrainingClass()
     {
         return $this->hasOne(TrainingClassSubject::className(), ['id' => 'tb_training_class_id']);
     }
+	
+	/**
+	* @return \yii\db\ActiveQuery
+	*/
+	public function getTrainingClassStudentCertificate()
+	{
+		return $this->hasOne(TrainingClassStudentCertificate::className(), ['tb_training_class_student_id' => 'id']);
+	}
+
 	    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStudent()
+    public function getTrainingStudent()
     {
-        return $this->hasOne(Student::className(), ['id' => 'tb_student_id']);
+        return $this->hasOne(TrainingStudent::className(), ['id' => 'tb_training_student_id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery
@@ -130,13 +144,6 @@ class TrainingClassStudent extends \yii\db\ActiveRecord
     public function getTrainingClassStudentAttendances()
     {
         return $this->hasMany(TrainingClassStudentAttendance::className(), ['tb_training_schedule_id' => 'id']);
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainingClassStudentCertificates()
-    {
-        return $this->hasMany(TrainingClassStudentCertificate::className(), ['tb_training_class_student_id' => 'id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery

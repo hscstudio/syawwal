@@ -18,7 +18,7 @@ class TrainingClassStudentSearch extends TrainingClassStudent
     public function rules()
     {
         return [
-            [['id', 'tb_training_class_id', 'tb_student_id', 'headClass', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['id', 'tb_training_class_id', 'tb_training_student_id', 'headClass', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['number', 'created', 'modified', 'deleted'], 'safe'],
             [['activity', 'presence', 'pretest', 'posttest', 'test'], 'number'],
         ];
@@ -55,7 +55,7 @@ class TrainingClassStudentSearch extends TrainingClassStudent
         $query->andFilterWhere([
             'id' => $this->id,
             'tb_training_class_id' => $this->tb_training_class_id,
-            'tb_student_id' => $this->tb_student_id,
+            'tb_training_student_id' => $this->tb_training_student_id,
             'headClass' => $this->headClass,
             'activity' => $this->activity,
             'presence' => $this->presence,

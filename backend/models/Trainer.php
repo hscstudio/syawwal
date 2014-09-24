@@ -31,7 +31,8 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $married
  * @property string $photo
  * @property string $blood
- * @property string $position
+ * @property integer $position
+ * @property string $positionDesc
  * @property string $eselon
  * @property string $organization
  * @property integer $widyaiswara
@@ -105,9 +106,9 @@ class Trainer extends \yii\db\ActiveRecord
     {
         return [
             [['idn', 'name'], 'required'],
-            [['ref_graduate_id', 'ref_rank_class_id', 'ref_religion_id', 'eselon', 'gender', 'married', 'widyaiswara', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
+            [['ref_graduate_id', 'position', 'ref_rank_class_id', 'ref_religion_id', 'eselon', 'gender', 'married', 'widyaiswara', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
             [['birthDay', 'created', 'modified', 'deleted'], 'safe'],
-            [['idn', 'address', 'photo', 'position', 'education', 'competency', 'bankAccount', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
+            [['idn', 'address', 'photo', 'positionDesc', 'education', 'competency', 'bankAccount', 'officeAddress', 'document1', 'document2'], 'string', 'max' => 255],
             [['name', 'nickName', 'born', 'phone', 'npwp', 'officePhone', 'officeFax'], 'string', 'max' => 50],
             [['frontTitle', 'backTitle'], 'string', 'max' => 20],
             [['nip'], 'string', 'max' => 18],
@@ -145,6 +146,7 @@ class Trainer extends \yii\db\ActiveRecord
             'photo' => 'Photo',
             'blood' => 'Blood',
             'position' => 'Position',
+			'positionDesc' => 'Position Description',
 			'eselon' => 'Eselon',
             'organization' => 'Organization',
             'widyaiswara' => 'Widyaiswara',
