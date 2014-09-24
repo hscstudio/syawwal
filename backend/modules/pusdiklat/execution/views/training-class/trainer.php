@@ -82,7 +82,7 @@ use yii\helpers\ArrayHelper;
 		echo $idx++;
 		echo "</td>";
 		echo "<td>";
-		echo $tstr->trainer->name;
+		echo $tstr->trainer->name.' ('.$tstr->trainer->organization.' - '.$tstr->trainer->phone.')';
 		$startSearch = date('Y-m-d H:i',strtotime($trainingSchedule->startTime) + 0); // [08:00 - 09:00, 09:00 - 10:00] not excact between :)
 		$finishSearch = date('Y-m-d H:i',strtotime($trainingSchedule->finishTime) - 0);
 		//FIND SCHEDULE YANG BERJALAN DALAM WAKTU SAMA

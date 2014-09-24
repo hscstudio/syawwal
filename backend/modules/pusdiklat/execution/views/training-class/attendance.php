@@ -273,48 +273,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				Html::a('<i class="fa fa-fw fa-arrow-left"></i> Back To Training Class', [
 					'index',
 					'tb_training_id'=>$trainingClass->tb_training_id
-				], ['class' => 'btn btn-warning'])
-				/*'<div class="pull-right" style="margin-right:5px; width:150px;">'.
-				$form->field($model, 'scheduleDate')->widget(DateControl::classname(), [
-					'type'=>DateControl::FORMAT_DATE,
-					'options'=>[  // this will now become the widget options for DatePicker
-						'pluginOptions'=>[
-							'autoclose'=>true,
-							'startDate'=>date('d-m-Y',strtotime($trainingClass->training->start)),
-							'endDate'=>date('d-m-Y',strtotime($trainingClass->training->finish)),
-							
-						],
-						'pluginEvents' => [
-							//"show" => "function(e) {  # `e` here contains the extra attributes }",
-							//"hide" => "function(e) {  # `e` here contains the extra attributes }",
-							//"clearDate" => "function(e) {  # `e` here contains the extra attributes }",
-							"changeDate" => "function(e) { 
-								date = new Date(e.date);
-								year = date.getFullYear(); 
-								month = date.getMonth()+1; 
-								day = date.getDate(); 
-								var start = year+'-'+month+'-'+day;
-								$.pjax.reload({
-									url: '".\yii\helpers\Url::to(['schedule','tb_training_class_id'=>$trainingClass->id])."&start='+start,
-									container: '#pjax-gridview-schedule', 
-									timeout: 3000,
-								});	
-								
-								var startF = $('#trainingscheduleextsearch-scheduledate-disp').val()
-								$('#trainingscheduleextsearch-startdate').val(start)
-								$('#trainingscheduleextsearch-startdate-disp').val(startF)
-								$('#trainingscheduleextsearch-starttime-disp').val('08:00')
-								
-							}",
-							//"changeYear" => "function(e) {  # `e` here contains the extra attributes }",
-							//"changeMonth" => "function(e) {  # `e` here contains the extra attributes }",
-						],
-						// datepicker plugin options
-						'convertFormat'=>true, // autoconvert PHP date to JS date format,
-						
-					]
-				])->label(false).
-				'</div>'*/,
+				], ['class' => 'btn btn-warning']).
+				Html::a('<i class="fa fa-fw fa-print"></i> Print Form Attendance', 'print', [
+						'class' => 'btn btn-default',
+						'tb_training_class_id' => $trainingClass->id
+					])
+				,
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['schedule','tb_training_class_id'=>$trainingClass->id], ['class' => 'btn btn-info']),
 			'showFooter'=>false
 		],
