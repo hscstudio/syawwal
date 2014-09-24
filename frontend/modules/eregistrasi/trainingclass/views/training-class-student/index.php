@@ -92,7 +92,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
         ],
 		'panel' => [
 			//'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i> Training Class Student</h3>',
-			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i></h3>',
+			'heading'=>'<h3 class="panel-title"><i class="fa fa-fw fa-globe"></i>'.\frontend\models\Training::findOne($tb_training_id)->name.'</h3>',
 			//'type'=>'primary',
 			//'before'=>Html::a('<i class="fa fa-fw fa-plus"></i> Create Training Class Student', ['create'], ['class' => 'btn btn-success']),
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['index'], ['class' => 'btn btn-info']),

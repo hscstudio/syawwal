@@ -128,7 +128,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) use ($sbu){	
-					return '<input type="text" size="1" name="frek[]" value="1" onchange="var tarif = $(\'#tarif_'.$model->id.'\').html().replace(\',\',\'\');var frek=$(this).val(); var total=tarif*frek;$(\'#total_'.$model->id.'\').html(total.toLocaleString());">';
+					return '<input type="text" size="1" name="frek[]" value="1" onchange="
+					var tarif = $(\'#tarif_'.$model->id.'\').html().replace(\',\',\'\');
+					var frek=$(this).val(); 
+					var total=tarif*frek;$(\'#total_'.$model->id.'\').html(total.toLocaleString());">';
 				}
 			],
 			/*[

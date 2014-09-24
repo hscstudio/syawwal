@@ -1,13 +1,13 @@
 <?php
 
 use yii\helpers\Html;
-use kartik\grid\GridView;
+use yii\helpers\Url;
+use yii\helpers\Inflector;
 use yii\bootstrap\Dropdown;
+use kartik\grid\GridView;
 use hscstudio\heart\widgets\Box;
 
-/* @var $searchModel backend\models\TrainingClassSearch */
-
-$this->title = 'Classes : '.\yii\helpers\Inflector::camel2words($training->name);
+$this->title = 'Classes : '.Inflector::camel2words($training->name);
 $this->params['breadcrumbs'][] = ['label' => 'Trainings', 'url' => \yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training/index'])];
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -17,7 +17,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 ?>
 <div class="training-class-index">
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 	<div class="panel" id="panel-heading-dashboard" style="display:none;" >
 		<a href="<?= yii\helpers\Url::to(["training/dashboard","id"=>$training->id]) ?>" style="color:#666;padding:5px;display:block;text-align:center;background:#ddd;border-bottom: 1px solid #ddd;border-radius:4px 4px 0 0">
 			<span class="badge"><i class="fa fa-arrow-circle-left"></i> Back To Dashboard</span>
@@ -66,6 +65,22 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'editableOptions'=>['header'=>'Class', 'size'=>'md','formOptions'=>['action'=>\yii\helpers\Url::to('editable')]]
 			],
+
+			[
+				'format' => 'raw',
+				'label' => 'Attendance',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'80px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($data) {
+					return Html::a('<i class="fa fa-fw fa-tasks"></i>', Url::to(['attendance', 'tb_training_class_id' => $data->id]), [
+							'class' => 'btn btn-default btn-xs'
+						]);
+				}
+			],
+
 			[
 				'format' => 'raw',
 				'label' => 'Subject',

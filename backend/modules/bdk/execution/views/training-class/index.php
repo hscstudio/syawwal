@@ -69,9 +69,27 @@ $buttonHeaderBefore .= '</div>';
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function($data) {
-					return Html::a($data->getTrainingClassSubjects()->count(), Url::to(['training-class-subject/index', 'tb_training_class_id' => $data->id]), [
-							'class' => 'label label-default',
+					return Html::a('<strong>'.$data->getTrainingClassSubjects()->count().'</strong>', Url::to(['training-class-subject/index', 'tb_training_class_id' => $data->id]), [
+							'class' => 'btn btn-info btn-xs',
 							'data-pjax' => "0"
+						]);
+				}
+			],
+
+			[
+				'format' => 'raw',
+				'label' => 'Schedule',
+				'vAlign'=>'middle',
+				'hAlign'=>'center',
+				'width'=>'80px',
+				'headerOptions'=>['class'=>'kv-sticky-column'],
+				'contentOptions'=>['class'=>'kv-sticky-column'],
+				'value' => function ($model){
+					return Html::a('<strong>SET</strong>',
+						Url::to(['schedule','tb_training_class_id'=>$model->id]),
+						[
+							'class'=>'btn btn-default btn-xs',
+							'data-pjax' => '0'
 						]);
 				}
 			],

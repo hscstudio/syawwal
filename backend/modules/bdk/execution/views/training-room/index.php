@@ -199,6 +199,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 								'label' => 'Status',
 								'vAlign'=>'middle',
 								'hAlign' => 'center',
+								'width' => '80px',
 								'headerOptions'=>['class'=>'kv-sticky-column'],
 								'contentOptions'=>['class'=>'kv-sticky-column'],
 								'value' => function ($model){

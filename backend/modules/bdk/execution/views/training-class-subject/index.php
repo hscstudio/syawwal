@@ -78,6 +78,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				}
 			],
             [
+            	'class' => '\kartik\grid\BooleanColumn',
+		        'trueLabel' => 'Yes', 
+		        'falseLabel' => 'No',
+		        'width' => '80px',
 				'label'=>'Test',
 				'hAlign'=>'center',
 				'value' => function ($data) {
@@ -97,6 +101,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			[
 				'label'=>'Sort',
 				'hAlign'=>'center',
+				'width' => '80px',
 				'value' => function ($data) {
 					$program = $data->trainingClass->training->tb_program_id;
 					$program_revision = $data->trainingClass->training->tb_program_revision;
@@ -114,6 +119,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 			[
 				'label'=>'Trainer',
 				'format'=>'raw',
+				'width' => '80px',
 				'hAlign'=>'center',
 				'value' => function ($data) {
 					$trainerCount=\backend\models\TrainingClassSubjectTrainer::find()
@@ -122,10 +128,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 							'status'=>1
 						])
 						->count();
-					return Html::a($trainerCount,
+					return Html::a('<strong>'.$trainerCount.'</strong>',
 						\yii\helpers\Url::to(['/'.$this->context->module->uniqueId.'/training-class-subject-trainer/index',
 						'tb_training_class_subject_id'=>$data->id]),
-						['class'=>'label label-default']);
+						['class'=>'btn btn-info btn-xs']);
 				}
 			],
 			[

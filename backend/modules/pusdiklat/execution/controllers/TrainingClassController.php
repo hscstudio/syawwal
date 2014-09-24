@@ -5,10 +5,12 @@ namespace backend\modules\pusdiklat\execution\controllers;
 use Yii;
 use backend\models\TrainingClass;
 use backend\models\TrainingClassSearch;
+use backend\models\TrainingScheduleSearch;
 use backend\models\Training;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TrainingClassController implements the CRUD actions for TrainingClass model.
@@ -813,6 +815,58 @@ class TrainingClassController extends Controller
 				die('|0|There are some error'.print_r($model->errors));
 			}
 		}
+    }
+
+
+
+
+
+    public function actionAttendance($tb_training_class_id)
+    {
+
+		$trainingClass = $this->findModel($tb_training_class_id);
+		
+		if(empty($start)) {
+			$start = $trainingClass->training->start;
+		}
+		
+		if(empty($finish) or $finish < $start){
+			$finish = $start;
+		}
+
+		$searchModel = new TrainingScheduleSearch;
+		$queryParams['TrainingScheduleSearch'] = [
+			'tb_training_class_id' => $tb_training_class_id,
+			'startDate' => $start,
+			'finishDate' => $finish,
+		];
+
+		$queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
+        $dataProvider = $searchModel->search($queryParams);
+
+        $dataProvider->query->groupBy = 'session';
+
+		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_ASC,'finishTime'=>SORT_ASC];
+
+		if (Yii::$app->request->isAjax){
+			return $this->renderAjax('attendance', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'trainingClass' => $trainingClass,
+				'start' => $start,
+				'finish' => $finish,
+			]);
+		}
+		else{
+			return $this->render('attendance', [
+				'searchModel' => $searchModel,
+				'dataProvider' => $dataProvider,
+				'trainingClass'=> $trainingClass,
+				'start' => $start,
+				'finish' => $finish,
+			]);
+		}
+
     }
 	
 	

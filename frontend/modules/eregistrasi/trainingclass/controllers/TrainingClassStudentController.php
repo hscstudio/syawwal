@@ -33,14 +33,16 @@ class TrainingClassStudentController extends Controller
      * Lists all TrainingClassStudent models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($tb_training_id)
     {
-        $searchModel = new TrainingClassStudentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $id = base64_decode(\hscstudio\heart\helpers\Kalkun::HexToAscii($tb_training_id));
+		$searchModel = new TrainingClassStudentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$id);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+			'tb_training_id' => $id,
         ]);
     }
 

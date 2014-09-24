@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-												
+														
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\BlameableBehavior;
@@ -17,6 +17,8 @@ use yii\behaviors\BlameableBehavior;
  * @property integer $tb_trainer_id
  * @property integer $ref_trainer_type_id
  * @property integer $cost
+ * @property integer $hours
+ * @property string $reason
  * @property integer $status
  * @property string $created
  * @property integer $createdBy
@@ -25,9 +27,10 @@ use yii\behaviors\BlameableBehavior;
  * @property string $deleted
  * @property integer $deletedBy
  *
- * @property TrainerType $refTrainerType
  * @property TrainingSchedule $tbTrainingSchedule
  * @property Trainer $tbTrainer
+ * @property TrainerType $refTrainerType
+ * @property TrainingScheduleTrainerAttendance[] $trainingScheduleTrainerAttendances
  */
 class TrainingScheduleTrainer extends \yii\db\ActiveRecord
 {
@@ -72,7 +75,9 @@ class TrainingScheduleTrainer extends \yii\db\ActiveRecord
         return [
             [['tb_training_schedule_id', 'tb_trainer_id', 'ref_trainer_type_id'], 'required'],
             [['tb_training_schedule_id', 'tb_trainer_id', 'ref_trainer_type_id', 'cost', 'status', 'createdBy', 'modifiedBy', 'deletedBy'], 'integer'],
-            [['created', 'modified', 'deleted'], 'safe']
+            [['created', 'modified', 'deleted'], 'safe'],
+            [['reason'], 'string', 'max' => 255],
+            [['tb_training_schedule_id', 'tb_trainer_id'], 'unique', 'targetAttribute' => ['tb_training_schedule_id', 'tb_trainer_id'], 'message' => 'The combination of Tb Training Schedule ID and Tb Trainer ID has already been taken.']
         ];
     }
 
@@ -87,6 +92,8 @@ class TrainingScheduleTrainer extends \yii\db\ActiveRecord
             'tb_trainer_id' => 'Tb Trainer ID',
             'ref_trainer_type_id' => 'Ref Trainer Type ID',
             'cost' => 'Cost',
+            'hours' => 'Hours',
+            'reason' => 'Reason',
             'status' => 'Status',
             'created' => 'Created',
             'createdBy' => 'Created By',
@@ -95,13 +102,6 @@ class TrainingScheduleTrainer extends \yii\db\ActiveRecord
             'deleted' => 'Deleted',
             'deletedBy' => 'Deleted By',
         ];
-    }
-	    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainerType()
-    {
-        return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type_id']);
     }
 	    /**
      * @return \yii\db\ActiveQuery
@@ -116,5 +116,19 @@ class TrainingScheduleTrainer extends \yii\db\ActiveRecord
     public function getTrainer()
     {
         return $this->hasOne(Trainer::className(), ['id' => 'tb_trainer_id']);
+    }
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainerType()
+    {
+        return $this->hasOne(TrainerType::className(), ['id' => 'ref_trainer_type_id']);
+    }
+	    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingScheduleTrainerAttendances()
+    {
+        return $this->hasMany(TrainingScheduleTrainerAttendance::className(), ['tb_training_schedule_trainer_id' => 'id']);
     }
 }
