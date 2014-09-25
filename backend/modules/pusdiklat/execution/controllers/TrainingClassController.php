@@ -4,8 +4,10 @@ namespace backend\modules\pusdiklat\execution\controllers;
 
 use Yii;
 use backend\models\TrainingClass;
+use backend\models\TrainingClassStudent;
 use backend\models\TrainingClassSearch;
 use backend\models\TrainingScheduleSearch;
+use backend\models\TrainingSchedule;
 use backend\models\Training;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -843,14 +845,12 @@ class TrainingClassController extends Controller
 		$searchModel = new TrainingScheduleSearch;
 		$queryParams['TrainingScheduleSearch'] = [
 			'tb_training_class_id' => $tb_training_class_id,
-			'startDate' => $start,
-			'finishDate' => $finish,
 		];
 
 		$queryParams = ArrayHelper::merge(Yii::$app->request->getQueryParams(),$queryParams);
         $dataProvider = $searchModel->search($queryParams);
 
-        $dataProvider->query->groupBy = 'session';
+        $dataProvider->query->groupBy = 'date(startTime)';
 
 		$dataProvider->getSort()->defaultOrder = ['startTime'=>SORT_ASC,'finishTime'=>SORT_ASC];
 
@@ -872,6 +872,136 @@ class TrainingClassController extends Controller
 				'finish' => $finish,
 			]);
 		}
+
+    }
+
+
+
+
+
+
+    public function actionPrint($tb_training_class_id) {
+
+    	// Ngambil semua student di kelas itu
+    	$modelClassStudent = TrainingClassStudent::find()
+    		->where([
+    			'tb_training_class_id' => $tb_training_class_id
+    		])
+    		->all();
+
+    	// Ngambil training schedule
+    	$modelSchedule = TrainingSchedule::find()
+    		->where([
+    			'tb_training_class_id' => $tb_training_class_id
+    		])
+    		->all();
+
+    	// Cek dulu apakah class_id pada schedule itu sama, klo beda ada yg salah sm request, lempar
+		// Jadi, class_id yg sama pada setiap schedule artinya kita sedang mengedit absensi untuk session yang sama
+		$different = false;
+		$referenceClass = '';
+		$namaDiklat = '';
+		$namaKelas = '';
+		
+		foreach ($modelSchedule as $row) {
+			
+			if ($referenceClass == '') {
+				$referenceClass = $row->tb_training_class_id;
+			}
+
+			if ($row->tb_training_class_id != $referenceClass) {
+				$different = true;
+			}
+
+			$namaDiklat = $row->trainingClass->training->name;
+			$namaKelas = $row->trainingClass->class;
+
+		}
+
+		if ($different) {
+			Yii::$app->session->setFlash('error', '<i class="fa fa-fw fa-times-circle"></i> Attendance creation should for one class only!');
+			return $this->redirect(['training/index']);
+		}
+		// dah
+
+    	// Bikin excel kosong
+		$objPHPExcel = new \PHPExcel();
+
+
+		$objPHPExcel->getActiveSheet()->setCellValue('A1', $namaDiklat);
+		$objPHPExcel->getActiveSheet()->setCellValue('A2', 'Kelas : '.$namaKelas);
+
+		// Bikin form absensi student
+		$objPHPExcel->setActiveSheetIndex(0);
+		$objPHPExcel->getActiveSheet()->setCellValue('A5', 'Nama');
+		$objPHPExcel->getActiveSheet()->setCellValue('B5', 'NIP');
+		$objPHPExcel->getActiveSheet()->setCellValue('C5', 'Unit');
+
+		$kolom = ord('D'); // buat mbikin banyak kolom sesuai banyaknya subject
+		foreach ($modelSchedule as $row) {
+			$objPHPExcel->getActiveSheet()->setCellValue(chr($kolom).'5', $row->trainingClassSubject->programSubject->name);
+			$kolom += 1;
+		}
+
+		$objPHPExcel->getActiveSheet()->mergeCells('A1:'.chr($kolom-1).'1'); // merge sel judul diklat
+
+		$noUrut = 6;
+		foreach ($modelClassStudent as $row) {
+			$objPHPExcel->getActiveSheet()->setCellValue('A'.$noUrut, $row->trainingStudent->student->name);
+			$objPHPExcel->getActiveSheet()->getCell('B'.$noUrut)->setDataType(\PHPExcel_Cell_DataType::TYPE_STRING);
+			$objPHPExcel->getActiveSheet()->setCellValue('B'.$noUrut, $row->trainingStudent->student->nip);
+			$objPHPExcel->getActiveSheet()->setCellValue('C'.$noUrut, $row->trainingStudent->student->unit->name);
+			$noUrut += 1;
+		}
+
+		$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+		$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+		$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+
+		$kolom = ord('D'); // Width kolom subject dibuat fix
+		foreach ($modelSchedule as $row) {
+			$objPHPExcel->getActiveSheet()->getColumnDimension(chr($kolom))->setWidth(12);
+			$kolom += 1;
+		}
+		// dah
+
+		// Finalisasi format
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(\PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setPaperSize(\PHPExcel_Worksheet_PageSetup::PAPERSIZE_FOLIO);
+		$styleArray = array(
+			'borders' => array(
+				'outline' => array(
+					'style' => \PHPExcel_Style_Border::BORDER_THIN,
+					'color' => array('argb' => '00000000'),
+				),
+			),
+		);
+		$objPHPExcel->getActiveSheet()->getStyle('A5:'.chr($kolom-1).$noUrut)->applyFromArray($styleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A5:'.chr($kolom-1).'5')->applyFromArray($styleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('A5:A'.$noUrut)->applyFromArray($styleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('B5:B'.$noUrut)->applyFromArray($styleArray);
+		$objPHPExcel->getActiveSheet()->getStyle('C5:C'.$noUrut)->applyFromArray($styleArray);
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setHorizontalCentered(true);
+		$objPHPExcel->getActiveSheet()->getPageSetup()->setVerticalCentered(true);
+		//dah
+		
+		// Redirect output to a client’s web browser
+		header('Content-Type: application/vnd.ms-excel');
+
+		header('Content-Disposition: attachment;filename="attendance_class_'.$namaKelas.'_'.$namaDiklat.'.xls"');
+		header('Cache-Control: max-age=0');
+		// If you're serving to IE 9, then the following may be needed
+		header('Cache-Control: max-age=1');
+
+		// If you're serving to IE over SSL, then the following may be needed
+		header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+		header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+		header ('Pragma: public'); // HTTP/1.0
+		
+		$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+		$objWriter->save('php://output');
+		exit;
 
     }
 	

@@ -74,7 +74,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$modelTrainingSchedule = TrainingSchedule::find()
 						->where([
 							'tb_training_class_id' => $model->tb_training_class_id,
-							'session' => $model->session
+							'date(startTime)' => date('Y-m-d', strtotime($model->startTime))
 						])
 						->andWhere('tb_training_class_subject_id > 0')
 						->all();
@@ -115,7 +115,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$modelTrainingSchedule = TrainingSchedule::find()
 						->where([
 							'tb_training_class_id' => $model->tb_training_class_id,
-							'session' => $model->session
+							'date(startTime)' => date('Y-m-d', strtotime($model->startTime))
 						])
 						->andWhere('tb_training_class_subject_id > 0')
 						->all();
@@ -150,7 +150,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$modelTrainingSchedule = TrainingSchedule::find()
 						->where([
 							'tb_training_class_id' => $model->tb_training_class_id,
-							'session' => $model->session
+							'date(startTime)' => date('Y-m-d', strtotime($model->startTime))
 						])
 						->andWhere('tb_training_class_subject_id > 0')
 						->all();
@@ -165,57 +165,6 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					
 				}
 			],
-			/*[
-				'label' => 'PIC/Narasumber',
-				'vAlign'=>'middle',
-				'width'=>'200px;',
-				'headerOptions'=>['class'=>'kv-sticky-column'],
-				'contentOptions'=>['class'=>'kv-sticky-column'],
-				'format'=>'raw',
-				'value'=>function($model){
-					$modelTrainingSchedule = TrainingSchedule::find()
-						->where([
-							'tb_training_class_id' => $model->tb_training_class_id,
-							'session' => $model->session
-						])
-						->andWhere('tb_training_class_subject_id > 0')
-						->all();
-
-					$out = '';
-
-					foreach ($modelTrainingSchedule as $row) {
-						$trainingScheduleTrainer = TrainingScheduleTrainer::find()
-							->where([
-								'tb_training_schedule_id' => $row->id,
-								'status' => 1,
-							])
-							->orderBy('ref_trainer_type_id ASC')
-							->all();
-			
-						$ref_trainer_type_id= "-1";	
-						$idx = 1;
-						$content = '';
-
-						foreach($trainingScheduleTrainer as $trainer){
-							if($ref_trainer_type_id!=$trainer->ref_trainer_type_id){
-								$content .="<hr style='margin:2px 0'>";
-								$content .="<strong>".$trainer->trainerType->name."</strong>";
-								$content .="<hr style='margin:2px 0'>";
-								$ref_trainer_type_id=$trainer->ref_trainer_type_id;
-								$idx=1;
-							}
-							
-							$content .="<div>";
-							$content .="<span  class='label label-default' data-toggle='tooltip' title='".$trainer->trainer->organization." - ".$trainer->trainer->phone."'>".$idx++.". ".$trainer->trainer->name."</span> ";
-							$content .="</div>";
-							$out .= $content;
-						}
-					}
-
-					return $out;
-
-				}
-			],*/
 
 			[
 				'format' => 'raw',
@@ -226,10 +175,12 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 				'headerOptions'=>['class'=>'kv-sticky-column'],
 				'contentOptions'=>['class'=>'kv-sticky-column'],
 				'value' => function ($model) {
+
+
 					$modelTrainingSchedule = TrainingSchedule::find()
 						->where([
 							'tb_training_class_id' => $model->tb_training_class_id,
-							'session' => $model->session
+							'date(startTime)' => date('Y-m-d', strtotime($model->startTime))
 						])
 						->andWhere('tb_training_class_subject_id > 0')
 						->all();
@@ -240,6 +191,7 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$idSchedule = [];
 
 					foreach ($modelTrainingSchedule as $row) {
+
 						$idTrainingClassSubject[] = $row->tb_training_class_subject_id;
 						$idSchedule[] = $row->id;
 					}
@@ -251,13 +203,13 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					$out .= Html::a('<i class="fa fa-fw fa-mortar-board"></i>', Url::to([
 							'training-schedule-trainer-attendance/update', 
 							'idSubjects' => $idTrainingClassSubject,
-							'tb_training_schedule_id' => $idSchedule
+							'tb_training_schedule_id' => $idSchedule,
 						]), ['class' => 'btn btn-default btn-xs']
 					).' '.
 					Html::a('<i class="fa fa-fw fa-child"></i>', Url::to([
 							'training-class-student-attendance/update', 
 							'idSubjects' => $idTrainingClassSubject,
-							'tb_training_schedule_id' => $idSchedule
+							'tb_training_schedule_id' => $idSchedule,
 						]), ['class' => 'btn btn-default btn-xs']
 					);
 					$out .= '</div>';
@@ -274,9 +226,10 @@ $this->params['sideMenu'][$controller->module->uniqueId]=$menus;
 					'index',
 					'tb_training_id'=>$trainingClass->tb_training_id
 				], ['class' => 'btn btn-warning']).
-				Html::a('<i class="fa fa-fw fa-print"></i> Print Form Attendance', 'print', [
-						'class' => 'btn btn-default',
-						'tb_training_class_id' => $trainingClass->id
+				Html::a('<i class="fa fa-fw fa-print"></i> Print Form Attendance', ['print', 'tb_training_class_id' => $trainingClass->id], [
+						'class' => 'btn btn-default pull-right',
+						'style' => 'margin-right:5px',
+						'data-pjax' => '0'
 					])
 				,
 			'after'=>Html::a('<i class="fa fa-fw fa-repeat"></i> Reset Grid', ['schedule','tb_training_class_id'=>$trainingClass->id], ['class' => 'btn btn-info']),

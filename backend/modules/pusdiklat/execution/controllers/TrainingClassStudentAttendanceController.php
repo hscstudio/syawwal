@@ -55,7 +55,7 @@ class TrainingClassStudentAttendanceController extends Controller
 		//dah
 
 		// Cek dulu apakah class_id pada schedule itu sama, klo beda ada yg salah sm request, lempar
-		// Jadi, class_id yg sama pada setiap schedule artinya kita sedang mengedit absensi untuk session yang sama
+		// Jadi, class_id yg sama pada setiap schedule artinya kita sedang mengedit absensi untuk class yang sama
 		$different = false;
 		$referenceClass = '';
 		
